@@ -12011,7 +12011,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key)) {
+    if (has(collection, key) && key !== 'remove') {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -13285,365 +13285,6 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var domQuery = __webpack_require__(2).query,
-    domClear = __webpack_require__(2).clear,
-    domClasses = __webpack_require__(2).classes,
-    is = __webpack_require__(1).is,
-    forEach = __webpack_require__(14),
-    domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(32).default;
-
-var SPACE_REGEX = /\s/;
-
-// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
-var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
-
-// for ID validation as per BPMN Schema (QName - Namespace)
-var ID_REGEX = /^[a-z_][\w-.]*$/i;
-
-var HTML_ESCAPE_MAP = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&#39;'
-};
-
-function selectedOption(selectBox) {
-  if (selectBox.selectedIndex >= 0) {
-    return selectBox.options[selectBox.selectedIndex].value;
-  }
-}
-
-module.exports.selectedOption = selectedOption;
-
-
-function selectedType(elementSyntax, inputNode) {
-  var typeSelect = domQuery(elementSyntax, inputNode);
-  return selectedOption(typeSelect);
-}
-
-module.exports.selectedType = selectedType;
-
-
-/**
- * Retrieve the root element the document this
- * business object is contained in.
- *
- * @return {ModdleElement}
- */
-function getRoot(businessObject) {
-  var parent = businessObject;
-  while (parent.$parent) {
-    parent = parent.$parent;
-  }
-  return parent;
-}
-
-module.exports.getRoot = getRoot;
-
-
-/**
- * filters all elements in the list which have a given type.
- * removes a new list
- */
-function filterElementsByType(objectList, type) {
-  var list = objectList || [];
-  var result = [];
-  forEach(list, function(obj) {
-    if (is(obj, type)) {
-      result.push(obj);
-    }
-  });
-  return result;
-}
-
-module.exports.filterElementsByType = filterElementsByType;
-
-
-function findRootElementsByType(businessObject, referencedType) {
-  var root = getRoot(businessObject);
-
-  return filterElementsByType(root.rootElements, referencedType);
-}
-
-module.exports.findRootElementsByType = findRootElementsByType;
-
-
-function removeAllChildren(domElement) {
-  while (domElement.firstChild) {
-    domElement.removeChild(domElement.firstChild);
-  }
-}
-
-module.exports.removeAllChildren = removeAllChildren;
-
-
-/**
- * adds an empty option to the list
- */
-function addEmptyParameter(list) {
-  return list.push({ 'label': '', 'value': '', 'name': '' });
-}
-
-module.exports.addEmptyParameter = addEmptyParameter;
-
-
-/**
- * returns a dropdown option label depending on the defined event attributes
- */
-function getOptionLabel(obj) {
-  var label = obj.name || '';
-
-  if (obj.errorCode)
-    label += ' (code=' + obj.errorCode + ')';
-  if (obj.escalationCode)
-    label += ' (code=' + obj.escalationCode + ')';
-
-  return label;
-}
-
-/**
- * returns a list with all root elements for the given parameter 'referencedType'
- */
-function refreshOptionsModel(businessObject, referencedType) {
-  var model = [];
-  var referableObjects = findRootElementsByType(businessObject, referencedType);
-  forEach(referableObjects, function(obj) {
-    model.push({
-      label: getOptionLabel(obj),
-      value: obj.id,
-      name: obj.name
-    });
-  });
-  return model;
-}
-
-module.exports.refreshOptionsModel = refreshOptionsModel;
-
-
-/**
- * fills the drop down with options
- */
-function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
-  var options = refreshOptionsModel(businessObject, referencedType);
-  addEmptyParameter(options);
-  var selectBox = domQuery(domSelector, entryNode);
-  domClear(selectBox);
-
-  forEach(options, function(option) {
-    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
-    selectBox.appendChild(optionEntry);
-  });
-  return options;
-}
-
-module.exports.updateOptionsDropDown = updateOptionsDropDown;
-
-
-/**
- * checks whether the id value is valid
- *
- * @param {ModdleElement} bo
- * @param {String} idValue
- * @param {Function} translate
- *
- * @return {String} error message
- */
-function isIdValid(bo, idValue, translate) {
-  var assigned = bo.$model.ids.assigned(idValue);
-
-  var idExists = assigned && assigned !== bo;
-
-  if (!idValue || idExists) {
-    return translate('Element must have an unique id.');
-  }
-
-  return validateId(idValue, translate);
-}
-
-module.exports.isIdValid = isIdValid;
-
-
-function validateId(idValue, translate) {
-
-  if (containsSpace(idValue)) {
-    return translate('Id must not contain spaces.');
-  }
-
-  if (!ID_REGEX.test(idValue)) {
-
-    if (QNAME_REGEX.test(idValue)) {
-      return translate('Id must not contain prefix.');
-    }
-
-    return translate('Id must be a valid QName.');
-  }
-}
-
-module.exports.validateId = validateId;
-
-
-function containsSpace(value) {
-  return SPACE_REGEX.test(value);
-}
-
-module.exports.containsSpace = containsSpace;
-
-/**
- * generate a semantic id with given prefix
- */
-function nextId(prefix) {
-  var ids = new Ids([32,32,1]);
-
-  return ids.nextPrefixed(prefix);
-}
-
-module.exports.nextId = nextId;
-
-
-function triggerClickEvent(element) {
-  var evt;
-  var eventType = 'click';
-
-  if (document.createEvent) {
-    try {
-
-      // Chrome, Safari, Firefox
-      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
-    } catch (e) {
-
-      // IE 11, PhantomJS (wat!)
-      evt = document.createEvent('MouseEvent');
-
-      evt.initEvent((eventType), true, true);
-    }
-    return element.dispatchEvent(evt);
-  } else {
-
-    // Welcome IE
-    evt = document.createEventObject();
-
-    return element.fireEvent('on' + eventType, evt);
-  }
-}
-
-module.exports.triggerClickEvent = triggerClickEvent;
-
-
-function escapeHTML(str) {
-  str = '' + str;
-
-  return str && str.replace(/[&<>"']/g, function(match) {
-    return HTML_ESCAPE_MAP[match];
-  });
-}
-
-module.exports.escapeHTML = escapeHTML;
-
-function createDropdown(dropdown) {
-  var menu = dropdown.menu;
-
-  var dropdownNode = domify(
-    '<div class="group__dropdown">' +
-      '<button class="group__dropdown-button">' +
-      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
-      '</button>' +
-      '<div class="group__dropdown-menu"></div>' +
-    '</div>'
-  );
-
-  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
-      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
-
-  buttonNode.addEventListener('click', function(event) {
-    domClasses(dropdownNode).toggle('group__dropdown--open');
-
-    createOnGlobalClick(event);
-  });
-
-  forEach(menu, function(menuItem) {
-    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
-      menuItem.id +
-      '">' + escapeHTML(menuItem.label) + '</div>');
-
-    menuItemNode.addEventListener('click', function() {
-      menuItem.onClick();
-
-      domClasses(dropdownNode).remove('group__dropdown--open');
-    });
-
-    menuNode.appendChild(menuItemNode);
-  });
-
-  var _onGlobalClick;
-
-  function createOnGlobalClick(_event) {
-    function onGlobalClick(event) {
-      if (event === _event) {
-        return;
-      }
-
-      var target = event.target;
-
-      if (menuNode !== target && !menuNode.contains(target)) {
-        domClasses(dropdownNode).remove('group__dropdown--open');
-
-        document.removeEventListener('click', onGlobalClick);
-      }
-    }
-
-    if (_onGlobalClick) {
-      document.removeEventListener('click', _onGlobalClick);
-    }
-
-    document.addEventListener('click', onGlobalClick);
-
-    _onGlobalClick = onGlobalClick;
-  }
-
-  return dropdownNode;
-}
-
-module.exports.createDropdown = createDropdown;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ElementHelper = {};
-module.exports = ElementHelper;
-
-/**
- * Creates a new element and set the parent to it
- *
- * @method ElementHelper#createElement
- *
- * @param {String} elementType of the new element
- * @param {Object} properties of the new element in key-value pairs
- * @param {moddle.object} parent of the new element
- * @param {BpmnFactory} factory which creates the new element
- *
- * @returns {djs.model.Base} element which is created
- */
-ElementHelper.createElement = function(elementType, properties, parent, factory) {
-  var element = factory.create(elementType, properties);
-  element.$parent = parent;
-
-  return element;
-};
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -24531,6 +24172,365 @@ return jQuery;
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var domQuery = __webpack_require__(2).query,
+    domClear = __webpack_require__(2).clear,
+    domClasses = __webpack_require__(2).classes,
+    is = __webpack_require__(1).is,
+    forEach = __webpack_require__(14),
+    domify = __webpack_require__(2).domify,
+    Ids = __webpack_require__(32).default;
+
+var SPACE_REGEX = /\s/;
+
+// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
+var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
+
+// for ID validation as per BPMN Schema (QName - Namespace)
+var ID_REGEX = /^[a-z_][\w-.]*$/i;
+
+var HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&#39;'
+};
+
+function selectedOption(selectBox) {
+  if (selectBox.selectedIndex >= 0) {
+    return selectBox.options[selectBox.selectedIndex].value;
+  }
+}
+
+module.exports.selectedOption = selectedOption;
+
+
+function selectedType(elementSyntax, inputNode) {
+  var typeSelect = domQuery(elementSyntax, inputNode);
+  return selectedOption(typeSelect);
+}
+
+module.exports.selectedType = selectedType;
+
+
+/**
+ * Retrieve the root element the document this
+ * business object is contained in.
+ *
+ * @return {ModdleElement}
+ */
+function getRoot(businessObject) {
+  var parent = businessObject;
+  while (parent.$parent) {
+    parent = parent.$parent;
+  }
+  return parent;
+}
+
+module.exports.getRoot = getRoot;
+
+
+/**
+ * filters all elements in the list which have a given type.
+ * removes a new list
+ */
+function filterElementsByType(objectList, type) {
+  var list = objectList || [];
+  var result = [];
+  forEach(list, function(obj) {
+    if (is(obj, type)) {
+      result.push(obj);
+    }
+  });
+  return result;
+}
+
+module.exports.filterElementsByType = filterElementsByType;
+
+
+function findRootElementsByType(businessObject, referencedType) {
+  var root = getRoot(businessObject);
+
+  return filterElementsByType(root.rootElements, referencedType);
+}
+
+module.exports.findRootElementsByType = findRootElementsByType;
+
+
+function removeAllChildren(domElement) {
+  while (domElement.firstChild) {
+    domElement.removeChild(domElement.firstChild);
+  }
+}
+
+module.exports.removeAllChildren = removeAllChildren;
+
+
+/**
+ * adds an empty option to the list
+ */
+function addEmptyParameter(list) {
+  return list.push({ 'label': '', 'value': '', 'name': '' });
+}
+
+module.exports.addEmptyParameter = addEmptyParameter;
+
+
+/**
+ * returns a dropdown option label depending on the defined event attributes
+ */
+function getOptionLabel(obj) {
+  var label = obj.name || '';
+
+  if (obj.errorCode)
+    label += ' (code=' + obj.errorCode + ')';
+  if (obj.escalationCode)
+    label += ' (code=' + obj.escalationCode + ')';
+
+  return label;
+}
+
+/**
+ * returns a list with all root elements for the given parameter 'referencedType'
+ */
+function refreshOptionsModel(businessObject, referencedType) {
+  var model = [];
+  var referableObjects = findRootElementsByType(businessObject, referencedType);
+  forEach(referableObjects, function(obj) {
+    model.push({
+      label: getOptionLabel(obj),
+      value: obj.id,
+      name: obj.name
+    });
+  });
+  return model;
+}
+
+module.exports.refreshOptionsModel = refreshOptionsModel;
+
+
+/**
+ * fills the drop down with options
+ */
+function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
+  var options = refreshOptionsModel(businessObject, referencedType);
+  addEmptyParameter(options);
+  var selectBox = domQuery(domSelector, entryNode);
+  domClear(selectBox);
+
+  forEach(options, function(option) {
+    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
+    selectBox.appendChild(optionEntry);
+  });
+  return options;
+}
+
+module.exports.updateOptionsDropDown = updateOptionsDropDown;
+
+
+/**
+ * checks whether the id value is valid
+ *
+ * @param {ModdleElement} bo
+ * @param {String} idValue
+ * @param {Function} translate
+ *
+ * @return {String} error message
+ */
+function isIdValid(bo, idValue, translate) {
+  var assigned = bo.$model.ids.assigned(idValue);
+
+  var idExists = assigned && assigned !== bo;
+
+  if (!idValue || idExists) {
+    return translate('Element must have an unique id.');
+  }
+
+  return validateId(idValue, translate);
+}
+
+module.exports.isIdValid = isIdValid;
+
+
+function validateId(idValue, translate) {
+
+  if (containsSpace(idValue)) {
+    return translate('Id must not contain spaces.');
+  }
+
+  if (!ID_REGEX.test(idValue)) {
+
+    if (QNAME_REGEX.test(idValue)) {
+      return translate('Id must not contain prefix.');
+    }
+
+    return translate('Id must be a valid QName.');
+  }
+}
+
+module.exports.validateId = validateId;
+
+
+function containsSpace(value) {
+  return SPACE_REGEX.test(value);
+}
+
+module.exports.containsSpace = containsSpace;
+
+/**
+ * generate a semantic id with given prefix
+ */
+function nextId(prefix) {
+  var ids = new Ids([32,32,1]);
+
+  return ids.nextPrefixed(prefix);
+}
+
+module.exports.nextId = nextId;
+
+
+function triggerClickEvent(element) {
+  var evt;
+  var eventType = 'click';
+
+  if (document.createEvent) {
+    try {
+
+      // Chrome, Safari, Firefox
+      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
+    } catch (e) {
+
+      // IE 11, PhantomJS (wat!)
+      evt = document.createEvent('MouseEvent');
+
+      evt.initEvent((eventType), true, true);
+    }
+    return element.dispatchEvent(evt);
+  } else {
+
+    // Welcome IE
+    evt = document.createEventObject();
+
+    return element.fireEvent('on' + eventType, evt);
+  }
+}
+
+module.exports.triggerClickEvent = triggerClickEvent;
+
+
+function escapeHTML(str) {
+  str = '' + str;
+
+  return str && str.replace(/[&<>"']/g, function(match) {
+    return HTML_ESCAPE_MAP[match];
+  });
+}
+
+module.exports.escapeHTML = escapeHTML;
+
+function createDropdown(dropdown) {
+  var menu = dropdown.menu;
+
+  var dropdownNode = domify(
+    '<div class="group__dropdown">' +
+      '<button class="group__dropdown-button">' +
+      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
+      '</button>' +
+      '<div class="group__dropdown-menu"></div>' +
+    '</div>'
+  );
+
+  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
+      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
+
+  buttonNode.addEventListener('click', function(event) {
+    domClasses(dropdownNode).toggle('group__dropdown--open');
+
+    createOnGlobalClick(event);
+  });
+
+  forEach(menu, function(menuItem) {
+    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
+      menuItem.id +
+      '">' + escapeHTML(menuItem.label) + '</div>');
+
+    menuItemNode.addEventListener('click', function() {
+      menuItem.onClick();
+
+      domClasses(dropdownNode).remove('group__dropdown--open');
+    });
+
+    menuNode.appendChild(menuItemNode);
+  });
+
+  var _onGlobalClick;
+
+  function createOnGlobalClick(_event) {
+    function onGlobalClick(event) {
+      if (event === _event) {
+        return;
+      }
+
+      var target = event.target;
+
+      if (menuNode !== target && !menuNode.contains(target)) {
+        domClasses(dropdownNode).remove('group__dropdown--open');
+
+        document.removeEventListener('click', onGlobalClick);
+      }
+    }
+
+    if (_onGlobalClick) {
+      document.removeEventListener('click', _onGlobalClick);
+    }
+
+    document.addEventListener('click', onGlobalClick);
+
+    _onGlobalClick = onGlobalClick;
+  }
+
+  return dropdownNode;
+}
+
+module.exports.createDropdown = createDropdown;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var ElementHelper = {};
+module.exports = ElementHelper;
+
+/**
+ * Creates a new element and set the parent to it
+ *
+ * @method ElementHelper#createElement
+ *
+ * @param {String} elementType of the new element
+ * @param {Object} properties of the new element in key-value pairs
+ * @param {moddle.object} parent of the new element
+ * @param {BpmnFactory} factory which creates the new element
+ *
+ * @returns {djs.model.Base} element which is created
+ */
+ElementHelper.createElement = function(elementType, properties, parent, factory) {
+  var element = factory.create(elementType, properties);
+  element.$parent = parent;
+
+  return element;
+};
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -24566,7 +24566,7 @@ module.exports = isArray;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     isDigit = __webpack_require__(20).isDigit;
 
@@ -25218,7 +25218,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
 /* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
 /* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
@@ -25291,7 +25291,7 @@ module.exports = root;
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     extensionElementsHelper = __webpack_require__(21),
     createUUID = __webpack_require__(20).createUUID,
     getRoot = __webpack_require__(20).getRoot;
@@ -25473,7 +25473,7 @@ var domify = __webpack_require__(2).domify,
     domClasses = __webpack_require__(2).classes,
     domEvent = __webpack_require__(2).event;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var MAX_DESCRIPTION_LENGTH = 200;
 
@@ -25784,7 +25784,7 @@ module.exports = {
 
 
 var cmdHelper = __webpack_require__(4),
-    elementHelper = __webpack_require__(6);
+    elementHelper = __webpack_require__(7);
 
 var is = __webpack_require__(1).is;
 
@@ -46657,7 +46657,7 @@ module.exports = toKey;
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     ValidationErrorHelper = __webpack_require__(9),
     is = __webpack_require__(1).is;
@@ -46819,7 +46819,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var cmdHelper = __webpack_require__(4);
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 function ensureNotNull(prop) {
   if (!prop) {
@@ -48365,7 +48365,7 @@ module.exports = getHolder;
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     RuleHelper = __webpack_require__(129),
     createUUID = __webpack_require__(20).createUUID;
@@ -48806,7 +48806,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13);
 
 var DistributionHelper = {};
@@ -48929,9 +48929,9 @@ var domQuery = __webpack_require__(2).query,
     domify = __webpack_require__(2).domify,
     forEach = __webpack_require__(14);
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(5),
+    utils = __webpack_require__(6),
     escapeHTML = utils.escapeHTML;
 
 function getSelectBox(node, id) {
@@ -50840,7 +50840,7 @@ function splitStr(str, position) {
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13);
 
 var SequenceFlowHelper = {};
@@ -50893,7 +50893,7 @@ module.exports = SequenceFlowHelper;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -50986,7 +50986,7 @@ module.exports = textField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -51738,7 +51738,7 @@ module.exports = setWrapToString;
 /* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     createUUID = __webpack_require__(20).createUUID;
 
 var RuleHelper = {};
@@ -51777,7 +51777,7 @@ module.exports = RuleHelper;
 /* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     createUUID = __webpack_require__(20).createUUID;
 
@@ -54501,7 +54501,7 @@ ColorContextPad.$inject = [
   'translate'
 ];
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 146 */
@@ -54532,7 +54532,7 @@ module.exports = __webpack_require__(356);
     "use strict";
 
     if (true) { // AMD
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -57424,7 +57424,7 @@ module.exports = __webpack_require__(356);
 
 })( jQuery );
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 149 */
@@ -59952,7 +59952,7 @@ module.exports = getPrototype;
 "use strict";
 
 
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 
 /**
  * A handler capable of creating a new element under a provided parent
@@ -60062,7 +60062,7 @@ function ensureNotNull(prop, name) {
 
 var forEach = __webpack_require__(14);
 
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 
 /**
  * A handler that implements a BPMN 2.0 property update
@@ -60343,8 +60343,8 @@ MultiCommandHandler.prototype.preExecute = function(context) {
 "use strict";
 
 
-var createDropdown = __webpack_require__(5).createDropdown,
-    escapeHTML = __webpack_require__(5).escapeHTML;
+var createDropdown = __webpack_require__(6).createDropdown,
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query,
@@ -63326,7 +63326,7 @@ var domify = __webpack_require__(2).domify;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(5).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -63414,7 +63414,7 @@ var assign = __webpack_require__(114),
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(113),
     entryFieldDescription = __webpack_require__(16);
@@ -63807,7 +63807,7 @@ module.exports = toFinite;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -63919,7 +63919,7 @@ module.exports = validationAwareTextField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var cmdHelper = __webpack_require__(4);
 
@@ -64315,7 +64315,7 @@ module.exports = label;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -65253,7 +65253,7 @@ var assign = __webpack_require__(0).assign,
     forEach = __webpack_require__(0).forEach,
     debounce = __webpack_require__(0).debounce;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -65557,7 +65557,7 @@ function setPosition(el, x, y) {
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domQuery = __webpack_require__(2).query;
 
 
@@ -65687,7 +65687,7 @@ function noop() {}
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(5).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -67566,7 +67566,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 
 
 var properties = __webpack_require__(332),
-    elementHelper = __webpack_require__(6),
+    elementHelper = __webpack_require__(7),
     cmdHelper = __webpack_require__(4);
 
 
@@ -67610,10 +67610,10 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 
 var factory = __webpack_require__(10);
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     extensionElementsHelper = __webpack_require__(21),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(5);
+    utils = __webpack_require__(6);
 
 var assign = __webpack_require__(114),
     forEach = __webpack_require__(14),
@@ -67871,7 +67871,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 /* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
 var entryFactory = __webpack_require__(10);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 var extensionElementsHelper = __webpack_require__(21);
 var IconPickerField = __webpack_require__(336);
 var IconSetPickerField = __webpack_require__(337);
@@ -68057,7 +68057,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   ];
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 336 */
@@ -68065,7 +68065,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
@@ -68168,8 +68168,8 @@ module.exports = function(options) {
 /* WEBPACK VAR INJECTION */(function($) {var xss = __webpack_require__(34);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var elementHelper = __webpack_require__(6);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var elementHelper = __webpack_require__(7);
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
@@ -68431,7 +68431,7 @@ module.exports = function(options) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 338 */
@@ -68852,7 +68852,7 @@ module.exports = FilterXSS;
 
 /* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
@@ -68917,7 +68917,7 @@ module.exports = function(options) {
   return resource;
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 342 */
@@ -124880,7 +124880,7 @@ var ColorContextPad = __webpack_require__(145);
   colorContextPad: [ 'type', ColorContextPad["a" /* default */] ]
 });
 // EXTERNAL MODULE: ./node_modules/jquery/dist/jquery.js
-var jquery = __webpack_require__(7);
+var jquery = __webpack_require__(5);
 var jquery_default = /*#__PURE__*/__webpack_require__.n(jquery);
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/lib/helper/CmdHelper.js
@@ -125518,7 +125518,100 @@ ResizeTasks_ResizeTasks.$inject = [ 'bpmnRules', 'eventBus' ];
   resizeTasks: [ 'type', ResizeTasks_ResizeTasks ]
 });
 
+// CONCATENATED MODULE: ./app/modules/link-subprocess/LinkSubprocess.js
+
+
+
+
+
+const LinkSubprocess_TYPE = 'linkSubprocessBtn';
+
+function LinkSubprocess(eventBus, overlays) {
+
+    function createLinkSubprocessBtn(element) {
+        let id = element.id;
+        let subprocess = jquery_default()(`[data-element-id=${id}]`)[0];
+        let subprocessBBox = subprocess.getBBox();
+        let $overlay = jquery_default()(LinkSubprocess.OVERLAY_HTML);
+
+        $overlay.click(() => {
+            if (Apromore.BPMNEditor.linkSubprocess) {
+                Apromore.BPMNEditor.linkSubprocess(id);
+            } else {
+                console.log('link subprocesses function not found');
+            }
+        });
+
+        overlays.remove({ element, type: LinkSubprocess_TYPE });
+        // attach an overlay to an element
+        overlays.add(element, LinkSubprocess_TYPE, {
+            position: {
+                bottom: 21,
+                left: subprocessBBox.width / 2 - 15
+            },
+            html: $overlay
+        });
+
+    }
+
+    eventBus.on('shape.added', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && !isExpanded(element)) {
+            LinkSubprocess_defer(function() {
+              createLinkSubprocessBtn(element);
+            });
+            return;
+        }
+
+    });
+
+    eventBus.on('shape.changed', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && !isExpanded(element)) {
+            LinkSubprocess_defer(function() {
+              createLinkSubprocessBtn(element);
+            });
+        } else {
+            overlays.remove({ element, type: LinkSubprocess_TYPE });
+        }
+
+    });
+
+    //Send an event when a subprocess is deleted to delete any links it has in db
+    eventBus.on('shape.remove', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && Apromore.BPMNEditor.deleteSubprocess) {
+            let id = element.id;
+            Apromore.BPMNEditor.deleteSubprocess(id);
+        }
+
+    });
+
+}
+
+LinkSubprocess.$inject = [ 'eventBus', 'overlays' ];
+
+LinkSubprocess.OVERLAY_HTML =
+    '<div class="sub-process-marker-overlay" style="width:15px;height:15px">' +
+    '</div>';
+
+function LinkSubprocess_defer(fn) {
+    setTimeout(fn, 0);
+}
+
+// CONCATENATED MODULE: ./app/modules/link-subprocess/index.js
+
+
+/* harmony default export */ var link_subprocess = ({
+  __init__: [ 'linkSubprocess' ],
+  'linkSubprocess': [ 'type', LinkSubprocess ]
+});
+
 // CONCATENATED MODULE: ./app/CustomModeler.js
+
 
 
 
@@ -125617,6 +125710,7 @@ function CustomModeler(options) {
   options.additionalModules.push(modules_attachment);
   options.additionalModules.push(modules_comments);
   options.additionalModules.push(resize_tasks);
+  options.additionalModules.push(link_subprocess);
   Modeler.call(this, options);
 }
 

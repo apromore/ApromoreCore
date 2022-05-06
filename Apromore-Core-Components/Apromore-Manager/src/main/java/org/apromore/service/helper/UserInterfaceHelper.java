@@ -89,4 +89,12 @@ public interface UserInterfaceHelper {
 
     UserMetadataSummaryType buildUserMetadataSummary(String userId, Usermetadata usermetadata,
                                                      AccessType accessType) throws UserNotFoundException;
+
+    /**
+     * Populate a process summary.
+     *
+     * @param process
+     * @return the populated process summary
+     */
+    ProcessSummaryType buildProcessSummary(final Process process);
 }

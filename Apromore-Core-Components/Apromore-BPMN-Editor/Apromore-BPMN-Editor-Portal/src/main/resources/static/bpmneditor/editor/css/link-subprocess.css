@@ -20,17 +20,24 @@
  * #L%
  */
 
-package org.apromore.storage;
+/* LINK SUBPROCESS WINDOWS */
 
-public enum StorageType {
+/* Fix window close button */
+.z-window-close {
+    pointer-events: initial;
+}
 
-    FILE;
+.z-window-close i {
+    pointer-events: none;
+}
 
-    public static final String STORAGE_PATH_SEPARATOR = "::";
-    private static final int BASE_FOLDER = 1;
+/* tables */
+.ap-listbox-enabled {
+    opacity: 1;
+    pointer-events: auto;
+}
 
-    public String getBaseStorage(String storagePath) {
-        return storagePath.split(STORAGE_PATH_SEPARATOR)[BASE_FOLDER];
-    }
-
+.ap-listbox-disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }

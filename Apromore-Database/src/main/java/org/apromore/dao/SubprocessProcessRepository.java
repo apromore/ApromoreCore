@@ -36,10 +36,10 @@ public interface SubprocessProcessRepository extends JpaRepository<SubprocessPro
      * @param userId the id of the user associated with the link.
      * @return the linked subprocess one exists, null otherwise.
      */
-    @Query("SELECT p.linkedProcess FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2 AND p.user.id = ?3")
-    Process getLinkedProcess(int parentProcessId, String subprocessId, int userId);
+    @Query("SELECT p.linkedProcess FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
+    Process getLinkedProcess(int parentProcessId, String subprocessId);
 
-    @Query("SELECT p FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2 AND p.user.id = ?3")
-    SubprocessProcess getExistingLink(int parentProcessId, String subprocessId, int userId);
+    @Query("SELECT p FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
+    SubprocessProcess getExistingLink(int parentProcessId, String subprocessId);
 
 }

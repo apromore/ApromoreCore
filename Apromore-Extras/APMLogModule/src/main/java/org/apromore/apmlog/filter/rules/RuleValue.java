@@ -40,7 +40,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
     private final FilterType filterType;
     private final OperationType operationType;
-    private final String key;
+    private String key;
     private String stringVal = "";
     private long longVal = 0;
     private double doubleVal = 0;
@@ -261,4 +261,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         }
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
 }
