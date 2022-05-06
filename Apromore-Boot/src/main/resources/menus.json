@@ -89,7 +89,7 @@
               "id": "dashboard.portal.DashboardPlugin"
             },
             {
-              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+              "id": "org.apromore.ppm.portal.services.PredictorManagerPortalPlugin"
             },
             {
               "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
@@ -192,7 +192,7 @@
               "id": "SEPARATOR"
             },
             {
-              "id": "org.apromore.ppm.portal.services.PredictorTrainerPortalPlugin"
+              "id": "PREDICTOR_MANAGER_SUB_MENU"
             },
             {
               "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"

@@ -51,6 +51,8 @@ public class PredictorDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "log_id")
+    private int logId;
     @Column(name = "name")
     private String name;
     @Column(name = "prediction_type")
