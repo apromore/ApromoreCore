@@ -125,10 +125,6 @@ class MetaDataServiceCSVImpl implements MetaDataService {
             csvReader = new CSVFileReader().newCSVReader(in2, charset, !Objects.equals(separator, "")
                 ? separator.charAt(0) : '\u0000');
 
-            if (csvReader == null) {
-                return null;
-            }
-
             List<List<String>> lines = new ArrayList<>();
             String[] myLine;
 
