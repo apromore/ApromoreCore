@@ -59,8 +59,5 @@ public class SubprocessProcess {
     @OneToOne
     @JoinColumn(name = "linked_process_id", nullable = false)
     private Process linkedProcess;
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
 }
