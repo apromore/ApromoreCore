@@ -313,7 +313,7 @@ public class UIHelper implements UserInterfaceHelper {
      * @param process
      * @return the populated process summary
      */
-    private ProcessSummaryType buildProcessSummary(final Process process) {
+    public ProcessSummaryType buildProcessSummary(final Process process) {
         ProcessSummaryType processSummary = new ProcessSummaryType();
         processSummary.setId(process.getId());
         processSummary.setName(process.getName());

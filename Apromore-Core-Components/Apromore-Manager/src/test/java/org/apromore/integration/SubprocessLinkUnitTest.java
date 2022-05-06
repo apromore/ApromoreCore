@@ -25,26 +25,15 @@ package org.apromore.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apromore.builder.UserManagementBuilder;
-import org.apromore.dao.GroupRepository;
 import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.RoleRepository;
 import org.apromore.dao.SubprocessProcessRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.Role;
-import org.apromore.dao.model.User;
-import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.service.ProcessService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class SubprocessLinkUnitTest extends BaseTest {
     String subprocessId = "Test";
-
-    UserManagementBuilder builder;
 
     @Autowired
     SubprocessProcessRepository subprocessProcessRepository;
@@ -53,24 +42,10 @@ class SubprocessLinkUnitTest extends BaseTest {
     ProcessRepository processRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    GroupRepository groupRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
     ProcessService processService;
 
-    @BeforeEach
-    final void setUp() {
-        builder = new UserManagementBuilder();
-    }
-
     @Test
-    void testReLinkSameSubprocess() throws ResourceNotFoundException {
+    void testReLinkSameSubprocess() {
         Process process1 = new Process();
         processRepository.saveAndFlush(process1);
 
@@ -80,42 +55,28 @@ class SubprocessLinkUnitTest extends BaseTest {
         Process process3 = new Process();
         processRepository.saveAndFlush(process3);
 
-        Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
-        Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
-        User user = builder.withGroup(group).withRole(role).withMembership("testReLinkSameSubprocess@test.com")
-            .withUser("testReLinkSameSubprocess", "first",
-                "last", "org").buildUser();
-        userRepository.saveAndFlush(user);
-
-        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId(), user.getUsername());
+        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId());
         assertEquals(process2.getId(),
-            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId, user.getId()).getId());
+            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
 
-        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId(), user.getUsername());
+        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId());
         assertEquals(process3.getId(),
-            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId, user.getId()).getId());
+            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
     }
 
     @Test
-    void testUnLinkSubprocess() throws ResourceNotFoundException {
+    void testUnLinkSubprocess() {
         Process process1 = new Process();
         processRepository.saveAndFlush(process1);
 
         Process process2 = new Process();
         processRepository.saveAndFlush(process2);
 
-        Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
-        Role role = roleRepository.saveAndFlush(builder.withRole("testRole").buildRole());
-        User user = builder.withGroup(group).withRole(role).withMembership("testUnLinkSubprocess@test.com")
-            .withUser("testUnLinkSubprocess", "first",
-                "last", "org").buildUser();
-        userRepository.saveAndFlush(user);
-
-        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId(), user.getUsername());
+        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId());
         assertEquals(process2.getId(),
-            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId, user.getId()).getId());
+            subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
 
-        processService.unlinkSubprocess(process1.getId(), subprocessId, user.getUsername());
-        assertNull(subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId, user.getId()));
+        processService.unlinkSubprocess(process1.getId(), subprocessId);
+        assertNull(subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId));
     }
 }

@@ -105,6 +105,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
   public static final String PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY = "portal_saveModelFirst_message";
+  private static final String PROCESS_SERVICE_BEAN = "processService";
   private EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
@@ -420,7 +421,16 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       args.put("mainController", mainC);
       args.put("parentProcessId", process.getId());
       args.put("elementId", elementId);
-      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition("static/bpmneditor/linkSubProcess.zul"), null, args);
+
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+      User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+      boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+          (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
+      String linkProcessWindowPath = hasLinkedProcessAccess ? "static/bpmneditor/viewSubProcessLink.zul"
+          : "static/bpmneditor/linkSubProcess.zul";
+
+      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
       linkSubProcessModal.doModal();
     });
 
@@ -430,9 +440,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         return;
       }
 
-      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
       String elementId =  (String) event.getData();
-      processService.unlinkSubprocess(process.getId(), elementId, currentUserType.getUsername());
+      processService.unlinkSubprocess(process.getId(), elementId);
     });
 
     BPMNEditorController editorController = this;
@@ -529,7 +539,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     if (isViewLink) {
       String publishId = Executions.getCurrent().getParameter("publishId");
       ProcessPublishService processPublishService = (ProcessPublishService) SpringUtil.getBean("processPublishService");
-      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
 
       //Check if link is published. If not, show an error.
       if (!processPublishService.isPublished(publishId)) {
