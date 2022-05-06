@@ -29,6 +29,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -55,6 +56,8 @@ public class ViewSubProcessLinkViewModel {
     private MainController mainController;
     private String elementId;
     private int parentProcessId;
+    @Getter
+    private boolean viewMode;
 
     @WireVariable
     private ProcessService processService;
@@ -62,10 +65,12 @@ public class ViewSubProcessLinkViewModel {
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
                      @ExecutionArgParam("elementId") final String elId,
-                     @ExecutionArgParam("parentProcessId") final int parentId) {
+                     @ExecutionArgParam("parentProcessId") final int parentId,
+                     @ExecutionArgParam("viewOnly") final boolean viewOnly) {
         mainController = mainC;
         elementId = elId;
         parentProcessId = parentId;
+        viewMode = viewOnly;
     }
 
     @Command
