@@ -427,10 +427,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       User user = mainC.getSecurityService().getUserById(currentUserType.getId());
       boolean hasLinkedProcessAccess = (linkedProcess != null) &&
           (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
-      String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
-      if (hasLinkedProcessAccess) {
-        linkProcessWindowPath = "static/bpmneditor/viewSubProcessLink.zul";
-      }
+      String linkProcessWindowPath = hasLinkedProcessAccess ? "static/bpmneditor/viewSubProcessLink.zul"
+          : "static/bpmneditor/linkSubProcess.zul";
 
       Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
       linkSubProcessModal.doModal();
