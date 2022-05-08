@@ -165,9 +165,6 @@ public class MainController extends BaseController implements MainControllerInte
     public Tab tabCrumbs;
     private Paginal pg;
     private String host;
-    private String majorVersionNumber;
-    private String minorVersionNumber;
-    private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -1037,10 +1034,6 @@ public class MainController extends BaseController implements MainControllerInte
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
         LOGGER.trace("Loading properties of webapp");
-
-        setMajorVersionNumber(getConfig().getMajorVersionNumber());
-        setMinorVersionNumber(getConfig().getMinorVersionNumber());
-
     }
 
     public String getContactEmail() {
@@ -1070,30 +1063,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     public BaseDetailController getDetailListbox() {
         return baseDetailController;
-    }
-
-    public String getMajorVersionNumber() {
-        return majorVersionNumber;
-    }
-
-    public void setMajorVersionNumber(final String newMajorVersionNumber) {
-        majorVersionNumber = newMajorVersionNumber;
-    }
-
-    public String getMinorVersionNumber() {
-        return majorVersionNumber;
-    }
-
-    public void setMinorVersionNumber(final String newMinorVersionNumber) {
-        minorVersionNumber = newMinorVersionNumber;
-    }
-
-    public String getBuildDate() {
-        return buildDate;
-    }
-
-    public void setBuildDate(final String newBuildDate) {
-        buildDate = newBuildDate;
     }
 
     private void updateTabs(String userId) {

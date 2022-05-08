@@ -98,7 +98,7 @@ public class AboutPlugin extends DefaultPortalPlugin {
 			args.put("edition", config.getVersionEdition());
 			args.put("holder", this.holder);
 			args.put("detail", this.detail);
-			args.put("version", config.getMajorVersionNumber() + "." + config.getMinorVersionNumber() + " (commit "
+			args.put("version", config.getVersionNumber() + " (commit "
 					+ getCommitId() + " built on " + getBuildDate() + ")");
 			final Window pluginWindow = (Window) Executions.getCurrent()
 					.createComponentsDirectly(
