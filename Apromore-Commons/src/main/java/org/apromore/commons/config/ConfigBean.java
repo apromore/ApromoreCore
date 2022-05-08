@@ -142,12 +142,8 @@ public class ConfigBean {
 	return site.getEditor();
     }
 
-    public String getMajorVersionNumber() {
-	return version.getNumber().split("\\.")[0];
-    }
-
-    public String getMinorVersionNumber() {
-	return version.getNumber().split("\\.")[1];
+    public String getVersionNumber() {
+	return version.getNumber();
     }
 
     public String getVersionEdition() {
