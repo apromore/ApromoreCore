@@ -416,21 +416,31 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         return;
       }
 
+      boolean isViewer = AccessType.VIEWER.equals(currentUserAccessType);
       String elementId =  (String) event.getData();
       Map<String, Object> args = new HashMap<>();
       args.put("mainController", mainC);
       args.put("parentProcessId", process.getId());
       args.put("elementId", elementId);
+      args.put("viewOnly", isViewer);
 
       ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
-      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId, currentUserType.getUsername());
-      String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
-      if (linkedProcess != null) {
-        linkProcessWindowPath = "static/bpmneditor/viewSubProcessLink.zul";
-      }
+      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
 
-      Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
-      linkSubProcessModal.doModal();
+      if (isViewer && linkedProcess == null) {
+        Notification.error(Labels.getLabel("bpmnEditor_subProcessLinkNoEdit_message",
+            "Only owner/editor and add or edit a link"));
+      } else {
+        User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+        boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+            (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
+
+        String linkProcessWindowPath = hasLinkedProcessAccess || isViewer
+            ? "static/bpmneditor/viewSubProcessLink.zul"
+            : "static/bpmneditor/linkSubProcess.zul";
+        Window linkSubProcessModal = (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
+        linkSubProcessModal.doModal();
+      }
     });
 
     this.addEventListener("onDeleteSubprocess", event -> {
@@ -441,7 +451,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
       ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
       String elementId =  (String) event.getData();
-      processService.unlinkSubprocess(process.getId(), elementId, currentUserType.getUsername());
+      processService.unlinkSubprocess(process.getId(), elementId);
     });
 
     BPMNEditorController editorController = this;

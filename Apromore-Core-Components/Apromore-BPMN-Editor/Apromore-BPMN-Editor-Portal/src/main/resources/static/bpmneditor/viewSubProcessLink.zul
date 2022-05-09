@@ -36,8 +36,10 @@
             <button label="View" iconSclass="z-icon-check-circle"
                     onClick="@command('viewLinkedProcess')"/>
             <button label="Edit" iconSclass="z-icon-check-circle"
+                    disabled="@load(vm_linkSubProcess.viewMode)"
                     onClick="@command('editLinkedProcess')"/>
             <button label="Unlink" iconSclass="z-icon-check-circle"
+                    disabled="@load(vm_linkSubProcess.viewMode)"
                     onClick="@command('unlinkSubProcess', window=winViewSubprocessLink)"/>
         </div>
     </vlayout>

@@ -326,7 +326,7 @@
             };
 
             Apromore.BPMNEditor.linkSubprocess = function(elementId) {
-              Apromore.BPMNEditor.beforeCheckUnsaved('onLinkSubprocess');
+              //requires manual saving since this can also be called in view mode
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onLinkSubprocess', elementId));
             };
 

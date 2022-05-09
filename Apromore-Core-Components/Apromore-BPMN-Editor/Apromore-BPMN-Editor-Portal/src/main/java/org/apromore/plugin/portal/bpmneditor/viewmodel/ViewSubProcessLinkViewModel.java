@@ -29,12 +29,10 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apromore.exception.ResourceNotFoundException;
-import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.ProcessSummaryType;
-import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.zk.notification.Notification;
@@ -58,7 +56,8 @@ public class ViewSubProcessLinkViewModel {
     private MainController mainController;
     private String elementId;
     private int parentProcessId;
-    private UserType currentUser;
+    @Getter
+    private boolean viewMode;
 
     @WireVariable
     private ProcessService processService;
@@ -66,11 +65,12 @@ public class ViewSubProcessLinkViewModel {
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
                      @ExecutionArgParam("elementId") final String elId,
-                     @ExecutionArgParam("parentProcessId") final int parentId) {
+                     @ExecutionArgParam("parentProcessId") final int parentId,
+                     @ExecutionArgParam("viewOnly") final boolean viewOnly) {
         mainController = mainC;
         elementId = elId;
         parentProcessId = parentId;
-        currentUser = UserSessionManager.getCurrentUser();
+        viewMode = viewOnly;
     }
 
     @Command
@@ -111,14 +111,9 @@ public class ViewSubProcessLinkViewModel {
 
     @Command
     public void unlinkSubProcess(@BindingParam(WINDOW_PARAM) final Component window) {
-        try {
-            processService.unlinkSubprocess(parentProcessId, elementId, currentUser.getUsername());
-            Notification.info("Process successfully unlinked");
-            window.detach();
-        } catch (ResourceNotFoundException e) {
-            Notification.error("Unable to unlink process");
-            log.error("Unable to unlink process", e);
-        }
+        processService.unlinkSubprocess(parentProcessId, elementId);
+        Notification.info("Process successfully unlinked");
+        window.detach();
     }
 
     @GlobalCommand
@@ -130,11 +125,7 @@ public class ViewSubProcessLinkViewModel {
     }
 
     public ProcessSummaryType getLinkedProcess() {
-        try {
-            return processService.getLinkedProcess(parentProcessId, elementId, currentUser.getUsername());
-        } catch (ResourceNotFoundException e) {
-            return null;
-        }
+        return processService.getLinkedProcess(parentProcessId, elementId);
     }
 
     public String getLinkedProcessMessage() {
