@@ -32,7 +32,11 @@
     }
   </style>
   <vbox hflex="1" vflex="1" spacing="0">
-    <listbox id="costTableListbox" sclass="${arg.viewOnly ? 'disabled' : ''}" vflex="1" hflex="1" mold="paging" pageSize="100">
+    <listbox nonselectableTags="*"
+             id="costTableListbox"
+             sclass="${arg.viewOnly ? 'disabled' : ''}"
+             vflex="1" hflex="1"
+             mold="paging" pageSize="100">
       <listhead sizable="true">
         <listheader label="${arg.pdLabels.costAttributeID_text}" sort="auto(attributeId)" onCreate="self.sort(true);"/>
         <listheader label="${arg.pdLabels.costValue_text}" />
