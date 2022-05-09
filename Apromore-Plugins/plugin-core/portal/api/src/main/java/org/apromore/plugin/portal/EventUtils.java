@@ -29,6 +29,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.DesktopUnavailableException;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -46,7 +47,15 @@ public class EventUtils {
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
+        } catch (DesktopUnavailableException e) {
+            broadcastMessage(queueId, args, command);
+            log.warn(e.getMessage(), e);
         }
+    }
+
+    public void broadcastMessage(String queueId, Map<String, Object> args, String command) {
+        EventQueues.lookup(queueId, EventQueues.APPLICATION, true)
+            .publish(new Event(command, null, args));
     }
 
     public EventListener<Event> registerViewModelToEventListener(String queueName) {

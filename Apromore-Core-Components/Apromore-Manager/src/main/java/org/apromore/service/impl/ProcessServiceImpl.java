@@ -53,10 +53,10 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.exception.ResourceNotFoundException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
+import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.FormatService;
 import org.apromore.service.LockService;
@@ -966,40 +966,36 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
-  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String userName)
-      throws ResourceNotFoundException {
-    try {
-      User user = userSrv.findUserByLogin(userName);
-
-      SubprocessProcess subprocessProcessLink = subprocessProcessRepository
-          .getExistingLink(subprocessParentId, subprocessId, user.getId());
-      if (subprocessProcessLink == null) {
-        subprocessProcessLink = new SubprocessProcess();
-      }
-      subprocessProcessLink.setSubprocessParent(processRepo.getById(subprocessParentId));
-      subprocessProcessLink.setSubprocessId(subprocessId);
-      subprocessProcessLink.setLinkedProcess(processRepo.getById(processId));
-      subprocessProcessLink.setUser(userSrv.findUserByLogin(userName));
-      subprocessProcessRepository.saveAndFlush(subprocessProcessLink);
-    } catch (Exception e) {
-      throw new ResourceNotFoundException("Link subprocess failed caused by {}", e);
+  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId) {
+    SubprocessProcess subprocessProcessLink = subprocessProcessRepository
+        .getExistingLink(subprocessParentId, subprocessId);
+    if (subprocessProcessLink == null) {
+      subprocessProcessLink = new SubprocessProcess();
     }
+    subprocessProcessLink.setSubprocessParent(processRepo.getById(subprocessParentId));
+    subprocessProcessLink.setSubprocessId(subprocessId);
+    subprocessProcessLink.setLinkedProcess(processRepo.getById(processId));
+    subprocessProcessRepository.saveAndFlush(subprocessProcessLink);
   }
 
   @Override
-  public void unlinkSubprocess(Integer subprocessParentId, String subprocessId, String userName)
-      throws ResourceNotFoundException {
-    try {
-      User user = userSrv.findUserByLogin(userName);
-
-      SubprocessProcess subprocessProcessLink = subprocessProcessRepository
-          .getExistingLink(subprocessParentId, subprocessId, user.getId());
-      if (subprocessProcessLink == null) {
-        return;
-      }
-      subprocessProcessRepository.delete(subprocessProcessLink);
-    } catch (Exception e) {
-      throw new ResourceNotFoundException("Link subprocess failed caused by {}", e);
+  public void unlinkSubprocess(Integer subprocessParentId, String subprocessId) {
+    SubprocessProcess subprocessProcessLink = subprocessProcessRepository
+        .getExistingLink(subprocessParentId, subprocessId);
+    if (subprocessProcessLink == null) {
+      return;
     }
+    subprocessProcessRepository.delete(subprocessProcessLink);
+  }
+
+  @Override
+  public ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId) {
+    Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId);
+
+    if (process == null) {
+      return null;
+    }
+
+    return ui.buildProcessSummary(process);
   }
 }

@@ -1507,3 +1507,31 @@ databaseChangeLog:
            referencedColumnNames: id
            referencedTableName: user
            validate: true
+ - changeSet:
+     id: 2022050362100
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: log_id
+                 type: INT
+                 constraints:
+                   nullable: false
+
+
+
+ - changeSet:
+     id: 20220505171700
+     author: janeh
+     comment: "remove the user association from subprocess_process table"
+     changes:
+       - dropForeignKeyConstraint:
+           baseTableName: subprocess_process
+           constraintName: fk_subprocess_user_id
+       - dropColumn:
+           tableName: subprocess_process
+           columns:
+             - column:
+                 name: user_id

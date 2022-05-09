@@ -58,7 +58,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @ConditionalOnProperty(
-    value = "new-data-layer.enabled",
+    value = "bigdata.log-importer.enabled",
     havingValue = "false",
     matchIfMissing = true)
 @Service("csvLogImporter")
