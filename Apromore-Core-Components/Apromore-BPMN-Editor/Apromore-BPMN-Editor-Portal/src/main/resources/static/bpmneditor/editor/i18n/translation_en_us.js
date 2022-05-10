@@ -437,3 +437,6 @@ Apromore.I18N.Attachment.attachment = "Attachment";
 Apromore.I18N.Attachment.showDesc = "Show attachments";
 Apromore.I18N.Attachment.hideDesc = "Hide attachments";
 
+if(!Apromore.I18N.FontSize) Apromore.I18N.FontSize = {};
+Apromore.I18N.FontSize.fontSizeDesc= "Change font size";
+Apromore.I18N.FontSize.fontsize ="Change Font Size";
