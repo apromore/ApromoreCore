@@ -478,7 +478,3 @@
 .access-type-viewer .djs-overlay-aux a {
   pointer-events: auto;
 }
-
-.sub-process-marker-overlay {
-    cursor: pointer;
-}
