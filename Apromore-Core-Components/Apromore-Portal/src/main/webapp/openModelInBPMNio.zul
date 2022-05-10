@@ -55,6 +55,10 @@
       height: 30px;
       color: #333;
     }
+
+    .sub-process-marker-overlay {
+      cursor: pointer;
+    }
   </z:style>
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
   <n:style media="screen" type="text/css">
