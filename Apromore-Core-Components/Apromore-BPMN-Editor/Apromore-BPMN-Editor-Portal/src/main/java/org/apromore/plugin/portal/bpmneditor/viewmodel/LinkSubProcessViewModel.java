@@ -22,6 +22,7 @@
 
 package org.apromore.plugin.portal.bpmneditor.viewmodel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -45,6 +46,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -99,16 +101,19 @@ public class LinkSubProcessViewModel {
                 break;
             case LINK_TYPE_EXISTING:
                 if (selectedProcess == null ) {
-                    Notification.error("Please select an existing process to link");
+                    Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
+                        "Please select an existing process model to link"));
                 } else {
-                    Notification.info("Subprocess linked to " + selectedProcess.getName());
+                    Notification.info(MessageFormat.format(Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
+                        "Subprocess linked to {0}"), selectedProcess.getName()));
                     processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId());
                     BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
                 }
                 break;
             default:
-                Notification.error("Please select a link type");
+                Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectLinkType_message",
+                    "Please select a link type"));
         }
     }
 

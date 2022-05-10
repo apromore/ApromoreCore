@@ -24,15 +24,15 @@
         viewModel="@id('vm_linkSubProcess') @init('org.apromore.plugin.portal.bpmneditor.viewmodel.LinkSubProcessViewModel')"
         width="500px"
         position="center"
-        title="Link Process"
+        title="${labels.bpmnEditor_linkSubProcess_text}"
         mode="modal">
     <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
     <vlayout spacing="0">
         <radiogroup selectedItem="@bind(vm_linkSubProcess.linkType)"
                     onCheck="@command('onCheckLinkType')">
             <vlayout style="padding:5px;">
-                <radio label="Create new process" value="NEW"/>
-                <radio label="Use an existing process" value="EXISTING"/>
+                <radio label="${labels.bpmnEditor_linkNewProcess_text}" value="NEW"/>
+                <radio label="${labels.bpmnEditor_linkExistingProcess_text}" value="EXISTING"/>
             </vlayout>
         </radiogroup>
         <div style="padding:5px;">
@@ -41,7 +41,7 @@
                      selectedItem="@bind(vm_linkSubProcess.selectedProcess)"
                      sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-listbox-enabled' : 'ap-listbox-disabled')">
                 <listhead>
-                    <listheader label="Existing processes"/>
+                    <listheader label="${labels.bpmnEditor_listExistingProcess_text}"/>
                 </listhead>
                 <template name="model">
                     <listitem value="${each}">
