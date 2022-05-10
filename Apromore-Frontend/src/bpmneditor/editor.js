@@ -310,4 +310,30 @@ export default class Editor {
             y: shape.y + (shape.height || 0) / 2
         }
     }
+
+    	async changeFontSize(size) {
+    		if (!this.actualEditor) return;
+
+            var config= this.actualEditor.get('config');
+            if (!config) return;
+
+            config.textRenderer = {
+    		    defaultStyle:
+                {
+    		      fontSize: size+"px"
+    		    },
+    		    externalStyle: {
+    		      fontSize: size+"px"
+    		    }
+      		};
+            console.log(this.actualEditor.get('config'));
+
+            var elementRegistry = this.actualEditor.get('elementRegistry');
+    		var elements = elementRegistry.getAll();
+    		var eventBus = this.actualEditor.get('eventBus');
+
+            eventBus.fire('commandStack.changed', { elements});
+    		eventBus.fire('elements.changed', { elements });
+
+    	}
 };

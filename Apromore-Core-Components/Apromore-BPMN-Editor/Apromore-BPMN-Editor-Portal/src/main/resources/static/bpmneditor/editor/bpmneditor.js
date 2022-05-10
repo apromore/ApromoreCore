@@ -11433,74 +11433,74 @@ __webpack_require__.r(__webpack_exports__);
  * class only while the editor used in Apromore codebase is unchanged as they only access this Editor class.
  */
 class Editor {
-    constructor(options) {
-        this.dirty = false;
-        this.actualEditor = undefined;
-        // this.preventFitDelay = options.preventFitDelay;
+	constructor(options) {
+		this.dirty = false;
+		this.actualEditor = undefined;
+		// this.preventFitDelay = options.preventFitDelay;
 
-        if (!(options && options.width && options.height)) {
-            _logger__WEBPACK_IMPORTED_MODULE_0__["default"].fatal("The editor is missing mandatory parameters options.width and options.height.");
-            return;
-        }
+		if (!(options && options.width && options.height)) {
+			_logger__WEBPACK_IMPORTED_MODULE_0__["default"].fatal("The editor is missing mandatory parameters options.width and options.height.");
+			return;
+		}
 
-        this.className = "Apromore_Editor";
-        this.rootNode = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].graft("http://www.w3.org/1999/xhtml", options.parentNode,
-            ['div', {id: options.id, width: options.width, height: options.height}
-            ]);
-        //this.rootNode.addClassName(this.className);
-        this.rootNode.classList.add(this.className);
-    }
+		this.className = "Apromore_Editor";
+		this.rootNode = _utils__WEBPACK_IMPORTED_MODULE_1__["default"].graft("http://www.w3.org/1999/xhtml", options.parentNode,
+			['div', { id: options.id, width: options.width, height: options.height }
+			]);
+		//this.rootNode.addClassName(this.className);
+		this.rootNode.classList.add(this.className);
+	}
 
-    setDirty(dirty) {
-        this.dirty = dirty;
-    }
+	setDirty(dirty) {
+		this.dirty = dirty;
+	}
 
-    isDirty() {
-        return this.dirty;
-    }
+	isDirty() {
+		return this.dirty;
+	}
 
-    attachEditor(editor) {
-        let me = this;
-        this.actualEditor = editor; //This is a BPMNJS object
-    }
+	attachEditor(editor) {
+		let me = this;
+		this.actualEditor = editor; //This is a BPMNJS object
+	}
 
-    getSVGContainer() {
-        //return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
-        return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg")[0];
-    }
+	getSVGContainer() {
+		//return $("div.Apromore_Editor div.bjs-container div.djs-container svg")[0];
+		return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg")[0];
+	}
 
-    getSVGViewport() {
-        //return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
-        return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg g.viewport")[0];
-    }
+	getSVGViewport() {
+		//return $("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0];
+		return $('#' + this.rootNode.id + " div.bjs-container div.djs-container svg g.viewport")[0];
+	}
 
-    getIncomingFlowId(nodeId) {
-        if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
-        var foundId;
-        var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
-        flowElements.forEach(function(element) {
-            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.targetRef.id == nodeId) {
-                foundId = element.id;
-            }
-        });
-        return foundId;
-    }
+	getIncomingFlowId(nodeId) {
+		if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
+		var foundId;
+		var flowElements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+		flowElements.forEach(function(element) {
+			if (!foundId && element.$type == "bpmn:SequenceFlow" && element.targetRef.id == nodeId) {
+				foundId = element.id;
+			}
+		});
+		return foundId;
+	}
 
-    getOutgoingFlowId(nodeId) {
-        if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
-        var foundId;
-        var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
-        elements.forEach(function(element) {
-            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.sourceRef.id == nodeId) {
-                foundId = element.id;
-            }
-        });
-        return foundId;
-    }
+	getOutgoingFlowId(nodeId) {
+		if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
+		var foundId;
+		var elements = this.actualEditor.getDefinitions().rootElements[0].flowElements;
+		elements.forEach(function(element) {
+			if (!foundId && element.$type == "bpmn:SequenceFlow" && element.sourceRef.id == nodeId) {
+				foundId = element.id;
+			}
+		});
+		return foundId;
+	}
 
-    toString() {
-        return "EditorWrapper " + this.id;
-    }
+	toString() {
+		return "EditorWrapper " + this.id;
+	}
 
     /**
      * Import XML into the editor.
@@ -11508,33 +11508,33 @@ class Editor {
      * @param {String} xml: the BPMN XML
      * @param {Function} callback: callback function to call after the import finishes
      */
-    async importXML(xml) {
-        if (!this.actualEditor) return false;
-        if (!(typeof xml === 'string')) throw new Error("Invalid XML input");
-        xml = sanitizeXML(xml);
+	async importXML(xml) {
+		if (!this.actualEditor) return false;
+		if (!(typeof xml === 'string')) throw new Error("Invalid XML input");
+		xml = sanitizeXML(xml);
 
-        await this.actualEditor.importXML(xml);
+		await this.actualEditor.importXML(xml);
 
-        //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
-        //Some BPMN files are not compatible with bpmn.io
-        var editor = this.actualEditor;
-        var eventBus = editor.get('eventBus');
-        var elementRegistry = editor.get('elementRegistry');
-        var me = this;
+		//EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
+		//Some BPMN files are not compatible with bpmn.io
+		var editor = this.actualEditor;
+		var eventBus = editor.get('eventBus');
+		var elementRegistry = editor.get('elementRegistry');
+		var me = this;
 
-        eventBus.on('elements.changed', function () {
-            me.setDirty(true);
-        });
-        eventBus.on('elements.changedAux', function () {
-            me.setDirty(true);
-        });
+		eventBus.on('elements.changed', function() {
+			me.setDirty(true);
+		});
+		eventBus.on('elements.changedAux', function() {
+			me.setDirty(true);
+		});
 
-        var connections = elementRegistry.filter(function(e) {return e.waypoints;});
-        var connectionDocking = editor.get('connectionDocking');
-        connections.forEach(function(connection) {
-            connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
-        });
-        eventBus.fire('elements.changed', { elements: connections });
+		var connections = elementRegistry.filter(function(e) { return e.waypoints; });
+		var connectionDocking = editor.get('connectionDocking');
+		connections.forEach(function(connection) {
+			connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+		});
+		eventBus.fire('elements.changed', { elements: connections });
 
         /**
          * Any clean up needs to be done on the raw XML
@@ -11542,176 +11542,202 @@ class Editor {
          * @todo: There might be a structured way to do this (e.g. XML parser),
          * but this should be the fastest fix for now
          */
-        function sanitizeXML(xml) {
-            if (!(typeof xml === 'string')) return;
-            var REMOVE_LIST = [
-                // Empty label element breaks label editing in bpmn.io
-                /<bpmndi:BPMNLabel\s*\/>/ig,
-                /<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
-            ];
+		function sanitizeXML(xml) {
+			if (!(typeof xml === 'string')) return;
+			var REMOVE_LIST = [
+				// Empty label element breaks label editing in bpmn.io
+				/<bpmndi:BPMNLabel\s*\/>/ig,
+				/<bpmndi:BPMNLabel\s*>\s*<\/bpmndi:BPMNLabel\s*>/ig
+			];
 
-            REMOVE_LIST.forEach(function(regex) {
-                xml = xml.replace(regex, '');
-            })
-            return xml;
-        }
-    }
+			REMOVE_LIST.forEach(function(regex) {
+				xml = xml.replace(regex, '');
+			})
+			return xml;
+		}
+	}
 
-    async getXML() {
-        if (!this.actualEditor) return '';
-        const result = await this.actualEditor.saveXML({ format: true }).catch(err => {throw err;});
-        let {xml} = result;
-        if (xml) {
-            xml = xml.replace(/>\s*/g, '>');
-            xml = xml.replace(/\s*</g, '<');
-        }
-        return xml;
-    }
+	async changeFontSize(size) {
+		if (!this.actualEditor) return;
+	
+        var config= this.actualEditor.get('config');
+        if (!config) return;
 
-    async getSVG() {
-        if (!this.actualEditor) return '';
-        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
-        const {svg} = result;
-        return svg;
-    }
+        config.textRenderer = {
+		    defaultStyle: 
+            {
+		      fontSize: size+"px"
+		    },
+		    externalStyle: {
+		      fontSize: size+"px"
+		    }
+  		};
+        console.log(this.actualEditor.get('config'));
 
-    zoomFitToModel() {
-        if (!this.actualEditor) return false;
-        let canvas = this.actualEditor.get('canvas');
-        canvas.viewbox(false); // trigger recalculate the viewbox
-        canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
-        if (!this.originViewbox) this.originViewbox = canvas.viewbox();
-        return true;
-    }
+        var elementRegistry = this.actualEditor.get('elementRegistry');
+		var elements = elementRegistry.getAll();
+		var eventBus = this.actualEditor.get('eventBus');
 
-    zoomFitOriginal() {
-        if (!this.actualEditor || !this.originViewbox) return false;
-        this.actualEditor.get('canvas').viewbox(this.originViewbox);
-        return true;
-    }
+        eventBus.fire('commandStack.changed', { elements});
+		eventBus.fire('elements.changed', { elements });
 
-    zoomIn() {
-        if (!this.actualEditor) return false;
-        var canvas = this.actualEditor.get('canvas');
-        canvas.zoom(canvas.zoom() * 1.1);
-        return true;
-    }
+	}
 
-    zoomOut() {
-        if (!this.actualEditor) return false;
-        var canvas = this.actualEditor.get('canvas');
-        canvas.zoom(canvas.zoom() * 0.9);
-        return true;
-    }
+	async getXML() {
+		if (!this.actualEditor) return '';
+		const result = await this.actualEditor.saveXML({ format: true }).catch(err => { throw err; });
+		let { xml } = result;
+		if (xml) {
+			xml = xml.replace(/>\s*/g, '>');
+			xml = xml.replace(/\s*</g, '<');
+		}
+		return xml;
+	}
 
-    zoomDefault() {
-        if (!this.actualEditor) return false;
-        var canvas = this.actualEditor.get('canvas');
-        canvas.zoom(1);
-        return true;
-    }
+	async getSVG() {
+		if (!this.actualEditor) return '';
+		const result = await this.actualEditor.saveSVG({ format: true }).catch(err => { throw err; });
+		const { svg } = result;
+		return svg;
+	}
 
-    undo() {
-        if (!this.actualEditor) return false;
-        this.actualEditor.get('commandStack').undo();
-        return true;
-    }
+	zoomFitToModel() {
+		if (!this.actualEditor) return false;
+		let canvas = this.actualEditor.get('canvas');
+		canvas.viewbox(false); // trigger recalculate the viewbox
+		canvas.zoom('fit-viewport', 'auto'); // zoom to fit full viewport
+		if (!this.originViewbox) this.originViewbox = canvas.viewbox();
+		return true;
+	}
 
-    canUndo() {
-        if (!this.actualEditor) {
-            return false;
-        } else {
-            return this.actualEditor.get('commandStack').canUndo();
-        }
-    }
+	zoomFitOriginal() {
+		if (!this.actualEditor || !this.originViewbox) return false;
+		this.actualEditor.get('canvas').viewbox(this.originViewbox);
+		return true;
+	}
 
-    redo() {
-        if (!this.actualEditor) return false;
-        this.actualEditor.get('commandStack').redo();
-        return true;
-    }
+	zoomIn() {
+		if (!this.actualEditor) return false;
+		var canvas = this.actualEditor.get('canvas');
+		canvas.zoom(canvas.zoom() * 1.1);
+		return true;
+	}
 
-    canRedo() {
-        if (!this.actualEditor) {
-            return false;
-        } else {
-            return this.actualEditor.get('commandStack').canRedo();
-        }
-    }
+	zoomOut() {
+		if (!this.actualEditor) return false;
+		var canvas = this.actualEditor.get('canvas');
+		canvas.zoom(canvas.zoom() * 0.9);
+		return true;
+	}
 
-    addCommandStackChangeListener(callback) {
-        if (!this.actualEditor) return false;
-        this.actualEditor.on('commandStack.changed', callback);
-        return true;
-    }
+	zoomDefault() {
+		if (!this.actualEditor) return false;
+		var canvas = this.actualEditor.get('canvas');
+		canvas.zoom(1);
+		return true;
+	}
 
-    addEventBusListener(eventCode, callback) {
-        if (!this.actualEditor) return false;
-        this.actualEditor.get('eventBus').on(eventCode, callback);
-        return true;
-    }
+	undo() {
+		if (!this.actualEditor) return false;
+		this.actualEditor.get('commandStack').undo();
+		return true;
+	}
+
+	canUndo() {
+		if (!this.actualEditor) {
+			return false;
+		} else {
+			return this.actualEditor.get('commandStack').canUndo();
+		}
+	}
+
+	redo() {
+		if (!this.actualEditor) return false;
+		this.actualEditor.get('commandStack').redo();
+		return true;
+	}
+
+	canRedo() {
+		if (!this.actualEditor) {
+			return false;
+		} else {
+			return this.actualEditor.get('commandStack').canRedo();
+		}
+	}
+
+	addCommandStackChangeListener(callback) {
+		if (!this.actualEditor) return false;
+		this.actualEditor.on('commandStack.changed', callback);
+		return true;
+	}
+
+	addEventBusListener(eventCode, callback) {
+		if (!this.actualEditor) return false;
+		this.actualEditor.get('eventBus').on(eventCode, callback);
+		return true;
+	}
 
 
-    ////////////////////// Modelling Elements Editing Methods /////////////////////////////////
+	////////////////////// Modelling Elements Editing Methods /////////////////////////////////
 
-    createShape(type, x, y, w, h) {
-        var modelling = this.actualEditor.get('modeling');
-        var parent = this.actualEditor.get('canvas').getRootElement();
-        var shape = modelling.createShape({type:type, width:w, height:h}, {x:x, y:y}, parent);
-        return shape.id;
-    }
+	createShape(type, x, y, w, h) {
+		var modelling = this.actualEditor.get('modeling');
+		var parent = this.actualEditor.get('canvas').getRootElement();
+		var shape = modelling.createShape({ type: type, width: w, height: h }, { x: x, y: y }, parent);
+		return shape.id;
+	}
 
-    createSequenceFlow(source, target, attrs) {
-        var attrs2 = {};
-        Object.assign(attrs2,{type:'bpmn:SequenceFlow'});
-        if (attrs.waypoints) {
-            Object.assign(attrs2,{waypoints: attrs.waypoints});
-        }
-        var modelling = this.actualEditor.get('modeling');
-        var registry = this.actualEditor.get('elementRegistry');
-        var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
-        return flow.id;
-    }
+	createSequenceFlow(source, target, attrs) {
+		var attrs2 = {};
+		Object.assign(attrs2, { type: 'bpmn:SequenceFlow' });
+		if (attrs.waypoints) {
+			Object.assign(attrs2, { waypoints: attrs.waypoints });
+		}
+		var modelling = this.actualEditor.get('modeling');
+		var registry = this.actualEditor.get('elementRegistry');
+		var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
+		return flow.id;
+	}
 
-    removeShapes(shapeIds) {
-        var registry = this.actualEditor.get('elementRegistry');
-        var modelling = this.actualEditor.get('modeling');
-        var shapes = [];
-        shapeIds.forEach(function(shapeId) {
-            shapes.push(registry.get(shapeId));
-        });
-        modelling.removeElements(shapes);
-    }
+	removeShapes(shapeIds) {
+		var registry = this.actualEditor.get('elementRegistry');
+		var modelling = this.actualEditor.get('modeling');
+		var shapes = [];
+		shapeIds.forEach(function(shapeId) {
+			shapes.push(registry.get(shapeId));
+		});
+		modelling.removeElements(shapes);
+	}
 
-    updateProperties(elementId, properties) {
-        var modelling = this.actualEditor.get('modeling');
-        var registry = this.actualEditor.get('elementRegistry');
-        modelling.updateProperties(registry.get(elementId), properties);
-    }
+	updateProperties(elementId, properties) {
+		var modelling = this.actualEditor.get('modeling');
+		var registry = this.actualEditor.get('elementRegistry');
+		modelling.updateProperties(registry.get(elementId), properties);
+	}
 
-    colorElements(elementIds, color) {
-        var elements = [];
-        var registry = this.actualEditor.get('elementRegistry');
-        elementIds.forEach(function(elementId) {
-            elements.push(registry.get(elementId));
-        });
-        var modelling = this.actualEditor.get('modeling');
-        modelling.setColor(elements, {stroke:color});
-    }
+	colorElements(elementIds, color) {
+		var elements = [];
+		var registry = this.actualEditor.get('elementRegistry');
+		elementIds.forEach(function(elementId) {
+			elements.push(registry.get(elementId));
+		});
+		var modelling = this.actualEditor.get('modeling');
+		modelling.setColor(elements, { stroke: color });
+	}
 
-    normalizeAll() {
-        var registry = this.actualEditor.get('elementRegistry');
-        var modelling = this.actualEditor.get('modeling');
-        modelling.setColor(registry.getAll(), {stroke:'black'});
-    }
+	normalizeAll() {
+		var registry = this.actualEditor.get('elementRegistry');
+		var modelling = this.actualEditor.get('modeling');
+		modelling.setColor(registry.getAll(), { stroke: 'black' });
+	}
 
-    getCenter(shapeId) {
-        var shape = this.actualEditor.get('elementRegistry').get(shapeId);
-        return {
-            x: shape.x + (shape.width || 0) / 2,
-            y: shape.y + (shape.height || 0) / 2
-        }
-    }
+	getCenter(shapeId) {
+		var shape = this.actualEditor.get('elementRegistry').get(shapeId);
+		return {
+			x: shape.x + (shape.width || 0) / 2,
+			y: shape.y + (shape.height || 0) / 2
+		}
+	}
 };
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
@@ -126786,7 +126812,15 @@ class EditorApp {
           container: '#' + me.editor.rootNode.id,
           langTag: config.langTag,
           username: '',
-          processName: ''
+          processName: '',
+		  textRenderer: {
+		    defaultStyle: {
+		      fontSize: "14px"
+		    },
+		    externalStyle: {
+		      fontSize: "14px"
+		    }
+  		}	
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };
@@ -127356,6 +127390,76 @@ class Export {
 
 /***/ }),
 
+/***/ "./src/bpmneditor/plugins/fontChange.js":
+/*!**********************************************!*\
+  !*** ./src/bpmneditor/plugins/fontChange.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FontChange; });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../config */ "./src/bpmneditor/config.js");
+/*-
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
+
+
+/**
+ * The share plugin provide share functionality
+ *
+ * @class Share
+ * @param {Object} facade The editor facade for plugins.
+ */
+class FontChange {
+
+    constructor (facade) {
+        this.facade = facade;
+
+        /* Register share */
+        this.facade.offer({
+            'btnId': 'ap-id-editor-fontchange-btn',
+            'name': Apromore.I18N.FontSize.fontsize,
+            'functionality': this.fontChange.bind(this),
+            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/measure.svg",
+            'description': Apromore.I18N.FontSize.fontSizeDesc,
+            'index': 1,
+            'groupOrder': 5
+        });
+
+    }
+
+    fontChange(factor) {
+            if (Apromore.BPMNEditor.Plugins.FontChange.change) {
+                Apromore.BPMNEditor.Plugins.FontChange.change();
+            }
+    }
+
+};
+
+
+/***/ }),
+
 /***/ "./src/bpmneditor/plugins/pdf.js":
 /*!***************************************!*\
   !*** ./src/bpmneditor/plugins/pdf.js ***!
@@ -127535,6 +127639,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./toolbar */ "./src/bpmneditor/plugins/toolbar.js");
 /* harmony import */ var _undo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./undo */ "./src/bpmneditor/plugins/undo.js");
 /* harmony import */ var _view__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./view */ "./src/bpmneditor/plugins/view.js");
+/* harmony import */ var _fontChange__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./fontChange */ "./src/bpmneditor/plugins/fontChange.js");
+
 
 
 
@@ -127557,7 +127663,8 @@ let Plugins = {
     SimulateModel: _simulateModel__WEBPACK_IMPORTED_MODULE_6__["default"],
     Toolbar: _toolbar__WEBPACK_IMPORTED_MODULE_7__["default"],
     Undo: _undo__WEBPACK_IMPORTED_MODULE_8__["default"],
-    View: _view__WEBPACK_IMPORTED_MODULE_9__["default"]
+    View: _view__WEBPACK_IMPORTED_MODULE_9__["default"],
+	FontChange:_fontChange__WEBPACK_IMPORTED_MODULE_10__["default"]	
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Plugins);
