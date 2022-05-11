@@ -67,57 +67,57 @@ public class TreeSearchController {
     private final MainController mainController;
     private final Tree tree;
     private final SecuritySetupController securitySetupController;
-    private Checkbox searchToggle;
-    private Textbox searchInput;
-    private Button searchBtn;
-    private Button searchBtnClear;
+    private Checkbox searchToggleCheckbox;
+    private Textbox searchTextbox;
+    private Button searchButton;
+    private Button searchButtonClear;
 
     public TreeSearchController(Tree tree, SecuritySetupController securitySetupController) {
         this.tree = tree;
-        this.searchToggle = (Checkbox) tree.query(".ap-listbox-search-toggle");
+        this.searchToggleCheckbox = (Checkbox) tree.query(".ap-listbox-search-toggle");
         this.securitySetupController = securitySetupController;
         this.mainController = securitySetupController.getMainController();
-        this.searchInput = (Textbox) tree.query(".ap-listbox-search-input");
-        this.searchBtn = (Button) tree.query(".ap-listbox-search-btn");
-        this.searchBtnClear = (Button) tree.query(".ap-listbox-search-clear");
-        searchToggle.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
+        this.searchTextbox = (Textbox) tree.query(".ap-listbox-search-input");
+        this.searchButton = (Button) tree.query(".ap-listbox-search-btn");
+        this.searchButtonClear = (Button) tree.query(".ap-listbox-search-clear");
+        searchToggleCheckbox.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
             @Override
             public void onEvent(CheckEvent event) throws Exception {
-                showSearchDrawer(event.isChecked());
+                showSearchBox(event.isChecked());
             }
         });
-        searchInput.addEventListener(Events.ON_OK, new EventListener<Event>() {
+        searchTextbox.addEventListener(Events.ON_OK, new EventListener<Event>() {
             @Override
             public void onEvent(Event e) throws Exception {
-                doSearch(searchInput.getValue());
-            }
-        });
-
-        searchBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event e) throws Exception {
-                doSearch(searchInput.getValue());
+                doSearch(searchTextbox.getValue());
             }
         });
 
-        searchBtnClear.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+        searchButton.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event e) throws Exception {
-                searchInput.setValue("");
+                doSearch(searchTextbox.getValue());
+            }
+        });
+
+        searchButtonClear.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            @Override
+            public void onEvent(Event e) throws Exception {
+                searchTextbox.setValue("");
                 reset();
             }
         });
     }
 
     public void reset() {
-        showSearchDrawer(false);
-        searchToggle.setChecked(false);
-        searchInput.setValue("");
+        showSearchBox(false);
+        searchToggleCheckbox.setChecked(false);
+        searchTextbox.setValue("");
         tree.clearSelection();
         doSearch("");
     }
 
-    public void showSearchDrawer(boolean visible) {
+    public void showSearchBox(boolean visible) {
         Auxhead auxhead = (Auxhead) tree.query(".ap-auxhead");
         auxhead.setVisible(visible);
     }
@@ -151,22 +151,8 @@ public class TreeSearchController {
 
         try {
             Map<FolderTreeNodeTypes, List<Integer>> results = initializeMap();
-            SummariesType summaries =
-                readProcessSummaries(folderId, query);
-            if(summaries==null || summaries.getSummary()==null){
-                return;
-            }
-            for (SummaryType type : summaries.getSummary()) {
-                if (type instanceof ProcessSummaryType) {
-                    results.get(FolderTreeNodeTypes.Process).add(type.getId());
-                } else if (type instanceof LogSummaryType) {
-                    results.get(FolderTreeNodeTypes.Log).add(type.getId());
-                } else if (type instanceof FolderSummaryType) {
-                    results.get(FolderTreeNodeTypes.Folder).add(type.getId());
-                }
-            }
+            setResultSummary(results, readProcessSummaries(folderId, query));
             addFolderChain(results, selectedFolder);
-
             redrawTree(results, folderId);
         } catch (Exception e) {
             LOGGER.error("Failed search", e);
@@ -174,6 +160,21 @@ public class TreeSearchController {
                 Messagebox.ERROR);
         }
 
+    }
+
+    private void setResultSummary(Map<FolderTreeNodeTypes, List<Integer>> results, SummariesType summaries) {
+        if (summaries == null || summaries.getSummary() == null) {
+            return;
+        }
+        for (SummaryType type : summaries.getSummary()) {
+            if (type instanceof ProcessSummaryType) {
+                results.get(FolderTreeNodeTypes.Process).add(type.getId());
+            } else if (type instanceof LogSummaryType) {
+                results.get(FolderTreeNodeTypes.Log).add(type.getId());
+            } else if (type instanceof FolderSummaryType) {
+                results.get(FolderTreeNodeTypes.Folder).add(type.getId());
+            }
+        }
     }
 
     private void addFolderChain(
