@@ -132,17 +132,20 @@ public abstract class AbstractLogImporter implements LogImporter {
         return config == null || config.getMaxEventCount() == null || lineCount <= config.getMaxEventCount();
     }
 
-    protected void constructTrace(
-        final TreeMap<String, XTrace> tracesHistory, final LogEventModel logEventModel,
-        final XFactory xfactory, XConceptExtension concept) {
-        if (tracesHistory.isEmpty() || !tracesHistory.containsKey(logEventModel.getCaseID())) {
+    protected void constructTrace(final TreeMap<String, XTrace> tracesHistory,
+                                  final LogEventModel logEventModel,
+                                  final XFactory xfactory, XConceptExtension concept) {
+
+        String caseId = logEventModel.getCaseID().trim();
+
+        if (tracesHistory.isEmpty() || !tracesHistory.containsKey(caseId)) {
             XTrace xtrace = xfactory.createTrace();
-            concept.assignName(xtrace, logEventModel.getCaseID());
+            concept.assignName(xtrace, caseId);
             assignEventsToTrace(logEventModel, xtrace);
             assignMyCaseAttributes(logEventModel.getCaseAttributes(), xtrace);
-            tracesHistory.put(logEventModel.getCaseID(), xtrace);
+            tracesHistory.put(caseId, xtrace);
         } else {
-            XTrace xtrace = tracesHistory.get(logEventModel.getCaseID());
+            XTrace xtrace = tracesHistory.get(caseId);
             assignEventsToTrace(logEventModel, xtrace);
             assignMyCaseAttributes(logEventModel.getCaseAttributes(), xtrace);
         }
