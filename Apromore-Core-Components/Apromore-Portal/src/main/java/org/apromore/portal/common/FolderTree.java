@@ -165,8 +165,7 @@ public class FolderTree {
           assert summaryType instanceof LogSummaryType;
           node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Log));
         }
-      } while (PAGE_SIZE * (page + logsPage++) + processes.getSummary().size()
-          + logs.getSummary().size() < processes.getCount() + logs.getCount());
+      } while (PAGE_SIZE *  logsPage++ +  logs.getSummary().size() <  logs.getCount());
     }
   }
 
