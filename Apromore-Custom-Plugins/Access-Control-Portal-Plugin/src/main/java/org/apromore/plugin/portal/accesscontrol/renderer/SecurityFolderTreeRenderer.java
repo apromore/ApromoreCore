@@ -237,15 +237,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
     });
   }
 
-  private void hideOrShow(Treeitem treeItem, Integer id,FolderTreeNodeTypes type) {
+  private void hideOrShow(Treeitem treeItem, Integer id, FolderTreeNodeTypes type) {
     if (searchResult == null) {
       return;
     }
-    if (searchResult != null && searchResult.get(type) != null && searchResult.get(type).contains(id)) {
-      treeItem.setVisible(true);
-    } else {
-      treeItem.setVisible(false);
-    }
+    treeItem.setVisible(searchResult.get(type) != null && searchResult.get(type).contains(id));
   }
 
 

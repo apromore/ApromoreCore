@@ -91,7 +91,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
             strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
         }
         if (userRowGuid != null && !userRowGuid.isEmpty()) {
-            strQry.append(" AND ").append(userCondition);
+            strQry.append("  AND  ").append(userCondition);
         }
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" AND ").append(conditions);

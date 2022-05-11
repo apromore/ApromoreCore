@@ -83,11 +83,7 @@ public class TreeSearchController {
         searchToggle.addEventListener(Events.ON_CHECK, new EventListener<CheckEvent>() {
             @Override
             public void onEvent(CheckEvent event) throws Exception {
-                if (event.isChecked()) {
-                    showSearchDrawer(true);
-                } else {
-                    showSearchDrawer(false);
-                }
+                showSearchDrawer(event.isChecked());
             }
         });
         searchInput.addEventListener(Events.ON_OK, new EventListener<Event>() {
@@ -157,6 +153,9 @@ public class TreeSearchController {
             Map<FolderTreeNodeTypes, List<Integer>> results = initializeMap();
             SummariesType summaries =
                 readProcessSummaries(folderId, query);
+            if(summaries==null || summaries.getSummary()==null){
+                return;
+            }
             for (SummaryType type : summaries.getSummary()) {
                 if (type instanceof ProcessSummaryType) {
                     results.get(FolderTreeNodeTypes.Process).add(type.getId());
@@ -214,10 +213,10 @@ public class TreeSearchController {
         return map;
     }
 
-    private SummariesType readProcessSummaries(Integer folderId, String searchCriteria) throws Exception {
+    private SummariesType readProcessSummaries(Integer folderId, String searchCriteria) {
         UserInterfaceHelper uiHelper = (UserInterfaceHelper) SpringUtil.getBean("uiHelper");
         if (uiHelper == null) {
-            throw new Exception("User interface helper");
+            return null;
         }
         SummariesType processSummaries = null;
         try {
