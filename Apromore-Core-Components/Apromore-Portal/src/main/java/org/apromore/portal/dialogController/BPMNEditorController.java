@@ -426,15 +426,14 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
       ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
       ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+      User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+      boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+          (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
 
-      if (isViewer && linkedProcess == null) {
+      if (isViewer && !hasLinkedProcessAccess) {
         Notification.error(Labels.getLabel("bpmnEditor_subProcessLinkNoEdit_message",
             "Only owner/editor and add or edit a link"));
       } else {
-        User user = mainC.getSecurityService().getUserById(currentUserType.getId());
-        boolean hasLinkedProcessAccess = (linkedProcess != null) &&
-            (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
-
         String linkProcessWindowPath = hasLinkedProcessAccess || isViewer
             ? "static/bpmneditor/viewSubProcessLink.zul"
             : "static/bpmneditor/linkSubProcess.zul";
