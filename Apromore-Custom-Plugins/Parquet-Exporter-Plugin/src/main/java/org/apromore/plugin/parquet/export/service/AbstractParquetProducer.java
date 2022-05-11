@@ -26,7 +26,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apromore.apmlog.csv.StringValidation;
-import org.apromore.apmlog.xes.XESAttributeCodes;
+import static org.apromore.apmlog.xes.XESAttributeCodes.CONCEPT_NAME;
+import static org.apromore.apmlog.xes.XESAttributeCodes.ORG_GROUP;
+import static org.apromore.apmlog.xes.XESAttributeCodes.ORG_RESOURCE;
+import static org.apromore.apmlog.xes.XESAttributeCodes.ORG_ROLE;
 import org.apromore.plugin.parquet.export.core.data.APMLogData;
 import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.apromore.plugin.parquet.export.util.Util;
@@ -64,7 +67,30 @@ public abstract class AbstractParquetProducer {
      * @return Pair < keyForDisplay, originalKey >
      */
     protected static Pair<String, String> getValidAttributeKey(String key) {
-        String display = XESAttributeCodes.getDisplayLabelForSingle(key).replaceAll("[^A-Za-z0-9_]+", "");
+        String code;
+
+        switch (key) {
+            case CONCEPT_NAME:
+                code = "activity";
+                break;
+            case ORG_RESOURCE:
+                code = "resource";
+                break;
+            case ORG_ROLE:
+                code = "role";
+                break;
+            case "group":
+            case ORG_GROUP:
+                code = "resource_group";
+                break;
+            default:
+                code = key;
+                break;
+        }
+
+
+        String display = code.replaceAll("[^A-Za-z0-9_]+", "");
+
         if (display.toLowerCase().equals("group"))
             display = "resource_group";
 
