@@ -13,4 +13,6 @@ dependencies {
     implementation project(':Apromore-Plugins:plugin-core:editor:api')
     implementation project(':Apromore-Custom-Plugins:Apromore-Editor:pdf')
 
+    testImplementation'org.mockito:mockito-inline:3.8.0'
+
 }
