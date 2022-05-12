@@ -48,19 +48,24 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
    
     public List<Folder> findSubfolders(final int parentFolderId, final String userId, final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
+        String userCondition="(u.rowGuid = :userRowGuid)   AND (gf.accessRights.readOnly = TRUE)";
         if (parentFolderId == 0) {
-            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.accessRights.readOnly = TRUE) AND f.parentFolder IS NULL");
+            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (g = g2) AND f.parentFolder IS NULL");
         } else {
             strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User" +
-                    " u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gf.accessRights.readOnly = TRUE) AND fp.id = ").append(parentFolderId);
+                    " u JOIN u.groups g2 WHERE (g = g2) AND fp.id = ").append(parentFolderId);
+        }
+        if (userId != null && !userId.isEmpty()) {
+            strQry.append(" AND ").append(userCondition);
         }
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" AND ").append(conditions);
         }
         strQry.append(" ORDER by f.id");
         Query query = em.createQuery(strQry.toString());
-        query.setParameter("userRowGuid", userId);
-
+        if (userId != null && !userId.isEmpty()) {
+            query.setParameter("userRowGuid", userId);
+        }
         return query.getResultList();
     }
 
