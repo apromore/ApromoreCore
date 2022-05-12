@@ -32,9 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.inject.Inject;
-
 import org.apromore.commons.item.ItemNameUtils;
 import org.apromore.plugin.merge.logic.MergeService;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -76,7 +74,8 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
     @Inject
     private DomainService domainService;
 
-    private final String GREEDY_ALGORITHM = "Greedy";
+    private static final String LABEL_FAILED_MERGE = "failedMerge";
+    private static final String GREEDY_ALGORITHM = "Greedy";
 
     public static final String INITIAL_VERSION = "1.0";
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(MergePlugin.class);
@@ -121,8 +120,9 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
 
     @Override
     public Availability getAvailability() {
-        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MERGE_MODELS) ?
-                Availability.AVAILABLE : Availability.UNAVAILABLE;
+        return UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MERGE_MODELS)
+            ? Availability.AVAILABLE
+            : Availability.UNAVAILABLE;
     }
 
     @Override
@@ -132,9 +132,9 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
             Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
             Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
             List<String> filenames = new ArrayList<String>();
-            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            for (Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
                 SummaryType processSummaryType = entry.getKey();
-                if(processSummaryType instanceof ProcessSummaryType) {
+                if (processSummaryType instanceof ProcessSummaryType) {
                     String name = processSummaryType.getName();
                     filenames.add(name);
                     selectedProcessVersions.put((ProcessSummaryType) processSummaryType, entry.getValue());
@@ -153,7 +153,7 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
             LOGGER.info("Executed");
 
         } catch (Exception e) {
-            String msg = getLabel("failedMerge");
+            String msg = getLabel(LABEL_FAILED_MERGE);
             LOGGER.info(msg, e);
             Messagebox.show(msg, "Apromore", Messagebox.OK, Messagebox.ERROR);
         }
@@ -163,8 +163,7 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
     // Internal methods
 
     private void showDialog(PortalContext context, Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions)
-        throws InterruptedException, IOException, SuspendNotAllowedException
-    {
+        throws InterruptedException, IOException, SuspendNotAllowedException {
         this.context = context;
 
         Map<String, Object> args = new HashMap<>();
@@ -305,22 +304,24 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
                         this.algosLB.getSelectedItem().getLabel(), folderId, parametersType,
                         processVersionIdsType,
                         this.makePublic.isChecked());
-
-                message = getLabel("successMerge");
-                context.displayNewProcess(result);
-                context.refreshContent();
-
+                if (result != null) {
+                    message = getLabel("successMerge");
+                    context.displayNewProcess(result);
+                    context.refreshContent();
+                } else {
+                    message = getLabel(LABEL_FAILED_MERGE);
+                }
             } catch (Exception e) {
-                message = getLabel("failedMerge");
+                message = getLabel(LABEL_FAILED_MERGE);
                 LOGGER.info(message, e);
             }
-
             Messagebox.show(message);
             this.processMergeW.detach();
         }
     }
 
-    private static ProcessVersionIdsType setProcessModels(Map<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions) {
+    private static ProcessVersionIdsType setProcessModels(
+        Map<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions) {
         ProcessVersionIdType id;
         ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
 
@@ -337,8 +338,14 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
         return modelIdList;
     }
 
-    private ParametersType setParams(String method, boolean removeEntanglements, double mergeThreshold, double labelThreshold,
-                                     double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight) {
+    private ParametersType setParams(
+        String method, boolean removeEntanglements,
+        double mergeThreshold,
+        double labelThreshold,
+        double contextThreshold,
+        double skipnWeight,
+        double subnWeight,
+        double skipeWeight) {
         ParametersType params = new ParametersType();
 
         params.getParameter().add(addParam("removeent", removeEntanglements ? 1 : 0));
@@ -364,7 +371,10 @@ public class MergePlugin extends DefaultPortalPlugin implements LabelSupplier {
     }
 
     protected void updateActions() {
-        this.OKbutton.setDisabled("".compareTo(this.processNameT.getValue()) == 0 || "".compareTo(this.versionNameT.getValue()) == 0);
+        this.OKbutton.setDisabled(
+            "".compareTo(this.processNameT.getValue()) == 0
+                || "".compareTo(this.versionNameT.getValue()) == 0
+        );
 
         String algo = this.algosLB.getSelectedItem().getLabel();
         this.mergethreshold.setVisible(algo.compareTo("Hungarian") == 0 || algo.compareTo("Greedy") == 0);
