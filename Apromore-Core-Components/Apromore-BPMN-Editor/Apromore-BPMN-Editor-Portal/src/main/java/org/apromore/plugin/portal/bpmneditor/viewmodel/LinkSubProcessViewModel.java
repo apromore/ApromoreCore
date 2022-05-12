@@ -32,6 +32,7 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
@@ -100,7 +101,7 @@ public class LinkSubProcessViewModel {
                 window.detach();
                 break;
             case LINK_TYPE_EXISTING:
-                if (selectedProcess == null ) {
+                if (selectedProcess == null) {
                     Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
                         "Please select an existing process model to link"));
                 } else {
@@ -118,10 +119,8 @@ public class LinkSubProcessViewModel {
     }
 
     public List<SummaryType> getProcessList() throws UserNotFoundException {
+        List<SummaryType> processList = getProcesses(null);
         User user = securityService.getUserById(currentUser.getId());
-        SummariesType processSummaries = uiHelper.buildProcessSummaryList(currentUser.getId(), ROOT_FOLDER_ID, 0,
-            PAGE_SIZE);
-        List<SummaryType> processList = new ArrayList<>(processSummaries.getSummary());
         processList.removeIf(p -> {
             try {
                 return !ItemHelpers.canModify(user, p);
@@ -130,6 +129,25 @@ public class LinkSubProcessViewModel {
             }
         });
         return processList;
+    }
+
+    /**
+     * Get all the processes in a folder and its subfolders.
+     * @param folder the folder which contains the processes or null to include all processes.
+     * @return a list of processes in this folder and its subfolders.
+     */
+    private List<SummaryType> getProcesses(final FolderType folder) {
+        int folderId = (folder == null) ? ROOT_FOLDER_ID : folder.getId();
+        List<FolderType> subFolders = (folder == null)
+            ? mainController.getPortalSession().getTree() : folder.getFolders();
+
+        SummariesType processSummaries = uiHelper.buildProcessSummaryList(currentUser.getId(), folderId, 0, PAGE_SIZE);
+        List<SummaryType> processes = new ArrayList<>(processSummaries.getSummary());
+
+        for (FolderType f : subFolders) {
+            processes.addAll(getProcesses(f));
+        }
+        return processes;
     }
 
     @Command
