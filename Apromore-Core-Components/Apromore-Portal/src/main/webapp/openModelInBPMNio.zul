@@ -273,7 +273,7 @@
             console.log('afterCheckUnsaved - Proceed with flow on action ...', flowOnEvent);
             if (flowOnEvent === 'onShare' || flowOnEvent === 'onPublishModel') {
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent));
-            } else if (flowOnEvent === 'onSimulateModel') {
+            } else if (flowOnEvent === 'onSimulateModel' || flowOnEvent === 'onDownloadXML') {
               Apromore.BPMNEditor.readXML((xml) => {
                 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent, xml));
               });
@@ -334,6 +334,10 @@
 
             Apromore.BPMNEditor.deleteSubprocess = function(elementId) {
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDeleteSubprocess', elementId));
+            };
+
+            Apromore.BPMNEditor.Plugins.Export.exportXML = function(xml) {
+              Apromore.BPMNEditor.beforeCheckUnsaved('onDownloadXML');
             };
 
             Apromore.BPMNEditor.Plugins.FontChange.change = function() {

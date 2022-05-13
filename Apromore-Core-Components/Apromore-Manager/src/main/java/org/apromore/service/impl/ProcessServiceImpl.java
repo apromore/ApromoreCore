@@ -24,6 +24,40 @@
  */
 package org.apromore.service.impl;
 
+import static org.apromore.common.Constants.DATE_FORMAT;
+import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
+import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.apromore.service.helper.BPMNDocumentHelper.getBPMNElements;
+import static org.apromore.service.helper.BPMNDocumentHelper.getDocument;
+import static org.apromore.service.helper.BPMNDocumentHelper.getXMLString;
+import static org.apromore.service.helper.BPMNDocumentHelper.replaceSubprocessContents;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import javax.activation.DataHandler;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.Constants;
@@ -54,6 +88,7 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -78,39 +113,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.XMLConstants;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.apromore.common.Constants.DATE_FORMAT;
-import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
-import static org.apromore.common.Constants.TRUNK_NAME;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of the ProcessService Contract.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
+@SuppressWarnings("ALL")
 @Service("processService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
     rollbackFor = Exception.class)
@@ -715,6 +727,57 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  /**
+   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   *      Version, String) {@inheritDoc}
+   */
+  @Override
+  public String getBPMNRepresentation(final String name, final Integer processId,
+                                      final String branch, final Version version, final String username,
+                                      final boolean includeLinkedSubprocesses)
+      throws RepositoryException, ParserConfigurationException, ExportFormatException {
+
+    String bpmnXML = getBPMNRepresentation(name, processId, branch, version);
+
+    if (!includeLinkedSubprocesses) {
+      return bpmnXML;
+    }
+
+    try {
+      Document bpmnDocument = getDocument(bpmnXML);
+
+      Map<String, Integer> subprocessLinks = getLinkedProcesses(processId, username);
+      List<Node> subprocessNodes = getBPMNElements(bpmnDocument, "subProcess");
+
+      for (Node subprocessNode : subprocessNodes) {
+        String id = subprocessNode.getAttributes().getNamedItem("id").getTextContent();
+
+        if (subprocessLinks.containsKey(id)) {
+          Integer linkedProcessId = subprocessLinks.get(id);
+
+          Process linkedProcess = processRepo.findUniqueByID(linkedProcessId);
+          ProcessModelVersion latestVersion = processModelVersionRepo.getLatestProcessModelVersion(linkedProcessId, branch);
+          String linkedProcessBPMN = getBPMNRepresentation(linkedProcess.getName(),
+              linkedProcessId, branch, new Version(latestVersion.getVersionNumber()));
+          Document linkedProcessDocument = getDocument(linkedProcessBPMN);
+
+          replaceSubprocessContents(subprocessNode, linkedProcessDocument);
+        }
+      }
+
+      return getXMLString(bpmnDocument);
+
+    } catch (UserNotFoundException e) {
+      LOGGER.error("Failed to retrieve the process!");
+      LOGGER.error("Original exception was: ", e);
+      throw new RepositoryException(e);
+    } catch (IOException | SAXException | TransformerException e) {
+      LOGGER.error("Failed to parse the process!");
+      LOGGER.error("Original exception was: ", e);
+      throw new ParserConfigurationException(e.getMessage());
+    }
+  }
+
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
       ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
     ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
@@ -997,5 +1060,25 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     return ui.buildProcessSummary(process);
+  }
+
+  @Override
+  public boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
+    return !getLinkedProcesses(processId, username).isEmpty();
+  }
+
+  private Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
+    Map<String, Integer> linkedProcesses = new HashMap<>();
+    List<SubprocessProcess> subprocessProcesses = subprocessProcessRepository.getLinkedSubProcesses(processId);
+    User user = userSrv.findUserByLogin(username);
+
+    for (SubprocessProcess subprocessProcess : subprocessProcesses) {
+      int linkedProcessId = subprocessProcess.getLinkedProcess().getId();
+      //Check for user access to the linked process
+      if (authorizationService.getProcessAccessTypeByUser(linkedProcessId, user) != null) {
+        linkedProcesses.put(subprocessProcess.getSubprocessId(), subprocessProcess.getLinkedProcess().getId());
+      }
+    }
+    return Collections.unmodifiableMap(linkedProcesses);
   }
 }
