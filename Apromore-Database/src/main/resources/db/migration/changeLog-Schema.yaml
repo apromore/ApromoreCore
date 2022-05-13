@@ -1520,6 +1520,8 @@ databaseChangeLog:
                  constraints:
                    nullable: false
 
+
+
  - changeSet:
      id: 20220505171700
      author: janeh
@@ -1535,12 +1537,35 @@ databaseChangeLog:
                  name: user_id
 
  - changeSet:
-      id: 20220511163000
-      author: lahirumahanama
-      changes:
-        - addColumn:
-            tableName: log
-            columns:
-              - column:
-                  name: hive_table_name
-                  type: varchar(255)
+     id: 20220510114700
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: validation
+                 type: JSON
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: explanation
+                 type: JSON
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: feature_encoding_type
+                 type: VARCHAR(25)
+
+ - changeSet:
+     id: 20220511163000
+     author: lahirumahanama
+     changes:
+       - addColumn:
+           tableName: log
+           columns:
+             - column:
+                 name: hive_table_name
+                 type: varchar(255)
