@@ -573,7 +573,15 @@ export default class EditorApp {
           container: '#' + me.editor.rootNode.id,
           langTag: config.langTag,
           username: '',
-          processName: ''
+          processName: '',
+		  textRenderer: {
+		    defaultStyle: {
+		      fontSize: "14px"
+		    },
+		    externalStyle: {
+		      fontSize: "14px"
+		    }
+  		}	
         }
         if (!config.viewOnly) {
           options.keyboard = { bindTo: window };

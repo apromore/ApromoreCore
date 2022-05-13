@@ -8,6 +8,7 @@ import simModelPlugin from './simulateModel';
 import toolbarPlugin from './toolbar';
 import undoPlugin from './undo';
 import viewPlugin from './view';
+import fontChangePlugin from './fontChange';
 
 //Add plugins to list
 let Plugins = {
@@ -20,7 +21,8 @@ let Plugins = {
     SimulateModel: simModelPlugin,
     Toolbar: toolbarPlugin,
     Undo: undoPlugin,
-    View: viewPlugin
+    View: viewPlugin,
+	FontChange:fontChangePlugin	
 };
 
 export default Plugins;
