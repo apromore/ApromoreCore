@@ -68,10 +68,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Window;
 
 import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
@@ -118,6 +120,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private UserType currentUserType;
   private AccessType currentUserAccessType;
   private boolean isViewLink = false;
+  @Wire
+  private Popup popup;
 
   public BPMNEditorController() {
     super();
@@ -466,6 +470,13 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         }
       }
     });
+
+    this.addEventListener("onChangeFont", event -> {
+      Component win = event.getTarget();
+      popup=(Popup)win.getFellow("popup");
+      popup.open(event.getTarget(),"at_pointer");
+    });
+
   }
 
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
@@ -615,5 +626,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       // TODO Auto-generated method stub
 
   }
+
+
 
 }

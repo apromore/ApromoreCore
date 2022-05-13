@@ -210,8 +210,6 @@
 
           Apromore.BPMNEditor.readXML = function(callback) {
             Apromore.BPMNEditor.app.getXML().then((xml) => {
-              // console.log(xml.substring(2200, 2300));
-              // console.log(xml);
               callback(xml);
             });
           }
@@ -338,6 +336,10 @@
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDeleteSubprocess', elementId));
             };
 
+            Apromore.BPMNEditor.Plugins.FontChange.change = function() {
+               console.log('onChangeFont Called');
+               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onChangeFont'));
+            };
             // window.setTimeout(function() {
             //   console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
             //   console.log(editorWrapper.getCanvas()._editor.getDefinitions());
@@ -345,6 +347,10 @@
 
             document.title = '${labels.brand_shortName} - ${labels.bpmnEditor_title_text}';
           });
+
+          function changeFontSize(changedFont){
+            Apromore.BPMNEditor.app.editor.changeFontSize(changedFont);
+          }
         ]]>
       </n:script>
     </n:span>
@@ -352,5 +358,9 @@
 
   <n:div id="editorcanvas"></n:div>
   <n:div id="js-properties-panel"></n:div>
+
+  <z:popup width="270px" id="popup">
+    <z:slider id="slider" curpos="16"  width="250px" mold="scale" step="1" minpos="8" maxpos="72"  xmlns:w="http://www.zkoss.org/2005/zk/client"  w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>
+  </z:popup>
 </window>
 
