@@ -145,7 +145,7 @@ class LinkSubProcessViewModelUnitTest {
         linkSubProcessViewModel.init(mainController, "test", 1);
         List<SummaryType> processList =  linkSubProcessViewModel.getProcessList();
 
-        assertThat(processList.size()).isEqualTo(111);
+        assertThat(processList).hasSize(111);
     }
 
     private List<FolderType> buildFolderTree() {
