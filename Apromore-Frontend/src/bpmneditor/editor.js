@@ -496,4 +496,38 @@ export default class Editor {
             height: shape.height
         }
     }
+
+    async refreshAll() {
+        if (!this.actualEditor) return ;
+        var eventBus = this.actualEditor.get('eventBus');
+        var elementRegistry = editor.get('elementRegistry');
+        var elements = elementRegistry.getAll();
+        eventBus.fire('elements.changed', { elements });
+    }
+
+    async changeFontSize(size) {
+        if (!this.actualEditor) return;
+
+        var config= this.actualEditor.get('config');
+        if (!config) return;
+
+        config.textRenderer = {
+            defaultStyle:
+            {
+              fontSize: size+"px"
+            },
+            externalStyle: {
+              fontSize: size+"px"
+            }
+        };
+        this.actualEditor.get('textRenderer').setFontSize(size);
+        var elementRegistry = this.actualEditor.get('elementRegistry');
+        var elements = elementRegistry.getAll();
+        var eventBus = this.actualEditor.get('eventBus');
+
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+
+    }
+
 };

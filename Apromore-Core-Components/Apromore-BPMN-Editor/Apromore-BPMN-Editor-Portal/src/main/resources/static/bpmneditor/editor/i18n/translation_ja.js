@@ -441,3 +441,6 @@ Apromore.I18N.Attachment.showComments = "Show comments";
 Apromore.I18N.Attachment.hideComments = "Hide comments";
 
 
+if(!Apromore.I18N.FontSize) Apromore.I18N.FontSize = {};
+Apromore.I18N.FontSize.fontSizeDesc= "Change font size";
+Apromore.I18N.FontSize.fontsize ="Change Font Size";
