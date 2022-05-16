@@ -758,4 +758,59 @@ class WorkspaceServiceImplTest extends AbstractTest {
 
     }
 
+    @Test
+    void updateOwnerAfterDeleteUser() {
+
+        Group group = createGroup(1, Group.Type.USER);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        group.setName(user.getUsername());
+
+        Group group2 = createGroup(2, Group.Type.USER);
+        User user2 = createUser("userName1", group2, createSet(group2), createSet(role));
+        group2.setName(user2.getUsername());
+
+        Workspace wp = createWorkspace(user);
+        Folder testFolder = createFolder("TestFolder", null, wp);
+
+        Log testLog = createLog(user2, testFolder);
+        GroupLog groupLog = new GroupLog(group, testLog, true, true, true);
+        groupLog.setId(1);
+        GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
+        groupLog2.setId(2);
+        Set<GroupLog> groupLogSet = new HashSet<>();
+        groupLogSet.add(groupLog);
+        groupLogSet.add(groupLog2);
+        testLog.setGroupLogs(groupLogSet);
+
+        Process testProcess = createProcess(user2, new NativeType(), testFolder);
+        GroupProcess groupProcess = new GroupProcess(testProcess, group, true, true, true);
+        groupProcess.setId(1);
+        GroupProcess groupProcess2 = new GroupProcess(testProcess, group2, true, true, true);
+        groupProcess2.setId(2);
+        Set<GroupProcess> groupProcessSet = new HashSet<>();
+        groupProcessSet.add(groupProcess);
+        groupProcessSet.add(groupProcess2);
+        testProcess.setGroupProcesses(groupProcessSet);
+
+        // Mock recording
+        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Collections.emptyList()).times(2);
+
+        expect(groupLogRepo.findByGroupId(group2.getId())).andReturn(Arrays.asList(groupLog, groupLog2)).times(2);
+        expect(groupLogRepo.findOwnerByLogId(testLog.getId())).andReturn(Arrays.asList(groupLog, groupLog2)).times(4);
+        expect(userRepo.findByUsername(group2.getName())).andReturn(user2).times(2);
+
+        expect(groupProcessRepo.findByGroupId(group2.getId())).andReturn(Collections.emptyList()).times(2);
+
+
+        replayAll();
+
+        workspaceService.updateOwnerAfterDeleteUser(user2);
+
+
+        // Verify mock and result
+        verifyAll();
+        assertEquals(user, testLog.getUser());
+        assertEquals(user, testProcess.getUser());
+    }
 }
