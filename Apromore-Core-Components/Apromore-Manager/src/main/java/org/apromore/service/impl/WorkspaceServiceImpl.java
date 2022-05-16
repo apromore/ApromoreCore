@@ -1140,9 +1140,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     logList.removeAll(getSingleOwnerLogByUser(user));
     for (Log log : logList) {
       List<GroupLog> ownerGroupLogs = groupLogRepo.findOwnerByLogId(log.getId());
-      if (ownerGroupLogs.size() > 1) {
         ownerGroupLogs.sort(Comparator.comparingInt(GroupLog::getId));
-      }
       for (GroupLog gl : ownerGroupLogs) {
         if (!Objects.equals(gl.getGroup().getId(), user.getGroup().getId())){
           log.setUser(userRepo.findByUsername(gl.getGroup().getName()));
