@@ -24,6 +24,7 @@
 
 package org.apromore.service.impl;
 
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.CustomCalendarRepository;
@@ -1112,6 +1113,59 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   @Override
   public boolean hasWritePermissionOnFolder(User user, List<Integer> selectedFolders) {
 		return selectedFolders.stream().allMatch(folderId -> canUserWriteFolder(user, folderId));
+  }
+
+  @Override
+  public void updateOwnerAfterDeleteUser(User user) {
+
+    List<GroupFolder> groupFolders = groupFolderRepo.findByGroupId(user.getGroup().getId());
+    List<Folder> folderList = groupFolders.stream()
+        .map(GroupFolder::getFolder)
+        .collect(Collectors.toList());
+    folderList.removeAll(getSingleOwnerFolderByUser(user));
+    for (Folder folder : sortFolderByLevel(folderList)) {
+      List<GroupFolder> ownerGroupFolders = groupFolderRepo.findOwnerByFolderId(folder.getId());
+      ownerGroupFolders.sort(Comparator.comparingInt(GroupFolder::getId));
+      for (GroupFolder gf : ownerGroupFolders) {
+        if (!Objects.equals(gf.getGroup().getId(), user.getGroup().getId())){
+          folder.setCreatedBy(userRepo.findByUsername(gf.getGroup().getName()));
+        }
+      }
+    }
+
+    List<GroupLog> groupLogs = groupLogRepo.findByGroupId(user.getGroup().getId());
+    List<Log> logList = groupLogs.stream()
+        .map(GroupLog::getLog)
+        .collect(Collectors.toList());
+    logList.removeAll(getSingleOwnerLogByUser(user));
+    for (Log log : logList) {
+      List<GroupLog> ownerGroupLogs = groupLogRepo.findOwnerByLogId(log.getId());
+      if (ownerGroupLogs.size() > 1) {
+        ownerGroupLogs.sort(Comparator.comparingInt(GroupLog::getId));
+      }
+      for (GroupLog gl : ownerGroupLogs) {
+        if (!Objects.equals(gl.getGroup().getId(), user.getGroup().getId())){
+          log.setUser(userRepo.findByUsername(gl.getGroup().getName()));
+        }
+      }
+    }
+
+    List<GroupProcess> groupProcesses = groupProcessRepo.findByGroupId(user.getGroup().getId());
+    List<Process> processList = groupProcesses.stream()
+        .map(GroupProcess::getProcess)
+        .collect(Collectors.toList());
+    processList.removeAll(getSingleOwnerProcessByUser(user));
+    for (Process process : processList) {
+      List<GroupProcess> ownerGroupProcesses = groupProcessRepo.findOwnerByProcessId(process.getId());
+      ownerGroupProcesses.sort(Comparator.comparingInt(GroupProcess::getId));
+      for (GroupProcess gp : ownerGroupProcesses) {
+        if (!Objects.equals(gp.getGroup().getId(), user.getGroup().getId())){
+          process.setUser(userRepo.findByUsername(gp.getGroup().getName()));
+        }
+      }
+    }
+
+
   }
 
 }
