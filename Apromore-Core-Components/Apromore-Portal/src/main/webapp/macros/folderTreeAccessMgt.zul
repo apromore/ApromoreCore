@@ -1,0 +1,86 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  Copyright (C) 2012 - 2017 Queensland University of Technology.
+  %%
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<panel height="100%" id="pnlFolderTree">
+    <panelchildren style="padding: 0;">
+        <style>
+            .h-inline-block {
+            display: inline-block;
+            _display: inline;
+            }
+            .z-hlayout, .z-vlayout {
+            overflow: unset;
+            }
+            .z-panel-drag-button {
+            display: none;
+            }
+            .z-treecols-bar {
+            background: var(--ap-c-grid-head-bg) !important;
+            border-left: 1px solid var(--ap-c-grid-head-bg) !important;;
+            border-bottom: 1px solid var(--ap-c-grid-head-bg) !important;;
+            }
+
+            .z-treecol {
+            background-color: var(--ap-c-grid-head-bg) !important;
+            border-left: 1px solid var(--ap-c-grid-head-bg) !important;;
+            border-bottom: 1px solid var(--ap-c-grid-head-bg) !important;;
+            }
+            .ap-listheader-search input[type="checkbox"] {
+            display: none;
+            }
+        </style>
+        <tree id="folderTree" vflex="true" width="100%" style="border-width: 0px;" sclass="ap-folder-tree">
+            <treecols sizable="true">
+                <treecol label="${labels.file_folder_search}">
+                    <div sclass="ap-listheader ap-listheader-search">
+                        <checkbox width="20px"
+                                  sclass="ap-listbox-search-toggle"
+                                  iconSclass="z-icon-search"
+                                  style="padding:0px; border:0px; box-shadow:0px 0px black;"/>
+                    </div>
+                </treecol>
+            </treecols>
+            <auxhead sclass="ap-auxhead" visible="false">
+                <auxheader>
+                    <hlayout hflex="1" style="border:0px solid #F00;">
+                        <div width="20px" align="center">
+                            <span sclass="z-icon-filter"/>
+                        </div>
+                        <div hflex="1">
+                            <textbox hflex="1" sclass="ap-listbox-search-input"/>
+                            <button sclass="ap-listbox-search-clear"
+                                    iconSclass="z-icon-times-circle"
+                                    style="padding:0px; border:0px; box-shadow:0px 0px black; position:absolute; right:7px; top:0px; color:#AAA; background:transparent;"
+                                    width="20px"/>
+                        </div>
+                        <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
+                        <div width="70px" align="right" visible="false">
+                            <button sclass="ap-listbox-search-btn" label="${$composer.labels.search_text}"/>
+                        </div>
+                    </hlayout>
+                </auxheader>
+            </auxhead>
+
+        </tree>
+    </panelchildren>
+</panel>

@@ -36,7 +36,7 @@
                     <label value="${arg.labels.model_name_text}" width="100%"></label>
                     <textbox width="100%"/>
                 </row>
-                <row id="mergednamev">
+                <row id="mergednamev" visible="false">
                     <label value="${arg.labels.version_no_text}" width="100%"/>
                     <textbox width="100%"/>
                 </row>

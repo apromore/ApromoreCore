@@ -22,6 +22,7 @@
 
 package org.apromore.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -40,7 +41,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apromore.dao.jpa.PpmExplainationToJsonConverter;
 import org.apromore.dao.jpa.PpmSchemaToJsonConverter;
+import org.apromore.dao.jpa.PpmValidationToJsonConverter;
 
 @Entity
 @Table(name = "predictor")
@@ -60,12 +63,23 @@ public class PredictorDao {
     private PredictionType predictionType;
     @Column(name = "target_attribute")
     private String targetAttribute;
+    @Column(name = "feature_encoding_type")
+    @Enumerated(EnumType.STRING)
+    private FeatureEncodingType featureEncodingType;
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
     @Column(name = "ppm_schema")
     @Convert(converter = PpmSchemaToJsonConverter.class)
     private PpmSchema ppmSchema;
+    @Column(name = "validation")
+    @Convert(converter = PpmValidationToJsonConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Validation validation;
+    @Column(name = "explanation")
+    @Convert(converter = PpmExplainationToJsonConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Explanation explanation;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "prediction_predictor",
         joinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"),

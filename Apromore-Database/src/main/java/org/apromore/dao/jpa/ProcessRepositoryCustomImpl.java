@@ -51,7 +51,7 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
 
 
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g WHERE g.type = :public ";
-    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gp.accessRights.readOnly = TRUE) AND f.id = ";
+    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f, User u JOIN u.groups g2 WHERE (g = g2) AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
 
@@ -84,10 +84,14 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
+        String userCondition="(u.rowGuid = :userRowGuid) AND (gp.accessRights.readOnly = TRUE)";
         if (folderId == 0) {
-            strQry.append("SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g, User u JOIN u.groups g2 WHERE (u.rowGuid = :userRowGuid) AND (g = g2) AND (gp.accessRights.readOnly = TRUE) AND p.folder IS NULL");
+            strQry.append("SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g, User u JOIN u.groups g2 WHERE (g = g2) AND p.folder IS NULL");
         } else {
             strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
+        }
+        if (userRowGuid != null && !userRowGuid.isEmpty()) {
+            strQry.append("  AND  ").append(userCondition);
         }
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" AND ").append(conditions);
@@ -95,7 +99,9 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
-        query.setParameter("userRowGuid", userRowGuid);
+        if (userRowGuid != null && !userRowGuid.isEmpty()) {
+            query.setParameter("userRowGuid", userRowGuid);
+        }
 
         return query.getResultList();
     }
