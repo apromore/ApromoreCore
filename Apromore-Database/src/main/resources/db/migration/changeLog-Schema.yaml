@@ -1558,3 +1558,14 @@ databaseChangeLog:
              - column:
                  name: feature_encoding_type
                  type: VARCHAR(25)
+
+ - changeSet:
+     id: 20220511163000
+     author: lahirumahanama
+     changes:
+       - addColumn:
+           tableName: log
+           columns:
+             - column:
+                 name: hive_table_name
+                 type: varchar(255)
