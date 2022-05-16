@@ -30,6 +30,5 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Explanation {
-    @JsonProperty("gini_feature_importances")
-    private Map<String, Double> giniFeatureImportances;
+    private Map<String, Double> giniFeatureImportanceRaw;
 }
