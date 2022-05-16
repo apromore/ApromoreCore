@@ -768,12 +768,8 @@ public class ProcessServiceImpl implements ProcessService {
       return getXMLString(bpmnDocument);
 
     } catch (UserNotFoundException e) {
-      LOGGER.error("Failed to retrieve the process!");
-      LOGGER.error("Original exception was: ", e);
-      throw new RepositoryException(e);
+      throw new RepositoryException("Failed to retrieve the process", e);
     } catch (IOException | SAXException | TransformerException e) {
-      LOGGER.error("Failed to parse the process!");
-      LOGGER.error("Original exception was: ", e);
       throw new ParserConfigurationException(e.getMessage());
     }
   }

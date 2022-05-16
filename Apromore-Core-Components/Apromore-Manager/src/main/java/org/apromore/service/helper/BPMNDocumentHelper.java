@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +37,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import lombok.NonNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.apromore.exception.ExportFormatException;
 import org.w3c.dom.Document;
@@ -47,8 +46,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public final class BPMNDocumentHelper {
+
+    private BPMNDocumentHelper() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static Document getDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         return docBuilder.parse(new InputSource(new StringReader(xml)));
     }
@@ -63,13 +68,15 @@ public final class BPMNDocumentHelper {
     }
 
     public static String getXMLString(Document document) throws TransformerException {
-        TransformerFactory tf = TransformerFactory.newInstance();
+        TransformerFactory tf = TransformerFactory.newDefaultInstance();
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         StringWriter writer = new StringWriter();
         transformer.transform(new DOMSource(document), new StreamResult(writer));
         String xmlTag = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        return xmlTag + writer.getBuffer().toString().replaceAll("\n|\r", "");
+        return xmlTag + writer.getBuffer().toString().replaceAll("[\n\r]", "");
     }
 
     public static void replaceSubprocessContents(Node subprocessNode, Document linkedProcessDocument)

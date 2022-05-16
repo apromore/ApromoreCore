@@ -84,7 +84,7 @@ class BPMNDocumentHelperUnitTest {
 
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "bpmn:process")).hasSize(1);
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "process")).hasSize(2);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subprocess")).hasSize(0);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subprocess").isEmpty());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
             throw new RuntimeException(e);

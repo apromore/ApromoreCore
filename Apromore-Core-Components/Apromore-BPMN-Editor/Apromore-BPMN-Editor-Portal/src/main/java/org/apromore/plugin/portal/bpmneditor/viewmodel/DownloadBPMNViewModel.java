@@ -76,7 +76,7 @@ public class DownloadBPMNViewModel {
         }
 
         String bpmnXML = processService.getBPMNRepresentation(process.getName(), process.getId(), "MAIN",
-            new Version(process.getLastVersion()), currentUser.getUsername(), includeLinkedSubprocesses);
+            new Version(version.getVersionNumber()), currentUser.getUsername(), includeLinkedSubprocesses);
 
         InputStream is = new ByteArrayInputStream(bpmnXML.getBytes());
         Filedownload.save(is, "text/xml", "diagram.bpmn");
