@@ -29,30 +29,51 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.apromore.AbstractTest;
 import org.apromore.TestData;
 import org.apromore.commons.config.ConfigBean;
-import org.apromore.dao.*;
-import org.apromore.dao.model.*;
+import org.apromore.dao.CustomCalendarRepository;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupFolderRepository;
+import org.apromore.dao.GroupLogRepository;
+import org.apromore.dao.GroupProcessRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.GroupUsermetadataRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
+import org.apromore.dao.ProcessRepository;
+import org.apromore.dao.StorageRepository;
+import org.apromore.dao.UserRepository;
+import org.apromore.dao.UsermetadataRepository;
+import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupFolder;
+import org.apromore.dao.model.GroupLog;
+import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Native;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.Role;
+import org.apromore.dao.model.User;
+import org.apromore.dao.model.Workspace;
 import org.apromore.service.EventLogFileService;
 import org.apromore.service.EventLogService;
-import org.apromore.service.UserMetadataService;
 import org.apromore.service.WorkspaceService;
-import org.apromore.service.impl.FolderServiceImpl;
-import org.apromore.service.impl.WorkspaceServiceImpl;
 import org.apromore.storage.StorageClient;
 import org.apromore.storage.factory.StorageManagementFactory;
-import org.apromore.util.AccessType;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import org.junit.jupiter.api.Assertions;
 
 /**
  * 
@@ -767,13 +788,23 @@ class WorkspaceServiceImplTest extends AbstractTest {
         group.setName(user.getUsername());
 
         Group group2 = createGroup(2, Group.Type.USER);
-        User user2 = createUser("userName1", group2, createSet(group2), createSet(role));
-        group2.setName(user2.getUsername());
+        User userToBeDeleted = createUser("userName1", group2, createSet(group2), createSet(role));
+        group2.setName(userToBeDeleted.getUsername());
 
         Workspace wp = createWorkspace(user);
         Folder testFolder = createFolder("TestFolder", null, wp);
+        testFolder.setCreatedBy(userToBeDeleted);
 
-        Log testLog = createLog(user2, testFolder);
+        GroupFolder groupFolder = new GroupFolder(group, testFolder, true, true, true);
+        groupFolder.setId(1);
+        GroupFolder groupFolder2 = new GroupFolder(group2, testFolder, true, true, true);
+        groupFolder2.setId(2);
+        Set<GroupFolder> groupFolderSet = new HashSet<>();
+        groupFolderSet.add(groupFolder);
+        groupFolderSet.add(groupFolder2);
+        testFolder.setGroupFolders(groupFolderSet);
+
+        Log testLog = createLog(userToBeDeleted, testFolder);
         GroupLog groupLog = new GroupLog(group, testLog, true, true, true);
         groupLog.setId(1);
         GroupLog groupLog2 = new GroupLog(group2, testLog, true, true, true);
@@ -783,7 +814,7 @@ class WorkspaceServiceImplTest extends AbstractTest {
         groupLogSet.add(groupLog2);
         testLog.setGroupLogs(groupLogSet);
 
-        Process testProcess = createProcess(user2, new NativeType(), testFolder);
+        Process testProcess = createProcess(userToBeDeleted, new NativeType(), testFolder);
         GroupProcess groupProcess = new GroupProcess(testProcess, group, true, true, true);
         groupProcess.setId(1);
         GroupProcess groupProcess2 = new GroupProcess(testProcess, group2, true, true, true);
@@ -793,23 +824,34 @@ class WorkspaceServiceImplTest extends AbstractTest {
         groupProcessSet.add(groupProcess2);
         testProcess.setGroupProcesses(groupProcessSet);
 
+        // Parameters
+        Integer folderId = testFolder.getId();
+
         // Mock recording
-        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Collections.emptyList()).times(2);
+        expect(groupFolderRepo.findByGroupId(group2.getId())).andReturn(Arrays.asList(groupFolder,
+            groupFolder2)).times(2);
+        expect(groupFolderRepo.findOwnerByFolderId(folderId)).andReturn(Arrays.asList(groupFolder,
+            groupFolder2)).times(3);
+        expect(userRepo.findByUsername(group2.getName())).andReturn(userToBeDeleted).times(1);
 
         expect(groupLogRepo.findByGroupId(group2.getId())).andReturn(Arrays.asList(groupLog, groupLog2)).times(2);
         expect(groupLogRepo.findOwnerByLogId(testLog.getId())).andReturn(Arrays.asList(groupLog, groupLog2)).times(4);
-        expect(userRepo.findByUsername(group2.getName())).andReturn(user2).times(2);
+        expect(userRepo.findByUsername(group2.getName())).andReturn(userToBeDeleted).times(2);
 
-        expect(groupProcessRepo.findByGroupId(group2.getId())).andReturn(Collections.emptyList()).times(2);
-
+        expect(groupProcessRepo.findByGroupId(group2.getId())).andReturn(Arrays.asList(groupProcess, groupProcess2))
+            .times(2);
+        expect(groupProcessRepo.findOwnerByProcessId(testProcess.getId())).andReturn(
+            Arrays.asList(groupProcess, groupProcess2)).times(4);
+        expect(userRepo.findByUsername(group2.getName())).andReturn(userToBeDeleted).times(2);
 
         replayAll();
 
-        workspaceService.updateOwnerAfterDeleteUser(user2);
+        workspaceService.updateOwnerAfterDeleteUser(userToBeDeleted);
 
 
         // Verify mock and result
         verifyAll();
+        assertEquals(user, testFolder.getCreatedBy());
         assertEquals(user, testLog.getUser());
         assertEquals(user, testProcess.getUser());
     }
