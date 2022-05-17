@@ -63,6 +63,12 @@ public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSu
     private boolean canEdit;
     private boolean canDelete;
     private String failedMessage;
+    private static final String  UNABLE_TO_RENAME_CALENDAR="unable_rename_calendar";
+
+    @Override
+    public String getBundleName() {
+        return Constants.BUNDLE_NAME;
+    }
 
     public CalendarItemRenderer(CalendarService calendarService, long appliedCalendarId, boolean canEdit,
                                 boolean canDelete) {
@@ -127,16 +133,20 @@ public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSu
         }
     }
 
-    public void updateCalendarName(String newName, Long calendarId) {
+    public boolean updateCalendarName(String newName, Long calendarId) {
         try {
             calendarService.updateCalendarName(calendarId, newName);
+            return true;
         } catch (CalendarNotExistsException e) {
             // Need to handle this via publishing message in event queue
-            LOGGER.error(failedMessage, e);
-            Notification.error(failedMessage);
-            e.printStackTrace();
+            LOGGER.error(UNABLE_TO_RENAME_CALENDAR, e);
+            Notification.error(UNABLE_TO_RENAME_CALENDAR);
+        } catch (Exception e) {
+            LOGGER.error(UNABLE_TO_RENAME_CALENDAR, e);
+            Notification.error(getLabel(UNABLE_TO_RENAME_CALENDAR));
         }
         LOGGER.info("Edit name", newName);
+        return false;
     }
 
     @Override
@@ -155,8 +165,11 @@ public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSu
         textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                updateCalendarName(textbox.getValue(), calendarItem.getId());
+                boolean updateSuccessful= updateCalendarName(textbox.getValue(), calendarItem.getId());
                 textbox.setReadonly(true);
+                if(!updateSuccessful) {
+                    textbox.setValue(calendarItem.getName());
+                }
             }
         });
 
