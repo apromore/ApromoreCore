@@ -63,7 +63,7 @@ public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSu
     private boolean canEdit;
     private boolean canDelete;
     private String failedMessage;
-    private static final String  UNABLE_TO_RENAME_CALENDAR="unable_rename_calendar";
+    private static final String UNABLE_TO_RENAME_CALENDAR = "unable_rename_calendar";
 
     @Override
     public String getBundleName() {
