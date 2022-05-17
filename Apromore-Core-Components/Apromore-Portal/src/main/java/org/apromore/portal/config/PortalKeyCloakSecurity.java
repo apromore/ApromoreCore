@@ -106,7 +106,6 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
-        .antMatchers(Constants.SWAGGER_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();
   }
 }

@@ -78,6 +78,7 @@ public class SecurityServiceImpl implements SecurityService {
       Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());
 
   private static final String ROLE_ANALYST = "ROLE_ANALYST";
+  private static final String ROLE_VIEWER = "ROLE_VIEWER";
   private static final String EMAIL_SUBJECT = "Reset Password";
   private static final String EMAIL_START = "Hi, Here is your newly requested password: ";
   private static final String EMAIL_END = "\nPlease try to login again!";
@@ -93,6 +94,9 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Value("${upgradePasswords}")
   boolean upgradePasswords;
+
+  @Value("${assignViewerRole}")
+  boolean assignViewerRole;
 
   private UserRepository userRepo;
   private GroupRepository groupRepo;
@@ -368,13 +372,19 @@ public class SecurityServiceImpl implements SecurityService {
 
     user.getMembership().setDateCreated(user.getDateCreated());
 
-    // A new user is in the ANALYST role
-    Role analystRole = roleRepo.findByName(ROLE_ANALYST);
-    Set<Role> roles = new HashSet<>();
-    if (analystRole == null) {
-      throw new RuntimeException("Could not create user because ROLE_ANALYST not present in database");
+
+    Role assignedRole=null;
+    if(assignViewerRole){
+      assignedRole = roleRepo.findByName(ROLE_VIEWER);
+    }else{
+      assignedRole = roleRepo.findByName(ROLE_ANALYST);
     }
-    roles.add(analystRole);
+
+    Set<Role> roles = new HashSet<>();
+    if (assignedRole == null) {
+      throw new RuntimeException("Could not create user because "+(assignViewerRole?ROLE_VIEWER:ROLE_ANALYST)+" not present in database");
+    }
+    roles.add(assignedRole);
     user.setRoles(roles);
 
     // All users are in the compulsory groups: their personal singleton group, and the public group
@@ -432,6 +442,7 @@ public class SecurityServiceImpl implements SecurityService {
   public void deleteUser(User user) {
     postEvent(EventType.DELETE_USER, user, null);
 
+    workspaceService.updateOwnerAfterDeleteUser(user);
     userRepo.delete(user);
   }
 
