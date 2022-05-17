@@ -12140,10 +12140,9 @@ class Editor {
         eventBus.fire('elements.changed', { elements });
     }
 
-    async changeFontSize(size) {
-        if (!this.actualEditor) return;
-
-        var config= this.actualEditor.get('config');
+    async changeGlobalFontSize(size) {
+        const modeler = this.actualEditor
+        const config = modeler.get('config');
         if (!config) return;
 
         config.textRenderer = {
@@ -12155,14 +12154,31 @@ class Editor {
               fontSize: size+"px"
             }
         };
-        this.actualEditor.get('textRenderer').setFontSize(size);
-        var elementRegistry = this.actualEditor.get('elementRegistry');
-        var elements = elementRegistry.getAll();
-        var eventBus = this.actualEditor.get('eventBus');
+        modeler.get('textRenderer').setFontSize(size);
+        let elementRegistry = modeler.get('elementRegistry');
+        let elements = elementRegistry.getAll();
+        let eventBus = modeler.get('eventBus');
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
 
+    async changeFontSize(size) {
+        const modeler = this.actualEditor
+        if (!modeler) return;
+
+        let elements = modeler.get('selection').get();
+        if (elements.length) {
+            elements.forEach((element) => {
+                const bo = element.businessObject;
+                bo["aux-font-size"] = size+"px";
+            });
+            const eventBus = modeler.get('eventBus');
+            eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+            eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+        } else {
+            this.changeGlobalFontSize(size);
+        }
     }
 
 };
@@ -24594,7 +24610,7 @@ var domQuery = __webpack_require__(2).query,
     is = __webpack_require__(1).is,
     forEach = __webpack_require__(14),
     domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(32).default;
+    Ids = __webpack_require__(28).default;
 
 var SPACE_REGEX = /\s/;
 
@@ -25793,7 +25809,7 @@ module.exports = ProcessSimulationHelper;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayEach = __webpack_require__(55),
-    baseEach = __webpack_require__(28),
+    baseEach = __webpack_require__(29),
     castFunction = __webpack_require__(163),
     isArray = __webpack_require__(8);
 
@@ -46150,7 +46166,7 @@ module.exports = isObjectLike;
 
 var baseMatches = __webpack_require__(166),
     baseMatchesProperty = __webpack_require__(209),
-    identity = __webpack_require__(31),
+    identity = __webpack_require__(32),
     isArray = __webpack_require__(8),
     property = __webpack_require__(218);
 
@@ -46206,99 +46222,6 @@ module.exports = getNative;
 
 /***/ }),
 /* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseForOwn = __webpack_require__(83),
-    createBaseEach = __webpack_require__(162);
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(30),
-    getRawTag = __webpack_require__(156),
-    objectToString = __webpack_require__(157);
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(12);
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-
-/***/ }),
-/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46468,6 +46391,99 @@ Ids.prototype.clear = function () {
 
 /* harmony default export */ __webpack_exports__["default"] = (Ids);
 //# sourceMappingURL=index.esm.js.map
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseForOwn = __webpack_require__(83),
+    createBaseEach = __webpack_require__(162);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(31),
+    getRawTag = __webpack_require__(156),
+    objectToString = __webpack_require__(157);
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(12);
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
 
 
 /***/ }),
@@ -46782,7 +46798,7 @@ module.exports = isTypedArray;
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObject = __webpack_require__(15);
 
 /** `Object#toString` result references. */
@@ -47005,7 +47021,7 @@ module.exports = getMapData;
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObjectLike = __webpack_require__(25);
 
 /** `Object#toString` result references. */
@@ -48602,7 +48618,7 @@ module.exports = arrayMap;
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31),
+var identity = __webpack_require__(32),
     overRest = __webpack_require__(230),
     setToString = __webpack_require__(102);
 
@@ -50532,7 +50548,7 @@ var DataView = __webpack_require__(206),
     Promise = __webpack_require__(207),
     Set = __webpack_require__(94),
     WeakMap = __webpack_require__(95),
-    baseGetTag = __webpack_require__(29),
+    baseGetTag = __webpack_require__(30),
     toSource = __webpack_require__(89);
 
 /** `Object#toString` result references. */
@@ -51733,7 +51749,7 @@ module.exports = toInteger;
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31),
+var identity = __webpack_require__(32),
     metaMap = __webpack_require__(119);
 
 /**
@@ -54648,7 +54664,7 @@ module.exports = {
 /* 142 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-left\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-top\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-width\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-height\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-img-url\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icons\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"isMany\":true,\"type\":\"Icon\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-text\",\"isAttr\":true,\"type\":\"String\"}]}]}");
+module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-left\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-top\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-width\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-height\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-font-size\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-img-url\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icons\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"isMany\":true,\"type\":\"Icon\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-text\",\"isAttr\":true,\"type\":\"String\"}]}]}");
 
 /***/ }),
 /* 143 */
@@ -58021,7 +58037,7 @@ module.exports = baseTimes;
 /* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObjectLike = __webpack_require__(25);
 
 /** `Object#toString` result references. */
@@ -58045,7 +58061,7 @@ module.exports = baseIsArguments;
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30);
+var Symbol = __webpack_require__(31);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -58149,7 +58165,7 @@ module.exports = stubFalse;
 /* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isLength = __webpack_require__(56),
     isObjectLike = __webpack_require__(25);
 
@@ -58302,7 +58318,7 @@ module.exports = createBaseEach;
 /* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31);
+var identity = __webpack_require__(32);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -59484,7 +59500,7 @@ module.exports = arraySome;
 /* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     Uint8Array = __webpack_require__(199),
     eq = __webpack_require__(43),
     equalArrays = __webpack_require__(91),
@@ -60120,7 +60136,7 @@ module.exports = toString;
 /* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     arrayMap = __webpack_require__(65),
     isArray = __webpack_require__(8),
     isSymbol = __webpack_require__(46);
@@ -62139,7 +62155,7 @@ function normalizeEndOfLineSequences(string) {
 /* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28);
+var baseEach = __webpack_require__(29);
 
 /**
  * The base implementation of `_.filter` without support for iteratee shorthands.
@@ -62327,7 +62343,7 @@ module.exports = overRest;
 
 var constant = __webpack_require__(232),
     defineProperty = __webpack_require__(103),
-    identity = __webpack_require__(31);
+    identity = __webpack_require__(32);
 
 /**
  * The base implementation of `setToString` without support for hot loop shorting.
@@ -62573,7 +62589,7 @@ module.exports = strictIndexOf;
 /* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     isArguments = __webpack_require__(35),
     isArray = __webpack_require__(8);
 
@@ -63147,7 +63163,7 @@ module.exports = arrayAggregator;
 /* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28);
+var baseEach = __webpack_require__(29);
 
 /**
  * Aggregates elements of `collection` on `accumulator` with keys transformed
@@ -63233,7 +63249,7 @@ module.exports = map;
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28),
+var baseEach = __webpack_require__(29),
     isArrayLike = __webpack_require__(19);
 
 /**
@@ -63262,7 +63278,7 @@ module.exports = baseMap;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayReduce = __webpack_require__(254),
-    baseEach = __webpack_require__(28),
+    baseEach = __webpack_require__(29),
     baseIteratee = __webpack_require__(26),
     baseReduce = __webpack_require__(255),
     isArray = __webpack_require__(8);
@@ -70651,7 +70667,7 @@ var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_brows
 var lodash = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./node_modules/ids/dist/index.esm.js
-var index_esm = __webpack_require__(32);
+var index_esm = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/min-dash/dist/index.esm.js
 var dist_index_esm = __webpack_require__(0);
@@ -126039,16 +126055,1910 @@ function LinkSubprocess_defer(fn) {
 // CONCATENATED MODULE: ./app/modules/bpmn-renderer/CustomBpmnRenderer.js
 
 
-class CustomBpmnRenderer_CustomBpmnRenderer extends BpmnRenderer {}
 
-CustomBpmnRenderer_CustomBpmnRenderer.$inject = [
-  'config.bpmnRenderer',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var CustomBpmnRenderer_RENDERER_IDS = new index_esm["default"]();
+
+var CustomBpmnRenderer_TASK_BORDER_RADIUS = 10;
+var CustomBpmnRenderer_INNER_OUTER_DIST = 3;
+
+var CustomBpmnRenderer_DEFAULT_FILL_OPACITY = .95,
+    CustomBpmnRenderer_HIGH_FILL_OPACITY = .35;
+
+var CustomBpmnRenderer_ELEMENT_LABEL_DISTANCE = 10;
+
+function CustomBpmnRenderer(
+    config, eventBus, styles, pathMap,
+    canvas, textRenderer, priority) {
+
+  BaseRenderer.call(this, eventBus, priority);
+
+  var defaultFillColor = config && config.defaultFillColor,
+      defaultStrokeColor = config && config.defaultStrokeColor,
+      defaultLabelColor = config && config.defaultLabelColor;
+
+  var rendererId = CustomBpmnRenderer_RENDERER_IDS.next();
+
+  var markers = {};
+
+  var computeStyle = styles.computeStyle;
+
+  function addMarker(id, options) {
+    var attrs = Object(dist_index_esm["assign"])({
+      fill: 'black',
+      strokeWidth: 1,
+      strokeLinecap: 'round',
+      strokeDasharray: 'none'
+    }, options.attrs);
+
+    var ref = options.ref || { x: 0, y: 0 };
+
+    var scale = options.scale || 1;
+
+    // fix for safari / chrome / firefox bug not correctly
+    // resetting stroke dash array
+    if (attrs.strokeDasharray === 'none') {
+      attrs.strokeDasharray = [10000, 1];
+    }
+
+    var marker = index_esm_create('marker');
+
+    index_esm_attr(options.element, attrs);
+
+    index_esm_append(marker, options.element);
+
+    index_esm_attr(marker, {
+      id: id,
+      viewBox: '0 0 20 20',
+      refX: ref.x,
+      refY: ref.y,
+      markerWidth: 20 * scale,
+      markerHeight: 20 * scale,
+      orient: 'auto'
+    });
+
+    var defs = Object(min_dom_dist_index_esm["query"])('defs', canvas._svg);
+
+    if (!defs) {
+      defs = index_esm_create('defs');
+
+      index_esm_append(canvas._svg, defs);
+    }
+
+    index_esm_append(defs, marker);
+
+    markers[id] = marker;
+  }
+
+  function colorEscape(str) {
+
+    // only allow characters and numbers
+    return str.replace(/[^0-9a-zA-z]+/g, '_');
+  }
+
+  function marker(type, fill, stroke) {
+    var id = type + '-' + colorEscape(fill) + '-' + colorEscape(stroke) + '-' + rendererId;
+
+    if (!markers[id]) {
+      createMarker(id, type, fill, stroke);
+    }
+
+    return 'url(#' + id + ')';
+  }
+
+  function createMarker(id, type, fill, stroke) {
+
+    if (type === 'sequenceflow-end') {
+      var sequenceflowEnd = index_esm_create('path');
+      index_esm_attr(sequenceflowEnd, { d: 'M 1 5 L 11 10 L 1 15 Z' });
+
+      addMarker(id, {
+        element: sequenceflowEnd,
+        ref: { x: 11, y: 10 },
+        scale: 0.5,
+        attrs: {
+          fill: stroke,
+          stroke: stroke
+        }
+      });
+    }
+
+    if (type === 'messageflow-start') {
+      var messageflowStart = index_esm_create('circle');
+      index_esm_attr(messageflowStart, { cx: 6, cy: 6, r: 3.5 });
+
+      addMarker(id, {
+        element: messageflowStart,
+        attrs: {
+          fill: fill,
+          stroke: stroke
+        },
+        ref: { x: 6, y: 6 }
+      });
+    }
+
+    if (type === 'messageflow-end') {
+      var messageflowEnd = index_esm_create('path');
+      index_esm_attr(messageflowEnd, { d: 'm 1 5 l 0 -3 l 7 3 l -7 3 z' });
+
+      addMarker(id, {
+        element: messageflowEnd,
+        attrs: {
+          fill: fill,
+          stroke: stroke,
+          strokeLinecap: 'butt'
+        },
+        ref: { x: 8.5, y: 5 }
+      });
+    }
+
+    if (type === 'association-start') {
+      var associationStart = index_esm_create('path');
+      index_esm_attr(associationStart, { d: 'M 11 5 L 1 10 L 11 15' });
+
+      addMarker(id, {
+        element: associationStart,
+        attrs: {
+          fill: 'none',
+          stroke: stroke,
+          strokeWidth: 1.5
+        },
+        ref: { x: 1, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'association-end') {
+      var associationEnd = index_esm_create('path');
+      index_esm_attr(associationEnd, { d: 'M 1 5 L 11 10 L 1 15' });
+
+      addMarker(id, {
+        element: associationEnd,
+        attrs: {
+          fill: 'none',
+          stroke: stroke,
+          strokeWidth: 1.5
+        },
+        ref: { x: 12, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'conditional-flow-marker') {
+      var conditionalflowMarker = index_esm_create('path');
+      index_esm_attr(conditionalflowMarker, { d: 'M 0 10 L 8 6 L 16 10 L 8 14 Z' });
+
+      addMarker(id, {
+        element: conditionalflowMarker,
+        attrs: {
+          fill: fill,
+          stroke: stroke
+        },
+        ref: { x: -1, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'conditional-default-flow-marker') {
+      var conditionaldefaultflowMarker = index_esm_create('path');
+      index_esm_attr(conditionaldefaultflowMarker, { d: 'M 6 4 L 10 16' });
+
+      addMarker(id, {
+        element: conditionaldefaultflowMarker,
+        attrs: {
+          stroke: stroke
+        },
+        ref: { x: 0, y: 10 },
+        scale: 0.5
+      });
+    }
+  }
+
+  function drawCircle(parentGfx, width, height, offset, attrs) {
+
+    if (Object(dist_index_esm["isObject"])(offset)) {
+      attrs = offset;
+      offset = 0;
+    }
+
+    offset = offset || 0;
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    if (attrs.fill === 'none') {
+      delete attrs.fillOpacity;
+    }
+
+    var cx = width / 2,
+        cy = height / 2;
+
+    var circle = index_esm_create('circle');
+    index_esm_attr(circle, {
+      cx: cx,
+      cy: cy,
+      r: Math.round((width + height) / 4 - offset)
+    });
+    index_esm_attr(circle, attrs);
+
+    index_esm_append(parentGfx, circle);
+
+    return circle;
+  }
+
+  function drawRect(parentGfx, width, height, r, offset, attrs) {
+
+    if (Object(dist_index_esm["isObject"])(offset)) {
+      attrs = offset;
+      offset = 0;
+    }
+
+    offset = offset || 0;
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    var rect = index_esm_create('rect');
+    index_esm_attr(rect, {
+      x: offset,
+      y: offset,
+      width: width - offset * 2,
+      height: height - offset * 2,
+      rx: r,
+      ry: r
+    });
+    index_esm_attr(rect, attrs);
+
+    index_esm_append(parentGfx, rect);
+
+    return rect;
+  }
+
+  function drawDiamond(parentGfx, width, height, attrs) {
+
+    var x_2 = width / 2;
+    var y_2 = height / 2;
+
+    var points = [{ x: x_2, y: 0 }, { x: width, y: y_2 }, { x: x_2, y: height }, { x: 0, y: y_2 }];
+
+    var pointsString = points.map(function(point) {
+      return point.x + ',' + point.y;
+    }).join(' ');
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    var polygon = index_esm_create('polygon');
+    index_esm_attr(polygon, {
+      points: pointsString
+    });
+    index_esm_attr(polygon, attrs);
+
+    index_esm_append(parentGfx, polygon);
+
+    return polygon;
+  }
+
+  function drawLine(parentGfx, waypoints, attrs) {
+    attrs = computeStyle(attrs, [ 'no-fill' ], {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'none'
+    });
+
+    var line = createLine(waypoints, attrs);
+
+    index_esm_append(parentGfx, line);
+
+    return line;
+  }
+
+  function drawPath(parentGfx, d, attrs) {
+
+    attrs = computeStyle(attrs, [ 'no-fill' ], {
+      strokeWidth: 2,
+      stroke: 'black'
+    });
+
+    var path = index_esm_create('path');
+    index_esm_attr(path, { d: d });
+    index_esm_attr(path, attrs);
+
+    index_esm_append(parentGfx, path);
+
+    return path;
+  }
+
+  function drawMarker(type, parentGfx, path, attrs) {
+    return drawPath(parentGfx, path, Object(dist_index_esm["assign"])({ 'data-marker': type }, attrs));
+  }
+
+  function as(type) {
+    return function(parentGfx, element) {
+      return handlers[type](parentGfx, element);
+    };
+  }
+
+  function renderer(type) {
+    return handlers[type];
+  }
+
+  function renderEventContent(element, parentGfx) {
+
+    var event = getSemantic(element);
+    var isThrowing = isThrowEvent(event);
+
+    if (event.eventDefinitions && event.eventDefinitions.length>1) {
+      if (event.parallelMultiple) {
+        return renderer('bpmn:ParallelMultipleEventDefinition')(parentGfx, element, isThrowing);
+      }
+      else {
+        return renderer('bpmn:MultipleEventDefinition')(parentGfx, element, isThrowing);
+      }
+    }
+
+    if (isTypedEvent(event, 'bpmn:MessageEventDefinition')) {
+      return renderer('bpmn:MessageEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:TimerEventDefinition')) {
+      return renderer('bpmn:TimerEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:ConditionalEventDefinition')) {
+      return renderer('bpmn:ConditionalEventDefinition')(parentGfx, element);
+    }
+
+    if (isTypedEvent(event, 'bpmn:SignalEventDefinition')) {
+      return renderer('bpmn:SignalEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:EscalationEventDefinition')) {
+      return renderer('bpmn:EscalationEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:LinkEventDefinition')) {
+      return renderer('bpmn:LinkEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:ErrorEventDefinition')) {
+      return renderer('bpmn:ErrorEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:CancelEventDefinition')) {
+      return renderer('bpmn:CancelEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:CompensateEventDefinition')) {
+      return renderer('bpmn:CompensateEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:TerminateEventDefinition')) {
+      return renderer('bpmn:TerminateEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    return null;
+  }
+
+  function renderLabel(parentGfx, label, options) {
+
+    options = Object(dist_index_esm["assign"])({
+      size: {
+        width: 100
+      }
+    }, options);
+
+    var text = textRenderer.createText(label || '', options);
+
+    index_esm_classes(text).add('djs-label');
+
+    index_esm_append(parentGfx, text);
+
+    return text;
+  }
+
+  function renderEmbeddedLabel(parentGfx, element, align) {
+    var semantic = getSemantic(element);
+
+    var fontOverride = getFontOverride(element);
+
+    return renderLabel(parentGfx, semantic.name, {
+      box: element,
+      align: align,
+      padding: 5,
+      style: Object(dist_index_esm["assign"])({
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+      }, fontOverride)
+    });
+  }
+
+  function getFontOverride(element) {
+    var fontOverride = {};
+    if (element.businessObject) {
+      var fontSize = element.businessObject["aux-font-size"];
+      if (fontSize) {
+         fontOverride = Object.assign(fontOverride, { fontSize })
+      }
+    }
+    return fontOverride;
+  }
+
+  function renderExternalLabel(parentGfx, element) {
+
+    var box = {
+      width: 90,
+      height: 30,
+      x: element.width / 2 + element.x,
+      y: element.height / 2 + element.y
+    };
+
+    var fontOverride = getFontOverride(element);
+
+    return renderLabel(parentGfx, getLabel(element), {
+      box: box,
+      fitBox: true,
+      style: Object(dist_index_esm["assign"])(
+        {},
+        textRenderer.getExternalStyle(),
+        fontOverride,
+        {
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+        }
+      )
+    });
+  }
+
+  function renderLaneLabel(parentGfx, text, element) {
+    var textBox = renderLabel(parentGfx, text, {
+      box: {
+        height: 30,
+        width: element.height
+      },
+      align: 'center-middle',
+      style: {
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+      }
+    });
+
+    var top = -1 * element.height;
+
+    SvgTransformUtil_transform(textBox, 0, -top, 270);
+  }
+
+  function createPathFromConnection(connection) {
+    var waypoints = connection.waypoints;
+
+    var pathData = 'm  ' + waypoints[0].x + ',' + waypoints[0].y;
+    for (var i = 1; i < waypoints.length; i++) {
+      pathData += 'L' + waypoints[i].x + ',' + waypoints[i].y + ' ';
+    }
+    return pathData;
+  }
+
+  var handlers = this.handlers = {
+    'bpmn:Event': function(parentGfx, element, attrs) {
+
+      if (!('fillOpacity' in attrs)) {
+        attrs.fillOpacity = CustomBpmnRenderer_DEFAULT_FILL_OPACITY;
+      }
+
+      return drawCircle(parentGfx, element.width, element.height, attrs);
+    },
+    'bpmn:StartEvent': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var semantic = getSemantic(element);
+
+      if (!semantic.isInterrupting) {
+        attrs = {
+          strokeDasharray: '6',
+          strokeLinecap: 'round',
+          fill: getFillColor(element, defaultFillColor),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        };
+      }
+
+      var circle = renderer('bpmn:Event')(parentGfx, element, attrs);
+
+      renderEventContent(element, parentGfx);
+
+      return circle;
+    },
+    'bpmn:MessageEventDefinition': function(parentGfx, element, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_MESSAGE', {
+        xScaleFactor: 0.9,
+        yScaleFactor: 0.9,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.235,
+          my: 0.315
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(element, defaultStrokeColor) : getFillColor(element, defaultFillColor);
+      var stroke = isThrowing ? getFillColor(element, defaultFillColor) : getStrokeColor(element, defaultStrokeColor);
+
+      var messagePath = drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: stroke
+      });
+
+      return messagePath;
+    },
+    'bpmn:TimerEventDefinition': function(parentGfx, element) {
+      var circle = drawCircle(parentGfx, element.width, element.height, 0.2 * element.height, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData = pathMap.getScaledPath('EVENT_TIMER_WH', {
+        xScaleFactor: 0.75,
+        yScaleFactor: 0.75,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.5,
+          my: 0.5
+        }
+      });
+
+      drawPath(parentGfx, pathData, {
+        strokeWidth: 2,
+        strokeLinecap: 'square',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      for (var i = 0;i < 12; i++) {
+
+        var linePathData = pathMap.getScaledPath('EVENT_TIMER_LINE', {
+          xScaleFactor: 0.75,
+          yScaleFactor: 0.75,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.5,
+            my: 0.5
+          }
+        });
+
+        var width = element.width / 2;
+        var height = element.height / 2;
+
+        drawPath(parentGfx, linePathData, {
+          strokeWidth: 1,
+          strokeLinecap: 'square',
+          transform: 'rotate(' + (i * 30) + ',' + height + ',' + width + ')',
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+      }
+
+      return circle;
+    },
+    'bpmn:EscalationEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_ESCALATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.2
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:ConditionalEventDefinition': function(parentGfx, event) {
+      var pathData = pathMap.getScaledPath('EVENT_CONDITIONAL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.222
+        }
+      });
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:LinkEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_LINK', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.57,
+          my: 0.263
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:ErrorEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_ERROR', {
+        xScaleFactor: 1.1,
+        yScaleFactor: 1.1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.2,
+          my: 0.722
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:CancelEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_CANCEL_45', {
+        xScaleFactor: 1.0,
+        yScaleFactor: 1.0,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.638,
+          my: -0.055
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      var path = drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+
+      SvgTransformUtil_rotate(path, 45);
+
+      return path;
+    },
+    'bpmn:CompensateEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_COMPENSATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.22,
+          my: 0.5
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:SignalEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_SIGNAL', {
+        xScaleFactor: 0.9,
+        yScaleFactor: 0.9,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.2
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:MultipleEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_MULTIPLE', {
+        xScaleFactor: 1.1,
+        yScaleFactor: 1.1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.222,
+          my: 0.36
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill
+      });
+    },
+    'bpmn:ParallelMultipleEventDefinition': function(parentGfx, event) {
+      var pathData = pathMap.getScaledPath('EVENT_PARALLEL_MULTIPLE', {
+        xScaleFactor: 1.2,
+        yScaleFactor: 1.2,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.458,
+          my: 0.194
+        }
+      });
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(event, defaultStrokeColor),
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:EndEvent': function(parentGfx, element) {
+      var circle = renderer('bpmn:Event')(parentGfx, element, {
+        strokeWidth: 4,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      renderEventContent(element, parentGfx, true);
+
+      return circle;
+    },
+    'bpmn:TerminateEventDefinition': function(parentGfx, element) {
+      var circle = drawCircle(parentGfx, element.width, element.height, 8, {
+        strokeWidth: 4,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return circle;
+    },
+    'bpmn:IntermediateEvent': function(parentGfx, element) {
+      var outer = renderer('bpmn:Event')(parentGfx, element, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      /* inner */
+      drawCircle(parentGfx, element.width, element.height, CustomBpmnRenderer_INNER_OUTER_DIST, {
+        strokeWidth: 1,
+        fill: getFillColor(element, 'none'),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      renderEventContent(element, parentGfx);
+
+      return outer;
+    },
+    'bpmn:IntermediateCatchEvent': as('bpmn:IntermediateEvent'),
+    'bpmn:IntermediateThrowEvent': as('bpmn:IntermediateEvent'),
+
+    'bpmn:Activity': function(parentGfx, element, attrs) {
+
+      attrs = attrs || {};
+
+      if (!('fillOpacity' in attrs)) {
+        attrs.fillOpacity = CustomBpmnRenderer_DEFAULT_FILL_OPACITY;
+      }
+
+      return drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS, attrs);
+    },
+
+    'bpmn:Task': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var rect = renderer('bpmn:Activity')(parentGfx, element, attrs);
+
+      renderEmbeddedLabel(parentGfx, element, 'center-middle');
+      attachTaskMarkers(parentGfx, element);
+
+      return rect;
+    },
+    'bpmn:ServiceTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathDataBG = pathMap.getScaledPath('TASK_TYPE_SERVICE', {
+        abspos: {
+          x: 12,
+          y: 18
+        }
+      });
+
+      /* service bg */ drawPath(parentGfx, pathDataBG, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var fillPathData = pathMap.getScaledPath('TASK_TYPE_SERVICE_FILL', {
+        abspos: {
+          x: 17.2,
+          y: 18
+        }
+      });
+
+      /* service fill */ drawPath(parentGfx, fillPathData, {
+        strokeWidth: 0,
+        fill: getFillColor(element, defaultFillColor)
+      });
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SERVICE', {
+        abspos: {
+          x: 17,
+          y: 22
+        }
+      });
+
+      /* service */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:UserTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var x = 15;
+      var y = 12;
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_USER_1', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 0.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData2 = pathMap.getScaledPath('TASK_TYPE_USER_2', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user2 path */ drawPath(parentGfx, pathData2, {
+        strokeWidth: 0.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData3 = pathMap.getScaledPath('TASK_TYPE_USER_3', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user3 path */ drawPath(parentGfx, pathData3, {
+        strokeWidth: 0.5,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:ManualTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_MANUAL', {
+        abspos: {
+          x: 17,
+          y: 15
+        }
+      });
+
+      /* manual path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 0.5, // 0.25,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:SendTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SEND', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: 21,
+        containerHeight: 14,
+        position: {
+          mx: 0.285,
+          my: 0.357
+        }
+      });
+
+      /* send path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getFillColor(element, defaultFillColor)
+      });
+
+      return task;
+    },
+    'bpmn:ReceiveTask' : function(parentGfx, element) {
+      var semantic = getSemantic(element);
+
+      var task = renderer('bpmn:Task')(parentGfx, element);
+      var pathData;
+
+      if (semantic.instantiate) {
+        drawCircle(parentGfx, 28, 28, 20 * 0.22, { strokeWidth: 1 });
+
+        pathData = pathMap.getScaledPath('TASK_TYPE_INSTANTIATING_SEND', {
+          abspos: {
+            x: 7.77,
+            y: 9.52
+          }
+        });
+      } else {
+
+        pathData = pathMap.getScaledPath('TASK_TYPE_SEND', {
+          xScaleFactor: 0.9,
+          yScaleFactor: 0.9,
+          containerWidth: 21,
+          containerHeight: 14,
+          position: {
+            mx: 0.3,
+            my: 0.4
+          }
+        });
+      }
+
+      /* receive path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:ScriptTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SCRIPT', {
+        abspos: {
+          x: 15,
+          y: 20
+        }
+      });
+
+      /* script path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:BusinessRuleTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var headerPathData = pathMap.getScaledPath('TASK_TYPE_BUSINESS_RULE_HEADER', {
+        abspos: {
+          x: 8,
+          y: 8
+        }
+      });
+
+      var businessHeaderPath = drawPath(parentGfx, headerPathData);
+      index_esm_attr(businessHeaderPath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, '#aaaaaa'),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var headerData = pathMap.getScaledPath('TASK_TYPE_BUSINESS_RULE_MAIN', {
+        abspos: {
+          x: 8,
+          y: 8
+        }
+      });
+
+      var businessPath = drawPath(parentGfx, headerData);
+      index_esm_attr(businessPath, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:SubProcess': function(parentGfx, element, attrs) {
+      attrs = Object(dist_index_esm["assign"])({
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs);
+
+      var rect = renderer('bpmn:Activity')(parentGfx, element, attrs);
+
+      var expanded = isExpanded(element);
+
+      if (isEventSubProcess(element)) {
+        index_esm_attr(rect, {
+          strokeDasharray: '1,2'
+        });
+      }
+
+      renderEmbeddedLabel(parentGfx, element, expanded ? 'center-top' : 'center-middle');
+
+      if (expanded) {
+        attachTaskMarkers(parentGfx, element);
+      } else {
+        attachTaskMarkers(parentGfx, element, ['SubProcessMarker']);
+      }
+
+      return rect;
+    },
+    'bpmn:AdHocSubProcess': function(parentGfx, element) {
+      return renderer('bpmn:SubProcess')(parentGfx, element);
+    },
+    'bpmn:Transaction': function(parentGfx, element) {
+      var outer = renderer('bpmn:SubProcess')(parentGfx, element);
+
+      var innerAttrs = styles.style([ 'no-fill', 'no-events' ], {
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      /* inner path */ drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS - 2, CustomBpmnRenderer_INNER_OUTER_DIST, innerAttrs);
+
+      return outer;
+    },
+    'bpmn:CallActivity': function(parentGfx, element) {
+      return renderer('bpmn:SubProcess')(parentGfx, element, {
+        strokeWidth: 5
+      });
+    },
+    'bpmn:Participant': function(parentGfx, element) {
+
+      var attrs = {
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var lane = renderer('bpmn:Lane')(parentGfx, element, attrs);
+
+      var expandedPool = isExpanded(element);
+
+      if (expandedPool) {
+        drawLine(parentGfx, [
+          { x: 30, y: 0 },
+          { x: 30, y: element.height }
+        ], {
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+        var text = getSemantic(element).name;
+        renderLaneLabel(parentGfx, text, element);
+      } else {
+
+        // Collapsed pool draw text inline
+        var text2 = getSemantic(element).name;
+        renderLabel(parentGfx, text2, {
+          box: element, align: 'center-middle',
+          style: {
+            fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+          }
+        });
+      }
+
+      var participantMultiplicity = !!(getSemantic(element).participantMultiplicity);
+
+      if (participantMultiplicity) {
+        renderer('ParticipantMultiplicityMarker')(parentGfx, element);
+      }
+
+      return lane;
+    },
+    'bpmn:Lane': function(parentGfx, element, attrs) {
+      var rect = drawRect(parentGfx, element.width, element.height, 0, Object(dist_index_esm["assign"])({
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_HIGH_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs));
+
+      var semantic = getSemantic(element);
+
+      if (semantic.$type === 'bpmn:Lane') {
+        var text = semantic.name;
+        renderLaneLabel(parentGfx, text, element);
+      }
+
+      return rect;
+    },
+    'bpmn:InclusiveGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      /* circle path */
+      drawCircle(parentGfx, element.width, element.height, element.height * 0.24, {
+        strokeWidth: 2.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:ExclusiveGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_EXCLUSIVE', {
+        xScaleFactor: 0.4,
+        yScaleFactor: 0.4,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.32,
+          my: 0.3
+        }
+      });
+
+      if ((getDi(element).isMarkerVisible)) {
+        drawPath(parentGfx, pathData, {
+          strokeWidth: 1,
+          fill: getStrokeColor(element, defaultStrokeColor),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+      }
+
+      return diamond;
+    },
+    'bpmn:ComplexGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_COMPLEX', {
+        xScaleFactor: 0.5,
+        yScaleFactor:0.5,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.46,
+          my: 0.26
+        }
+      });
+
+      /* complex path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:ParallelGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_PARALLEL', {
+        xScaleFactor: 0.6,
+        yScaleFactor:0.6,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.46,
+          my: 0.2
+        }
+      });
+
+      /* parallel path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:EventBasedGateway': function(parentGfx, element) {
+
+      var semantic = getSemantic(element);
+
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      /* outer circle path */ drawCircle(parentGfx, element.width, element.height, element.height * 0.20, {
+        strokeWidth: 1,
+        fill: 'none',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var type = semantic.eventGatewayType;
+      var instantiate = !!semantic.instantiate;
+
+      function drawEvent() {
+
+        var pathData = pathMap.getScaledPath('GATEWAY_EVENT_BASED', {
+          xScaleFactor: 0.18,
+          yScaleFactor: 0.18,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.36,
+            my: 0.44
+          }
+        });
+
+        var attrs = {
+          strokeWidth: 2,
+          fill: getFillColor(element, 'none'),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        };
+
+        /* event path */ drawPath(parentGfx, pathData, attrs);
+      }
+
+      if (type === 'Parallel') {
+
+        var pathData = pathMap.getScaledPath('GATEWAY_PARALLEL', {
+          xScaleFactor: 0.4,
+          yScaleFactor:0.4,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.474,
+            my: 0.296
+          }
+        });
+
+        var parallelPath = drawPath(parentGfx, pathData);
+        index_esm_attr(parallelPath, {
+          strokeWidth: 1,
+          fill: 'none'
+        });
+      } else if (type === 'Exclusive') {
+
+        if (!instantiate) {
+          var innerCircle = drawCircle(parentGfx, element.width, element.height, element.height * 0.26);
+          index_esm_attr(innerCircle, {
+            strokeWidth: 1,
+            fill: 'none',
+            stroke: getStrokeColor(element, defaultStrokeColor)
+          });
+        }
+
+        drawEvent();
+      }
+
+
+      return diamond;
+    },
+    'bpmn:Gateway': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      return drawDiamond(parentGfx, element.width, element.height, attrs);
+    },
+    'bpmn:SequenceFlow': function(parentGfx, element) {
+      var pathData = createPathFromConnection(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      var attrs = {
+        strokeLinejoin: 'round',
+        markerEnd: marker('sequenceflow-end', fill, stroke),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var path = drawPath(parentGfx, pathData, attrs);
+
+      var sequenceFlow = getSemantic(element);
+
+      var source;
+
+      if (element.source) {
+        source = element.source.businessObject;
+
+        // conditional flow marker
+        if (sequenceFlow.conditionExpression && source.$instanceOf('bpmn:Activity')) {
+          index_esm_attr(path, {
+            markerStart: marker('conditional-flow-marker', fill, stroke)
+          });
+        }
+
+        // default marker
+        if (source.default && (source.$instanceOf('bpmn:Gateway') || source.$instanceOf('bpmn:Activity')) &&
+            source.default === sequenceFlow) {
+          index_esm_attr(path, {
+            markerStart: marker('conditional-default-flow-marker', fill, stroke)
+          });
+        }
+      }
+
+      return path;
+    },
+    'bpmn:Association': function(parentGfx, element, attrs) {
+
+      var semantic = getSemantic(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      attrs = Object(dist_index_esm["assign"])({
+        strokeDasharray: '0.5, 5',
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs || {});
+
+      if (semantic.associationDirection === 'One' ||
+          semantic.associationDirection === 'Both') {
+        attrs.markerEnd = marker('association-end', fill, stroke);
+      }
+
+      if (semantic.associationDirection === 'Both') {
+        attrs.markerStart = marker('association-start', fill, stroke);
+      }
+
+      return drawLine(parentGfx, element.waypoints, attrs);
+    },
+    'bpmn:DataInputAssociation': function(parentGfx, element) {
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      return renderer('bpmn:Association')(parentGfx, element, {
+        markerEnd: marker('association-end', fill, stroke)
+      });
+    },
+    'bpmn:DataOutputAssociation': function(parentGfx, element) {
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      return renderer('bpmn:Association')(parentGfx, element, {
+        markerEnd: marker('association-end', fill, stroke)
+      });
+    },
+    'bpmn:MessageFlow': function(parentGfx, element) {
+
+      var semantic = getSemantic(element),
+          di = getDi(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      var pathData = createPathFromConnection(element);
+
+      var attrs = {
+        markerEnd: marker('messageflow-end', fill, stroke),
+        markerStart: marker('messageflow-start', fill, stroke),
+        strokeDasharray: '10, 12',
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+        strokeWidth: '1.5px',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var path = drawPath(parentGfx, pathData, attrs);
+
+      if (semantic.messageRef) {
+        var midPoint = path.getPointAtLength(path.getTotalLength() / 2);
+
+        var markerPathData = pathMap.getScaledPath('MESSAGE_FLOW_MARKER', {
+          abspos: {
+            x: midPoint.x,
+            y: midPoint.y
+          }
+        });
+
+        var messageAttrs = { strokeWidth: 1 };
+
+        if (di.messageVisibleKind === 'initiating') {
+          messageAttrs.fill = 'white';
+          messageAttrs.stroke = 'black';
+        } else {
+          messageAttrs.fill = '#888';
+          messageAttrs.stroke = 'white';
+        }
+
+        var message = drawPath(parentGfx, markerPathData, messageAttrs);
+
+        var labelText = semantic.messageRef.name;
+        var label = renderLabel(parentGfx, labelText, {
+          align: 'center-top',
+          fitBox: true,
+          style: {
+            fill: getStrokeColor(element, defaultLabelColor, defaultStrokeColor)
+          }
+        });
+
+        var messageBounds = message.getBBox(),
+            labelBounds = label.getBBox();
+
+        var translateX = midPoint.x - labelBounds.width / 2,
+            translateY = midPoint.y + messageBounds.height / 2 + CustomBpmnRenderer_ELEMENT_LABEL_DISTANCE;
+
+        SvgTransformUtil_transform(label, translateX, translateY, 0);
+
+      }
+
+      return path;
+    },
+    'bpmn:DataObject': function(parentGfx, element) {
+      var pathData = pathMap.getScaledPath('DATA_OBJECT_PATH', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.474,
+          my: 0.296
+        }
+      });
+
+      var elementObject = drawPath(parentGfx, pathData, {
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var semantic = getSemantic(element);
+
+      if (isCollection(semantic)) {
+        renderDataItemCollection(parentGfx, element);
+      }
+
+      return elementObject;
+    },
+    'bpmn:DataObjectReference': as('bpmn:DataObject'),
+    'bpmn:DataInput': function(parentGfx, element) {
+
+      var arrowPathData = pathMap.getRawPath('DATA_ARROW');
+
+      // page
+      var elementObject = renderer('bpmn:DataObject')(parentGfx, element);
+
+      /* input arrow path */ drawPath(parentGfx, arrowPathData, { strokeWidth: 1 });
+
+      return elementObject;
+    },
+    'bpmn:DataOutput': function(parentGfx, element) {
+      var arrowPathData = pathMap.getRawPath('DATA_ARROW');
+
+      // page
+      var elementObject = renderer('bpmn:DataObject')(parentGfx, element);
+
+      /* output arrow path */ drawPath(parentGfx, arrowPathData, {
+        strokeWidth: 1,
+        fill: 'black'
+      });
+
+      return elementObject;
+    },
+    'bpmn:DataStoreReference': function(parentGfx, element) {
+      var DATA_STORE_PATH = pathMap.getScaledPath('DATA_STORE', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0,
+          my: 0.133
+        }
+      });
+
+      var elementStore = drawPath(parentGfx, DATA_STORE_PATH, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return elementStore;
+    },
+    'bpmn:BoundaryEvent': function(parentGfx, element) {
+
+      var semantic = getSemantic(element),
+          cancel = semantic.cancelActivity;
+
+      var attrs = {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      if (!cancel) {
+        attrs.strokeDasharray = '6';
+        attrs.strokeLinecap = 'round';
+      }
+
+      // apply fillOpacity
+      var outerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
+        fillOpacity: 1
+      });
+
+      // apply no-fill
+      var innerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
+        fill: 'none'
+      });
+
+      var outer = renderer('bpmn:Event')(parentGfx, element, outerAttrs);
+
+      /* inner path */ drawCircle(parentGfx, element.width, element.height, CustomBpmnRenderer_INNER_OUTER_DIST, innerAttrs);
+
+      renderEventContent(element, parentGfx);
+
+      return outer;
+    },
+    'bpmn:Group': function(parentGfx, element) {
+
+      var group = drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS, {
+        stroke: getStrokeColor(element, defaultStrokeColor),
+        strokeWidth: 1,
+        strokeDasharray: '8,3,1,3',
+        fill: 'none',
+        pointerEvents: 'none'
+      });
+
+      return group;
+    },
+    'label': function(parentGfx, element) {
+      return renderExternalLabel(parentGfx, element);
+    },
+    'bpmn:TextAnnotation': function(parentGfx, element) {
+      var style = {
+        'fill': 'none',
+        'stroke': 'none'
+      };
+
+      var textElement = drawRect(parentGfx, element.width, element.height, 0, 0, style);
+
+      var textPathData = pathMap.getScaledPath('TEXT_ANNOTATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.0,
+          my: 0.0
+        }
+      });
+
+      drawPath(parentGfx, textPathData, {
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var text = getSemantic(element).text || '';
+      renderLabel(parentGfx, text, {
+        box: element,
+        align: 'left-top',
+        padding: 5,
+        style: {
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+        }
+      });
+
+      return textElement;
+    },
+    'ParticipantMultiplicityMarker': function(parentGfx, element) {
+      var markerPath = pathMap.getScaledPath('MARKER_PARALLEL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2) / element.width),
+          my: (element.height - 15) / element.height
+        }
+      });
+
+      drawMarker('participant-multiplicity', parentGfx, markerPath, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'SubProcessMarker': function(parentGfx, element) {
+      var markerRect = drawRect(parentGfx, 14, 14, 0, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      // Process marker is placed in the middle of the box
+      // therefore fixed values can be used here
+      SvgTransformUtil_translate(markerRect, element.width / 2 - 7.5, element.height - 20);
+
+      var markerPath = pathMap.getScaledPath('MARKER_SUB_PROCESS', {
+        xScaleFactor: 1.5,
+        yScaleFactor: 1.5,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: (element.width / 2 - 7.5) / element.width,
+          my: (element.height - 20) / element.height
+        }
+      });
+
+      drawMarker('sub-process', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'ParallelMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_PARALLEL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.parallel) / element.width),
+          my: (element.height - 20) / element.height
+        }
+      });
+
+      drawMarker('parallel', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'SequentialMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_SEQUENTIAL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.seq) / element.width),
+          my: (element.height - 19) / element.height
+        }
+      });
+
+      drawMarker('sequential', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'CompensationMarker': function(parentGfx, element, position) {
+      var markerMath = pathMap.getScaledPath('MARKER_COMPENSATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.compensation) / element.width),
+          my: (element.height - 13) / element.height
+        }
+      });
+
+      drawMarker('compensation', parentGfx, markerMath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'LoopMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_LOOP', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.loop) / element.width),
+          my: (element.height - 7) / element.height
+        }
+      });
+
+      drawMarker('loop', parentGfx, markerPath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor),
+        strokeLinecap: 'round',
+        strokeMiterlimit: 0.5
+      });
+    },
+    'AdhocMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_ADHOC', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.adhoc) / element.width),
+          my: (element.height - 15) / element.height
+        }
+      });
+
+      drawMarker('adhoc', parentGfx, markerPath, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    }
+  };
+
+  function attachTaskMarkers(parentGfx, element, taskMarkers) {
+    var obj = getSemantic(element);
+
+    var subprocess = taskMarkers && taskMarkers.indexOf('SubProcessMarker') !== -1;
+    var position;
+
+    if (subprocess) {
+      position = {
+        seq: -21,
+        parallel: -22,
+        compensation: -42,
+        loop: -18,
+        adhoc: 10
+      };
+    } else {
+      position = {
+        seq: -3,
+        parallel: -6,
+        compensation: -27,
+        loop: 0,
+        adhoc: 10
+      };
+    }
+
+    Object(dist_index_esm["forEach"])(taskMarkers, function(marker) {
+      renderer(marker)(parentGfx, element, position);
+    });
+
+    if (obj.isForCompensation) {
+      renderer('CompensationMarker')(parentGfx, element, position);
+    }
+
+    if (obj.$type === 'bpmn:AdHocSubProcess') {
+      renderer('AdhocMarker')(parentGfx, element, position);
+    }
+
+    var loopCharacteristics = obj.loopCharacteristics,
+        isSequential = loopCharacteristics && loopCharacteristics.isSequential;
+
+    if (loopCharacteristics) {
+
+      if (isSequential === undefined) {
+        renderer('LoopMarker')(parentGfx, element, position);
+      }
+
+      if (isSequential === false) {
+        renderer('ParallelMarker')(parentGfx, element, position);
+      }
+
+      if (isSequential === true) {
+        renderer('SequentialMarker')(parentGfx, element, position);
+      }
+    }
+  }
+
+  function renderDataItemCollection(parentGfx, element) {
+
+    var yPosition = (element.height - 18) / element.height;
+
+    var pathData = pathMap.getScaledPath('DATA_OBJECT_COLLECTION_PATH', {
+      xScaleFactor: 1,
+      yScaleFactor: 1,
+      containerWidth: element.width,
+      containerHeight: element.height,
+      position: {
+        mx: 0.33,
+        my: yPosition
+      }
+    });
+
+    /* collection path */ drawPath(parentGfx, pathData, {
+      strokeWidth: 2
+    });
+  }
+
+
+  // extension API, use at your own risk
+  this._drawPath = drawPath;
+
+}
+
+
+inherits_browser_default()(CustomBpmnRenderer, BaseRenderer);
+
+CustomBpmnRenderer.$inject = [
+  'config.CustomBpmnRenderer',
   'eventBus',
   'styles',
   'pathMap',
   'canvas',
   'textRenderer'
 ];
+
+
+CustomBpmnRenderer.prototype.canRender = function(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:BaseElement');
+};
+
+CustomBpmnRenderer.prototype.drawShape = function(parentGfx, element) {
+  var type = element.type;
+  var h = this.handlers[type];
+
+  /* jshint -W040 */
+  return h(parentGfx, element);
+};
+
+CustomBpmnRenderer.prototype.drawConnection = function(parentGfx, element) {
+  var type = element.type;
+  var h = this.handlers[type];
+
+  /* jshint -W040 */
+  return h(parentGfx, element);
+};
+
+CustomBpmnRenderer.prototype.getShapePath = function(element) {
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Event')) {
+    return getCirclePath(element);
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Activity')) {
+    return getRoundRectPath(element, CustomBpmnRenderer_TASK_BORDER_RADIUS);
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
+    return getDiamondPath(element);
+  }
+
+  return getRectPath(element);
+};
 // CONCATENATED MODULE: ./app/modules/text-renderer/CustomTextRenderer.js
 
 
@@ -126177,7 +128087,7 @@ CustomTextRenderer.$inject = [
 
 /* harmony default export */ var bpmn_renderer = ({
   __init__: [ 'bpmnRenderer' ],
-  bpmnRenderer: [ 'type', CustomBpmnRenderer_CustomBpmnRenderer ],
+  bpmnRenderer: [ 'type', CustomBpmnRenderer ],
   textRenderer: [ 'type', CustomTextRenderer ],
   pathMap: [ 'type', PathMap ]
 });
