@@ -241,4 +241,6 @@ public interface WorkspaceService {
 
 
 	boolean hasWritePermissionOnFolder(User userByName, List<Integer> selectedFolders);
+
+    void updateOwnerAfterDeleteUser(User user);
 }
