@@ -122,7 +122,6 @@ import org.xml.sax.SAXException;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@SuppressWarnings("ALL")
 @Service("processService")
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT,
     rollbackFor = Exception.class)
