@@ -28,4 +28,15 @@ public class ParquetCell {
     private String headerCode;
     private Object value;
     private boolean enabled;
+
+    public Object getValue() {
+        switch (headerCode) {
+            case "start_time":
+            case "end_time":
+            case "timestamp":
+                return Long.parseLong(value.toString());
+            default:
+                return value;
+        }
+    }
 }
