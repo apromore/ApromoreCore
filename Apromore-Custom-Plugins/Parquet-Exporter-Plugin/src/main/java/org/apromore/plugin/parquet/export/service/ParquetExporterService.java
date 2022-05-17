@@ -62,8 +62,9 @@ public class ParquetExporterService extends AbstractParquetProducer {
     private static final String LONG = "long";
     private static final String UTF8 = "UTF-8";
 
-    private final Set<String> invalidAttributes = Set.of("case:variant", "variant", CASE_ID, "caseid",
-            TIMESTAMP, "starttimestamp", "endtimestamp", "Activity", "Resource");
+    private final Set<String> invalidAttributes = Set.of("case:variant", "casevariant", "variant", CASE_ID, "caseid",
+            TIMESTAMP, "starttimestamp", "endtimestamp", "Activity", "Resource", START_TIME, END_TIME,
+            "lifecycletransition");
 
     private final List<EncodeOption> encodeOptions = List.of(
             new EncodeOption(UTF8, UTF8, true),
