@@ -165,9 +165,9 @@ public class CalendarItemRenderer implements ListitemRenderer<Calendar>, LabelSu
         textbox.addEventListener(Events.ON_CHANGE, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                boolean updateSuccessful= updateCalendarName(textbox.getValue(), calendarItem.getId());
+                boolean updateSuccessful = updateCalendarName(textbox.getValue(), calendarItem.getId());
                 textbox.setReadonly(true);
-                if(!updateSuccessful) {
+                if (!updateSuccessful) {
                     textbox.setValue(calendarItem.getName());
                 }
             }
