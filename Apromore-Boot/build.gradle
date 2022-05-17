@@ -10,6 +10,7 @@ dependencies {
 	implementation project(':Apromore-Zk')
 	implementation project(':Apromore-Custom-Plugins')
 	implementation project(':Apromore-Plugins:plugin-core:core:api')
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.7'
 }
 
 bootJar {
