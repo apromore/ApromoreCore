@@ -97,9 +97,9 @@ class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
 
         KeycloakUriBuilder redirectUriBuilder = deployment.getAuthUrl().clone()
             .queryParam(OAuth2Constants.RESPONSE_TYPE, OAuth2Constants.CODE)
+            .queryParam("response_mode", "fragment")
             .queryParam(OAuth2Constants.CLIENT_ID, deployment.getResourceName())
             .queryParam(OAuth2Constants.REDIRECT_URI, rewrittenRedirectUriCopy(url))
-            .queryParam(OAuth2Constants.STATE, state)
             .queryParam("login", "true");
         if(loginHint != null && loginHint.length() > 0){
             redirectUriBuilder.queryParam("login_hint",loginHint);
