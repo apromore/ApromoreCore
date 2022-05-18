@@ -62,7 +62,7 @@ public class ParquetExporterService extends AbstractParquetProducer {
     private static final String LONG = "long";
     private static final String UTF8 = "UTF-8";
 
-    private final Set<String> invalidAttributes = Set.of("case:variant", "casevariant", "variant", CASE_ID, "caseid",
+    public static final Set<String> invalidAttributes = Set.of("case:variant", "casevariant", "variant", CASE_ID, "caseid",
             TIMESTAMP, "starttimestamp", "endtimestamp", "Activity", "Resource", START_TIME, END_TIME,
             "lifecycletransition");
 
