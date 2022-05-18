@@ -1535,3 +1535,26 @@ databaseChangeLog:
            columns:
              - column:
                  name: user_id
+
+ - changeSet:
+     id: 20220510114700
+     author: mtomar
+     changes:
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: validation
+                 type: JSON
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: explanation
+                 type: JSON
+       - addColumn:
+           tableName: predictor
+           columns:
+             - column:
+                 name: feature_encoding_type
+                 type: VARCHAR(25)
