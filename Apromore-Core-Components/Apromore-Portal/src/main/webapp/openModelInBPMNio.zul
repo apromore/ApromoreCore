@@ -190,6 +190,26 @@
           }
           var isEditorSaving = false;
 
+          var linkedSubProcesses = {};
+
+          function setLinkedSubProcess(subProcessId, linkedProcessName){
+            linkedSubProcesses[subProcessId] = linkedProcessName;
+            let subProcessLinkElement = document.getElementById('link-subprocess-view');
+            if (subProcessLinkElement) {
+              subProcessLinkElement.textContent = linkedProcessName;
+              subProcessLinkElement.classList.add('link-subprocess-view-link');
+            }
+          }
+
+          function removeLinkedSubProcess(subProcessId){
+            linkedSubProcesses[subProcessId] = undefined;
+            let subProcessLinkElement = document.getElementById('link-subprocess-view');
+            if (subProcessLinkElement) {
+              subProcessLinkElement.textContent = 'None';
+              subProcessLinkElement.classList.remove('link-subprocess-view-link');
+            }
+          }
+
           createEditor = async function (bpmnXML) {
             var config = {
               xml: bpmnXML,
@@ -327,9 +347,22 @@
               jq(".djs-overlay-container").toggleClass('comment-disabled');
             };
 
+             Apromore.BPMNEditor.clickSubprocessBtn = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onClickSubprocessBtn', elementId));
+            };
+
+             Apromore.BPMNEditor.viewSubprocess = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onViewSubprocess', elementId));
+            };
+
             Apromore.BPMNEditor.linkSubprocess = function(elementId) {
               //requires manual saving since this can also be called in view mode
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onLinkSubprocess', elementId));
+            };
+
+            Apromore.BPMNEditor.unlinkSubprocess = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onUnlinkSubprocess', elementId));
+              removeLinkedSubProcess(elementId);
             };
 
             Apromore.BPMNEditor.deleteSubprocess = function(elementId) {

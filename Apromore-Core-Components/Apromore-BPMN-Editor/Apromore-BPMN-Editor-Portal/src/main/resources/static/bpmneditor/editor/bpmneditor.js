@@ -1,24 +1,3 @@
-/*
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -13036,7 +13015,13 @@ function merge(target) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is", function() { return is; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBusinessObject", function() { return getBusinessObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDi", function() { return getDi; });
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+
+
 /**
  * Is an element of the given BPMN type?
  *
@@ -13053,6 +13038,20 @@ function is(element, type) {
 
 
 /**
+ * Return true if element has any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {Array<string>} types
+ *
+ * @return {boolean}
+ */
+function isAny(element, types) {
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
+    return is(element, t);
+  });
+}
+
+/**
  * Return the business object for a given element.
  *
  * @param  {djs.model.Base|ModdleElement} element
@@ -13061,6 +13060,19 @@ function is(element, type) {
  */
 function getBusinessObject(element) {
   return (element && element.businessObject) || element;
+}
+
+/**
+ * Return the di object for a given element.
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {ModdleElement}
+ */
+function getDi(element) {
+  var bo = getBusinessObject(element);
+
+  return bo && bo.di;
 }
 
 /***/ }),
@@ -26272,7 +26284,7 @@ module.exports = ExtensionElementsHelper;
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(355);
+module.exports = __webpack_require__(357);
 
 module.exports.Collection = __webpack_require__(138);
 
@@ -46610,7 +46622,7 @@ Ids.prototype.clear = function () {
 
 var DEFAULT = __webpack_require__(132);
 var parser = __webpack_require__(135);
-var FilterXSS = __webpack_require__(340);
+var FilterXSS = __webpack_require__(342);
 
 /**
  * filter xss function
@@ -49656,7 +49668,7 @@ function setDefaultParameters(options) {
  */
 
 var DEFAULT = __webpack_require__(133);
-var FilterCSS = __webpack_require__(338);
+var FilterCSS = __webpack_require__(340);
 
 
 /**
@@ -49737,8 +49749,8 @@ module.exports = __webpack_require__(149);
 "use strict";
 
 
-var colorString = __webpack_require__(350);
-var convert = __webpack_require__(353);
+var colorString = __webpack_require__(352);
+var convert = __webpack_require__(355);
 
 var _slice = [].slice;
 
@@ -54776,8 +54788,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(348);
-var translationsJa = __webpack_require__(349);
+var translationsEn = __webpack_require__(350);
+var translationsJa = __webpack_require__(351);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -54947,7 +54959,7 @@ ColorContextPad.$inject = [
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(356);
+module.exports = __webpack_require__(358);
 
 
 /***/ }),
@@ -60804,7 +60816,7 @@ var forEach = __webpack_require__(14),
 
 var updateSelection = __webpack_require__(110);
 
-var scrollTabs = __webpack_require__(357).default;
+var scrollTabs = __webpack_require__(359).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -63417,8 +63429,8 @@ var createSimulationParametersTab = __webpack_require__(258),
     createResourceTab = __webpack_require__(318),
     createGatewayTab = __webpack_require__(326),
     createCustomTab = __webpack_require__(329),
-    createAuxTab = __webpack_require__(333),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(342);
+    createAuxTab = __webpack_require__(335),
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(344);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -67967,6 +67979,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 var is = __webpack_require__(1).is;
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var properties = __webpack_require__(331);
+var createCustomEntries = __webpack_require__(333);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var bo = getBusinessObject(element),
@@ -67979,7 +67992,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
   var customGroup = {
     id : groupId,
     label: groupLabel,
-    entries: []
+    entries: createCustomEntries(element, bpmnFactory, elementRegistry, translate)
   };
 
   properties(customGroup, element, bpmnFactory, translate);
@@ -68252,8 +68265,107 @@ module.exports = function(element, bpmnFactory, options, translate) {
 /* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var LinkedSubprocessField = __webpack_require__(334);
+
+module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+
+  var entries = [];
+
+  entries.push(
+    LinkedSubprocessField(element, bpmnFactory, elementRegistry, translate)
+  );
+
+  return entries;
+};
+
+/***/ }),
+/* 334 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var domify = __webpack_require__(2).domify;
+var domEvent = __webpack_require__(2).event;
+var is = __webpack_require__(1).is;
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+
+module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+    let html = domify('<div id="link-subprocess-details"></div>');
+
+    if (is(element, 'bpmn:SubProcess')) {
+        var bo = getBusinessObject(element);
+        let linkedProcessName = bo.get("linked-process") || 'None';
+        let isLinked = false;
+
+        if (linkedSubProcesses) {
+            linkedProcessName = linkedSubProcesses[element.id] || 'None';
+            isLinked = typeof linkedSubProcesses[element.id] === 'string';
+        }
+
+        let linkedProcessLabel = domify(`<label id="link-subprocess-label">Linked subprocess:</label>`);
+        let linkedProcessLink = domify(`<span id="link-subprocess-view">${linkedProcessName}</span>`);
+        let editBtn = domify(`<input id="link-subprocess-edit" value="Edit" type="button">`);
+        let unlinkBtn = domify(`<input id="link-subprocess-remove" value="Unlink" type="button">`);
+
+        if (isLinked) {
+            linkedProcessLink.classList.add('link-subprocess-view-link');
+        } else {
+            linkedProcessLink.classList.remove('link-subprocess-view-link');
+        }
+
+        html.appendChild(linkedProcessLabel);
+        html.appendChild(linkedProcessLink);
+        html.appendChild(editBtn);
+        html.appendChild(unlinkBtn);
+
+        domEvent.bind(linkedProcessLink, 'click', function () {
+            if (Apromore.BPMNEditor.viewSubprocess) {
+                Apromore.BPMNEditor.viewSubprocess(element.id);
+            } else {
+                console.log('view subprocess function not found');
+            }
+        })
+
+        domEvent.bind(editBtn, 'click', function () {
+            if (Apromore.BPMNEditor.linkSubprocess) {
+                Apromore.BPMNEditor.linkSubprocess(element.id);
+            } else {
+                console.log('link subprocess function not found');
+            }
+        })
+
+        domEvent.bind(unlinkBtn, 'click', function () {
+            if (Apromore.BPMNEditor.unlinkSubprocess) {
+                Apromore.BPMNEditor.unlinkSubprocess(element.id);
+            } else {
+                console.log('unlink subprocess function not found');
+            }
+        })
+
+    }
+
+    // default validation method
+    var defaultFunction = function() {
+      return {};
+    };
+
+    return {
+        id: 'link-subprocess',
+        description: '',
+        get: defaultFunction,
+        set: defaultFunction,
+        validate: defaultFunction,
+        html: html,
+        type: 'text',
+        cssClasses: ['linked-subprocess']
+    };
+}
+
+
+/***/ }),
+/* 335 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var is = __webpack_require__(1).is,
-    createAuxGroups = __webpack_require__(334);
+    createAuxGroups = __webpack_require__(336);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
@@ -68273,11 +68385,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 334 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var createAuxEntries = __webpack_require__(335);
+var createAuxEntries = __webpack_require__(337);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
   var bo = getBusinessObject(element),
@@ -68296,7 +68408,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 335 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
@@ -68304,9 +68416,9 @@ var entryFactory = __webpack_require__(10);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(7);
 var extensionElementsHelper = __webpack_require__(21);
-var IconPickerField = __webpack_require__(336);
-var IconSetPickerField = __webpack_require__(337);
-var ImagePickerField = __webpack_require__(341);
+var IconPickerField = __webpack_require__(338);
+var IconSetPickerField = __webpack_require__(339);
+var ImagePickerField = __webpack_require__(343);
 var { AUX_PROPS } = __webpack_require__(11);
 
 function getExtensionElements(element, bpmnFactory) {
@@ -68491,7 +68603,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 336 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
@@ -68593,7 +68705,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 337 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var xss = __webpack_require__(34);
@@ -68865,7 +68977,7 @@ module.exports = function(options) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 338 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -68875,7 +68987,7 @@ module.exports = function(options) {
  */
 
 var DEFAULT = __webpack_require__(133);
-var parseStyle = __webpack_require__(339);
+var parseStyle = __webpack_require__(341);
 var _ = __webpack_require__(134);
 
 
@@ -68981,7 +69093,7 @@ module.exports = FilterCSS;
 
 
 /***/ }),
-/* 339 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -69061,7 +69173,7 @@ module.exports = parseStyle;
 
 
 /***/ }),
-/* 340 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -69130,7 +69242,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList, onTag, onTagAttr, onIgnoreTag,
+ *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -69147,7 +69259,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -69278,7 +69390,7 @@ module.exports = FilterXSS;
 
 
 /***/ }),
-/* 341 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
@@ -69351,11 +69463,11 @@ module.exports = function(options) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 342 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(343);
+    intermediateAndBoundaryEventGroups = __webpack_require__(345);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -69371,12 +69483,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 343 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(76),
-    intermediateAndBoundaryEventEntries = __webpack_require__(344);
+    intermediateAndBoundaryEventEntries = __webpack_require__(346);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -69410,7 +69522,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 344 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ElementHelper = __webpack_require__(48),
@@ -69437,11 +69549,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 345 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(346);
-            var content = __webpack_require__(347);
+var api = __webpack_require__(348);
+            var content = __webpack_require__(349);
 
             content = content.__esModule ? content.default : content;
 
@@ -69461,7 +69573,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 346 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69736,7 +69848,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 347 */
+/* 349 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -69753,7 +69865,7 @@ ___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: abs
 
 
 /***/ }),
-/* 348 */
+/* 350 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -69856,7 +69968,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 349 */
+/* 351 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -69957,12 +70069,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 350 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
 var colorNames = __webpack_require__(136);
-var swizzle = __webpack_require__(351);
+var swizzle = __webpack_require__(353);
 var hasOwnProperty = Object.hasOwnProperty;
 
 var reverseNames = {};
@@ -70205,13 +70317,13 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 351 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(352);
+var isArrayish = __webpack_require__(354);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -70241,7 +70353,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 352 */
+/* 354 */
 /***/ (function(module, exports) {
 
 module.exports = function isArrayish(obj) {
@@ -70256,11 +70368,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 353 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(137);
-var route = __webpack_require__(354);
+var route = __webpack_require__(356);
 
 var convert = {};
 
@@ -70340,7 +70452,7 @@ module.exports = convert;
 
 
 /***/ }),
-/* 354 */
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(137);
@@ -70443,7 +70555,7 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 355 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70651,7 +70763,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 356 */
+/* 358 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -92447,49 +92559,6 @@ AutoPlaceSelectionBehavior.$inject = [
   autoPlace: [ 'type', AutoPlace ],
   autoPlaceSelectionBehavior: [ 'type', AutoPlaceSelectionBehavior ]
 });
-// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
-
-
-
-
-
-/**
- * Return true if element has any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {Array<string>} types
- *
- * @return {boolean}
- */
-function isAny(element, types) {
-  return Object(dist_index_esm["some"])(types, function(t) {
-    return Object(ModelUtil["is"])(element, t);
-  });
-}
-
-
-/**
- * Return the parent of the element with any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {string|Array<string>} anyType
- *
- * @return {djs.model.Base}
- */
-function ModelingUtil_getParent(element, anyType) {
-
-  if (typeof anyType === 'string') {
-    anyType = [ anyType ];
-  }
-
-  while ((element = element.parent)) {
-    if (isAny(element, anyType)) {
-      return element;
-    }
-  }
-
-  return null;
-}
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/auto-place/BpmnAutoPlaceUtil.js
 
 
@@ -92514,7 +92583,7 @@ function BpmnAutoPlaceUtil_getNewShapePosition(source, element) {
     return getTextAnnotationPosition(source, element);
   }
 
-  if (isAny(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     return getDataElementPosition(source, element);
   }
 
@@ -100470,12 +100539,12 @@ function BpmnReplace(
 
     // retain default flow's reference between inclusive <-> exclusive gateways and activities
     if (
-      isAny(oldBusinessObject, [
+      Object(ModelUtil["isAny"])(oldBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
       ]) &&
-      isAny(newBusinessObject, [
+      Object(ModelUtil["isAny"])(newBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
@@ -102077,6 +102146,33 @@ ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
   __init__: [ 'replaceMenuProvider' ],
   replaceMenuProvider: [ 'type', ReplaceMenuProvider ]
 });
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
+
+
+
+
+/**
+ * Return the parent of the element with any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {string|Array<string>} anyType
+ *
+ * @return {djs.model.Base}
+ */
+function ModelingUtil_getParent(element, anyType) {
+
+  if (typeof anyType === 'string') {
+    anyType = [ anyType ];
+  }
+
+  while ((element = element.parent)) {
+    if (Object(ModelUtil["isAny"])(element, anyType)) {
+      return element;
+    }
+  }
+
+  return null;
+}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/resize/ResizeUtil.js
 
 
@@ -102648,7 +102744,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
 
-  if (isAny(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
 
     var childLanes = getChildLanes(element);
 
@@ -102814,7 +102910,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
   if (
-    isAny(businessObject, [
+    Object(ModelUtil["isAny"])(businessObject, [
       'bpmn:FlowNode',
       'bpmn:InteractionNode',
       'bpmn:DataObjectReference',
@@ -102859,7 +102955,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
-  if (isAny(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     Object(dist_index_esm["assign"])(actions, {
       'connect': {
         group: 'connect',
@@ -103181,7 +103277,7 @@ function BpmnDistributeElements(distributeElements) {
 
   distributeElements.registerFilter(function(elements) {
     return Object(dist_index_esm["filter"])(elements, function(element) {
-      var cannotDistribute = isAny(element, [
+      var cannotDistribute = Object(ModelUtil["isAny"])(element, [
         'bpmn:Association',
         'bpmn:BoundaryEvent',
         'bpmn:DataInputAssociation',
@@ -103677,7 +103773,7 @@ function BpmnGridSnapping(eventBus) {
     var context = event.context,
         shape = event.shape;
 
-    if (isAny(shape, [
+    if (Object(ModelUtil["isAny"])(shape, [
       'bpmn:Participant',
       'bpmn:SubProcess',
       'bpmn:TextAnnotation'
@@ -105762,7 +105858,7 @@ function LabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     if (force ||
-        isAny(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
+        Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
         isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -105811,7 +105907,7 @@ LabelEditingProvider.prototype.activate = function(element) {
 
   // tasks
   if (
-    isAny(element, [
+    Object(ModelUtil["isAny"])(element, [
       'bpmn:Task',
       'bpmn:Participant',
       'bpmn:Lane',
@@ -105910,7 +106006,7 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // internal labels for tasks and collapsed call activities,
   // sub processes and participants
-  if (isAny(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
       isCollapsedPool(element) ||
       isCollapsedSubProcess(element)) {
 
@@ -106682,7 +106778,7 @@ function getEventDefinition(element) {
 
 function shouldReplace(shape, host) {
   return !isLabel(shape) &&
-    isAny(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
+    Object(ModelUtil["isAny"])(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
 }
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/BoundaryEventBehavior.js
@@ -106794,7 +106890,7 @@ function RootElementReferenceBehavior(
   injector.invoke(CommandInterceptor, this);
 
   function canHaveRootElementReference(element) {
-    return isAny(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
+    return Object(ModelUtil["isAny"])(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
       hasAnyEventDefinition(element, [
         'bpmn:ErrorEventDefinition',
         'bpmn:EscalationEventDefinition',
@@ -106823,7 +106919,7 @@ function RootElementReferenceBehavior(
   }
 
   function getRootElement(businessObject) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.get('messageRef');
     }
 
@@ -106834,7 +106930,7 @@ function RootElementReferenceBehavior(
   }
 
   function setRootElement(businessObject, rootElement) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.set('messageRef', rootElement);
     }
 
@@ -107006,7 +107102,7 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
 
     // ensure elements are not dropped onto a bpmn:Lane but onto
     // the underlying bpmn:Participant
-    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !isAny(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
+    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !Object(ModelUtil["isAny"])(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
       event.hover = getLanesRoot(hover);
       event.hoverGfx = elementRegistry.getGraphics(event.hover);
     }
@@ -107684,7 +107780,7 @@ function DataStoreBehavior(
         shape = context.shape,
         rootElement = canvas.getRootElement();
 
-    if (isAny(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
+    if (Object(ModelUtil["isAny"])(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
         && Object(ModelUtil["is"])(rootElement, 'bpmn:Collaboration')) {
       getDataStores(rootElement)
         .filter(function(dataStore) {
@@ -108593,7 +108689,7 @@ function IsHorizontalFix(eventBus) {
   this.executed([ 'shape.move', 'shape.create', 'shape.resize' ], function(event) {
     var bo = Object(ModelUtil["getBusinessObject"])(event.context.shape);
 
-    if (isAny(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
+    if (Object(ModelUtil["isAny"])(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
 
       // set attribute directly to avoid modeling#updateProperty side effects
       bo.di.set('isHorizontal', true);
@@ -111499,7 +111595,7 @@ function canStartConnection(element) {
     return null;
   }
 
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:FlowNode',
     'bpmn:InteractionNode',
     'bpmn:DataObjectReference',
@@ -111754,7 +111850,7 @@ function canDrop(element, target, position) {
   }
 
   // allow moving DataInput / DataOutput within its original container only
-  if (isAny(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
 
     if (element.parent) {
       return target === element.parent;
@@ -111778,7 +111874,7 @@ function canDrop(element, target, position) {
       return isExpanded(target);
     }
 
-    return isAny(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
+    return Object(ModelUtil["isAny"])(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
   }
 
   // disallow dropping data store reference if there is no process to append to
@@ -111792,8 +111888,8 @@ function canDrop(element, target, position) {
   // rendered and moved to top (Process or Collaboration level)
   //
   // artifacts may be placed wherever, too
-  if (isAny(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
-    return isAny(target, [
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
+    return Object(ModelUtil["isAny"])(target, [
       'bpmn:Collaboration',
       'bpmn:Lane',
       'bpmn:Participant',
@@ -112166,13 +112262,13 @@ function canConnectSequenceFlow(source, target) {
 
 function canConnectDataAssociation(source, target) {
 
-  if (isAny(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
+  if (Object(ModelUtil["isAny"])(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
     return { type: 'bpmn:DataInputAssociation' };
   }
 
-  if (isAny(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
+  if (Object(ModelUtil["isAny"])(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
     return { type: 'bpmn:DataOutputAssociation' };
   }
 
@@ -112205,7 +112301,7 @@ function BpmnRules_canInsert(shape, flow, position) {
   // about connection rules (yet)
 
   return (
-    isAny(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
+    Object(ModelUtil["isAny"])(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
     !isLabel(flow) &&
     Object(ModelUtil["is"])(shape, 'bpmn:FlowNode') &&
     !Object(ModelUtil["is"])(shape, 'bpmn:BoundaryEvent') &&
@@ -112482,7 +112578,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     var entry = Object(dist_index_esm["find"])(orders, function(o) {
-      return isAny(element, [ o.type ]);
+      return Object(ModelUtil["isAny"])(element, [ o.type ]);
     });
 
     return entry && entry.order || { level: 1 };
@@ -112509,7 +112605,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     while (actualParent) {
 
-      if (isAny(actualParent, containers)) {
+      if (Object(ModelUtil["isAny"])(actualParent, containers)) {
         break;
       }
 
@@ -115090,7 +115186,7 @@ BpmnFactory.$inject = [ 'moddle' ];
 
 
 BpmnFactory.prototype._needsId = function(element) {
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:RootElement',
     'bpmn:FlowElement',
     'bpmn:MessageFlow',
@@ -115126,7 +115222,7 @@ BpmnFactory.prototype._ensureId = function(element) {
     prefix = 'Event';
   } else if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
     prefix = 'Gateway';
-  } else if (isAny(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
+  } else if (Object(ModelUtil["isAny"])(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
     prefix = 'Flow';
   } else {
     prefix = (element.$type || '').replace(/^[^:]*:/g, '');
@@ -115404,7 +115500,7 @@ function BpmnUpdater(
 
     // remove condition from connection on reconnect to new source
     // if new source can NOT have condional sequence flow
-    if (connectionBo.conditionExpression && !isAny(newSourceBo, [
+    if (connectionBo.conditionExpression && !Object(ModelUtil["isAny"])(newSourceBo, [
       'bpmn:Activity',
       'bpmn:ExclusiveGateway',
       'bpmn:InclusiveGateway'
@@ -123288,12 +123384,12 @@ function BpmnConnectSnapping(eventBus) {
       context.connectionStart = SnapUtil_mid(start);
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
         snapToPosition(event, SnapUtil_mid(hover));
       }
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
         snapToTargetMid(event, hover);
       }
 
@@ -125310,7 +125406,7 @@ var provider_default = /*#__PURE__*/__webpack_require__.n(app_provider);
 var ap = __webpack_require__(142);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(345);
+var customModeler = __webpack_require__(347);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(144);
@@ -125982,10 +126078,10 @@ function LinkSubprocess(eventBus, overlays) {
         let $overlay = jquery_default()(LinkSubprocess.OVERLAY_HTML);
 
         $overlay.click(() => {
-            if (Apromore.BPMNEditor.linkSubprocess) {
-                Apromore.BPMNEditor.linkSubprocess(id);
+            if (Apromore.BPMNEditor.clickSubprocessBtn) {
+                Apromore.BPMNEditor.clickSubprocessBtn(id);
             } else {
-                console.log('link subprocesses function not found');
+                console.log('click subprocess btn function not found');
             }
         });
 
@@ -126327,7 +126423,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 357 */
+/* 359 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
