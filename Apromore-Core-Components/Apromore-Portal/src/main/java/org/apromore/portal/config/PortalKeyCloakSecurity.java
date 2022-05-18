@@ -20,6 +20,7 @@ import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,15 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+
+  /**
+   * Whether to override the generation of the login page URL.
+   *
+   * The default behavior of the Keycloak Spring Boot plugin is to redirect to the login page using a
+   * URL that contains a session identifier.  Because of this, it doesn't work if used as a bookmark.
+   */
+  @Value("${enableKeycloakLoginPageBookmarking:true}")
+  private boolean enableKeycloakLoginPageBookmarking;
 
   @Autowired
   private ManagerService manager;
@@ -66,6 +76,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   protected KeycloakAuthenticationProcessingFilter keycloakAuthenticationProcessingFilter() throws Exception {
     KeycloakAuthenticationProcessingFilter filter = super.keycloakAuthenticationProcessingFilter();
     filter.setAuthenticationSuccessHandler(new ApromoreKeycloakAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler()));
+    if (enableKeycloakLoginPageBookmarking) {
+      filter.setRequestAuthenticatorFactory(new PortalKeycloakRequestAuthenticatorFactory());
+    }
     return filter;
   }
 
