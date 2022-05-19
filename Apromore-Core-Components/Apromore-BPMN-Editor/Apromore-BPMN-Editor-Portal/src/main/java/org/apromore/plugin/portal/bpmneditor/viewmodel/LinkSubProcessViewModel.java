@@ -51,6 +51,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class LinkSubProcessViewModel {
@@ -99,6 +100,7 @@ public class LinkSubProcessViewModel {
                 processService.linkSubprocess(parentProcessId, elementId, newProcess.getId());
                 BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                 window.detach();
+                Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','Untitled (v1.0)');");
                 break;
             case LINK_TYPE_EXISTING:
                 if (selectedProcess == null) {
@@ -110,6 +112,9 @@ public class LinkSubProcessViewModel {
                     processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId());
                     BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
+
+                    String linkedProcessName = selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
+                    Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','" + linkedProcessName + "');");
                 }
                 break;
             default:

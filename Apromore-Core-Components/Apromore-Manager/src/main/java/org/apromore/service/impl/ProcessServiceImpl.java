@@ -24,6 +24,8 @@
  */
 package org.apromore.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apromore.aop.Event;
 import org.apromore.aop.HistoryEnum;
 import org.apromore.common.Constants;
@@ -54,6 +56,7 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -997,5 +1000,26 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     return ui.buildProcessSummary(process);
+  }
+
+  @Override
+  public boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
+    return !getLinkedProcesses(processId, username).isEmpty();
+  }
+
+  @Override
+  public Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
+    Map<String, Integer> linkedProcesses = new HashMap<>();
+    List<SubprocessProcess> subprocessProcesses = subprocessProcessRepository.getLinkedSubProcesses(processId);
+    User user = userSrv.findUserByLogin(username);
+
+    for (SubprocessProcess subprocessProcess : subprocessProcesses) {
+      int linkedProcessId = subprocessProcess.getLinkedProcess().getId();
+      //Check for user access to the linked process
+      if (authorizationService.getProcessAccessTypeByUser(linkedProcessId, user) != null) {
+        linkedProcesses.put(subprocessProcess.getSubprocessId(), subprocessProcess.getLinkedProcess().getId());
+      }
+    }
+    return Collections.unmodifiableMap(linkedProcesses);
   }
 }
