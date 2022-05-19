@@ -14,10 +14,10 @@ export default function LinkSubprocess(eventBus, overlays) {
         let $overlay = $(LinkSubprocess.OVERLAY_HTML);
 
         $overlay.click(() => {
-            if (Apromore.BPMNEditor.linkSubprocess) {
-                Apromore.BPMNEditor.linkSubprocess(id);
+            if (Apromore.BPMNEditor.clickSubprocessBtn) {
+                Apromore.BPMNEditor.clickSubprocessBtn(id);
             } else {
-                console.log('link subprocesses function not found');
+                console.log('click subprocess btn function not found');
             }
         });
 
