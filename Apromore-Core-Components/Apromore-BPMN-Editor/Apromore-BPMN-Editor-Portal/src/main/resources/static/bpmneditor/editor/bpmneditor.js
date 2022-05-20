@@ -129838,8 +129838,8 @@ class Attachment {
             'functionality': this.toggleAttachment.bind(this),
             'icon': this.getAttachmentIcon(),
             'description': this.getAttachmentDescription(),
-            'index': 4,
-            'groupOrder': 2
+            'index': 2,
+            'groupOrder': 3
         });
 
         this.facade.offer({
@@ -129848,8 +129848,8 @@ class Attachment {
             'functionality': this.toggleComment.bind(this),
             'icon': this.getCommentIcon(),
             'description': this.getCommentDescription(),
-            'index': 5,
-            'groupOrder': 2
+            'index': 3,
+            'groupOrder': 3
         });
 
     }
@@ -130046,10 +130046,10 @@ class FontChange {
             'btnId': 'ap-id-editor-fontchange-btn',
             'name': Apromore.I18N.FontSize.fontsize,
             'functionality': this.fontChange.bind(this),
-            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/measure.svg",
+            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/font-size.svg",
             'description': Apromore.I18N.FontSize.fontSizeDesc,
             'index': 1,
-            'groupOrder': 5
+            'groupOrder': 3
         });
 
     }
@@ -130333,7 +130333,7 @@ class PublishModel {
             'group': window.Apromore.I18N.Share.group,
             'description': this.getDescription(facade.isPublished),
             'index': 2,
-            'groupOrder': 4,
+            'groupOrder': 5,
             'icon': this.getIcon(facade.isPublished)
         });
     };
@@ -130426,7 +130426,7 @@ class Share {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
-            'groupOrder': 4
+            'groupOrder': 5
         });
 
     }
@@ -130475,7 +130475,7 @@ class SimulateModel {
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.simulateModelDesc,
             'index': 1,
-            'groupOrder': 3,
+            'groupOrder': 4,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
