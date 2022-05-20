@@ -190,6 +190,26 @@
           }
           var isEditorSaving = false;
 
+          var linkedSubProcesses = {};
+
+          function setLinkedSubProcess(subProcessId, linkedProcessName){
+            linkedSubProcesses[subProcessId] = linkedProcessName;
+            let subProcessLinkElement = document.getElementById('link-subprocess-view');
+            if (subProcessLinkElement) {
+              subProcessLinkElement.textContent = linkedProcessName;
+              subProcessLinkElement.classList.add('link-subprocess-view-link');
+            }
+          }
+
+          function removeLinkedSubProcess(subProcessId){
+            linkedSubProcesses[subProcessId] = undefined;
+            let subProcessLinkElement = document.getElementById('link-subprocess-view');
+            if (subProcessLinkElement) {
+              subProcessLinkElement.textContent = 'None';
+              subProcessLinkElement.classList.remove('link-subprocess-view-link');
+            }
+          }
+
           createEditor = async function (bpmnXML) {
             var config = {
               xml: bpmnXML,
@@ -327,9 +347,22 @@
               jq(".djs-overlay-container").toggleClass('comment-disabled');
             };
 
+             Apromore.BPMNEditor.clickSubprocessBtn = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onClickSubprocessBtn', elementId));
+            };
+
+             Apromore.BPMNEditor.viewSubprocess = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onViewSubprocess', elementId));
+            };
+
             Apromore.BPMNEditor.linkSubprocess = function(elementId) {
               //requires manual saving since this can also be called in view mode
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onLinkSubprocess', elementId));
+            };
+
+            Apromore.BPMNEditor.unlinkSubprocess = function(elementId) {
+              zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onUnlinkSubprocess', elementId));
+              removeLinkedSubProcess(elementId);
             };
 
             Apromore.BPMNEditor.deleteSubprocess = function(elementId) {
@@ -348,8 +381,15 @@
             document.title = '${labels.brand_shortName} - ${labels.bpmnEditor_title_text}';
           });
 
-          function changeFontSize(changedFont){
-            Apromore.BPMNEditor.app.editor.changeFontSize(changedFont);
+          function changeFontSize(newFontSize){
+            if (newFontSize < 8) {
+              newFontSize = 8;
+            }
+            if (newFontSize > 72) {
+              newFontSize = 72;
+            }
+            zk.Widget.$('$slider').setCurpos(newFontSize);
+            Apromore.BPMNEditor.app.editor.changeFontSize(newFontSize);
           }
         ]]>
       </n:script>
@@ -360,7 +400,7 @@
   <n:div id="js-properties-panel"></n:div>
 
   <z:popup width="270px" id="popup">
-    <z:slider id="slider" curpos="16"  width="250px" mold="scale" step="1" minpos="8" maxpos="72"  xmlns:w="http://www.zkoss.org/2005/zk/client"  w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>
+    <z:slider id="slider" pageIncrement="0" curpos="16" mode="integer" width="250px" mold="scale" step="1" minpos="8" maxpos="72"  xmlns:w="http://www.zkoss.org/2005/zk/client"  w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>
   </z:popup>
 </window>
 

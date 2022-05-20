@@ -505,10 +505,9 @@ export default class Editor {
         eventBus.fire('elements.changed', { elements });
     }
 
-    async changeFontSize(size) {
-        if (!this.actualEditor) return;
-
-        var config= this.actualEditor.get('config');
+    async changeGlobalFontSize(size) {
+        const modeler = this.actualEditor
+        const config = modeler.get('config');
         if (!config) return;
 
         config.textRenderer = {
@@ -520,14 +519,31 @@ export default class Editor {
               fontSize: size+"px"
             }
         };
-        this.actualEditor.get('textRenderer').setFontSize(size);
-        var elementRegistry = this.actualEditor.get('elementRegistry');
-        var elements = elementRegistry.getAll();
-        var eventBus = this.actualEditor.get('eventBus');
+        modeler.get('textRenderer').setFontSize(size);
+        let elementRegistry = modeler.get('elementRegistry');
+        let elements = elementRegistry.getAll();
+        let eventBus = modeler.get('eventBus');
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
 
+    async changeFontSize(size) {
+        const modeler = this.actualEditor
+        if (!modeler) return;
+
+        let elements = modeler.get('selection').get();
+        if (elements.length) {
+            elements.forEach((element) => {
+                const bo = element.businessObject;
+                bo["aux-font-size"] = size+"px";
+            });
+            const eventBus = modeler.get('eventBus');
+            eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+            eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+        } else {
+            this.changeGlobalFontSize(size);
+        }
     }
 
 };
