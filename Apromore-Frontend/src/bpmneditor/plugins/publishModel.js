@@ -42,7 +42,7 @@ export default class PublishModel {
             'group': window.Apromore.I18N.Share.group,
             'description': this.getDescription(facade.isPublished),
             'index': 2,
-            'groupOrder': 4,
+            'groupOrder': 5,
             'icon': this.getIcon(facade.isPublished)
         });
     };

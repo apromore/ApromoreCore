@@ -1,2 +1,2 @@
-<menupopup  apply="org.apromore.portal.dialogController.PopupMenuController">
+<menupopup  sclass="ap-context-menu" apply="org.apromore.portal.dialogController.PopupMenuController">
 </menupopup>

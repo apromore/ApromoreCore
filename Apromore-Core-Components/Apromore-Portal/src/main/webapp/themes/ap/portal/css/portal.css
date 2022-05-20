@@ -871,3 +871,10 @@ img[src="img/icon/bpmn-22x22.png"] {
 .ap-tree-leaf-node > .z-treecell > .z-treecell-content >  .z-tree-icon > .z-icon-caret-down:before {
 	content: "" !important;
 }
+
+.ap-context-menu-item img,
+.ap-context-menu .z-menu-image {
+    height: 18px !important;
+    width: auto !important;
+    max-width: 25px !important;
+}

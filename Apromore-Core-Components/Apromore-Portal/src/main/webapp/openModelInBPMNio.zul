@@ -399,8 +399,13 @@
   <n:div id="editorcanvas"></n:div>
   <n:div id="js-properties-panel"></n:div>
 
-  <z:popup width="270px" id="popup">
-    <z:slider id="slider" pageIncrement="0" curpos="16" mode="integer" width="250px" mold="scale" step="1" minpos="8" maxpos="72"  xmlns:w="http://www.zkoss.org/2005/zk/client"  w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>
+  <z:popup width="330px" id="popup">
+    <z:hbox align="center" pack="center" hflex="1" spacing="5px">
+      <z:label>8px</z:label>
+      <z:slider id="slider" slidingtext="{0}px" pageIncrement="0" curpos="16" mode="integer"
+                width="250px" mold="scale" step="1" minpos="8" maxpos="72"  xmlns:w="http://www.zkoss.org/2005/zk/client"  w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>
+      <z:label>72px</z:label>
+    </z:hbox>
   </z:popup>
 </window>
 
