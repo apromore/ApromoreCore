@@ -38,7 +38,7 @@ const getCurrentColor = function (element){
                     is(element, 'bpmn:DataOutputAssociation') ||
                     is(element, 'bpmn:MessageFlow')
              ){
-             return di.get('color:border-color') || di.get('bioc:stroke') || defaultColor || 'black';
+             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
              }else{
              return di.get('color:background-color') || di.get('bioc:fill');
              }

@@ -54878,7 +54878,7 @@ const getCurrentColor = function (element){
                     Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
                     Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
              ){
-             return di.get('color:border-color') || di.get('bioc:stroke') || defaultColor || 'black';
+             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
              }else{
              return di.get('color:background-color') || di.get('bioc:fill');
              }
