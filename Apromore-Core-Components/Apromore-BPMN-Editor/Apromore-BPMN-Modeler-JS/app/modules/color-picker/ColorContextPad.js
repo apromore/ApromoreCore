@@ -1,5 +1,5 @@
 import Color from 'color';
-import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { is, getDi } from 'bpmn-js/lib/util/ModelUtil';
 
 const palette = [
   '#84c7e3',
@@ -24,6 +24,25 @@ const lighten = function (colorCode) {
   const lightness = start + 0.8 * (100 - start);
   return color.lightness(lightness).hex();
 };
+
+const getCurrentColor = function (element){
+        if(!element)
+        {
+            return;
+        }
+         let di = getDi(element);
+         if (
+                    is(element, 'bpmn:SequenceFlow') ||
+                    is(element, 'bpmn:Association') ||
+                    is(element, 'bpmn:DataInputAssociation') ||
+                    is(element, 'bpmn:DataOutputAssociation') ||
+                    is(element, 'bpmn:MessageFlow')
+             ){
+             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+             }else{
+             return di.get('color:background-color') || di.get('bioc:fill');
+             }
+  }
 
 const colors = palette.map(
   (color) => (
@@ -57,6 +76,7 @@ export default class ColorContextPad {
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
+      let currentColor = getCurrentColor(element)
       el.spectrum({
         type: "color",
         showInput: true,
@@ -67,6 +87,7 @@ export default class ColorContextPad {
         hideAfterPaletteSelect: true,
         containerClassName: 'ap-editor-cpicker-wrapper',
         palette,
+        color: currentColor,
         change: function (newColor) {
           let colorCode = newColor.toHexString();
           let color;
