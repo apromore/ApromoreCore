@@ -159,13 +159,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     if (isNewProcess) {
       currentUserAccessType = AccessType.OWNER;
-//      Notification.info(
-//          MessageFormat.format(
-//              Labels.getLabel("bpmnEditor_afterCreate_message"),
-//              editSession.getProcessName(),
-//              editSession.getCurrentVersionNumber()
-//          )
-//      );
       param.put("isNewProcess", true);
     } else {
       try {
