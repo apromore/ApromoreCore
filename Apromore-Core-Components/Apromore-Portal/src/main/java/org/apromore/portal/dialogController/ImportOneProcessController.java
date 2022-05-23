@@ -139,18 +139,20 @@ public class ImportOneProcessController extends BaseController {
 
   public void importProcess(final String domain, final String owner)
       throws InterruptedException, IOException {
-    try {
+
+    String bpmnText = new String(getNativeProcess().readAllBytes(), StandardCharsets.UTF_8);
+
+    try (
+      InputStream inputStream = new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8));
+      ) {
       Integer folderId = 0;
       FolderType currentFolder = this.mainC.getPortalSession().getCurrentFolder();
       if (currentFolder != null) {
         folderId = currentFolder.getId();
       }
 
-      String bpmnText = new String(getNativeProcess().readAllBytes(), StandardCharsets.UTF_8);
-
       ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
-          folderId, this.nativeType, this.processNameTb.getValue(), "1.0",
-          new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8)),
+          folderId, this.nativeType, this.processNameTb.getValue(), "1.0", inputStream,
           domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
 
       //Import subprocesses as linked subprocesses
@@ -178,7 +180,6 @@ public class ImportOneProcessController extends BaseController {
     Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap = new HashMap<>();
     int count = 0;
     for (SubProcess subProcess : bpmnDiagram.getSubProcesses()) {
-
       BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
       Map<BPMNNode, BPMNNode> nodeMap = subProcessDiagram.cloneSubProcessContents(subProcess);
       String subProcessName = name + "_subprocess" + ++count;
@@ -221,8 +222,9 @@ public class ImportOneProcessController extends BaseController {
   private void linkSubProcesses(final ProcessSummaryType importedModel,
                                 final Map<SubProcess, ProcessSummaryType> subProcessMap,
                                 final Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap) {
-    for (SubProcess subProcess : subProcessMap.keySet()) {
-      ProcessSummaryType linkedProcess = subProcessMap.get(subProcess);
+    for (Map.Entry<SubProcess, ProcessSummaryType> entry : subProcessMap.entrySet()) {
+      SubProcess subProcess = entry.getKey();
+      ProcessSummaryType linkedProcess = entry.getValue();
 
       //Link original model
       mainC.getProcessService().linkSubprocess(importedModel.getId(),

@@ -295,9 +295,9 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 		}
 
 		//Edges
-		for (BPMNEdge edge : bpmnDiagram.getEdges()) {
-			BPMNNode source = (BPMNNode) edge.getSource();
-			BPMNNode target = (BPMNNode) edge.getTarget();
+		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+			BPMNNode source = edge.getSource();
+			BPMNNode target = edge.getTarget();
 
 			if (nodeMap.containsKey(source) || nodeMap.containsKey(target)) {
 				BPMNNode newSource = nodeMap.get(source);
