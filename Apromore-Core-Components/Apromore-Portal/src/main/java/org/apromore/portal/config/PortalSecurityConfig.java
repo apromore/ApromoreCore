@@ -52,9 +52,16 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
 
-    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
-        .antMatchers("/**/js/*").antMatchers("/robots.txt");
+    web.ignoring()
+        .antMatchers("/**/css/*")
+        .antMatchers("/**/font/**")
+        .antMatchers("/**/img/**")
+        .antMatchers("/**/images/**")
+        .antMatchers("/**/themes/**")
+        .antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*")
+        .antMatchers("/portalPluginResource/**")
+        .antMatchers("/robots.txt");
   }
 
 
