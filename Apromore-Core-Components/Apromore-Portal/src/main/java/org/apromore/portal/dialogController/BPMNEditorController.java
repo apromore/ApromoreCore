@@ -155,15 +155,18 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     process = session.getProcess();
     vst = session.getVersion();
 
+    Map<String, Object> param = new HashMap<>();
+
     if (isNewProcess) {
       currentUserAccessType = AccessType.OWNER;
-      Notification.info(
-          MessageFormat.format(
-              Labels.getLabel("bpmnEditor_afterCreate_message"),
-              editSession.getProcessName(),
-              editSession.getCurrentVersionNumber()
-          )
-      );
+//      Notification.info(
+//          MessageFormat.format(
+//              Labels.getLabel("bpmnEditor_afterCreate_message"),
+//              editSession.getProcessName(),
+//              editSession.getCurrentVersionNumber()
+//          )
+//      );
+      param.put("isNewProcess", true);
     } else {
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
@@ -189,7 +192,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
     }
 
-    Map<String, Object> param = new HashMap<>();
     try {
       PluginMessages pluginMessages = null;
       String bpmnXML = (String) session.get(BPMN_XML);
@@ -715,6 +717,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   @Override
   public void doAfterCompose(Component comp) throws Exception {
       // TODO Auto-generated method stub
+
+    if (isNewProcess) {
+
+    }
 
   }
 
