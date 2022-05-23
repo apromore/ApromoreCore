@@ -193,8 +193,19 @@ public class ImportOneProcessController extends BaseController {
   private ProcessSummaryType importSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
                                               final String name, final int folderId)
       throws Exception {
+    String emptyModelXML = "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+        + "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "
+        + "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' "
+        + "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' "
+        + "targetNamespace='http://bpmn.io/schema/bpmn' " + "id='Definitions_1'>"
+        + "<bpmn:process id='Process_1' isExecutable='false'/>"
+        + "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>"
+        + "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'/>"
+        + "</bpmndi:BPMNDiagram>"
+        + "</bpmn:definitions>";
 
-    String bpmnText = BpmnLayoutPlugin.addLayout(bpmnDiagram, "");
+    String bpmnText = bpmnDiagram.getNodes().isEmpty() ? emptyModelXML : BpmnLayoutPlugin.addLayout(bpmnDiagram, "");
     ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
         folderId, this.nativeType, name, "1.0",
         new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8)),
