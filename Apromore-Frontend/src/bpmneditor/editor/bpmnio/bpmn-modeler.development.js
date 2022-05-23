@@ -279,7 +279,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key) && key !== 'remove') {
+    if (has(collection, key)) {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -42674,6 +42674,25 @@ const lighten = function (colorCode) {
   return color.lightness(lightness).hex();
 };
 
+const getCurrentColor = function (element){
+        if(!element)
+        {
+            return;
+        }
+         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+         if (
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+             ){
+             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+             }else{
+             return di.get('color:background-color') || di.get('bioc:fill');
+             }
+  }
+
 const colors = palette.map(
   (color) => (
       {
@@ -42706,6 +42725,7 @@ class ColorContextPad {
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
+      let currentColor = getCurrentColor(element)
       el.spectrum({
         type: "color",
         showInput: true,
@@ -42716,6 +42736,7 @@ class ColorContextPad {
         hideAfterPaletteSelect: true,
         containerClassName: 'ap-editor-cpicker-wrapper',
         palette,
+        color: currentColor,
         change: function (newColor) {
           let colorCode = newColor.toHexString();
           let color;
