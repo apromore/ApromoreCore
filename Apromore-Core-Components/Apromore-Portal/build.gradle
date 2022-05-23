@@ -10,6 +10,7 @@ dependencies {
 	implementation project(':Apromore-Clients:manager-client')
 	implementation project(':Apromore-Plugins:plugin-core:editor:api')
 	implementation project(':Apromore-Plugins:plugin-core:portal:api')
+	implementation project(':Apromore-ProcessMining-Collection')
 	implementation project(':Apromore-Extras:OpenXES')
 	implementation project(':Apromore-Plugins:plugin-templates:portal-custom-gui')
 	implementation project(':Apromore-Zk')

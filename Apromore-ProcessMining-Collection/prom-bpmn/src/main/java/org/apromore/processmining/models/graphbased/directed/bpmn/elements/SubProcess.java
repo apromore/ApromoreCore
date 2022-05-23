@@ -33,6 +33,7 @@ import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -194,5 +195,11 @@ public class SubProcess extends Activity implements Decorated,ContainingDirected
 	@Override
 	public void decorate(Graphics2D g2d, double x, double y, double width, double height) {
 		super.decorate(g2d, x, y, width, height);
+	}
+
+	@Override
+	public SubProcess addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addSubProcess(getLabel(), isBLooped(),
+			isBAdhoc(), isBCompensation(), isBMultiinstance(), isBCollapsed());
 	}
 }

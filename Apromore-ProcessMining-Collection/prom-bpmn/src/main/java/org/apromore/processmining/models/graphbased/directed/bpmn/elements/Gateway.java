@@ -30,6 +30,7 @@ import java.awt.geom.GeneralPath;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -114,6 +115,11 @@ public class Gateway extends BPMNNode implements Decorated {
 				return null;
 		}
 		return null;
+	}
+
+	@Override
+	public Gateway addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addGateway(getLabel(), getGatewayType());
 	}
 
 	public IGraphElementDecoration getDecorator() {

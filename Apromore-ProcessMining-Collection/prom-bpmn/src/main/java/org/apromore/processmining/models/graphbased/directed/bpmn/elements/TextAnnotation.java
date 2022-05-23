@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -87,5 +88,10 @@ public class TextAnnotation extends BPMNNode implements Decorated {
 		getAttributeMap().put(AttributeMap.SIZE, new Dimension(stdWidth, stdHeight));
 		getAttributeMap().put(AttributeMap.BORDERWIDTH, 2);
 		getAttributeMap().put(AttributeMap.STROKECOLOR, Color.white);
+	}
+
+	@Override
+	public TextAnnotation addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addTextAnnotation(getLabel());
 	}
 }

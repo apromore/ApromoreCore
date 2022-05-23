@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -87,6 +88,11 @@ public class DataObject extends BPMNNode implements Decorated {
 		getAttributeMap().put(AttributeMap.SIZE, new Dimension(stdWidth, stdHeight));
 		getAttributeMap().put(AttributeMap.BORDERWIDTH, 0);
 		getAttributeMap().put(AttributeMap.STROKECOLOR, Color.white);
+	}
+
+	@Override
+	public DataObject addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addDataObject(getLabel());
 	}
 }
 

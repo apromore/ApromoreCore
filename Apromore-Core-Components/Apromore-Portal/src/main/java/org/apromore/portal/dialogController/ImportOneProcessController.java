@@ -28,6 +28,9 @@ package org.apromore.portal.dialogController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
@@ -36,6 +39,12 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ImportProcessResultType;
+import org.apromore.portal.model.ProcessSummaryType;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
+import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
 import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -137,9 +146,17 @@ public class ImportOneProcessController extends BaseController {
         folderId = currentFolder.getId();
       }
 
+      String bpmnText = new String(getNativeProcess().readAllBytes(), StandardCharsets.UTF_8);
+
       ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
-          folderId, this.nativeType, this.processNameTb.getValue(), "1.0", getNativeProcess(),
+          folderId, this.nativeType, this.processNameTb.getValue(), "1.0",
+          new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8)),
           domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
+
+      //Import subprocesses as linked subprocesses
+      BPMNDiagram bpmnDiagram = BPMNDiagramFactory.newDiagramFromProcessText(bpmnText);
+      importLinkedSubProcesses(importResult.getProcessSummary(), bpmnDiagram, domain, owner,
+          this.processNameTb.getValue(), folderId);
 
       this.mainC.showPluginMessages(importResult.getMessage());
       this.importProcessesC.getImportedList().add(this);
@@ -151,6 +168,65 @@ public class ImportOneProcessController extends BaseController {
           Messagebox.ERROR);
     } finally {
       closePopup();
+    }
+  }
+
+  private void importLinkedSubProcesses(final ProcessSummaryType importedModel, final BPMNDiagram bpmnDiagram,
+                                  final String domain, final String owner, final String name, final int folderId)
+      throws Exception {
+    Map<SubProcess, ProcessSummaryType> subProcessMap = new HashMap<>();
+    Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap = new HashMap<>();
+    int count = 0;
+    for (SubProcess subProcess : bpmnDiagram.getSubProcesses()) {
+
+      BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
+      Map<BPMNNode, BPMNNode> nodeMap = subProcessDiagram.cloneSubProcessContents(subProcess);
+      String subProcessName = name + "_subprocess" + ++count;
+      ProcessSummaryType subProcessSummary = importSubProcess(subProcessDiagram, domain, owner, subProcessName, folderId);
+      subProcessMap.put(subProcess, subProcessSummary);
+      clonedNodeMap.put(subProcessSummary, nodeMap);
+    }
+
+    linkSubProcesses(importedModel, subProcessMap, clonedNodeMap);
+  }
+
+  private ProcessSummaryType importSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
+                                              final String name, final int folderId)
+      throws Exception {
+
+    String bpmnText = BpmnLayoutPlugin.addLayout(bpmnDiagram, "");
+    ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
+        folderId, this.nativeType, name, "1.0",
+        new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8)),
+        domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
+
+    //Display subprocess
+    this.importProcessesC.getImportedList().add(this);
+    this.mainC.displayNewProcess(importResult.getProcessSummary());
+    this.importProcessesC.deleteFromToBeImported(this);
+    return importResult.getProcessSummary();
+  }
+
+  private void linkSubProcesses(final ProcessSummaryType importedModel,
+                                final Map<SubProcess, ProcessSummaryType> subProcessMap,
+                                final Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap) {
+    for (SubProcess subProcess : subProcessMap.keySet()) {
+      ProcessSummaryType linkedProcess = subProcessMap.get(subProcess);
+
+      //Link original model
+      mainC.getProcessService().linkSubprocess(importedModel.getId(),
+          subProcess.getId().toString(), linkedProcess.getId());
+
+      //Link subprocess models
+      for (Map.Entry<ProcessSummaryType, Map<BPMNNode, BPMNNode>> subProcessResult : clonedNodeMap.entrySet()) {
+        Map<BPMNNode, BPMNNode> nodeMap = subProcessResult.getValue();
+        ProcessSummaryType parentProcess = subProcessResult.getKey();
+
+        if (nodeMap.containsKey(subProcess)) {
+          mainC.getProcessService().linkSubprocess(parentProcess.getId(),
+              nodeMap.get(subProcess).getId().toString(), linkedProcess.getId());
+        }
+      }
     }
   }
 

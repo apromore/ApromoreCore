@@ -34,6 +34,7 @@ import java.awt.geom.Rectangle2D;
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.BoundaryDirectedGraphNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -161,6 +162,12 @@ public class Event extends BPMNNode implements Decorated, BoundaryDirectedGraphN
 				return null;
 		}
 		return null;
+	}
+
+	@Override
+	public Event addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addEvent(getLabel(), getEventType(), getEventTrigger(),
+			getEventUse(), Boolean.parseBoolean(isInterrupting()), getBoundingNode());
 	}
 
 	public void decorate(Graphics2D g2d, double x, double y, double width, double height) {

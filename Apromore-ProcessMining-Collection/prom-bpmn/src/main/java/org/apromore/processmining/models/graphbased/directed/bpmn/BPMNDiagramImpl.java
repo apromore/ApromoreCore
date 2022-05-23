@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
+import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
 import org.apromore.processmining.models.graphbased.directed.DirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.DirectedGraphEdge;
@@ -278,6 +279,52 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 			getAttributeMap().put(key, map.get(key));
 		}
 		return mapping;
+	}
+
+	@Override
+	public Map<BPMNNode, BPMNNode> cloneSubProcessContents(SubProcess subProcess) {
+		BPMNDiagram bpmnDiagram = (BPMNDiagram) subProcess.getGraph();
+		Map<BPMNNode, BPMNNode> nodeMap = new HashMap<>();
+
+		//Nodes
+		for (ContainableDirectedGraphElement subProcessChild : subProcess.getChildren()) {
+			if (subProcessChild instanceof BPMNNode) {
+				BPMNNode node = (BPMNNode) subProcessChild;
+				nodeMap.put(node, node.addToDiagram(this));
+			}
+		}
+
+		//Edges
+		for (BPMNEdge edge : bpmnDiagram.getEdges()) {
+			BPMNNode source = (BPMNNode) edge.getSource();
+			BPMNNode target = (BPMNNode) edge.getTarget();
+
+			if (nodeMap.containsKey(source) || nodeMap.containsKey(target)) {
+				BPMNNode newSource = nodeMap.get(source);
+				BPMNNode newTarget = nodeMap.get(target);
+
+				if (newSource == null) {
+					newSource = source.addToDiagram(this);
+					nodeMap.put(source, newSource);
+				}
+
+				if (newTarget == null) {
+					newTarget = target.addToDiagram(this);
+					nodeMap.put(target, newTarget);
+				}
+
+				if (edge instanceof Flow) {
+					addFlow(newSource, newTarget, edge.getLabel());
+				} else if (edge instanceof Association) {
+					addAssociation(newSource, newTarget, ((Association) edge).getDirection());
+				} else if (edge instanceof MessageFlow) {
+					addMessageFlow(newSource, newTarget, edge.getLabel());
+				} else if (edge instanceof DataAssociation) {
+					addDataAssociation(newSource, newTarget, edge.getLabel());
+				}
+			}
+		}
+		return nodeMap;
 	}
 
 	@Override

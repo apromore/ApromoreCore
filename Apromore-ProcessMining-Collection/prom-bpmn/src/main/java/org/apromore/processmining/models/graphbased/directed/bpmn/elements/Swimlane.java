@@ -35,6 +35,7 @@ import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
+import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -150,6 +151,11 @@ public class Swimlane extends BPMNNode implements Decorated, ContainingDirectedG
 		getAttributeMap().put(AttributeMap.LABELHORIZONTALALIGNMENT, SwingConstants.CENTER);
 		getAttributeMap().put(AttributeMap.LABELALONGEDGE, true);
 		getAttributeMap().put(AttributeMap.PREF_ORIENTATION, SwingConstants.WEST);
+	}
+
+	@Override
+	public Swimlane addToDiagram(BPMNDiagram bpmnDiagram) {
+		return bpmnDiagram.addSwimlane(getLabel(), getParent(), getSwimlaneType());
 	}
 }
 
