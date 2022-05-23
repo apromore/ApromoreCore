@@ -176,8 +176,12 @@ public class LogImporterParquetImpl extends AbstractLogImporter implements Const
 
         String[] line = new String[schema.getColumns().size()];
         for (int j = 0; j < schema.getFieldCount(); j++) {
-
-            String valueToString = g.getValueToString(j, 0);
+            String valueToString;
+            try {
+                valueToString = g.getValueToString(j, 0);
+            } catch (RuntimeException e) {
+                valueToString = "";
+            }
             line[j] = valueToString;
         }
         return line;

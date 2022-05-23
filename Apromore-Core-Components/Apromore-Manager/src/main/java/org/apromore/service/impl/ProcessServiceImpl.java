@@ -728,7 +728,7 @@ public class ProcessServiceImpl implements ProcessService {
 
   /**
    * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
-   *      Version, String) {@inheritDoc}
+   *      Version, String, boolean) {@inheritDoc}
    */
   @Override
   public String getBPMNRepresentation(final String name, final Integer processId,
@@ -1062,7 +1062,8 @@ public class ProcessServiceImpl implements ProcessService {
     return !getLinkedProcesses(processId, username).isEmpty();
   }
 
-  private Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
+  @Override
+  public Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
     Map<String, Integer> linkedProcesses = new HashMap<>();
     List<SubprocessProcess> subprocessProcesses = subprocessProcessRepository.getLinkedSubProcesses(processId);
     User user = userSrv.findUserByLogin(username);

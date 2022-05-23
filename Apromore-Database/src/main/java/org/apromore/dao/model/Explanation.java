@@ -23,13 +23,11 @@
 package org.apromore.dao.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Explanation {
-    @JsonProperty("gini_feature_importances")
-    private Map<String, Double> giniFeatureImportances;
+    private Map<String, Double> giniFeatureImportanceRaw;
 }

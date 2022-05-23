@@ -23,7 +23,6 @@
 package org.apromore.dao.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -31,8 +30,6 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Validation {
-    @JsonProperty("aggregated_scores")
     private Map<String, Double> aggregatedScores;
-    @JsonProperty("summarized_scores_per_prefix_size")
     private List<PrefixScore> prefixScoreList;
 }

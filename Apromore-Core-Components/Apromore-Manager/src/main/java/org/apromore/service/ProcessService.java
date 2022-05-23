@@ -26,6 +26,7 @@
 package org.apromore.service;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.Map;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -279,4 +280,6 @@ public interface ProcessService {
      * @return true if the process has linked processes available to the user.
      */
     boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
+
+    Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
 }

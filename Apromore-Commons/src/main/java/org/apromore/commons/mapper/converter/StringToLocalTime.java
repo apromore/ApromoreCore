@@ -24,6 +24,7 @@ package org.apromore.commons.mapper.converter;
 
 import com.github.dozermapper.core.DozerConverter;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class StringToLocalTime extends DozerConverter<String, LocalTime> {
 
@@ -35,8 +36,9 @@ public class StringToLocalTime extends DozerConverter<String, LocalTime> {
     public LocalTime convertTo(String source, LocalTime destination) {
         if (source.contains("+")) {
             return LocalTime.parse(source.substring(0, source.indexOf("+")));
-        }
-        else {
+        } else if (source.contains("Z")) {
+            return LocalTime.parse(source, DateTimeFormatter.ISO_TIME);
+        } else {
             return LocalTime.parse(source);
         }
     }
