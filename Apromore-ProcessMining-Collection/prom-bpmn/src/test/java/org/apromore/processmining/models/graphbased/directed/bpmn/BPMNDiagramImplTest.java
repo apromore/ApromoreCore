@@ -36,7 +36,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.TextA
 import org.apromore.processmining.plugins.bpmn.BpmnAssociation;
 import org.junit.jupiter.api.Test;
 
-public class BPMNDiagramImplTest {
+class BPMNDiagramImplTest {
 
     @Test
     void testCloneSubProcessContents() {
