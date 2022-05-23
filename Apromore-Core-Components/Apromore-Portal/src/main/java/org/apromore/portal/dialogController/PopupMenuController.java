@@ -213,7 +213,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private void addNewPredictorMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
         item.setLabel("Create new predictor");
-        item.setImage("~./icons/predictor-trainer-icon.svg");
+        item.setImage("~./icons/predictor-add-top.svg");
         item.addEventListener(ON_CLICK, event -> createNewPredictorTrainer());
         popup.appendChild(item);
     }
@@ -382,6 +382,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     private void addNewDashboardMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
+        item.addSclass("ap-context-menu-item");
         item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
         item.setImage("~./themes/ap/common/img/icons/add-dashboard.svg");
         item.addEventListener(ON_CLICK, event -> createNewDashboard());
