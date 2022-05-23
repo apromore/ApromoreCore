@@ -56,10 +56,14 @@ class BPMNDiagramImplTest {
         TextAnnotation textAnnotation = oldBpmnDiagram.addTextAnnotation("text annotation");
 
         //Add one of each edge to the subProcess
-        oldBpmnDiagram.addAssociation(activity, textAnnotation, BpmnAssociation.AssociationDirection.NONE);
+        oldBpmnDiagram.addAssociation(textAnnotation, activity, BpmnAssociation.AssociationDirection.NONE);
         oldBpmnDiagram.addDataAssociation(callActivity, dataObject, "data association");
         oldBpmnDiagram.addFlow(event, gateway, "flow");
         oldBpmnDiagram.addMessageFlow(gateway, innerSubProcess, "message flow");
+
+        //Non-subprocess nodes
+        oldBpmnDiagram.addDataObject("disconnected data object");
+        oldBpmnDiagram.addActivity("non-subprocess activity", false, false, false, false, false);
 
         BPMNDiagram newBpmnDiagram = new BPMNDiagramImpl("New model");
         assertTrue(newBpmnDiagram.getNodes().isEmpty());
