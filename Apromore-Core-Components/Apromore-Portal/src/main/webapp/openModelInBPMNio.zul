@@ -83,6 +83,13 @@
     var IDLE_CHECK_MS = 60000; // 1 min/60 seconds
 
     jQuery(document).ready(function () {
+
+      setTimeout(function() {
+        if (${arg.isNewProcess}) {
+        Ap.common.notify('${arg.processName}' + ' (version 1.0) created', 'info');
+        }
+      }, 500);
+
       // Increment the idle time counter every minute.
       idleInterval = setInterval(timerIncrement, IDLE_CHECK_MS);
 
