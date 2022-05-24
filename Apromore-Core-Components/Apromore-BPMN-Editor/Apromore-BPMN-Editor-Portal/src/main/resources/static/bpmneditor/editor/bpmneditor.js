@@ -12194,18 +12194,19 @@ class Editor {
         const modeler = this.actualEditor
         if (!modeler) return;
 
+        let eventBus = modeler.get('eventBus');
         let elements = modeler.get('selection').get();
-        if (elements.length) {
-            elements.forEach((element) => {
-                const bo = element.businessObject;
-                bo["aux-font-size"] = size+"px";
-            });
-            const eventBus = modeler.get('eventBus');
-            eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
-            eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
-        } else {
-            this.changeGlobalFontSize(size);
+        if (!elements || !elements.length) {
+            // this.changeGlobalFontSize(size);
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
         }
+        elements.forEach((element) => {
+            const bo = element.businessObject;
+            bo["aux-font-size"] = size+"px";
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
 };
