@@ -25,6 +25,7 @@
 
 package org.apromore.service;
 
+import java.util.Map;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -33,6 +34,7 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.ProcessSummaryType;
@@ -251,4 +253,16 @@ public interface ProcessService {
      * @return
      */
     ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId);
+
+
+    /**
+     * Check if the process has linked processes for the given user.
+     *
+     * @param processId the id of the process containing linked subprocesses
+     * @param username the username of the user getting linked processes.
+     * @return true if the process has linked processes available to the user.
+     */
+    boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
+
+    Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
 }

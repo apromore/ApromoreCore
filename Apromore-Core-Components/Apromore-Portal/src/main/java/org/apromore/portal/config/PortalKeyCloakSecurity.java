@@ -82,9 +82,16 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   @Override
   public void configure(WebSecurity web) throws Exception {
     super.configure(web);
-    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
-        .antMatchers("/**/js/*").antMatchers("/robots.txt");
+    web.ignoring()
+        .antMatchers("/**/css/*")
+        .antMatchers("/**/font/**")
+        .antMatchers("/**/img/**")
+        .antMatchers("/**/images/**")
+        .antMatchers("/**/themes/**")
+        .antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*")
+        .antMatchers("/portalPluginResource/**")
+        .antMatchers("/robots.txt");
   }
 
   @Override
@@ -106,7 +113,6 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/rest/**/*").permitAll()
         .antMatchers("/rest/*").permitAll()
         .antMatchers("/zkau/web/bpmneditor/*").permitAll()
-        .antMatchers(Constants.SWAGGER_AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();
   }
 }

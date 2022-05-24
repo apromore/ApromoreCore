@@ -21,6 +21,7 @@
  */
 package org.apromore.dao;
 
+import java.util.List;
 import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,7 +34,6 @@ public interface SubprocessProcessRepository extends JpaRepository<SubprocessPro
      * Gets the linked process if one exists.
      * @param parentProcessId the id of the process which contains the subprocess.
      * @param subprocessId the element id of the subprocess.
-     * @param userId the id of the user associated with the link.
      * @return the linked subprocess one exists, null otherwise.
      */
     @Query("SELECT p.linkedProcess FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
@@ -41,5 +41,13 @@ public interface SubprocessProcessRepository extends JpaRepository<SubprocessPro
 
     @Query("SELECT p FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
     SubprocessProcess getExistingLink(int parentProcessId, String subprocessId);
+
+    /**
+     * Gets a list of linked process in the process.
+     * @param parentProcessId the id of the process which contains the subprocesses.
+     * @return a list of linked process in the process.
+     */
+    @Query("SELECT DISTINCT p FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1")
+    List<SubprocessProcess> getLinkedSubProcesses(int parentProcessId);
 
 }

@@ -215,9 +215,12 @@ export default class Editor {
         const overlays = this.actualEditor.get('overlays');
         const auxes = overlays.get({ type: 'aux'});
         let minTop = 0, minLeft = 0, maxBottom = 0, maxRight = 0;
+        const hyperlinks = [];
         auxes.forEach(async (aux) => {
             const overlay = $(aux.htmlContainer);
             const containerId = overlay.parent().data('containerId');
+            const parentLeft = parseInt(overlay.parent().css('left'));
+            const parentTop = parseInt(overlay.parent().css('top'));
             const left = parseInt(overlay.css('left'));
             const top = parseInt(overlay.css('top'));
             const width = parseInt(overlay.css('width'));
@@ -259,6 +262,13 @@ export default class Editor {
                 if (caption) {
                     const aLink = $('a', caption)[0];
                     if (aLink) {
+                        hyperlinks.push({
+                            href: aLink.href,
+                            left: parentLeft + left,
+                            top: parentTop + top + yOffset,
+                            width: aLink.textContent.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aLink.href}">
                             <text x="0" y="${yOffset}" lineHeight="1.2" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 ${aLink.textContent}
@@ -300,6 +310,13 @@ export default class Editor {
                     const iconTextLink = iconLink.textContent;
                     const aIconLink = $('a', iconLink)[0];
                     if (aIconLink) {
+                        hyperlinks.push({
+                            href: aIconLink.href,
+                            left: parentLeft + left + 30,
+                            top: parentTop + top + yOffset,
+                            width: iconTextLink.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aIconLink.href}">
                             <text lineHeight="20px" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 <tspan x="30" y="${yOffset}">${iconTextLink}</tspan>
@@ -338,14 +355,24 @@ export default class Editor {
         raw = raw.replaceAll('<defs>', `<defs>${SYMBOLS}`);
         raw = raw.replaceAll('xmlns=""', ''); // Remove empty namespace
         raw = raw.replaceAll('<use href=', '<use xlink:href='); // Apache transcoder expect xlink ns
-        return raw
+        return {
+            raw,
+            hyperlinks
+        }
+    }
+
+    async getSVG2() {
+        if (!this.actualEditor) return '';
+        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
+        const { svg } = result;
+        return await this.processAux(svg);
     }
 
     async getSVG() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
         const { svg } = result;
-        const raw = await this.processAux(svg);
+        const { raw } = await this.processAux(svg);
         return raw;
     }
 
@@ -505,10 +532,9 @@ export default class Editor {
         eventBus.fire('elements.changed', { elements });
     }
 
-    async changeFontSize(size) {
-        if (!this.actualEditor) return;
-
-        var config= this.actualEditor.get('config');
+    async changeGlobalFontSize(size) {
+        const modeler = this.actualEditor
+        const config = modeler.get('config');
         if (!config) return;
 
         config.textRenderer = {
@@ -520,14 +546,32 @@ export default class Editor {
               fontSize: size+"px"
             }
         };
-        this.actualEditor.get('textRenderer').setFontSize(size);
-        var elementRegistry = this.actualEditor.get('elementRegistry');
-        var elements = elementRegistry.getAll();
-        var eventBus = this.actualEditor.get('eventBus');
+        modeler.get('textRenderer').setFontSize(size);
+        let elementRegistry = modeler.get('elementRegistry');
+        let elements = elementRegistry.getAll();
+        let eventBus = modeler.get('eventBus');
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
 
+    async changeFontSize(size) {
+        const modeler = this.actualEditor
+        if (!modeler) return;
+
+        let eventBus = modeler.get('eventBus');
+        let elements = modeler.get('selection').get();
+        if (!elements || !elements.length) {
+            // this.changeGlobalFontSize(size);
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
+        }
+        elements.forEach((element) => {
+            const bo = element.businessObject;
+            bo["aux-font-size"] = size+"px";
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
 };

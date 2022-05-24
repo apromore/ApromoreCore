@@ -52,9 +52,16 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
 
-    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
-        .antMatchers("/**/js/*").antMatchers("/robots.txt");
+    web.ignoring()
+        .antMatchers("/**/css/*")
+        .antMatchers("/**/font/**")
+        .antMatchers("/**/img/**")
+        .antMatchers("/**/images/**")
+        .antMatchers("/**/themes/**")
+        .antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*")
+        .antMatchers("/portalPluginResource/**")
+        .antMatchers("/robots.txt");
   }
 
 
@@ -90,7 +97,6 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers(Constants.SWAGGER_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()
