@@ -161,6 +161,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       currentUserAccessType = AccessType.OWNER;
       param.put("isNewProcess", true);
     } else {
+      param.put("isNewProcess", false);
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
         currentUserAccessType = mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
@@ -614,6 +615,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
     param.put("username", currentUserType.getUsername());
+    param.put("isNewProcess", false);
     Executions.getCurrent().pushArg(param);
   }
 
