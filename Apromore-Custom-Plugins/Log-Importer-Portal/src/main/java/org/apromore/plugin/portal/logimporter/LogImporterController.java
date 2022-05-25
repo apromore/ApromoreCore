@@ -1289,7 +1289,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     }
 
     private void showCheckbox(Checkbox checkbox) {
-        checkbox.setSclass("ap-iconized-checkbox");;
+        checkbox.setSclass("ap-iconized-checkbox");
     }
 
     protected void enableAnonymizeToggle(boolean isEnable) {
