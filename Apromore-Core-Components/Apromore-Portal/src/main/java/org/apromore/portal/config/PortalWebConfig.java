@@ -20,6 +20,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.servlet.DataChannelServlet;
+import org.apromore.portal.servlet.StaticResourceServlet;
 import org.apromore.portal.servlet.PortalPluginResourceServlet;
 import org.apromore.portal.util.ExplicitComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class PortalWebConfig {
   @Bean
   public ServletRegistrationBean<PortalPluginResourceServlet> exampleServletBean() {
     ServletRegistrationBean<PortalPluginResourceServlet> bean =
-        new ServletRegistrationBean<PortalPluginResourceServlet>(new PortalPluginResourceServlet(),
+        new ServletRegistrationBean<>(new PortalPluginResourceServlet(),
             "/portalPluginResource/*");
     bean.setLoadOnStartup(1);
     return bean;
@@ -101,11 +102,18 @@ public class PortalWebConfig {
   @Bean
   public ServletRegistrationBean<DataChannelServlet> dataChannel() {
     ServletRegistrationBean<DataChannelServlet> bean =
-        new ServletRegistrationBean<DataChannelServlet>(new DataChannelServlet(), "/dataRequest/*");
+        new ServletRegistrationBean<>(new DataChannelServlet(), "/dataRequest/*");
     bean.setLoadOnStartup(1);
     return bean;
   }
 
+  @Bean
+  public ServletRegistrationBean<StaticResourceServlet> staticResource() {
+    ServletRegistrationBean<StaticResourceServlet> bean =
+        new ServletRegistrationBean<>(new StaticResourceServlet(), "/*");
+    bean.setLoadOnStartup(1);
+    return bean;
+  }
 
   // This bean allows spaces which are url encoded
   @Bean

@@ -43,11 +43,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-
     auth.authenticationProvider(usernamePasswordAuthenticationProvider);
-
   }
-
 
   @Override
   public void configure(WebSecurity web) throws Exception {
@@ -61,9 +58,9 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**/libs/**")
         .antMatchers("/**/js/*")
         .antMatchers("/portalPluginResource/**")
+        .antMatchers("/favicon.ico")
         .antMatchers("/robots.txt");
   }
-
 
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
