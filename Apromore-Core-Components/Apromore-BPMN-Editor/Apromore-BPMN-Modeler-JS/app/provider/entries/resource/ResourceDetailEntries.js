@@ -9,10 +9,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
