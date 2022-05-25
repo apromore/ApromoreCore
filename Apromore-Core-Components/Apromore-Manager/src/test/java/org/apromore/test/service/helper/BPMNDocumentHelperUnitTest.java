@@ -111,6 +111,7 @@ class BPMNDocumentHelperUnitTest {
     void replaceSubprocessContents() {
         String originalXML = "<bpmn:definitions>"
             + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
+            + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
             + "<extensionElements/><incoming/><outgoing/>"
             + "<startEvent id=\"start1\"/><endEvent id=\"end1\"/>"
             + "</subProcess></process></bpmn>"
@@ -145,6 +146,7 @@ class BPMNDocumentHelperUnitTest {
             String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<bpmn:definitions>"
                 + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
+                + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
                 + "<extensionElements/><incoming/><outgoing/>"
                 + "<task id=\"sp1_link_t1\"><incoming>sp1_edge1</incoming><outgoing>sp1_edge2</outgoing></task>"
                 + "<sequenceFlow id=\"sp1_edge1\"/>"
@@ -163,7 +165,34 @@ class BPMNDocumentHelperUnitTest {
 
         } catch (ParserConfigurationException | IOException | SAXException | ExportFormatException |
                  TransformerException e) {
-            e.printStackTrace();
+            fail();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void getDocumentElement() {
+        String originalXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
+            + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
+            + "<extensionElements/><incoming/><outgoing/>"
+            + "<startEvent id=\"start1\"/><endEvent id=\"end1\"/>"
+            + "</subProcess></process></bpmn>"
+            + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"start1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"end1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></bpmn:definitions>";
+
+        try {
+            Document doc = BPMNDocumentHelper.getDocument(originalXML);
+
+            assertThat(BPMNDocumentHelper.getDiagramElement(doc, "BPMNShape", "end1")).isNotNull();
+            assertThat(BPMNDocumentHelper.getDiagramElement(doc, "BPMNShape", "")).isNull();
+            assertThat(BPMNDocumentHelper.getDiagramElement(doc, "BPMNDiagram", "")).isNull();
+
+        } catch (ParserConfigurationException | IOException | SAXException e) {
             fail();
             throw new RuntimeException(e);
         }
