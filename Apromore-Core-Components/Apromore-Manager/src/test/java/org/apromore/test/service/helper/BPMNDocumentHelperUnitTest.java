@@ -109,8 +109,29 @@ class BPMNDocumentHelperUnitTest {
 
     @Test
     void replaceSubprocessContents() {
-        String originalXML = "<bpmn><process><subProcess><extensionElements/><incoming/><outgoing/><startEvent/><endEvent/></subProcess></process></bpmn>";
-        String linkedProcessXML = "<bpmn><process><extensionElements><test/></extensionElements><task/></process></bpmn>";
+        String originalXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
+            + "<extensionElements/><incoming/><outgoing/>"
+            + "<startEvent id=\"start1\"/><endEvent id=\"end1\"/>"
+            + "</subProcess></process></bpmn>"
+            + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"start1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"end1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></bpmn:definitions>";
+        String linkedProcessXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"link_p1\"><extensionElements><test/></extensionElements>"
+            + "<task id=\"link_t1\"><incoming>edge1</incoming><outgoing>edge2</outgoing></task>"
+            + "<sequenceFlow id=\"edge1\"/>"
+            + "<sequenceFlow id=\"edge2\"/>"
+            + "</process></bpmn>"
+            + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"link_p1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"link_t1\"/>"
+            + "<bpmndi:BPMNEdge bpmnElement=\"edge1\"/>"
+            + "<bpmndi:BPMNEdge bpmnElement=\"edge2\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></bpmn:definitions>";
         try {
             Document document = BPMNDocumentHelper.getDocument(originalXML);
             Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
@@ -121,14 +142,28 @@ class BPMNDocumentHelperUnitTest {
             BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2);
 
             String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
-            String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<bpmn><process><subProcess><extensionElements/><incoming/><outgoing/><task/></subProcess></process></bpmn>";
+            String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<bpmn:definitions>"
+                + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
+                + "<extensionElements/><incoming/><outgoing/>"
+                + "<task id=\"sp1_link_t1\"><incoming>sp1_edge1</incoming><outgoing>sp1_edge2</outgoing></task>"
+                + "<sequenceFlow id=\"sp1_edge1\"/>"
+                + "<sequenceFlow id=\"sp1_edge2\"/>"
+                + "</subProcess></process></bpmn>"
+                + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
+                + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
+                + "<bpmndi:BPMNShape bpmnElement=\"sp1_link_t1\"/>"
+                + "<bpmndi:BPMNEdge bpmnElement=\"sp1_edge1\"/>"
+                + "<bpmndi:BPMNEdge bpmnElement=\"sp1_edge2\"/>"
+                + "</bpmndi:BPMNPlane>"
+                + "</bpmndi:BPMNDiagram></bpmn:definitions>";
 
             assertThat(xmlAfterReplace).isEqualTo(expectedXML);
             assertThat(xmlAfterReplace).isNotEqualTo(xmlBeforeReplace);
 
         } catch (ParserConfigurationException | IOException | SAXException | ExportFormatException |
                  TransformerException e) {
+            e.printStackTrace();
             fail();
             throw new RuntimeException(e);
         }
