@@ -118,7 +118,7 @@ public class Gateway extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public Gateway addToDiagram(BPMNDiagram bpmnDiagram) {
+	public Gateway addCopyToDiagram(BPMNDiagram bpmnDiagram) {
 		return bpmnDiagram.addGateway(getLabel(), getGatewayType());
 	}
 

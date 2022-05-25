@@ -167,7 +167,7 @@ public class CallActivity extends BPMNNode implements Decorated {
     }
 
     @Override
-    public CallActivity addToDiagram(BPMNDiagram bpmnDiagram) {
+    public CallActivity addCopyToDiagram(BPMNDiagram bpmnDiagram) {
         return bpmnDiagram.addCallActivity(getLabel(), isBLooped(), isBAdhoc(),
             isBCompensation(), isBMultiinstance(), isBCollapsed());
     }

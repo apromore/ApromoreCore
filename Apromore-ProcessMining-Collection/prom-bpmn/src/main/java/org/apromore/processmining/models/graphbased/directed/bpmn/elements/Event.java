@@ -165,7 +165,7 @@ public class Event extends BPMNNode implements Decorated, BoundaryDirectedGraphN
 	}
 
 	@Override
-	public Event addToDiagram(BPMNDiagram bpmnDiagram) {
+	public Event addCopyToDiagram(BPMNDiagram bpmnDiagram) {
 		return bpmnDiagram.addEvent(getLabel(), eventType, eventTrigger, eventUse, isInterrupting, exceptionFor);
 	}
 

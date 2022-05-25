@@ -177,7 +177,7 @@ public class ImportOneProcessController extends BaseController {
                                   final String domain, final String owner, final String name, final int folderId)
       throws Exception {
     Map<SubProcess, ProcessSummaryType> subProcessMap = new HashMap<>();
-    Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap = new HashMap<>();
+    Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> subProcessModelClonedNodesMap = new HashMap<>();
     int count = 0;
     for (SubProcess subProcess : bpmnDiagram.getSubProcesses()) {
       BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
@@ -185,10 +185,10 @@ public class ImportOneProcessController extends BaseController {
       String subProcessName = name + "_subprocess" + ++count;
       ProcessSummaryType subProcessSummary = importSubProcess(subProcessDiagram, domain, owner, subProcessName, folderId);
       subProcessMap.put(subProcess, subProcessSummary);
-      clonedNodeMap.put(subProcessSummary, nodeMap);
+      subProcessModelClonedNodesMap.put(subProcessSummary, nodeMap);
     }
 
-    linkSubProcesses(importedModel, subProcessMap, clonedNodeMap);
+    linkSubProcesses(importedModel, subProcessMap, subProcessModelClonedNodesMap);
   }
 
   private ProcessSummaryType importSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,

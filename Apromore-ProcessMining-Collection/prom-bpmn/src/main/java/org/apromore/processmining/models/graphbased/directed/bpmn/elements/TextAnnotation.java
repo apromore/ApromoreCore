@@ -91,7 +91,7 @@ public class TextAnnotation extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public TextAnnotation addToDiagram(BPMNDiagram bpmnDiagram) {
+	public TextAnnotation addCopyToDiagram(BPMNDiagram bpmnDiagram) {
 		return bpmnDiagram.addTextAnnotation(getLabel());
 	}
 }

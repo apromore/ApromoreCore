@@ -154,7 +154,7 @@ public class Swimlane extends BPMNNode implements Decorated, ContainingDirectedG
 	}
 
 	@Override
-	public Swimlane addToDiagram(BPMNDiagram bpmnDiagram) {
+	public Swimlane addCopyToDiagram(BPMNDiagram bpmnDiagram) {
 		return bpmnDiagram.addSwimlane(getLabel(), getParent(), getSwimlaneType());
 	}
 }

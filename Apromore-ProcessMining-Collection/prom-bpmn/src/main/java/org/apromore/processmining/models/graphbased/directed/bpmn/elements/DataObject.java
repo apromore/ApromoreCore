@@ -91,7 +91,7 @@ public class DataObject extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public DataObject addToDiagram(BPMNDiagram bpmnDiagram) {
+	public DataObject addCopyToDiagram(BPMNDiagram bpmnDiagram) {
 		return bpmnDiagram.addDataObject(getLabel());
 	}
 }
