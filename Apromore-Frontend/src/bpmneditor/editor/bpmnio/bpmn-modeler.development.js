@@ -279,7 +279,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key)) {
+    if (has(collection, key) && key !== 'remove') {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -57911,7 +57911,14 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
