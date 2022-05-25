@@ -50,10 +50,14 @@ import org.xml.sax.SAXException;
 public final class BPMNDocumentHelper {
     private static final String BPMN_ELEMENT_PREFIX = "bpmn:";
     private static final String DIAGRAM_ELEMENT_PREFIX = "bpmndi:";
+    private static final String BPMN_PLANE_TAG = "BPMNPlane";
+    private static final String BPMN_ELEMENT_ATR = "bpmnElement";
+    private static final String MISSING_PROCESS_MSG = "The document does not contain a process";
     private static final List<String> INCOMING_TAGS = List.of("bpmn:incoming", "incoming");
     private static final List<String> OUTGOING_TAGS = List.of("bpmn:outgoing", "outgoing");
     private static final List<String> EXT_ELEMENTS_TAGS = List.of("bpmn:extensionElements", "extensionElements");
     private static final List<String> DOC_ELEMENTS_TAGS = List.of("bpmn:documentation", "documentation");
+
 
     private BPMNDocumentHelper() {
         throw new IllegalStateException("Utility class");
@@ -96,7 +100,7 @@ public final class BPMNDocumentHelper {
             if (!diagramElement.hasAttributes()) {
                 continue;
             }
-            if (bpmnElementId.equals(diagramElement.getAttributes().getNamedItem("bpmnElement").getTextContent())) {
+            if (bpmnElementId.equals(diagramElement.getAttributes().getNamedItem(BPMN_ELEMENT_ATR).getTextContent())) {
                 return diagramElement;
             }
         }
@@ -134,7 +138,7 @@ public final class BPMNDocumentHelper {
         Document bpmnDocument = subprocessNode.getOwnerDocument();
         List<Node> processElements = getBPMNElements(linkedProcessDocument, "process");
         if (CollectionUtils.isEmpty(processElements)) {
-            throw new ExportFormatException("The document does not contain a process");
+            throw new ExportFormatException(MISSING_PROCESS_MSG);
         }
 
         Node linkedProcessNode = processElements.get(0);
@@ -146,17 +150,18 @@ public final class BPMNDocumentHelper {
         //Replace diagram elements
         String processId = linkedProcessNode.hasAttributes()
             ? linkedProcessNode.getAttributes().getNamedItem("id").getTextContent() : "";
-        Node linkedProcessDiagramNode = getDiagramElement(linkedProcessDocument, "BPMNPlane", processId);
+        Node linkedProcessDiagramNode = getDiagramElement(linkedProcessDocument, BPMN_PLANE_TAG, processId);
 
-        List<Node> subProcessDiagramElements = getDiagramElements(bpmnDocument, "BPMNPlane");
+        List<Node> subProcessDiagramElements = getDiagramElements(bpmnDocument, BPMN_PLANE_TAG);
         if (CollectionUtils.isEmpty(subProcessDiagramElements) || linkedProcessDiagramNode == null) {
-            throw new ExportFormatException("The document does not contain a process");
+            throw new ExportFormatException(MISSING_PROCESS_MSG);
         }
         Node subProcessDiagramNode = subProcessDiagramElements.get(0);
 
         for (Node linkedProcessDiagramChild : convertToList(linkedProcessDiagramNode.getChildNodes())) {
             Node importedNode = bpmnDocument.importNode(linkedProcessDiagramChild, true);
-            Node bpmnElement = importedNode.hasAttributes() ? importedNode.getAttributes().getNamedItem("bpmnElement") : importedNode;
+            Node bpmnElement = importedNode.hasAttributes()
+                ? importedNode.getAttributes().getNamedItem(BPMN_ELEMENT_ATR) : null;
             if (bpmnElement != null && idMap.containsKey(bpmnElement.getTextContent())) {
                 String oldId = bpmnElement.getTextContent();
                 bpmnElement.setTextContent(idMap.getOrDefault(oldId, oldId));
@@ -206,16 +211,16 @@ public final class BPMNDocumentHelper {
      * @throws ExportFormatException if the document does not contain a process.
      */
     private static void removeDiagramElements(Document doc, List<String> deleteList) throws ExportFormatException {
-        List<Node> bpmnPlaneElements = getDiagramElements(doc, "BPMNPlane");
+        List<Node> bpmnPlaneElements = getDiagramElements(doc, BPMN_PLANE_TAG);
         if (CollectionUtils.isEmpty(bpmnPlaneElements)) {
-            throw new ExportFormatException("The document does not contain a process");
+            throw new ExportFormatException(MISSING_PROCESS_MSG);
         }
 
         Node processDiagramNode = bpmnPlaneElements.get(0);
         List<Node> retainList = new ArrayList<>();
         while (processDiagramNode.hasChildNodes()) {
             Node node = processDiagramNode.getFirstChild();
-            Node bpmnElement = node.hasAttributes() ? node.getAttributes().getNamedItem("bpmnElement") : null;
+            Node bpmnElement = node.hasAttributes() ? node.getAttributes().getNamedItem(BPMN_ELEMENT_ATR) : null;
 
             if (bpmnElement != null && !deleteList.contains(bpmnElement.getTextContent())) {
                 retainList.add(node);
