@@ -115,6 +115,8 @@ public class ParquetExporterService extends AbstractParquetProducer {
             return false;
         }
 
+        System.out.println("-------------------exportParquetFileToOutputStream------------------------");
+
         initRows();
         String charsetVal = encodeOptions.stream()
                 .filter(EncodeOption::isSelected)
@@ -122,7 +124,9 @@ public class ParquetExporterService extends AbstractParquetProducer {
                 .findFirst().orElse(UTF8);
         String filename = getValidParquetLabel(apmLogWrapper.getLabel()) + PARQUET_EXT;
         Schema schema = getSchema(charsetVal);
+        System.out.println("====> SCHEMA: " + schema);
         ParquetExport.writeParquetToOutputStream(filename, getData(schema), schema, outputStream);
+        System.out.println("====> DONE EXPORTING!!!");
         return true;
     }
 

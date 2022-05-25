@@ -50,12 +50,18 @@ public class ParquetLocalFileReader {
             ClassLoader originalContextClassLoader = thread.getContextClassLoader();
             try {
                 thread.setContextClassLoader(Path.class.getClassLoader());
+                System.out.println("---> Before HadoopInputFile");
                 InputFile inputFile = HadoopInputFile.fromPath(new Path(file.toURI()), conf);
+                System.out.println("---> get input file: " + inputFile);
+                System.out.println("---> get file path: " + file.getAbsolutePath());
+                System.out.println("---> get file path: " + file.toURI());
                 try (ParquetFileReader parquetFileReader = ParquetFileReader.open(inputFile)) {
                     schema = parquetFileReader.getFooter().getFileMetaData().getSchema();
+                    System.out.println("---> schema: " + schema);
                 }
 
             } finally {
+                System.out.println("---> FINALLY");
                 thread.setContextClassLoader(originalContextClassLoader);
             }
         }

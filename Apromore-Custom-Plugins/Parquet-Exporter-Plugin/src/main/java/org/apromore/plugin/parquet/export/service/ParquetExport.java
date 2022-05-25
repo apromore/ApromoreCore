@@ -32,10 +32,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.avro.AvroParquetWriter;
 import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
+import org.apache.parquet.hadoop.util.HadoopOutputFile;
+import org.apache.parquet.io.OutputFile;
 import org.apromore.apmlog.xes.XESAttributeCodes;
 import org.apromore.plugin.parquet.export.util.LoggerUtil;
 import org.apromore.plugin.parquet.export.util.ZKMessageCtrl;
@@ -187,6 +191,8 @@ public class ParquetExport extends AbstractParquetProducer {
     public static boolean writeParquetToOutputStream(String filename, List<GenericData.Record> data,
                                                      Schema schema, OutputStream outputStream) {
         Path outPath = new Path(filename);
+        System.out.println("-------------------writeParquetToOutputStream-----------------------");
+        System.out.println("==> " + filename);
         // delete if exist
         try {
             Files.delete(java.nio.file.Paths.get(filename));
@@ -195,10 +201,16 @@ public class ParquetExport extends AbstractParquetProducer {
         }
 
         try {
-            writeToParquet(data, outPath, schema);
+            Thread thread = Thread.currentThread();
+            synchronized (thread) {
+                writeToParquet(data, outPath, schema);
+            }
         } catch (IOException e) {
+            LoggerUtil.getLogger(ParquetExport.class).error("==> Cant write to parquet: ", e);
             return false;
         }
+
+        System.out.println("==> file is written to : " + filename);
 
         // Replace with the
         try (InputStream fIn = Files.newInputStream(java.nio.file.Paths.get(filename));
@@ -206,15 +218,20 @@ public class ParquetExport extends AbstractParquetProducer {
             BufferedOutputStream out = new BufferedOutputStream(outputStream);
             byte[] buffer = new byte[BUFFER_SIZE];
             int len;
+            System.out.println("====> Start writing");
             while ((len = in.read(buffer)) > 0) {
                 out.write(buffer, 0, len);
             }
+            System.out.println("====> done writing");
             out.close();
             Files.delete(java.nio.file.Paths.get(filename));
+            System.out.println("====> delete temp file");
         } catch (Exception e) {
             LoggerUtil.getLogger(ParquetExport.class).error(FAILED_TO_WRITE_PARQUET_FILE, e);
+            System.out.println("---> Error");
             return false;
         }
+        System.out.println("-------------------DONE-----------------------");
         return true;
     }
 
@@ -259,17 +276,36 @@ public class ParquetExport extends AbstractParquetProducer {
     protected static void writeToParquet(List<GenericData.Record> recordsToWrite,
                                        Path writeFilePath,
                                        Schema schema) throws IOException {
+        Configuration conf = new Configuration();
+        System.out.println("------ starting parquet write ------");
+        System.out.println("----> writeFilePath: " + writeFilePath.toString());
+        System.out.println("----> recordsToWrite size: " + recordsToWrite.size());
+        System.out.println("----> schema: " + schema.toString());
+//        conf.set("fs.hdfs.impl",
+//            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+//        );
+//        conf.set("fs.file.impl",
+//            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+//        );
+
+        System.out.println("----> config: " + conf);
+        System.out.println("----> config class: " + conf.getClass());
+
+        conf.setRestrictSystemProperties(true);
+        conf.setDeprecatedProperties();
 
         try (ParquetWriter<GenericData.Record> pqWriter = AvroParquetWriter
-                .<GenericData.Record>builder(writeFilePath)
+                .<GenericData.Record>builder(HadoopOutputFile.fromPath(writeFilePath, conf))
                 .withSchema(schema)
-                .withConf(new org.apache.hadoop.conf.Configuration())
+                .withConf(conf)
                 .withCompressionCodec(CompressionCodecName.SNAPPY)
                 .build()) {
 
+            System.out.println("------ starting writeToParquet ------");
             for (GenericData.Record recordGen : recordsToWrite) {
                 pqWriter.write(recordGen);
             }
+            System.out.println("===> DONE writing");
         }
     }
 }

@@ -55,17 +55,23 @@ public class MetaDataServiceParquetImpl implements MetaDataService {
             //Write InputStream to a file
             File tempFile = File.createTempFile(SAMPLELOG, PARQUET_EXT);
             new FileWriter(in, tempFile).writeToFile();
+            System.out.println("---------------MetaDataServiceParquetImpl validateLog----------------");
+            System.out.println("---> tempfile path: " + tempFile.getAbsolutePath());
             //Read Parquet file
             ParquetLocalFileReader parquetLocalFileReader = new ParquetLocalFileReader(new Configuration(true),
                 tempFile);
+            System.out.println("---> parquetLocalFileReader created");
             MessageType schema = parquetLocalFileReader.getSchema();
 
+            System.out.println("---> schema: " + schema);
             if (schema == null || schema.getColumns().size() <= 0) {
                 throw new Exception("Unable to import file. Schema is missing.");
             }
 
+            System.out.println("---> deleting");
             FileUtils.deleteFile(tempFile);
         } catch (Exception e) {
+            System.out.println("----> e: " + e.getMessage());
             throw new Exception("Unable to import file", e);
         }
     }
