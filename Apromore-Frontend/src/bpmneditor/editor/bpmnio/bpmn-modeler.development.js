@@ -279,7 +279,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key)) {
+    if (has(collection, key) && key !== 'remove') {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -57088,7 +57088,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
+ *        whiteList, onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -57105,7 +57105,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -57911,7 +57911,14 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
@@ -85089,10 +85096,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
