@@ -66,7 +66,7 @@
     "less-loader": "^7.0.1"
   },
   "dependencies": {
-    "bpmn-js": "^8.8.2",
+    "bpmn-js": "^8.10.0",
     "bpmn-js-color-picker": "^0.3.1",
     "bpmn-js-properties-panel": "^0.44.0",
     "camunda-bpmn-moddle": "^4.4.0",

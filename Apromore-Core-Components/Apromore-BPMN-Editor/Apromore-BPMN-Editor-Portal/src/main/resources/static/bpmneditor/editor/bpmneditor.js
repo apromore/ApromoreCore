@@ -54899,6 +54899,7 @@ module.exports = function(langTag) {
 
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -54923,23 +54924,25 @@ const lighten = function (colorCode) {
 };
 
 const getCurrentColor = function (element){
-        if(!element)
-        {
-            return;
-        }
-         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
-         if (
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
-             ){
-             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
-             }else{
-             return di.get('color:background-color') || di.get('bioc:fill');
-             }
+  if (!element) {
+    return;
   }
+  let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -55007,6 +55010,7 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
