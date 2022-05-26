@@ -52,6 +52,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Messagebox;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class LinkSubProcessViewModel {
@@ -86,23 +87,27 @@ public class LinkSubProcessViewModel {
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
                      @ExecutionArgParam("elementId") final String elId,
-                     @ExecutionArgParam("parentProcessId") final int parentId) throws UserNotFoundException {
+                     @ExecutionArgParam("parentProcessId") final int parentId) {
         mainController = mainC;
         elementId = elId;
         parentProcessId = parentId;
         currentUser = UserSessionManager.getCurrentUser();
 
-        ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
+        try {
+            ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
 
-        if (linkedProcess != null) {
-            selectedProcess = (ProcessSummaryType) getProcessList().stream()
-                .filter(p -> p.getId().equals(linkedProcess.getId()))
-                .findFirst().orElse(null);
-        }
+            if (linkedProcess != null) {
+                selectedProcess = (ProcessSummaryType) getProcessList().stream()
+                    .filter(p -> p.getId().equals(linkedProcess.getId()))
+                    .findFirst().orElse(null);
+            }
 
-        if (selectedProcess != null) {
-            linkType = LINK_TYPE_EXISTING;
-            processListEnabled = true;
+            if (selectedProcess != null) {
+                linkType = LINK_TYPE_EXISTING;
+                processListEnabled = true;
+            }
+        } catch (UserNotFoundException e) {
+            Messagebox.show("Could not find the current logged in user", "Error", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
