@@ -90,6 +90,7 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
         .antMatchers("/**/themes/**")
         .antMatchers("/**/libs/**")
         .antMatchers("/**/js/*")
+        .antMatchers("/favicon.ico")
         .antMatchers("/portalPluginResource/**")
         .antMatchers("/robots.txt");
   }
