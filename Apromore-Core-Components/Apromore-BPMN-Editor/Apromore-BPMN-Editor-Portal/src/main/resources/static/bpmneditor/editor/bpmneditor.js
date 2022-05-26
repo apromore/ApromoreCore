@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -130017,11 +130038,16 @@ class Export {
 
     async exportBPMN() {
         var xml = await this.facade.getXML();
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.bpmn';
-        hiddenElement.click();
+
+        if (Apromore.BPMNEditor.Plugins.Export.exportXML) {
+            Apromore.BPMNEditor.Plugins.Export.exportXML(xml)
+        } else {
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.click();
+        }
     }
 
 };
