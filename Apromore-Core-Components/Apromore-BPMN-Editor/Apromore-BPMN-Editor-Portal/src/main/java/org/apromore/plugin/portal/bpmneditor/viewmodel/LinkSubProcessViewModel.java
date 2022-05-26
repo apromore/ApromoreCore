@@ -52,6 +52,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Messagebox;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class LinkSubProcessViewModel {
@@ -81,6 +82,7 @@ public class LinkSubProcessViewModel {
     private ProcessSummaryType selectedProcess;
     @Getter
     private boolean processListEnabled;
+    private List<SummaryType> processList;
 
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
@@ -90,6 +92,23 @@ public class LinkSubProcessViewModel {
         elementId = elId;
         parentProcessId = parentId;
         currentUser = UserSessionManager.getCurrentUser();
+
+        try {
+            ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
+
+            if (linkedProcess != null) {
+                selectedProcess = (ProcessSummaryType) getProcessList().stream()
+                    .filter(p -> p.getId().equals(linkedProcess.getId()))
+                    .findFirst().orElse(null);
+            }
+
+            if (selectedProcess != null) {
+                linkType = LINK_TYPE_EXISTING;
+                processListEnabled = true;
+            }
+        } catch (UserNotFoundException e) {
+            Messagebox.show("Could not find the current logged in user", "Error", Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     @Command
@@ -124,15 +143,17 @@ public class LinkSubProcessViewModel {
     }
 
     public List<SummaryType> getProcessList() throws UserNotFoundException {
-        List<SummaryType> processList = getProcesses(null);
-        User user = securityService.getUserById(currentUser.getId());
-        processList.removeIf(p -> {
-            try {
-                return !ItemHelpers.canModify(user, p);
-            } catch (Exception e) {
-                return true;
-            }
-        });
+        if (processList == null) {
+            processList = getProcesses(null);
+            User user = securityService.getUserById(currentUser.getId());
+            processList.removeIf(p -> {
+                try {
+                    return !ItemHelpers.canModify(user, p);
+                } catch (Exception e) {
+                    return true;
+                }
+            });
+        }
         return processList;
     }
 
