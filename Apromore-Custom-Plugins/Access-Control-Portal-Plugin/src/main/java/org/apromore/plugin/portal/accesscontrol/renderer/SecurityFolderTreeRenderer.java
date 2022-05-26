@@ -122,6 +122,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
           treeItem.setOpen(false);
         }
 
+        if (ctn.getChildCount()==0 ) {
+          dataRow.addSclass("ap-tree-leaf-node");
+        }
+
+
         if (folder.getId() == 0) {
           hl.appendChild(new Image("~./img/icon/svg/folder_home.svg"));
           hl.setSclass("ap-ico-home h-inline-block");
