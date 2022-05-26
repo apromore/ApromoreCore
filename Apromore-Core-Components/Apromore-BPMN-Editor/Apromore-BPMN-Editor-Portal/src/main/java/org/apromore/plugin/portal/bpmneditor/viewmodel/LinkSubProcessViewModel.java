@@ -93,9 +93,12 @@ public class LinkSubProcessViewModel {
         currentUser = UserSessionManager.getCurrentUser();
 
         ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
-        selectedProcess = (ProcessSummaryType) getProcessList().stream()
-            .filter(p -> p.getId().equals(linkedProcess.getId()))
-            .findFirst().orElse(null);
+
+        if (linkedProcess != null) {
+            selectedProcess = (ProcessSummaryType) getProcessList().stream()
+                .filter(p -> p.getId().equals(linkedProcess.getId()))
+                .findFirst().orElse(null);
+        }
 
         if (selectedProcess != null) {
             linkType = LINK_TYPE_EXISTING;
