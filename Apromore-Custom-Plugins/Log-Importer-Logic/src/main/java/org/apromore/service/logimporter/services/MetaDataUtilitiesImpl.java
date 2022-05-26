@@ -173,7 +173,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         }
 
         for (List<String> myLine : lines) {
-            if (match(TIMESTAMP_PATTERN, myLine.get(pos))) {
+            if (null != myLine.get(pos) && match(TIMESTAMP_PATTERN, myLine.get(pos))) {
                 return true;
             }
         }
