@@ -81,15 +81,26 @@ public class LinkSubProcessViewModel {
     private ProcessSummaryType selectedProcess;
     @Getter
     private boolean processListEnabled;
+    private List<SummaryType> processList;
 
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
                      @ExecutionArgParam("elementId") final String elId,
-                     @ExecutionArgParam("parentProcessId") final int parentId) {
+                     @ExecutionArgParam("parentProcessId") final int parentId) throws UserNotFoundException {
         mainController = mainC;
         elementId = elId;
         parentProcessId = parentId;
         currentUser = UserSessionManager.getCurrentUser();
+
+        ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
+        selectedProcess = (ProcessSummaryType) getProcessList().stream()
+            .filter(p -> p.getId().equals(linkedProcess.getId()))
+            .findFirst().orElse(null);
+
+        if (selectedProcess != null) {
+            linkType = LINK_TYPE_EXISTING;
+            processListEnabled = true;
+        }
     }
 
     @Command
@@ -124,15 +135,17 @@ public class LinkSubProcessViewModel {
     }
 
     public List<SummaryType> getProcessList() throws UserNotFoundException {
-        List<SummaryType> processList = getProcesses(null);
-        User user = securityService.getUserById(currentUser.getId());
-        processList.removeIf(p -> {
-            try {
-                return !ItemHelpers.canModify(user, p);
-            } catch (Exception e) {
-                return true;
-            }
-        });
+        if (processList == null) {
+            processList = getProcesses(null);
+            User user = securityService.getUserById(currentUser.getId());
+            processList.removeIf(p -> {
+                try {
+                    return !ItemHelpers.canModify(user, p);
+                } catch (Exception e) {
+                    return true;
+                }
+            });
+        }
         return processList;
     }
 
