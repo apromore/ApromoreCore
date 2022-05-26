@@ -655,7 +655,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     }
   }
 
-  private void viewLinkedSubprocess(String elementId) {
+  private void viewLinkedSubprocess(String elementId) throws UserNotFoundException {
     if (isNewProcess || process == null) {
       Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
       return;
@@ -663,8 +663,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
     ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+    User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+    boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+        (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
 
-    if (linkedProcess == null) {
+    if (!hasLinkedProcessAccess) {
       Notification.error("No process is linked");
       return;
     }
