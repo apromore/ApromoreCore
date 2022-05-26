@@ -55,7 +55,7 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
     }
 
     private void constructMenu() {
-        String subMenuImage = "~./icons/predictor-trainer-icon.svg";
+        String subMenuImage = "~./icons/predictor-manage.svg";
         Menu subMenu = new Menu();
         subMenu.setLabel("Manage predictor");
         subMenu.setImage(subMenuImage);

@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * This file is part of "Apromore Core".
+ * %%
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -11850,9 +11871,12 @@ class Editor {
         const overlays = this.actualEditor.get('overlays');
         const auxes = overlays.get({ type: 'aux'});
         let minTop = 0, minLeft = 0, maxBottom = 0, maxRight = 0;
+        const hyperlinks = [];
         auxes.forEach(async (aux) => {
             const overlay = $(aux.htmlContainer);
             const containerId = overlay.parent().data('containerId');
+            const parentLeft = parseInt(overlay.parent().css('left'));
+            const parentTop = parseInt(overlay.parent().css('top'));
             const left = parseInt(overlay.css('left'));
             const top = parseInt(overlay.css('top'));
             const width = parseInt(overlay.css('width'));
@@ -11894,6 +11918,13 @@ class Editor {
                 if (caption) {
                     const aLink = $('a', caption)[0];
                     if (aLink) {
+                        hyperlinks.push({
+                            href: aLink.href,
+                            left: parentLeft + left,
+                            top: parentTop + top + yOffset,
+                            width: aLink.textContent.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aLink.href}">
                             <text x="0" y="${yOffset}" lineHeight="1.2" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 ${aLink.textContent}
@@ -11935,6 +11966,13 @@ class Editor {
                     const iconTextLink = iconLink.textContent;
                     const aIconLink = $('a', iconLink)[0];
                     if (aIconLink) {
+                        hyperlinks.push({
+                            href: aIconLink.href,
+                            left: parentLeft + left + 30,
+                            top: parentTop + top + yOffset,
+                            width: iconTextLink.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aIconLink.href}">
                             <text lineHeight="20px" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 <tspan x="30" y="${yOffset}">${iconTextLink}</tspan>
@@ -11973,14 +12011,24 @@ class Editor {
         raw = raw.replaceAll('<defs>', `<defs>${_assets__WEBPACK_IMPORTED_MODULE_2__["SYMBOLS"]}`);
         raw = raw.replaceAll('xmlns=""', ''); // Remove empty namespace
         raw = raw.replaceAll('<use href=', '<use xlink:href='); // Apache transcoder expect xlink ns
-        return raw
+        return {
+            raw,
+            hyperlinks
+        }
+    }
+
+    async getSVG2() {
+        if (!this.actualEditor) return '';
+        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
+        const { svg } = result;
+        return await this.processAux(svg);
     }
 
     async getSVG() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
         const { svg } = result;
-        const raw = await this.processAux(svg);
+        const { raw } = await this.processAux(svg);
         return raw;
     }
 
@@ -12167,18 +12215,19 @@ class Editor {
         const modeler = this.actualEditor
         if (!modeler) return;
 
+        let eventBus = modeler.get('eventBus');
         let elements = modeler.get('selection').get();
-        if (elements.length) {
-            elements.forEach((element) => {
-                const bo = element.businessObject;
-                bo["aux-font-size"] = size+"px";
-            });
-            const eventBus = modeler.get('eventBus');
-            eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
-            eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
-        } else {
-            this.changeGlobalFontSize(size);
+        if (!elements || !elements.length) {
+            // this.changeGlobalFontSize(size);
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
         }
+        elements.forEach((element) => {
+            const bo = element.businessObject;
+            bo["aux-font-size"] = size+"px";
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
 };
@@ -54865,6 +54914,25 @@ const lighten = function (colorCode) {
   return color.lightness(lightness).hex();
 };
 
+const getCurrentColor = function (element){
+        if(!element)
+        {
+            return;
+        }
+         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+         if (
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+             ){
+             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+             }else{
+             return di.get('color:background-color') || di.get('bioc:fill');
+             }
+  }
+
 const colors = palette.map(
   (color) => (
       {
@@ -54897,6 +54965,7 @@ class ColorContextPad {
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
+      let currentColor = getCurrentColor(element)
       el.spectrum({
         type: "color",
         showInput: true,
@@ -54907,6 +54976,7 @@ class ColorContextPad {
         hideAfterPaletteSelect: true,
         containerClassName: 'ap-editor-cpicker-wrapper',
         palette,
+        color: currentColor,
         change: function (newColor) {
           let colorCode = newColor.toHexString();
           let color;
@@ -70081,7 +70151,14 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
@@ -129324,6 +129401,7 @@ class EditorApp {
                     isPublished: this.isPublished,
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
+                    getSVG2: this.getSVG2.bind(this),
                     addToRegion: this.addToRegion.bind(this),
                     undo: () => me.editor.undo(),
                     redo: () => me.editor.redo(),
@@ -129344,6 +129422,11 @@ class EditorApp {
     async getSVG() {
         if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
         return await this.editor.getSVG();
+    }
+
+    async getSVG2() {
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
+        return await this.editor.getSVG2();
     }
 
     /**
@@ -129817,8 +129900,8 @@ class Attachment {
             'functionality': this.toggleAttachment.bind(this),
             'icon': this.getAttachmentIcon(),
             'description': this.getAttachmentDescription(),
-            'index': 4,
-            'groupOrder': 2
+            'index': 2,
+            'groupOrder': 3
         });
 
         this.facade.offer({
@@ -129827,8 +129910,8 @@ class Attachment {
             'functionality': this.toggleComment.bind(this),
             'icon': this.getCommentIcon(),
             'description': this.getCommentDescription(),
-            'index': 5,
-            'groupOrder': 2
+            'index': 3,
+            'groupOrder': 3
         });
 
     }
@@ -129962,11 +130045,16 @@ class Export {
 
     async exportBPMN() {
         var xml = await this.facade.getXML();
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.bpmn';
-        hiddenElement.click();
+
+        if (Apromore.BPMNEditor.Plugins.Export.exportXML) {
+            Apromore.BPMNEditor.Plugins.Export.exportXML(xml)
+        } else {
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.click();
+        }
     }
 
 };
@@ -130025,10 +130113,10 @@ class FontChange {
             'btnId': 'ap-id-editor-fontchange-btn',
             'name': Apromore.I18N.FontSize.fontsize,
             'functionality': this.fontChange.bind(this),
-            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/measure.svg",
+            'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/font-size.svg",
             'description': Apromore.I18N.FontSize.fontSizeDesc,
             'index': 1,
-            'groupOrder': 5
+            'groupOrder': 3
         });
 
     }
@@ -130126,7 +130214,9 @@ class File {
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = await this.facade.getSVG();
+        var result = await this.facade.getSVG2();
+        var svgClone = result.raw;
+        var hyperlinks = result.hyperlinks;
 
         // Expand margin and insert a logo
         var xy = null, width, height;
@@ -130161,10 +130251,31 @@ class File {
         catch (e) {
             throw new Error ('SVG to PDF error. Error message: ' + e.message);
         }
+        var xoffset = xy[0] - 20;
+        var yoffset = xy[1] - 40;
+
+        var linkParams = '';
+        var ratio = 0.75;
+        // left, bottom, right, top
+        hyperlinks.forEach((hyperlink, index) => {
+            var l = (hyperlink.left - xoffset) * ratio;
+            var b = (height - hyperlink.top + yoffset) * ratio;
+            var r = l + hyperlink.width * 5;
+            var t = b + hyperlink.height * 5;
+            linkParams = linkParams + (
+                encodeURIComponent(hyperlink.href) + ',' +
+                Math.round(l) + ',' + // left
+                Math.round(b) + ',' + // bottom
+                Math.round(r) + ',' + // right
+                Math.round(t) + // top
+                ((index + 1 === hyperlinks.length) ? '' : ',')
+             )
+        });
 
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
-        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) + "&format=pdf";
+        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) +
+            "&format=pdf" + "&hyperlinks=" + linkParams;
         xhr.open("POST", _config__WEBPACK_IMPORTED_MODULE_0__["default"].PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'blob';
@@ -130312,7 +130423,7 @@ class PublishModel {
             'group': window.Apromore.I18N.Share.group,
             'description': this.getDescription(facade.isPublished),
             'index': 2,
-            'groupOrder': 4,
+            'groupOrder': 5,
             'icon': this.getIcon(facade.isPublished)
         });
     };
@@ -130405,7 +130516,7 @@ class Share {
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/share.svg",
             'description': Apromore.I18N.Share.shareDesc,
             'index': 1,
-            'groupOrder': 4
+            'groupOrder': 5
         });
 
     }
@@ -130454,7 +130565,7 @@ class SimulateModel {
             'group': window.Apromore.I18N.SimulationPanel.group,
             'description': window.Apromore.I18N.SimulationPanel.simulateModelDesc,
             'index': 1,
-            'groupOrder': 3,
+            'groupOrder': 4,
             'icon': _config__WEBPACK_IMPORTED_MODULE_0__["default"].PATH + "images/ap/simulate-model.svg",
             isEnabled : function(){ return facade.useSimulationPanel}.bind(this),
         });
