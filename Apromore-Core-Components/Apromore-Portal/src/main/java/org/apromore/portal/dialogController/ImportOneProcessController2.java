@@ -29,12 +29,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
+import org.apromore.portal.dialogController.dto.SubProcessItem;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
@@ -60,10 +63,10 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ImportOneProcessController extends BaseController {
+public class ImportOneProcessController2 extends ImportOneProcessController {
 
   private static final Logger LOGGER =
-      PortalLoggerFactory.getLogger(ImportOneProcessController.class);
+      PortalLoggerFactory.getLogger(ImportOneProcessController2.class);
 
   private final MainController mainC;
   private final ImportController importProcessesC;
@@ -78,9 +81,9 @@ public class ImportOneProcessController extends BaseController {
   private final String username;
   private boolean isPublic;
 
-  public ImportOneProcessController(final MainController mainC,
-      final ImportController importProcessesC, final InputStream xml_is, final String processName,
-      final String nativeType, final String fileName, final boolean isPublic)
+  public ImportOneProcessController2(final MainController mainC,
+                                     final ImportController importProcessesC, final InputStream xml_is, final String processName,
+                                     final String nativeType, final String fileName, final boolean isPublic)
       throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers,
       IOException {
     this.importProcessesC = importProcessesC;
@@ -176,22 +179,57 @@ public class ImportOneProcessController extends BaseController {
   private void importLinkedSubProcesses(final ProcessSummaryType importedModel, final BPMNDiagram bpmnDiagram,
                                   final String domain, final String owner, final String name, final int folderId)
       throws Exception {
-    Map<SubProcess, ProcessSummaryType> subProcessToDbRecordMap = new HashMap<>();
-    Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> dbRecordToSubProcessNodesMap = new HashMap<>();
-    int count = 0;
-    for (SubProcess subProcess : bpmnDiagram.getSubProcesses()) {
-      BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
-      Map<BPMNNode, BPMNNode> subProcessOldToNewNodeMap = subProcessDiagram.cloneSubProcessContents(subProcess);
-      String subProcessName = name + "_subprocess" + ++count;
-      ProcessSummaryType subProcessSummary = importSubProcess(subProcessDiagram, domain, owner, subProcessName, folderId);
-      subProcessToDbRecordMap.put(subProcess, subProcessSummary);
-      dbRecordToSubProcessNodesMap.put(subProcessSummary, subProcessOldToNewNodeMap);
-    }
 
-    linkSubProcesses(importedModel, subProcessToDbRecordMap, dbRecordToSubProcessNodesMap);
+    SubProcessItem topSubProcessItem = buildSubProcessTree(bpmnDiagram, name);
+
+    importSubProcesses(topSubProcessItem, domain, owner, folderId);
+
+    linkSubProcesses(topSubProcessItem);
   }
 
-  private ProcessSummaryType importSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
+  private SubProcessItem buildSubProcessTree(BPMNDiagram diagram, String name) {
+    // Create all SubProcessItem from the diagram
+    Collection<SubProcessItem> subProcessItems = new HashSet<>();
+    for (SubProcess subProcess : diagram.getSubProcesses()) {
+      subProcessItems.add(SubProcessItem.builder()
+          .subProcessNode(subProcess)
+          .diagram(diagram.getSubProcessDiagram(subProcess))
+          .build());
+    }
+
+    // Create parent-child relationship
+    Collection<SubProcessItem> childItems = new HashSet<>();
+    for (SubProcessItem item : subProcessItems) {
+      for (SubProcessItem other : subProcessItems) {
+        if (item.contain(other)) {
+          item.addChild(other);
+          childItems.add(other);
+        }
+      }
+    }
+
+    // Those items which are not updated as child of any are actually child of the top item
+    Collection<SubProcessItem> noChildItems = new HashSet<>(subProcessItems);
+    noChildItems.removeAll(childItems);
+    SubProcessItem topItem = SubProcessItem.builder().diagram(diagram).name(name).build();
+    topItem.addChildAll(noChildItems);
+
+    return topItem;
+  }
+
+  private void importSubProcesses(SubProcessItem item, String domain, String owner,
+                                  int folderId) throws Exception {
+    int count = 0;
+    for (SubProcessItem subItem : item.getChildren()) {
+      BPMNDiagram subProcessDiagram = subItem.getDiagram().clone();
+      String subProcessName = item.getName() + "_subprocess" + ++count;
+      subItem.setProcessSummaryType(importOneSubProcess(subProcessDiagram, domain, owner, subProcessName,
+          folderId));
+      importSubProcesses(subItem, domain, owner, folderId);
+    }
+  }
+
+  private ProcessSummaryType importOneSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
                                               final String name, final int folderId)
       throws Exception {
     String emptyModelXML = "<?xml version='1.0' encoding='UTF-8'?>"
@@ -219,27 +257,11 @@ public class ImportOneProcessController extends BaseController {
     return importResult.getProcessSummary();
   }
 
-  private void linkSubProcesses(final ProcessSummaryType importedModel,
-                                final Map<SubProcess, ProcessSummaryType> subProcessToDbRecordMap,
-                                final Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> dbRecordToSubProcessNodesMap) {
-    for (Map.Entry<SubProcess, ProcessSummaryType> entry : subProcessToDbRecordMap.entrySet()) {
-      SubProcess subProcess = entry.getKey();
-      ProcessSummaryType linkedProcess = entry.getValue();
-
-      //Link original model
-      mainC.getProcessService().linkSubprocess(importedModel.getId(),
-          subProcess.getId().toString(), linkedProcess.getId());
-
-      //Link subprocess models
-      for (Map.Entry<ProcessSummaryType, Map<BPMNNode, BPMNNode>> subProcessResult : dbRecordToSubProcessNodesMap.entrySet()) {
-        Map<BPMNNode, BPMNNode> subProcessOldToNewNodeMap = subProcessResult.getValue();
-        ProcessSummaryType parentProcess = subProcessResult.getKey();
-
-        if (subProcessOldToNewNodeMap.containsKey(subProcess)) {
-          mainC.getProcessService().linkSubprocess(parentProcess.getId(),
-              subProcessOldToNewNodeMap.get(subProcess).getId().toString(), linkedProcess.getId());
-        }
-      }
+  private void linkSubProcesses(final SubProcessItem topItem) {
+    for (SubProcessItem subItem : topItem.getChildren()) {
+      mainC.getProcessService().linkSubprocess(topItem.getProcessSummaryType().getId(),
+          subItem.getSubProcessNode().getId().toString(), subItem.getProcessSummaryType().getId());
+      linkSubProcesses(subItem);
     }
   }
 

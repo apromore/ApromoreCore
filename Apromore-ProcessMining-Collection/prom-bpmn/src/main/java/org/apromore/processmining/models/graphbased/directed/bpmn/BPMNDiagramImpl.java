@@ -25,6 +25,7 @@ import java.util.*;
 
 import javax.swing.SwingConstants;
 
+import lombok.NonNull;
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
@@ -281,6 +282,57 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 		return mapping;
 	}
 
+	public BPMNDiagram getSubProcessDiagram(@NonNull SubProcess subProcess) {
+		BPMNDiagram subProcessDiagram = new BPMNDiagramImpl(subProcess.getLabel() + "_Diagram");
+
+		BPMNDiagram topDiagram = (BPMNDiagram) subProcess.getGraph();
+		Map<BPMNNode, BPMNNode> nodeMap = new HashMap<>();
+
+		//Nodes
+		for (ContainableDirectedGraphElement subProcessChild : subProcess.getChildren()) {
+			if (subProcessChild instanceof BPMNNode) {
+				subProcessDiagram.addNode((BPMNNode) subProcessChild);
+			}
+		}
+
+		//Edges
+		// TODO: Can use subProcess.getChildren() and then check subProcessChild instanceof BPMNEdge as above?
+		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : topDiagram.getEdges()) {
+			BPMNNode source = edge.getSource();
+			BPMNNode target = edge.getTarget();
+
+			if (nodeMap.containsKey(source) || nodeMap.containsKey(target)) {
+				BPMNNode newSource = nodeMap.get(source);
+				BPMNNode newTarget = nodeMap.get(target);
+
+				if (newSource == null) {
+					newSource = source.addToDiagram(this);
+					nodeMap.put(source, newSource);
+				}
+
+				if (newTarget == null) {
+					newTarget = target.addToDiagram(this);
+					nodeMap.put(target, newTarget);
+				}
+
+				// TODO: should use addEdge method (to be added)
+				subProcessDiagram.addEdge(edge);
+//				if (edge instanceof Flow) {
+//					addFlow(newSource, newTarget, edge.getLabel());
+//				} else if (edge instanceof Association) {
+//					addAssociation(newSource, newTarget, ((Association) edge).getDirection());
+//				} else if (edge instanceof MessageFlow) {
+//					addMessageFlow(newSource, newTarget, edge.getLabel());
+//				} else if (edge instanceof DataAssociation) {
+//					addDataAssociation(newSource, newTarget, edge.getLabel());
+//				}
+			}
+		}
+
+		return subProcessDiagram;
+	}
+
+	// TODO: we need addNode and addEdge methods to be used in this one.
 	@Override
 	public Map<BPMNNode, BPMNNode> cloneSubProcessContents(SubProcess subProcess) {
 		BPMNDiagram bpmnDiagram = (BPMNDiagram) subProcess.getGraph();
@@ -291,10 +343,14 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 			if (subProcessChild instanceof BPMNNode) {
 				BPMNNode node = (BPMNNode) subProcessChild;
 				nodeMap.put(node, node.addToDiagram(this));
+				BPMNNode copyNode = node.copy();
+				this.addNode(copyNode);
+				nodeMap.put(node, copyNode);
 			}
 		}
 
 		//Edges
+		// TODO: Can use subProcess.getChildren() and then check subProcessChild instanceof BPMNEdge as above?
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
 			BPMNNode source = edge.getSource();
 			BPMNNode target = edge.getTarget();
@@ -313,15 +369,17 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 					nodeMap.put(target, newTarget);
 				}
 
-				if (edge instanceof Flow) {
-					addFlow(newSource, newTarget, edge.getLabel());
-				} else if (edge instanceof Association) {
-					addAssociation(newSource, newTarget, ((Association) edge).getDirection());
-				} else if (edge instanceof MessageFlow) {
-					addMessageFlow(newSource, newTarget, edge.getLabel());
-				} else if (edge instanceof DataAssociation) {
-					addDataAssociation(newSource, newTarget, edge.getLabel());
-				}
+				// TODO: should use addEdge method (to be added)
+				this.addEdge(edge);
+//				if (edge instanceof Flow) {
+//					addFlow(newSource, newTarget, edge.getLabel());
+//				} else if (edge instanceof Association) {
+//					addAssociation(newSource, newTarget, ((Association) edge).getDirection());
+//				} else if (edge instanceof MessageFlow) {
+//					addMessageFlow(newSource, newTarget, edge.getLabel());
+//				} else if (edge instanceof DataAssociation) {
+//					addDataAssociation(newSource, newTarget, edge.getLabel());
+//				}
 			}
 		}
 		return nodeMap;

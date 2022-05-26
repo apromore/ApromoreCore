@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.NonNull;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
 import org.apromore.processmining.models.graphbased.directed.DirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
@@ -249,4 +250,6 @@ public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends 
 	        MutableMap<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeMapping);
 
 	Map<BPMNNode, BPMNNode> cloneSubProcessContents(SubProcess subProcess);
+
+	BPMNDiagram getSubProcessDiagram(SubProcess subProcess);
 }
