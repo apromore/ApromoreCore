@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
@@ -44,6 +45,7 @@ import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.service.AuthorizationService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.AccessType;
@@ -63,6 +65,9 @@ class LinkSubProcessViewModelUnitTest {
 
     @Mock
     private SecurityService securityService;
+
+    @Mock
+    private ProcessService processService;
 
     @Mock
     private UserInterfaceHelper uiHelper;
@@ -94,7 +99,7 @@ class LinkSubProcessViewModelUnitTest {
     }
 
     @Test
-    void testInit() {
+    void testInitWithNoLinkedProcess() {
         UserType userType = mock(UserType.class);
 
         userSessionManagerMockedStatic.when(UserSessionManager::getCurrentUser).thenReturn(userType);
@@ -103,6 +108,41 @@ class LinkSubProcessViewModelUnitTest {
         assertThat(linkSubProcessViewModel.getLinkType()).isEqualTo("NEW");
         assertThat(linkSubProcessViewModel.getSelectedProcess()).isNull();
         assertFalse(linkSubProcessViewModel.isProcessListEnabled());
+    }
+
+    @Test
+    void testInitWithLinkedProcess() throws UserNotFoundException {
+        UserType userType = new UserType();
+        userType.setId("userId");
+        SummariesType summariesType = buildProcessSummaryList(1);
+        ProcessSummaryType linkedProcess = new ProcessSummaryType();
+        linkedProcess.setId(0);
+
+        userSessionManagerMockedStatic.when(UserSessionManager::getCurrentUser).thenReturn(userType);
+        when(processService.getLinkedProcess(1, "test")).thenReturn(linkedProcess);
+
+        when(mainController.getPortalSession()).thenReturn(portalSession);
+        when(portalSession.getTree()).thenReturn(Collections.emptyList());
+
+
+        when(uiHelper.buildProcessSummaryList(userType.getId(), 0, 0, LinkSubProcessViewModel.PAGE_SIZE))
+            .thenReturn(summariesType);
+
+        when(securityService.getUserById(userType.getId())).thenReturn(mock(User.class));
+
+        AuthorizationService authorizationService = mock(AuthorizationService.class);
+        springUtilMockedStatic.when(() -> SpringUtil.getBean("authorizationService")).thenReturn(authorizationService);
+        when(authorizationService.getProcessAccessTypeByUser(anyInt(), any(User.class))).thenReturn(AccessType.EDITOR);
+
+        linkSubProcessViewModel.init(mainController, "test", 1);
+        List<SummaryType> processList =  linkSubProcessViewModel.getProcessList();
+
+        linkSubProcessViewModel.init(mainController, "test", 1);
+
+        assertThat(processList).hasSize(1);
+        assertThat(linkSubProcessViewModel.getLinkType()).isEqualTo("EXISTING");
+        assertThat(linkSubProcessViewModel.getSelectedProcess()).isNotNull();
+        assertTrue(linkSubProcessViewModel.isProcessListEnabled());
     }
 
     @Test
@@ -146,6 +186,8 @@ class LinkSubProcessViewModelUnitTest {
         List<SummaryType> processList =  linkSubProcessViewModel.getProcessList();
 
         assertThat(processList).hasSize(111);
+        //The same list is returned each time
+        assertThat(linkSubProcessViewModel.getProcessList()).isEqualTo(processList);
     }
 
     private List<FolderType> buildFolderTree() {
