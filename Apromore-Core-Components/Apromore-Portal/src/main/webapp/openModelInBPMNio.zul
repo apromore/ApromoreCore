@@ -380,8 +380,11 @@
               Apromore.BPMNEditor.beforeCheckUnsaved('onDownloadXML');
             };
 
+            Apromore.BPMNEditor.updateFontSize = function(newFontSize) {
+              zk.Widget.$('$slider').setCurpos(newFontSize);
+            };
+
             Apromore.BPMNEditor.Plugins.FontChange.change = function() {
-               console.log('onChangeFont Called');
                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onChangeFont'));
             };
             // window.setTimeout(function() {

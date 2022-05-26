@@ -129,6 +129,11 @@ export default class Editor {
             me.setDirty(true);
         });
 
+        eventBus.on('selection.changed', function(context) {
+          var newSelection = context.newSelection;
+
+          me.updateFontSize(newSelection)
+        });
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -553,6 +558,30 @@ export default class Editor {
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
+    updateFontSize(selection) {
+      try  {
+        let selectedFontSize = -1;
+        for (let i = 0; i < selection.length; i++) {
+            const element = selection[i]
+            const bo = element.businessObject;
+            const size = parseInt(bo["aux-font-size"])
+            if (selectedFontSize === -1) {
+                selectedFontSize = size
+            } else {
+                if (selectedFontSize !== size) {
+                    selectedFontSize = -1
+                    break;
+                }
+            }
+        }
+        if (selectedFontSize != -1) {
+            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
+        }
+      } catch (r) {
+        // pass
+      }
     }
 
     async changeFontSize(size) {

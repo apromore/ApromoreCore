@@ -1,24 +1,3 @@
-/*
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -11785,6 +11764,11 @@ class Editor {
             me.setDirty(true);
         });
 
+        eventBus.on('selection.changed', function(context) {
+          var newSelection = context.newSelection;
+
+          me.updateFontSize(newSelection)
+        });
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -12209,6 +12193,30 @@ class Editor {
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
+    updateFontSize(selection) {
+      try  {
+        let selectedFontSize = -1;
+        for (let i = 0; i < selection.length; i++) {
+            const element = selection[i]
+            const bo = element.businessObject;
+            const size = parseInt(bo["aux-font-size"])
+            if (selectedFontSize === -1) {
+                selectedFontSize = size
+            } else {
+                if (selectedFontSize !== size) {
+                    selectedFontSize = -1
+                    break;
+                }
+            }
+        }
+        if (selectedFontSize != -1) {
+            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
+        }
+      } catch (r) {
+        // pass
+      }
     }
 
     async changeFontSize(size) {
@@ -69328,7 +69336,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
+ *        whiteList, onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -69345,7 +69353,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -97336,10 +97344,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
