@@ -74,6 +74,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Window;
@@ -465,6 +466,23 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       String elementId =  (String) event.getData();
       unlinkSubprocess(elementId);
       Notification.info("Process successfully unlinked");
+    });
+
+    this.addEventListener("onDownloadXML", event -> {
+      String xml = (String) event.getData();
+      //Show window if there is a linked subprocess. Otherwise, download.
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+      if (process == null || !processService.hasLinkedProcesses(process.getId(), currentUserType.getUsername())) {
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        Filedownload.save(is, "text/xml", "diagram.bpmn");
+      } else {
+        Map<String, Object> args = new HashMap<>();
+        args.put("process", process);
+        args.put("version", vst);
+        Window downloadBPMNPrompt = (Window) Executions.createComponents(
+            getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+        downloadBPMNPrompt.doModal();
+      }
     });
 
     BPMNEditorController editorController = this;
