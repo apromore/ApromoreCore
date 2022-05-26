@@ -3,7 +3,7 @@ version = '1.1'
 description = 'Apromore Zk'	
 
 ext {
-	zkVersion ='9.6.0'
+	zkVersion ='10.0.0.FL.20220413'
 }
 
 dependencies {
@@ -17,7 +17,7 @@ dependencies {
 	api "org.zkoss.common:zel:${zkVersion}"
 	api "org.zkoss.common:zcommon:${zkVersion}"
 	api "org.zkoss.common:zweb:${zkVersion}"
-	api "org.zkoss.theme:iceblue_c:${zkVersion}"
+	api "org.zkoss.theme:iceblue_c:9.6.0"
 	api "org.zkoss.zk:zhtml:${zkVersion}"
 	api "org.zkoss.zk:zkbind:${zkVersion}"
 	api "org.zkoss.zk:zk:${zkVersion}"
