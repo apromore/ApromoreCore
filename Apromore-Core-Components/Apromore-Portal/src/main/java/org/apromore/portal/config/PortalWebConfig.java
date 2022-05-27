@@ -93,7 +93,7 @@ public class PortalWebConfig {
   public ServletRegistrationBean<PortalPluginResourceServlet> exampleServletBean() {
     ServletRegistrationBean<PortalPluginResourceServlet> bean =
         new ServletRegistrationBean<PortalPluginResourceServlet>(new PortalPluginResourceServlet(),
-            "/portalPluginResource/*");
+            "/portalPluginResource/*", "/favicon.ico");
     bean.setLoadOnStartup(1);
     return bean;
   }
