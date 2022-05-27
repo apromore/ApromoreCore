@@ -24,29 +24,68 @@
 
 package org.apromore.plugin.parquet.export.service;
 
+import static org.apache.commons.text.CharacterPredicates.DIGITS;
+import static org.apache.commons.text.CharacterPredicates.LETTERS;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.inject.Inject;
+import org.apache.commons.text.RandomStringGenerator;
 import org.apromore.plugin.parquet.export.ParquetExportPlugin;
+import org.apromore.plugin.parquet.export.core.data.APMLogWrapper;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.Sessions;
 
 @Component("xesToParquetConverterService")
 public class XesToParquetConverterService {
+    public static final int TEMP_FILE_NAME_LENGTH = 50;
+    public static final String UNDER_SCORE = "_";
+
+    private RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder()
+        .withinRange('0', 'z')
+        .filteredBy(LETTERS, DIGITS)
+        .build();
+
     @Inject
     private ParquetExportPlugin parquetExportPlugin;
 
     public boolean exportXesToParquetToFilesystem(int logId, OutputStream outputStream) {
+        APMLogWrapper apmLogWrapper = getAPMLogWrapper(logId);
+        return apmLogWrapper != null
+            && new ParquetExporterService(apmLogWrapper).exportParquetFileToOutputStream(outputStream);
+    }
+
+    public Path exportXesToParquet(int logId) throws IOException {
+        APMLogWrapper apmLogWrapper = getAPMLogWrapper(logId);
+        return apmLogWrapper == null
+            ? null
+            : new ParquetExporterService(apmLogWrapper)
+                .saveParquetFile(
+                    (String) Sessions.getCurrent().getAttribute("encodingLogParquet"),
+                    apmLogWrapper.getLabel()
+                        + UNDER_SCORE
+                        + randomStringGenerator.generate(TEMP_FILE_NAME_LENGTH).toLowerCase(Locale.ROOT)
+                        + UNDER_SCORE
+                        + logId
+                );
+    }
+
+    private APMLogWrapper getAPMLogWrapper(int logId) {
         List<Integer> lstList = new ArrayList<>();
         lstList.add(logId);
 
-        // Convert the log to parquert
         APMLogWrapperManager apmLogComboManager = parquetExportPlugin.initAPMLogWrapperManagers(lstList);
         if (apmLogComboManager.getAPMLogComboList().size() == 1) {
-            return new ParquetExporterService(apmLogComboManager.get(0))
-                .exportParquetFileToOutputStream(outputStream);
+            return apmLogComboManager.get(0);
         }
 
-        return false;
+        return null;
     }
 }

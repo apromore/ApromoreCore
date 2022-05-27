@@ -32,6 +32,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.avro.AvroParquetWriter;
 import org.apache.parquet.hadoop.ParquetWriter;
@@ -259,17 +260,32 @@ public class ParquetExport extends AbstractParquetProducer {
     protected static void writeToParquet(List<GenericData.Record> recordsToWrite,
                                        Path writeFilePath,
                                        Schema schema) throws IOException {
+        Configuration conf = new Configuration();
+        System.out.println("------ starting parquet write ------");
+        System.out.println("----> writeFilePath: " + writeFilePath.toString());
+        System.out.println("----> recordsToWrite size: " + recordsToWrite.size());
+        System.out.println("----> schema: " + schema.toString());
+        conf.set("fs.hdfs.impl",
+            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+        );
+        conf.set("fs.file.impl",
+            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+        );
 
+        System.out.println("----> config: " + conf);
+        System.out.println("----> config class: " + conf.getClass());
         try (ParquetWriter<GenericData.Record> pqWriter = AvroParquetWriter
-                .<GenericData.Record>builder(writeFilePath)
-                .withSchema(schema)
-                .withConf(new org.apache.hadoop.conf.Configuration())
-                .withCompressionCodec(CompressionCodecName.SNAPPY)
-                .build()) {
+            .<GenericData.Record>builder(writeFilePath)
+            .withSchema(schema)
+            .withConf(conf)
+            .withCompressionCodec(CompressionCodecName.SNAPPY)
+            .build()) {
 
+            System.out.println("------ starting writeToParquet ------");
             for (GenericData.Record recordGen : recordsToWrite) {
                 pqWriter.write(recordGen);
             }
+            System.out.println("===> DONE writing");
         }
     }
 }
