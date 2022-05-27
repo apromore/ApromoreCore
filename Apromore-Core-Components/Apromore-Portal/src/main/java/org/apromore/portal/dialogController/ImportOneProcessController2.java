@@ -227,10 +227,10 @@ public class ImportOneProcessController2 extends ImportOneProcessController {
     return importResult.getProcessSummary();
   }
 
-  private void linkSubProcesses(final SubProcessItem topItem) {
-    for (SubProcessItem subItem : topItem.getChildren()) {
-      if (topItem.getProcessSummaryType() != null && subItem.getProcessSummaryType() != null) {
-        mainC.getProcessService().linkSubprocess(topItem.getProcessSummaryType().getId(),
+  private void linkSubProcesses(final SubProcessItem item) {
+    for (SubProcessItem subItem : item.getChildren()) {
+      if (item.getProcessSummaryType() != null && subItem.getProcessSummaryType() != null) {
+        mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
             subItem.getSubProcessNode().getId().toString(), subItem.getProcessSummaryType().getId());
         linkSubProcesses(subItem);
       }
