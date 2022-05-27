@@ -60,6 +60,7 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**/themes/**")
         .antMatchers("/**/libs/**")
         .antMatchers("/**/js/*")
+        .antMatchers("/favicon.ico")
         .antMatchers("/portalPluginResource/**")
         .antMatchers("/robots.txt");
   }
