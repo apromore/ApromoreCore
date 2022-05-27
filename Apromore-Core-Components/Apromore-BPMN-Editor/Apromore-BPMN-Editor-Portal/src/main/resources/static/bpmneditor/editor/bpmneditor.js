@@ -67650,15 +67650,13 @@ var ResourceTimetableSelectBox = __webpack_require__(322),
     ResourceCostField = __webpack_require__(325);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
   var entries = [];
-
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
