@@ -46,4 +46,39 @@ public class SubProcessItem {
     public boolean contain(SubProcessItem item) {
         return diagram.getNodes().contains(item.getSubProcessNode());
     }
+
+    public static SubProcessItem buildSubProcessTree(BPMNDiagram diagram, String name,
+                                                     ProcessSummaryType topModelSummaryType) {
+        // Create all SubProcessItem from the diagram
+        Collection<SubProcessItem> subProcessItems = new HashSet<>();
+        for (SubProcess subProcess : diagram.getSubProcesses()) {
+            subProcessItems.add(SubProcessItem.builder()
+                .subProcessNode(subProcess)
+                .diagram(diagram.getSubProcessDiagram(subProcess))
+                .build());
+        }
+
+        // Create parent-child relationship
+        Collection<SubProcessItem> childItems = new HashSet<>();
+        for (SubProcessItem item : subProcessItems) {
+            for (SubProcessItem other : subProcessItems) {
+                if (item.contain(other)) {
+                    item.addChild(other);
+                    childItems.add(other);
+                }
+            }
+        }
+
+        // Those items which are not updated as child of any are actually child of the top item
+        Collection<SubProcessItem> noChildItems = new HashSet<>(subProcessItems);
+        noChildItems.removeAll(childItems);
+        SubProcessItem topItem = SubProcessItem.builder()
+            .diagram(diagram)
+            .name(name)
+            .processSummaryType(topModelSummaryType)
+            .build();
+        topItem.addChildAll(noChildItems);
+
+        return topItem;
+    }
 }

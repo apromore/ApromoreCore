@@ -152,11 +152,6 @@ public class Swimlane extends BPMNNode implements Decorated, ContainingDirectedG
 		getAttributeMap().put(AttributeMap.LABELALONGEDGE, true);
 		getAttributeMap().put(AttributeMap.PREF_ORIENTATION, SwingConstants.WEST);
 	}
-
-	@Override
-	public Swimlane addToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addSwimlane(getLabel(), getParent(), getSwimlaneType());
-	}
 }
 
 

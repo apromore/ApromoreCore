@@ -117,11 +117,6 @@ public class Gateway extends BPMNNode implements Decorated {
 		return null;
 	}
 
-	@Override
-	public Gateway addToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addGateway(getLabel(), getGatewayType());
-	}
-
 	public IGraphElementDecoration getDecorator() {
 		return decorator;
 	}

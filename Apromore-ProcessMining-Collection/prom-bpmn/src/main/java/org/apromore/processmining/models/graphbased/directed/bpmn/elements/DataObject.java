@@ -89,10 +89,5 @@ public class DataObject extends BPMNNode implements Decorated {
 		getAttributeMap().put(AttributeMap.BORDERWIDTH, 0);
 		getAttributeMap().put(AttributeMap.STROKECOLOR, Color.white);
 	}
-
-	@Override
-	public DataObject addToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addDataObject(getLabel());
-	}
 }
 

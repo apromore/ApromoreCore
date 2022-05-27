@@ -90,8 +90,4 @@ public class TextAnnotation extends BPMNNode implements Decorated {
 		getAttributeMap().put(AttributeMap.STROKECOLOR, Color.white);
 	}
 
-	@Override
-	public TextAnnotation addToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addTextAnnotation(getLabel());
-	}
 }

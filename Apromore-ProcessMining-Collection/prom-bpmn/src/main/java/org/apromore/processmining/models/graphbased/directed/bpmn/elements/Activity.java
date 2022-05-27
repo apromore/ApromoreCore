@@ -203,12 +203,6 @@ public class Activity extends BPMNNode implements Decorated {
 		return null;
 	}
 
-	@Override
-	public Activity addToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addActivity(getLabel(), isBLooped(), isBAdhoc(),
-			isBCompensation(), isBMultiinstance(), isBCollapsed());
-	}
-
 	public void decorate(Graphics2D g2d, double x, double y, double width, double height) {
 		if (decorator != null) {
 			decorator.decorate(g2d, x, y, width, height);

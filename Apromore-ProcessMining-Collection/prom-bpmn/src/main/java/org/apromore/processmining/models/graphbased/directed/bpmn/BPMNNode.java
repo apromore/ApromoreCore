@@ -181,5 +181,4 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 			subprocess.addChild(this);
 		}
 	}
-	public abstract BPMNNode addToDiagram(BPMNDiagram bpmnDiagram);
 }

@@ -180,41 +180,11 @@ public class ImportOneProcessController2 extends ImportOneProcessController {
                                   final String domain, final String owner, final String name, final int folderId)
       throws Exception {
 
-    SubProcessItem topSubProcessItem = buildSubProcessTree(bpmnDiagram, name);
+    SubProcessItem topSubProcessItem = SubProcessItem.buildSubProcessTree(bpmnDiagram, name, importedModel);
 
     importSubProcesses(topSubProcessItem, domain, owner, folderId);
 
     linkSubProcesses(topSubProcessItem);
-  }
-
-  private SubProcessItem buildSubProcessTree(BPMNDiagram diagram, String name) {
-    // Create all SubProcessItem from the diagram
-    Collection<SubProcessItem> subProcessItems = new HashSet<>();
-    for (SubProcess subProcess : diagram.getSubProcesses()) {
-      subProcessItems.add(SubProcessItem.builder()
-          .subProcessNode(subProcess)
-          .diagram(diagram.getSubProcessDiagram(subProcess))
-          .build());
-    }
-
-    // Create parent-child relationship
-    Collection<SubProcessItem> childItems = new HashSet<>();
-    for (SubProcessItem item : subProcessItems) {
-      for (SubProcessItem other : subProcessItems) {
-        if (item.contain(other)) {
-          item.addChild(other);
-          childItems.add(other);
-        }
-      }
-    }
-
-    // Those items which are not updated as child of any are actually child of the top item
-    Collection<SubProcessItem> noChildItems = new HashSet<>(subProcessItems);
-    noChildItems.removeAll(childItems);
-    SubProcessItem topItem = SubProcessItem.builder().diagram(diagram).name(name).build();
-    topItem.addChildAll(noChildItems);
-
-    return topItem;
   }
 
   private void importSubProcesses(SubProcessItem item, String domain, String owner,
@@ -259,9 +229,11 @@ public class ImportOneProcessController2 extends ImportOneProcessController {
 
   private void linkSubProcesses(final SubProcessItem topItem) {
     for (SubProcessItem subItem : topItem.getChildren()) {
-      mainC.getProcessService().linkSubprocess(topItem.getProcessSummaryType().getId(),
-          subItem.getSubProcessNode().getId().toString(), subItem.getProcessSummaryType().getId());
-      linkSubProcesses(subItem);
+      if (topItem.getProcessSummaryType() != null && subItem.getProcessSummaryType() != null) {
+        mainC.getProcessService().linkSubprocess(topItem.getProcessSummaryType().getId(),
+            subItem.getSubProcessNode().getId().toString(), subItem.getProcessSummaryType().getId());
+        linkSubProcesses(subItem);
+      }
     }
   }
 
