@@ -63,6 +63,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
     var dwidth = 120;
     var dheight = 120;
     var urlText;
+    var contentCount = 0;
 
     if ((!url || !url.length) && !img && !icons) {
       return;
@@ -96,6 +97,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
         }
       }
       $overlay.append($(`<div class="aux-image">${imgEl}</div>`));
+      contentCount++;
     }
     if (icons && icons.values && icons.values.length) {
       let iconEls = '';
@@ -126,6 +128,7 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
       })
       $footer.css('height', (iconCount * ICON_ITEM_HEIGHT) + 'px');
       $overlay.append($footer);
+      contentCount++;
     }
 
     $overlay.find('.toggle').click(function(e) {
@@ -241,6 +244,12 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
     var auxCls = "ap-aux-" + element.id;
     $overlay.parent().data("ap-el-id", element.id);
     $overlay.parent().addClass(auxCls);
+    if (!contentCount) {
+        $overlay.parent().addClass('empty');
+    } else {
+        $overlay.parent().removeClass('empty');
+    }
+
     $overlay.parent().css('width', width + 'px');
     $overlay.parent().css('height', height + 'px');
 
