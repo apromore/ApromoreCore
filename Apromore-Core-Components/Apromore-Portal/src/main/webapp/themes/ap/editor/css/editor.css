@@ -375,6 +375,10 @@
   border: 1px solid transparent;
 }
 
+.djs-overlay-aux.empty {
+  display: none !important;
+}
+
 .djs-overlay-aux:hover {
   border: 1px solid #c0c0c0;
 }
