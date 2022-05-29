@@ -1,7 +1,7 @@
 /*-
  * #%L
  * This file is part of "Apromore Core".
- * 
+ *
  * Copyright (C) 2012 - 2017 Queensland University of Technology.
  * Copyright (C) 2012 Felix Mannhardt.
  * %%
@@ -11,12 +11,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,12 +29,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
+import org.apromore.portal.dialogController.dto.SubProcessItem;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model.FolderType;
@@ -42,8 +41,6 @@ import org.apromore.portal.model.ImportProcessResultType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
 import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
@@ -174,25 +171,29 @@ public class ImportOneProcessController extends BaseController {
   }
 
   private void importLinkedSubProcesses(final ProcessSummaryType importedModel, final BPMNDiagram bpmnDiagram,
-                                  final String domain, final String owner, final String name, final int folderId)
+                                        final String domain, final String owner, final String name, final int folderId)
       throws Exception {
-    Map<SubProcess, ProcessSummaryType> subProcessMap = new HashMap<>();
-    Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> subProcessModelClonedNodesMap = new HashMap<>();
-    int count = 0;
-    for (SubProcess subProcess : bpmnDiagram.getSubProcesses()) {
-      BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
-      Map<BPMNNode, BPMNNode> nodeMap = subProcessDiagram.cloneSubProcessContents(subProcess);
-      String subProcessName = name + "_subprocess" + ++count;
-      ProcessSummaryType subProcessSummary = importSubProcess(subProcessDiagram, domain, owner, subProcessName, folderId);
-      subProcessMap.put(subProcess, subProcessSummary);
-      subProcessModelClonedNodesMap.put(subProcessSummary, nodeMap);
-    }
 
-    linkSubProcesses(importedModel, subProcessMap, subProcessModelClonedNodesMap);
+    SubProcessItem topSubProcessItem = SubProcessItem.buildSubProcessTree(bpmnDiagram, name);
+    topSubProcessItem.setProcessSummaryType(importedModel);
+
+    importSubProcesses(topSubProcessItem, domain, owner, folderId);
+
+    linkSubProcesses(topSubProcessItem);
   }
 
-  private ProcessSummaryType importSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
-                                              final String name, final int folderId)
+  private void importSubProcesses(SubProcessItem item, String domain, String owner,
+                                  int folderId) throws Exception {
+    for (SubProcessItem subItem : item.getChildren()) {
+      BPMNDiagram subProcessDiagram = subItem.getDiagram();
+      subItem.setProcessSummaryType(importOneSubProcess(subProcessDiagram, domain, owner,
+          subItem.getName(), folderId));
+      importSubProcesses(subItem, domain, owner, folderId);
+    }
+  }
+
+  private ProcessSummaryType importOneSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
+                                                 final String name, final int folderId)
       throws Exception {
     String emptyModelXML = "<?xml version='1.0' encoding='UTF-8'?>"
         + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
@@ -219,27 +220,14 @@ public class ImportOneProcessController extends BaseController {
     return importResult.getProcessSummary();
   }
 
-  private void linkSubProcesses(final ProcessSummaryType importedModel,
-                                final Map<SubProcess, ProcessSummaryType> subProcessMap,
-                                final Map<ProcessSummaryType, Map<BPMNNode, BPMNNode>> clonedNodeMap) {
-    for (Map.Entry<SubProcess, ProcessSummaryType> entry : subProcessMap.entrySet()) {
-      SubProcess subProcess = entry.getKey();
-      ProcessSummaryType linkedProcess = entry.getValue();
-
-      //Link original model
-      mainC.getProcessService().linkSubprocess(importedModel.getId(),
-          subProcess.getId().toString(), linkedProcess.getId());
-
-      //Link subprocess models
-      for (Map.Entry<ProcessSummaryType, Map<BPMNNode, BPMNNode>> subProcessResult : clonedNodeMap.entrySet()) {
-        Map<BPMNNode, BPMNNode> nodeMap = subProcessResult.getValue();
-        ProcessSummaryType parentProcess = subProcessResult.getKey();
-
-        if (nodeMap.containsKey(subProcess)) {
-          mainC.getProcessService().linkSubprocess(parentProcess.getId(),
-              nodeMap.get(subProcess).getId().toString(), linkedProcess.getId());
-        }
-      }
+  private void linkSubProcesses(final SubProcessItem item) {
+    for (SubProcessItem subItem : item.getChildren()) {
+      mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
+          item.getSubProcessOldToNewNodeMap()
+              .getOrDefault(subItem.getSubProcessNode(), subItem.getSubProcessNode())
+              .getId().toString(),
+          subItem.getProcessSummaryType().getId());
+      linkSubProcesses(subItem);
     }
   }
 
