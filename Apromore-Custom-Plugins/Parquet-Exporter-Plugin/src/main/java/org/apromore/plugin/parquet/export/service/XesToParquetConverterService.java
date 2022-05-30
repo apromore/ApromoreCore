@@ -52,11 +52,15 @@ public class XesToParquetConverterService {
     @Inject
     private ParquetExportPlugin parquetExportPlugin;
 
-    public Path exportXesToParquet(int logId) throws IOException {
-        APMLogWrapper apmLogWrapper = getAPMLogWrapper(logId);
-        return apmLogWrapper == null
-            ? null
-            : new ParquetExporterService(apmLogWrapper)
+    public Path exportXesToParquet(int logId) {
+        List<Integer> lstList = new ArrayList<>();
+        lstList.add(logId);
+
+        APMLogWrapperManager apmLogComboManager = parquetExportPlugin.initAPMLogWrapperManagers(lstList);
+        if (apmLogComboManager.getAPMLogComboList().size() == 1) {
+            APMLogWrapper apmLogWrapper = apmLogComboManager.get(0);
+
+            return new ParquetExporterService(apmLogWrapper)
                 .saveParquetFile(
                     (String) Sessions.getCurrent().getAttribute("encodingLogParquet"),
                     apmLogWrapper.getLabel()
@@ -65,15 +69,6 @@ public class XesToParquetConverterService {
                         + UNDER_SCORE
                         + logId
                 );
-    }
-
-    private APMLogWrapper getAPMLogWrapper(int logId) {
-        List<Integer> lstList = new ArrayList<>();
-        lstList.add(logId);
-
-        APMLogWrapperManager apmLogComboManager = parquetExportPlugin.initAPMLogWrapperManagers(lstList);
-        if (apmLogComboManager.getAPMLogComboList().size() == 1) {
-            return apmLogComboManager.get(0);
         }
 
         return null;
