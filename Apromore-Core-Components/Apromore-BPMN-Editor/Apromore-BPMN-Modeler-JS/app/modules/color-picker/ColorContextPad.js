@@ -2,6 +2,7 @@ import Color from 'color';
 import { is, getDi } from 'bpmn-js/lib/util/ModelUtil';
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -26,23 +27,25 @@ const lighten = function (colorCode) {
 };
 
 const getCurrentColor = function (element){
-        if(!element)
-        {
-            return;
-        }
-         let di = getDi(element);
-         if (
-                    is(element, 'bpmn:SequenceFlow') ||
-                    is(element, 'bpmn:Association') ||
-                    is(element, 'bpmn:DataInputAssociation') ||
-                    is(element, 'bpmn:DataOutputAssociation') ||
-                    is(element, 'bpmn:MessageFlow')
-             ){
-             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
-             }else{
-             return di.get('color:background-color') || di.get('bioc:fill');
-             }
+  if (!element) {
+    return;
   }
+  let di = getDi(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    is(element, 'bpmn:SequenceFlow') ||
+    is(element, 'bpmn:Association') ||
+    is(element, 'bpmn:DataInputAssociation') ||
+    is(element, 'bpmn:DataOutputAssociation') ||
+    is(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -110,6 +113,7 @@ export default class ColorContextPad {
             is(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
