@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -494,15 +494,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
   }
 
   @Override
-  public void deleteProcessAccess(Integer processId, String groupRowGuid) {
+  public void deleteProcessAccess(Integer processId, String groupRowGuid, AccessType accessType) {
 
-    removeProcessPermissions(processId, groupRowGuid);
+    removeProcessPermissions(processId, groupRowGuid, accessType);
   }
 
   @Override
-  public void deleteFolderAccess(Integer folderId, String groupRowGuid) {
+  public void deleteFolderAccess(Integer folderId, String groupRowGuid, AccessType accessType) {
 
-    removeFolderPermissions(folderId, groupRowGuid);
+    removeFolderPermissions(folderId, groupRowGuid, accessType);
   }
 
   @Override
@@ -546,35 +546,51 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
   @Override
   @Transactional(readOnly = false)
-  public String removeFolderPermissions(Integer folderId, String groupRowGuid) {
+  public String removeFolderPermissions(Integer folderId, String groupRowGuid, AccessType accessType) {
 
-    //
     List<Folder> subFoldersWithCurrentFolders = folderService.getSubFolders(folderId, true);
     Group group = groupRepository.findByRowGuid(groupRowGuid);
-    List<Integer> folderIds = new ArrayList<Integer>();
+    List<Integer> folderIds = new ArrayList<>();
 
     for (Folder folder : subFoldersWithCurrentFolders) {
       folderIds.add(folder.getId());
       removeGroupFolder(group, folder);
     }
 
-    for (Process process : processRepository.findByFolderIdIn(folderIds)) {
-      removeGroupProcess(group, process);
-    }
+//    Set<GroupFolder> groupFolderSet = folder.getGroupFolders();
+//    groupFolderSet.remove(1);
+//    folder.setGroupFolders(groupFolderSet);
+//    folderRepository.save(folder);
 
-    for (Log log : logRepository.findByFolderIdIn(folderIds)) {
-      removeGroupLog(group, log);
-    }
+//
+//    for (Process process : processRepository.findByFolderIdIn(folderIds)) {
+//      removeGroupProcess(group, process);
+//    }
+//
+//    for (Log log : logRepository.findByFolderIdIn(folderIds)) {
+//      removeGroupLog(group, log);
+//    }
     return "";
 
   }
 
   @Override
   @Transactional(readOnly = false)
-  public String removeProcessPermissions(Integer processId, String groupRowGuid) {
+  public String removeProcessPermissions(Integer processId, String groupRowGuid, AccessType accessType) {
     Process process = processRepository.findById(processId).get();
     Group group = groupRepository.findByRowGuid(groupRowGuid);
     removeGroupProcess(group, process);
+
+    // Update Process's user attribute when this user is removed from owner list
+    if (group.getUser().equals(process.getUser()) && accessType.isOwner()) {
+      for (GroupProcess groupProcess : process.getGroupProcesses()) {
+        if ("USER".equals(groupProcess.getGroup().getType().toString())
+          && groupProcess.getGroup().getUser() != process.getUser()) {
+          process.setUser(groupProcess.getGroup().getUser());
+        }
+      }
+    }
+
     return "";
   }
 
@@ -585,6 +601,16 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     Log log = logRepository.findById(logId).get();
     Group group = groupRepository.findByRowGuid(groupRowGuid);
     removeGroupLog(group, log);
+
+    // Update Log's user attribute when this user is removed from owner list
+    if (group.getUser().equals(log.getUser()) && accessType.isOwner()) {
+      for (GroupLog groupLog : log.getGroupLogs()) {
+        if ("USER".equals(groupLog.getGroup().getType().toString())
+            && groupLog.getGroup().getUser() != log.getUser()) {
+          log.setUser(groupLog.getGroup().getUser());
+        }
+      }
+    }
 
     // TODO: If access type = restricted, remove GroupUsermetadata
     // If access type = restricted, remove permission with user metadata that linked to specified
@@ -741,6 +767,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     GroupFolder groupFolder = groupFolderRepository.findByGroupAndFolder(group, folder);
     if (groupFolder != null) {
       groupFolderRepository.delete(groupFolder);
+      groupFolderRepository.flush();
     }
   }
 
@@ -748,6 +775,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     GroupProcess groupProcess = groupProcessRepository.findByGroupAndProcess(group, process);
     if (groupProcess != null) {
       groupProcessRepository.delete(groupProcess);
+      groupProcessRepository.flush();
     }
   }
 
@@ -755,6 +783,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     GroupLog groupLog = groupLogRepository.findByGroupAndLog(group, log);
     if (groupLog != null) {
       groupLogRepository.delete(groupLog);
+      groupLogRepository.flush();
     }
   }
 
