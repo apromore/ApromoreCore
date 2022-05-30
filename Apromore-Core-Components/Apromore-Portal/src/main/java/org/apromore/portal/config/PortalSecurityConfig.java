@@ -74,7 +74,9 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
-    http.headers().contentSecurityPolicy(contentSecurityPolicy);
+    http.headers()
+        .frameOptions().sameOrigin()
+        .contentSecurityPolicy(contentSecurityPolicy);
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
