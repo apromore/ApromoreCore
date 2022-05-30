@@ -103,7 +103,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
 
-    http.headers().contentSecurityPolicy(contentSecurityPolicy);
+    http.headers()
+        .frameOptions().sameOrigin()
+        .contentSecurityPolicy(contentSecurityPolicy);
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
             .ignoringAntMatchers(Constants.API_WHITELIST)
