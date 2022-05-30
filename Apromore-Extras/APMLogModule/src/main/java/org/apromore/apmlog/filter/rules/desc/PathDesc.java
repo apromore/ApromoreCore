@@ -232,6 +232,10 @@ public class PathDesc extends AttributeDesc{
     }
 
     private static IntervalBound getIntervalBoundOf(Set<OperationType> operationTypes, Set<RuleValue> secondaryValues) {
+        if (secondaryValues == null) {
+            return null;
+        }
+
         return secondaryValues.stream()
                 .filter(x -> operationTypes.contains(x.getOperationType()))
                 .map(x -> new IntervalBound(x.getOperationType(), x.getLongValue()))

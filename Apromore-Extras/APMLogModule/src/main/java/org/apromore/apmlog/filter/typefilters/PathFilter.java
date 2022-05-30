@@ -203,6 +203,10 @@ public class PathFilter {
     }
 
     private static RuleValue getConstraintValue(Set<RuleValue> secondaryValues) {
+        if (secondaryValues == null) {
+            return null;
+        }
+
         return secondaryValues.stream()
                 .filter(x -> x.getOperationType() == OperationType.EQUAL ||
                         x.getOperationType() == OperationType.NOT_EQUAL)
