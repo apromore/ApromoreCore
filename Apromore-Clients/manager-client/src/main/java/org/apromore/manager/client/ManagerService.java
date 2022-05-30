@@ -148,9 +148,9 @@ public interface ManagerService {
 
     String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
-    String removeFolderPermissions(int folderId, String userId);
+    String removeFolderPermissions(int folderId, String userId, AccessType accessType);
 
-    String removeProcessPermissions(int processId, String userId);
+    String removeProcessPermissions(int processId, String userId, AccessType accessType);
 
     String removeLogPermissions(int logId, String userId, String username, AccessType accessType) throws UserNotFoundException;
 

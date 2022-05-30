@@ -255,7 +255,7 @@ public interface AuthorizationService {
      * @param processId    Process ID
      * @param groupRowGuid Group UID
      */
-    void deleteProcessAccess(Integer processId, String groupRowGuid);
+    void deleteProcessAccess(Integer processId, String groupRowGuid, AccessType accessType);
 
     /**
      * Delete one GroupLog record
@@ -263,7 +263,7 @@ public interface AuthorizationService {
      * @param folderId     Folder ID
      * @param groupRowGuid Group UID
      */
-    void deleteFolderAccess(Integer folderId, String groupRowGuid);
+    void deleteFolderAccess(Integer folderId, String groupRowGuid, AccessType accessType);
 
     /**
      * Delete one GroupUsermetadata record
@@ -282,9 +282,9 @@ public interface AuthorizationService {
     String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite,
                               boolean hasOwnership);
 
-    String removeFolderPermissions(Integer folderId, String groupRowGuid);
+    String removeFolderPermissions(Integer folderId, String groupRowGuid, AccessType accessType);
 
-    String removeProcessPermissions(Integer processId, String groupRowGuid);
+    String removeProcessPermissions(Integer processId, String groupRowGuid, AccessType accessType);
 
     String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType);
 
