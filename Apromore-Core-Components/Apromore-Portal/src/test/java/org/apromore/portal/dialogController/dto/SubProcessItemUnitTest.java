@@ -11,10 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.junit.jupiter.api.Test;
 
 class SubProcessItemUnitTest {
