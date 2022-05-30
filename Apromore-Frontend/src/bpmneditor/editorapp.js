@@ -268,8 +268,19 @@ export default class EditorApp {
         let me = this;
 
         if (this.useSimulationPanel) {
-            this.layout_regions.center.addListener('resize', function () {
-                me.zoomFitToModel();
+            this.layout_regions.center.addListener('resize', function (event) {
+            try{
+                const listerTypes=me.editorCommandStackListeners;
+                if(listerTypes){
+                for (const listerType of listerTypes) {
+                          if(listerType && listerType.type ==='Toolbar'){
+                            return;
+                        }
+                    }
+                }
+                }catch(e){}
+
+            me.zoomFitToModel();
             });
         }
 
