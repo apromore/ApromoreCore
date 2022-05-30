@@ -880,3 +880,7 @@ img[src="img/icon/bpmn-22x22.png"] {
     object-fit: contain;
     margin-right: 6px;
 }
+
+.ap-portal-left-section .z-south-splitter {
+    cursor: ns-resize;
+}
