@@ -90,7 +90,7 @@ public class DataObject extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public DataObject getCopy() {
+	public DataObject copy() {
 		DataObject copy = new DataObject(getGraph(), getLabel());
 		copy.setId(getId().toString());
 		return copy;

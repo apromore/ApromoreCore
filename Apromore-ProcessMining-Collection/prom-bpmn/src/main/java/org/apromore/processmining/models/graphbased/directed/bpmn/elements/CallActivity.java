@@ -166,7 +166,7 @@ public class CallActivity extends BPMNNode implements Decorated {
     }
 
     @Override
-    public CallActivity getCopy() {
+    public CallActivity copy() {
         CallActivity copy = new CallActivity(getGraph(), getLabel(), isBLooped(), isBAdhoc(),
             isBCompensation(), isBMultiinstance(), isBCollapsed());
         copy.setId(getId().toString());

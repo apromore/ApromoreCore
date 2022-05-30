@@ -197,7 +197,7 @@ public class SubProcess extends Activity implements Decorated,ContainingDirected
 	}
 
 	@Override
-	public SubProcess getCopy() {
+	public SubProcess copy() {
 		SubProcess copy = new SubProcess(getGraph(), getLabel(), isBLooped(),
 			isBAdhoc(), isBCompensation(), isBMultiinstance(), isBCollapsed());
 		copy.setId(getId().toString());

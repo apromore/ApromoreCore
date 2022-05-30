@@ -203,7 +203,7 @@ public class Activity extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public Activity getCopy() {
+	public Activity copy() {
 		Activity copy = new Activity(getGraph(), getLabel(), isBLooped(), isBAdhoc(),
 			isBCompensation(), isBMultiinstance(), isBCollapsed());
 		copy.setId(getId().toString());

@@ -164,7 +164,7 @@ public class Event extends BPMNNode implements Decorated, BoundaryDirectedGraphN
 	}
 
 	@Override
-	public Event getCopy() {
+	public Event copy() {
 		Event copy = new Event(getGraph(), getLabel(), eventType, eventTrigger, eventUse, isInterrupting, exceptionFor);
 		copy.setId(getId().toString());
 		return copy;

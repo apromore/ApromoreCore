@@ -292,7 +292,7 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
         for (ContainableDirectedGraphElement subProcessChild : subProcess.getChildren()) {
             if (subProcessChild instanceof BPMNNode) {
                 BPMNNode node = ((BPMNNode) subProcessChild);
-                nodeMap.put(node, subProcessDiagram.addNode(node.getCopy()));
+                nodeMap.put(node, subProcessDiagram.addNode(node.copy()));
             }
         }
 
@@ -306,12 +306,12 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
                 BPMNNode newTarget = nodeMap.get(target);
 
                 if (newSource == null) {
-                    newSource = subProcessDiagram.addNode(source.getCopy());
+                    newSource = subProcessDiagram.addNode(source.copy());
                     nodeMap.put(source, newSource);
                 }
 
                 if (newTarget == null) {
-                    newTarget = subProcessDiagram.addNode(target.getCopy());
+                    newTarget = subProcessDiagram.addNode(target.copy());
                     nodeMap.put(target, newTarget);
                 }
 

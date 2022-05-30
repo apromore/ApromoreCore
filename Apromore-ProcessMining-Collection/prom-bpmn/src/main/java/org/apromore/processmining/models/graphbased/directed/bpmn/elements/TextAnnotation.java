@@ -90,7 +90,7 @@ public class TextAnnotation extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public TextAnnotation getCopy() {
+	public TextAnnotation copy() {
 		TextAnnotation copy = new TextAnnotation(getGraph(), getLabel());
 		copy.setId(getId().toString());
 		return copy;

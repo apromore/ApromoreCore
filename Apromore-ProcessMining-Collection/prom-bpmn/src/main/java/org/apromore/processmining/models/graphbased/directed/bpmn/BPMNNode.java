@@ -184,5 +184,5 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 		}
 	}
 
-	public abstract BPMNNode getCopy();
+	public abstract BPMNNode copy();
 }

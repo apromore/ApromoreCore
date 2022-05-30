@@ -117,7 +117,7 @@ public class Gateway extends BPMNNode implements Decorated {
 	}
 
 	@Override
-	public Gateway getCopy() {
+	public Gateway copy() {
 		Gateway copy = new Gateway(getGraph(), getLabel(), getGatewayType());
 		copy.setId(getId().toString());
 		return copy;
