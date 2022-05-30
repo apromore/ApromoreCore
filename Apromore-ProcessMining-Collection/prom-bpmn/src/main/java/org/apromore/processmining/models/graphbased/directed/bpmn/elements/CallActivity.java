@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -167,11 +166,11 @@ public class CallActivity extends BPMNNode implements Decorated {
     }
 
     @Override
-    public CallActivity clone() {
-        CallActivity clone = new CallActivity(getGraph(), getLabel(), isBLooped(), isBAdhoc(),
+    public CallActivity getCopy() {
+        CallActivity copy = new CallActivity(getGraph(), getLabel(), isBLooped(), isBAdhoc(),
             isBCompensation(), isBMultiinstance(), isBCollapsed());
-        clone.setId(getId().toString());
-        return clone;
+        copy.setId(getId().toString());
+        return copy;
     }
 
     public void decorate(Graphics2D g2d, double x, double y, double width, double height) {

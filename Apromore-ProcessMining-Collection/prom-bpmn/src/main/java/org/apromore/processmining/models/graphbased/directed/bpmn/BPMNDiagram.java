@@ -50,206 +50,207 @@ import org.eclipse.collections.api.map.MutableMap;
  * <b>BPMNDiagram</b> is a graph that provides support for BPMN specification
  * @author Anna Kalenkova
  * @author Bruce Nguyen
- * 	- 20 Oct 2021: Add getNextId and addNextId, capability for BPMNDiagram to either create random IDs for elements
- * 	or reuse existing IDs (e.g. from .bpmn files). Random IDs are needed when new BPMNDiagram is created from code.
- * 	Reuse existing IDs is when the BPMNDiagram is created from importing .bpmn files or transferred over network.
+ *     - 20 Oct 2021: Add getNextId and addNextId, capability for BPMNDiagram to either create random IDs for elements
+ *     or reuse existing IDs (e.g. from .bpmn files). Random IDs are needed when new BPMNDiagram is created from code.
+ *     Reuse existing IDs is when the BPMNDiagram is created from importing .bpmn files or transferred over network.
  */
 public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> {
 
-	/**
-	 * Generate the next ID used in creating diagram elements
-	 * This method will return any existing IDs added via {@link #setNextId} or it will return a random ID.
-	 * @param idPrefix prefix to provide some semantics for the ID
-	 * @return ID used for assigning to new element.
-	 */
-	String getNextId(String idPrefix);
+    /**
+     * Generate the next ID used in creating diagram elements
+     * This method will return any existing IDs added via {@link #setNextId} or it will return a random ID.
+     * @param idPrefix prefix to provide some semantics for the ID
+     * @return ID used for assigning to new element.
+     */
+    String getNextId(String idPrefix);
 
-	/**
-	 * 	This method allows this diagram to reuse an existing id, e.g. in case of importing from BPMN files
-	 * 	with element IDs already stored in the file.<br>
-	 * 	Call {@link #getNextId} after this method will return the id added here.
-	 * @param id
-	 */
-	void setNextId(String id);
+    /**
+     *     This method allows this diagram to reuse an existing id, e.g. in case of importing from BPMN files
+     *     with element IDs already stored in the file.<br>
+     *     Call {@link #getNextId} after this method will return the id added here.
+     * @param id
+     */
+    void setNextId(String id);
 
-	@Override
-	String getLabel();
+    @Override
+    String getLabel();
 
-	BPMNEdge addEdge(BPMNNode source, BPMNNode target, BPMNEdge edge);
+    BPMNEdge<? extends BPMNNode, ? extends BPMNNode> addEdge(BPMNNode source, BPMNNode target,
+                                                             BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge);
 
-	BPMNNode addNode(BPMNNode node);
+    BPMNNode addNode(BPMNNode node);
 
-	//Activities
-	Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-						 boolean bCollapsed);
+    //Activities
+    Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                         boolean bCollapsed);
 
-	Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-						 boolean bCollapsed, SubProcess parentSubProcess);
+    Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                         boolean bCollapsed, SubProcess parentSubProcess);
 
-	Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-						 boolean bCollapsed, Swimlane parentSwimlane);
+    Activity addActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                         boolean bCollapsed, Swimlane parentSwimlane);
 
-	Activity removeActivity(Activity activity);
+    Activity removeActivity(Activity activity);
 
-	Collection<Activity> getActivities();
+    Collection<Activity> getActivities();
 
-	Collection<Activity> getActivities(Swimlane pool);
+    Collection<Activity> getActivities(Swimlane pool);
 
-	//callActivities
-	CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-								 boolean bCollapsed);
+    //callActivities
+    CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                                 boolean bCollapsed);
 
-	CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-								 boolean bCollapsed, SubProcess parentSubProcess);
+    CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                                 boolean bCollapsed, SubProcess parentSubProcess);
 
-	CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
-								 boolean bCollapsed, Swimlane parentSwimlane);
+    CallActivity addCallActivity(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation, boolean bMultiinstance,
+                                 boolean bCollapsed, Swimlane parentSwimlane);
 
-	CallActivity removeCallActivity(CallActivity activity);
+    CallActivity removeCallActivity(CallActivity activity);
 
-	Collection<CallActivity> getCallActivities();
+    Collection<CallActivity> getCallActivities();
 
-	Collection<CallActivity> getCallActivities(Swimlane pool);
+    Collection<CallActivity> getCallActivities(Swimlane pool);
 
-	//SubProcesses
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed);
+    //SubProcesses
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed);
 
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed, SubProcess parentSubProcess);
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed, SubProcess parentSubProcess);
 
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed, Swimlane parentSwimlane);
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed, Swimlane parentSwimlane);
 
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent);
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent);
 
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent, SubProcess parentSubProcess);
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent, SubProcess parentSubProcess);
 
-	SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
-							 boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent, Swimlane parentSwimlane);
+    SubProcess addSubProcess(String label, boolean bLooped, boolean bAdhoc, boolean bCompensation,
+                             boolean bMultiinstance, boolean bCollapsed, boolean bTriggeredByEvent, Swimlane parentSwimlane);
 
 
-	Activity removeSubProcess(SubProcess subprocess);
+    Activity removeSubProcess(SubProcess subprocess);
 
-	Collection<SubProcess> getSubProcesses();
+    Collection<SubProcess> getSubProcesses();
 
-	Collection<SubProcess> getSubProcesses(Swimlane pool);
+    Collection<SubProcess> getSubProcesses(Swimlane pool);
 
-	//Events
-	@Deprecated
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   Activity exceptionFor);
+    //Events
+    @Deprecated
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   Activity exceptionFor);
 
-	@Deprecated
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   SubProcess parentSubProcess, Activity exceptionFor);
+    @Deprecated
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   SubProcess parentSubProcess, Activity exceptionFor);
 
-	@Deprecated
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   Swimlane parentSwimlane, Activity exceptionFor);
+    @Deprecated
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   Swimlane parentSwimlane, Activity exceptionFor);
 
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   boolean isInterrupting, Activity exceptionFor);
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   boolean isInterrupting, Activity exceptionFor);
 
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   SubProcess parentSubProcess, boolean isInterrupting, Activity exceptionFor);
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   SubProcess parentSubProcess, boolean isInterrupting, Activity exceptionFor);
 
-	Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
-				   Swimlane parentSwimlane, boolean isInterrupting, Activity exceptionFor);
+    Event addEvent(String label, EventType eventType, EventTrigger eventTrigger, EventUse eventUse,
+                   Swimlane parentSwimlane, boolean isInterrupting, Activity exceptionFor);
 
-	Event removeEvent(Event event);
+    Event removeEvent(Event event);
 
-	Collection<Event> getEvents();
+    Collection<Event> getEvents();
 
-	Collection<Event> getEvents(Swimlane pool);
+    Collection<Event> getEvents(Swimlane pool);
 
-	//Gateways
-	Gateway addGateway(String label, GatewayType gatewayType);
+    //Gateways
+    Gateway addGateway(String label, GatewayType gatewayType);
 
-	Gateway addGateway(String label, GatewayType gatewayType, SubProcess parentSubProcess);
+    Gateway addGateway(String label, GatewayType gatewayType, SubProcess parentSubProcess);
 
-	Gateway addGateway(String label, GatewayType gatewayType, Swimlane parentSwimlane);
+    Gateway addGateway(String label, GatewayType gatewayType, Swimlane parentSwimlane);
 
-	Gateway removeGateway(Gateway gateway);
+    Gateway removeGateway(Gateway gateway);
 
-	Collection<Gateway> getGateways();
+    Collection<Gateway> getGateways();
 
-	Collection<Gateway> getGateways(Swimlane pool);
+    Collection<Gateway> getGateways(Swimlane pool);
 
-	//Data objects
-	DataObject addDataObject(String label);
+    //Data objects
+    DataObject addDataObject(String label);
 
-	DataObject removeDataObject(DataObject dataObject);
+    DataObject removeDataObject(DataObject dataObject);
 
-	Collection<DataObject> getDataObjects();
+    Collection<DataObject> getDataObjects();
 
-	//Artifacts
-	TextAnnotation addTextAnnotation(String label);
+    //Artifacts
+    TextAnnotation addTextAnnotation(String label);
 
-	TextAnnotation removeTextAnnotation(TextAnnotation textAnnotation);
+    TextAnnotation removeTextAnnotation(TextAnnotation textAnnotation);
 
-	Collection<TextAnnotation> getTextAnnotations();
+    Collection<TextAnnotation> getTextAnnotations();
 
-	Collection<TextAnnotation> getTextAnnotations(Swimlane pool);
+    Collection<TextAnnotation> getTextAnnotations(Swimlane pool);
 
-	Association addAssociation(BPMNNode source, BPMNNode target, AssociationDirection direction);
+    Association addAssociation(BPMNNode source, BPMNNode target, AssociationDirection direction);
 
-	Collection<Association> getAssociations();
+    Collection<Association> getAssociations();
 
-	Collection<Association> getAssociations(Swimlane pool);
+    Collection<Association> getAssociations(Swimlane pool);
 
-	//Flows
-	Flow addFlow(BPMNNode source, BPMNNode target, String label);
+    //Flows
+    Flow addFlow(BPMNNode source, BPMNNode target, String label);
 
-	@Deprecated
-	Flow addFlow(BPMNNode source, BPMNNode target, Swimlane parent, String label);
+    @Deprecated
+    Flow addFlow(BPMNNode source, BPMNNode target, Swimlane parent, String label);
 
-	@Deprecated
-	Flow addFlow(BPMNNode source, BPMNNode target, SubProcess parent, String label);
+    @Deprecated
+    Flow addFlow(BPMNNode source, BPMNNode target, SubProcess parent, String label);
 
-	Collection<Flow> getFlows();
+    Collection<Flow> getFlows();
 
-	Collection<Flow> getFlows(Swimlane pool);
+    Collection<Flow> getFlows(Swimlane pool);
 
-	Collection<Flow> getFlows(SubProcess subProcess);
+    Collection<Flow> getFlows(SubProcess subProcess);
 
-	//MessageFlows
-	MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, String label);
+    //MessageFlows
+    MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, String label);
 
-	MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, Swimlane parent, String label);
+    MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, Swimlane parent, String label);
 
-	MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, SubProcess parent, String label);
+    MessageFlow addMessageFlow(BPMNNode source, BPMNNode target, SubProcess parent, String label);
 
-	Set<MessageFlow> getMessageFlows();
+    Set<MessageFlow> getMessageFlows();
 
-	//DataAssociatons
-	DataAssociation addDataAssociation(BPMNNode source, BPMNNode target, String label);
+    //DataAssociatons
+    DataAssociation addDataAssociation(BPMNNode source, BPMNNode target, String label);
 
-	Collection<DataAssociation> getDataAssociations();
+    Collection<DataAssociation> getDataAssociations();
 
-	//TextAnnotations
-	TextAnnotation addTextAnnotations(TextAnnotation textAnnotation);
+    //TextAnnotations
+    TextAnnotation addTextAnnotations(TextAnnotation textAnnotation);
 
-	Collection<TextAnnotation> getTextannotations();
+    Collection<TextAnnotation> getTextannotations();
 
-	Swimlane addSwimlane(String label, ContainingDirectedGraphNode parent);
+    Swimlane addSwimlane(String label, ContainingDirectedGraphNode parent);
 
-	Swimlane addSwimlane(String label, ContainingDirectedGraphNode parent, SwimlaneType type);
+    Swimlane addSwimlane(String label, ContainingDirectedGraphNode parent, SwimlaneType type);
 
-	Swimlane removeSwimlane(Swimlane swimlane);
+    Swimlane removeSwimlane(Swimlane swimlane);
 
-	Collection<Swimlane> getSwimlanes();
+    Collection<Swimlane> getSwimlanes();
 
-	Collection<Swimlane> getPools();
+    Collection<Swimlane> getPools();
 
-	Collection<Swimlane> getLanes(ContainingDirectedGraphNode parent);
+    Collection<Swimlane> getLanes(ContainingDirectedGraphNode parent);
 
-	boolean checkSimpleEquality(BPMNDiagram other);
+    boolean checkSimpleEquality(BPMNDiagram other);
 
-	boolean checkSimpleEqualityWithMapping(BPMNDiagram other, MutableMap<BPMNNode, BPMNNode> nodeMapping,
-										   MutableMap<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeMapping);
+    boolean checkSimpleEqualityWithMapping(BPMNDiagram other, MutableMap<BPMNNode, BPMNNode> nodeMapping,
+                                           MutableMap<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeMapping);
 
-	BPMNDiagram getSubProcessDiagram(SubProcess subProcess);
+    BPMNDiagram getSubProcessDiagram(SubProcess subProcess);
 }

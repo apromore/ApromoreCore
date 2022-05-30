@@ -27,15 +27,12 @@ import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.shapes.Decorated;
@@ -154,10 +151,10 @@ public class Swimlane extends BPMNNode implements Decorated, ContainingDirectedG
 	}
 
 	@Override
-	public Swimlane clone() {
-		Swimlane clone = new Swimlane(getGraph(), getLabel(), getSwimlaneType());
-		clone.setId(getId().toString());
-		return clone;
+	public Swimlane getCopy() {
+		Swimlane copy = new Swimlane(getGraph(), getLabel(), getSwimlaneType());
+		copy.setId(getId().toString());
+		return copy;
 	}
 }
 
