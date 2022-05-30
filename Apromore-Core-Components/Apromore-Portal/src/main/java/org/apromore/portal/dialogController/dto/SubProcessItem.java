@@ -2,17 +2,13 @@ package org.apromore.portal.dialogController.dto;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
-import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 
 @Builder
@@ -27,10 +23,6 @@ public class SubProcessItem {
     @Getter
     @Builder.Default
     private BPMNDiagram diagram = new BPMNDiagramImpl("");
-
-    @Getter
-    @Builder.Default
-    private Map<BPMNNode, BPMNNode> subProcessOldToNewNodeMap = new HashMap<>();
 
     @Builder.Default
     private Collection<SubProcessItem> children = new HashSet<>();
@@ -60,14 +52,10 @@ public class SubProcessItem {
         int count = 0;
         for (SubProcess subProcess : diagram.getSubProcesses()) {
 
-            BPMNDiagram subProcessDiagram = BPMNDiagramFactory.newBPMNDiagram("");
-            Map<BPMNNode, BPMNNode> subProcessOldToNewNodeMap = subProcessDiagram.cloneSubProcessContents(subProcess);
-
             subProcessItems.add(SubProcessItem.builder()
                 .subProcessNode(subProcess)
-                .diagram(subProcessDiagram)
+                .diagram(diagram.getSubProcessDiagram(subProcess))
                 .name(name + "_subprocess" + ++count)
-                .subProcessOldToNewNodeMap(subProcessOldToNewNodeMap)
                 .build());
         }
 

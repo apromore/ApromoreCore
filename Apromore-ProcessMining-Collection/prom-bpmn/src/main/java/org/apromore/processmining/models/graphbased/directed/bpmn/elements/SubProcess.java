@@ -198,8 +198,10 @@ public class SubProcess extends Activity implements Decorated,ContainingDirected
 	}
 
 	@Override
-	public SubProcess addCopyToDiagram(BPMNDiagram bpmnDiagram) {
-		return bpmnDiagram.addSubProcess(getLabel(), isBLooped(),
+	public SubProcess clone() {
+		SubProcess clone = new SubProcess(getGraph(), getLabel(), isBLooped(),
 			isBAdhoc(), isBCompensation(), isBMultiinstance(), isBCollapsed());
+		clone.setId(getId().toString());
+		return clone;
 	}
 }

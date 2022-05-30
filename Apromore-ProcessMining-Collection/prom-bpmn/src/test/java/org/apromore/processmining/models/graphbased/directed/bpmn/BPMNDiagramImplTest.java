@@ -23,9 +23,7 @@
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.CallActivity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataObject;
@@ -40,7 +38,7 @@ import org.junit.jupiter.api.Test;
 class BPMNDiagramImplTest {
 
     @Test
-    void testCloneSubProcessContents() {
+    void testGetSubProcessDiagram() {
         BPMNDiagram oldBpmnDiagram = new BPMNDiagramImpl("Old model");
         SubProcess subProcess = oldBpmnDiagram.addSubProcess("subProcess", false, false, false, false, false);
 
@@ -66,11 +64,7 @@ class BPMNDiagramImplTest {
         oldBpmnDiagram.addDataObject("disconnected data object");
         oldBpmnDiagram.addActivity("non-subprocess activity", false, false, false, false, false);
 
-        BPMNDiagram newBpmnDiagram = new BPMNDiagramImpl("New model");
-        assertTrue(newBpmnDiagram.getNodes().isEmpty());
-        assertTrue(newBpmnDiagram.getEdges().isEmpty());
-
-        Map<BPMNNode, BPMNNode> originalToClonedNodeMap = newBpmnDiagram.cloneSubProcessContents(subProcess);
+        BPMNDiagram newBpmnDiagram = oldBpmnDiagram.getSubProcessDiagram(subProcess);
         assertEquals(1, newBpmnDiagram.getActivities().size());
         assertEquals(1, newBpmnDiagram.getCallActivities().size());
         assertEquals(1, newBpmnDiagram.getEvents().size());
@@ -85,10 +79,5 @@ class BPMNDiagramImplTest {
         assertEquals(1, newBpmnDiagram.getDataAssociations().size());
         assertEquals(1, newBpmnDiagram.getFlows().size());
         assertEquals(1, newBpmnDiagram.getMessageFlows().size());
-
-        for (Map.Entry<BPMNNode, BPMNNode> entry : originalToClonedNodeMap.entrySet()) {
-            assertEquals(entry.getKey().getLabel(), entry.getValue().getLabel());
-            assertEquals(entry.getKey().getClass(), entry.getValue().getClass());
-        }
     }
 }

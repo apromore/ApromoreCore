@@ -282,15 +282,17 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 	}
 
 	@Override
-	public Map<BPMNNode, BPMNNode> cloneSubProcessContents(SubProcess subProcess) {
+	public BPMNDiagram getSubProcessDiagram(SubProcess subProcess) {
+		BPMNDiagram subProcessDiagram = new BPMNDiagramImpl("");
+
 		BPMNDiagram topDiagram = (BPMNDiagram) subProcess.getGraph();
 		Map<BPMNNode, BPMNNode> nodeMap = new HashMap<>();
 
 		//Nodes
 		for (ContainableDirectedGraphElement subProcessChild : subProcess.getChildren()) {
 			if (subProcessChild instanceof BPMNNode) {
-				BPMNNode node = (BPMNNode) subProcessChild;
-				nodeMap.put(node, addNode(node));
+				BPMNNode node = ((BPMNNode) subProcessChild);
+				nodeMap.put(node, subProcessDiagram.addNode(node.clone()));
 			}
 		}
 
@@ -304,19 +306,19 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 				BPMNNode newTarget = nodeMap.get(target);
 
 				if (newSource == null) {
-					newSource = addNode(source);
+					newSource = subProcessDiagram.addNode(source.clone());
 					nodeMap.put(source, newSource);
 				}
 
 				if (newTarget == null) {
-					newTarget = addNode(target);
+					newTarget = subProcessDiagram.addNode(target.clone());
 					nodeMap.put(target, newTarget);
 				}
 
-				addEdge(newSource, newTarget, edge);
+				subProcessDiagram.addEdge(newSource, newTarget, edge);
 			}
 		}
-		return nodeMap;
+		return subProcessDiagram;
 	}
 
 	@Override
@@ -728,39 +730,28 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
 
 	@Override
 	public BPMNNode addNode(BPMNNode node) {
-		BPMNNode addedNode = null;
+		node.setGraph(this);
 
 		if (node instanceof SubProcess) {
-			SubProcess subProcess = (SubProcess) node;
-			addedNode = addSubProcess(subProcess.getLabel(), subProcess.isBLooped(), subProcess.isBAdhoc(),
-				subProcess.isBCompensation(), subProcess.isBMultiinstance(), subProcess.isBCollapsed());
+			subprocesses.add((SubProcess) node);
 		} else if (node instanceof Swimlane) {
-			Swimlane swimlane = (Swimlane) node;
-			addedNode = addSwimlane(swimlane.getLabel(), swimlane.getParent(), swimlane.getSwimlaneType());
+			swimlanes.add((Swimlane) node);
 		} else if (node instanceof Gateway) {
-			Gateway gateway = (Gateway) node;
-			addedNode = addGateway(gateway.getLabel(), gateway.getGatewayType());
+			gateways.add((Gateway)node);
 		} else if (node instanceof DataObject) {
-			DataObject dataObject = (DataObject) node;
-			addedNode = addDataObject(dataObject.getLabel());
+			dataObjects.add((DataObject) node);
 		} else if (node instanceof TextAnnotation) {
-			TextAnnotation textAnnotation = (TextAnnotation) node;
-			addedNode = addTextAnnotation(textAnnotation.getLabel());
+			textAnnotations.add((TextAnnotation) node);
 		} else if (node instanceof Event) {
-			Event event = (Event) node;
-			addedNode = addEvent(event.getLabel(), event.getEventType(), event.getEventTrigger(), event.getEventUse(),
-				Boolean.valueOf(event.isInterrupting()), event.getBoundingNode());
+			events.add((Event) node);
 		} else if (node instanceof CallActivity) {
-			CallActivity callActivity = (CallActivity) node;
-			addedNode = addCallActivity(callActivity.getLabel(), callActivity.isBLooped(), callActivity.isBAdhoc(),
-				callActivity.isBCompensation(), callActivity.isBMultiinstance(), callActivity.isBCollapsed());
+			callActivities.add((CallActivity) node);
 		} else if (node instanceof Activity) {
-			Activity activity = (Activity) node;
-			addedNode = addActivity(activity.getLabel(), activity.isBLooped(), activity.isBAdhoc(),
-				activity.isBCompensation(), activity.isBMultiinstance(), activity.isBCollapsed());
+			activities.add((Activity) node);
 		}
 
-		return addedNode;
+		graphElementAdded(node);
+		return node;
 	}
 
 	@Override

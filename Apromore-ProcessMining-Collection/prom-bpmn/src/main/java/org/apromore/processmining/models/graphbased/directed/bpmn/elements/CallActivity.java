@@ -167,9 +167,11 @@ public class CallActivity extends BPMNNode implements Decorated {
     }
 
     @Override
-    public CallActivity addCopyToDiagram(BPMNDiagram bpmnDiagram) {
-        return bpmnDiagram.addCallActivity(getLabel(), isBLooped(), isBAdhoc(),
+    public CallActivity clone() {
+        CallActivity clone = new CallActivity(getGraph(), getLabel(), isBLooped(), isBAdhoc(),
             isBCompensation(), isBMultiinstance(), isBCollapsed());
+        clone.setId(getId().toString());
+        return clone;
     }
 
     public void decorate(Graphics2D g2d, double x, double y, double width, double height) {

@@ -22,7 +22,6 @@
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.apromore.processmining.models.graphbased.directed.ContainingDirectedGraphNode;
@@ -252,5 +251,5 @@ public interface BPMNDiagram extends DirectedGraph<BPMNNode, BPMNEdge<? extends 
 	boolean checkSimpleEqualityWithMapping(BPMNDiagram other, MutableMap<BPMNNode, BPMNNode> nodeMapping,
 										   MutableMap<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeMapping);
 
-	Map<BPMNNode, BPMNNode> cloneSubProcessContents(SubProcess subProcess);
+	BPMNDiagram getSubProcessDiagram(SubProcess subProcess);
 }

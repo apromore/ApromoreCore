@@ -223,9 +223,7 @@ public class ImportOneProcessController extends BaseController {
   private void linkSubProcesses(final SubProcessItem item) {
     for (SubProcessItem subItem : item.getChildren()) {
       mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
-          item.getSubProcessOldToNewNodeMap()
-              .getOrDefault(subItem.getSubProcessNode(), subItem.getSubProcessNode())
-              .getId().toString(),
+          subItem.getSubProcessNode().getId().toString(),
           subItem.getProcessSummaryType().getId());
       linkSubProcesses(subItem);
     }

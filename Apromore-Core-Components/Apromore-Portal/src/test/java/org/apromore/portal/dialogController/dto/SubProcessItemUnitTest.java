@@ -3,7 +3,6 @@ package org.apromore.portal.dialogController.dto;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
@@ -30,7 +29,6 @@ class SubProcessItemUnitTest {
             assertNull(rootItem.getSubProcessNode());
             assertEquals(bpmnDiagram, rootItem.getDiagram());
             assertNull(rootItem.getProcessSummaryType());
-            assertTrue(rootItem.getSubProcessOldToNewNodeMap().isEmpty());
             assertEquals(3, rootItem.getChildren().size());
 
             List<SubProcessItem> level2Items = collectAllChildren(rootItem.getChildren());
