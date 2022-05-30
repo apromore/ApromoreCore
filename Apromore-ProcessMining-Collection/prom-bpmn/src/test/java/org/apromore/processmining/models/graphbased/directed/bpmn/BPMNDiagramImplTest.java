@@ -23,6 +23,7 @@
 package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.CallActivity;
@@ -30,6 +31,7 @@ import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataO
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
+import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.SwimlaneType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.TextAnnotation;
 import org.apromore.processmining.plugins.bpmn.BpmnAssociation;
@@ -48,7 +50,7 @@ class BPMNDiagramImplTest {
         Event event = oldBpmnDiagram.addEvent("event", Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.CATCH, subProcess, false, null);
         Gateway gateway = oldBpmnDiagram.addGateway("gateway", Gateway.GatewayType.INCLUSIVE, subProcess);
         SubProcess innerSubProcess = oldBpmnDiagram.addSubProcess("inner subProcess", false, false, false, false, false, subProcess);
-        oldBpmnDiagram.addSwimlane("swimlane", subProcess, SwimlaneType.POOL);
+        Swimlane swimlane = oldBpmnDiagram.addSwimlane("swimlane", subProcess, SwimlaneType.POOL);
 
         //Must connect these to be associated with subProcess
         DataObject dataObject = oldBpmnDiagram.addDataObject("data object");
@@ -64,16 +66,39 @@ class BPMNDiagramImplTest {
         oldBpmnDiagram.addDataObject("disconnected data object");
         oldBpmnDiagram.addActivity("non-subprocess activity", false, false, false, false, false);
 
+        //Check that the correct number of elements has been added to the new diagram. Node ids should remain the same.
         BPMNDiagram newBpmnDiagram = oldBpmnDiagram.getSubProcessDiagram(subProcess);
         assertEquals(1, newBpmnDiagram.getActivities().size());
+        Activity newDiagramActivity = newBpmnDiagram.getActivities().stream().findFirst().orElse(null);
+        assertEquals(activity.getId(), newDiagramActivity.getId());
+
         assertEquals(1, newBpmnDiagram.getCallActivities().size());
+        CallActivity newDiagramCallActivity = newBpmnDiagram.getCallActivities().stream().findFirst().orElse(null);
+        assertEquals(callActivity.getId(), newDiagramCallActivity.getId());
+
         assertEquals(1, newBpmnDiagram.getEvents().size());
+        Event newDiagramEvent = newBpmnDiagram.getEvents().stream().findFirst().orElse(null);
+        assertEquals(event.getId(), newDiagramEvent.getId());
+
         assertEquals(1, newBpmnDiagram.getGateways().size());
+        Gateway newDiagramGateway = newBpmnDiagram.getGateways().stream().findFirst().orElse(null);
+        assertEquals(gateway.getId(), newDiagramGateway.getId());
+
         assertEquals(1, newBpmnDiagram.getSubProcesses().size());
+        SubProcess newDiagramSubprocess = newBpmnDiagram.getSubProcesses().stream().findFirst().orElse(null);
+        assertEquals(innerSubProcess.getId(), newDiagramSubprocess.getId());
+
         assertEquals(1, newBpmnDiagram.getSwimlanes().size());
+        Swimlane newDiagramSwimlane = newBpmnDiagram.getSwimlanes().stream().findFirst().orElse(null);
+        assertEquals(swimlane.getId(), newDiagramSwimlane.getId());
 
         assertEquals(1, newBpmnDiagram.getDataObjects().size());
+        DataObject newDiagramDataObject = newBpmnDiagram.getDataObjects().stream().findFirst().orElse(null);
+        assertEquals(dataObject.getId(), newDiagramDataObject.getId());
+
         assertEquals(1, newBpmnDiagram.getTextAnnotations().size());
+        TextAnnotation newDiagramTextAnnotation = newBpmnDiagram.getTextAnnotations().stream().findFirst().orElse(null);
+        assertEquals(textAnnotation.getId(), newDiagramTextAnnotation.getId());
 
         assertEquals(1, newBpmnDiagram.getAssociations().size());
         assertEquals(1, newBpmnDiagram.getDataAssociations().size());
