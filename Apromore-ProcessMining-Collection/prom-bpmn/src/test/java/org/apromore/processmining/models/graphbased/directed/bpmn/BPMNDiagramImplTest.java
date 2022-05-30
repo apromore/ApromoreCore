@@ -25,6 +25,7 @@ package org.apromore.processmining.models.graphbased.directed.bpmn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.CallActivity;
 import org.apromore.processmining.models.graphbased.directed.bpmn.elements.DataObject;
@@ -69,7 +70,7 @@ class BPMNDiagramImplTest {
         assertTrue(newBpmnDiagram.getNodes().isEmpty());
         assertTrue(newBpmnDiagram.getEdges().isEmpty());
 
-        newBpmnDiagram.cloneSubProcessContents(subProcess);
+        Map<BPMNNode, BPMNNode> originalToClonedNodeMap = newBpmnDiagram.cloneSubProcessContents(subProcess);
         assertEquals(1, newBpmnDiagram.getActivities().size());
         assertEquals(1, newBpmnDiagram.getCallActivities().size());
         assertEquals(1, newBpmnDiagram.getEvents().size());
@@ -84,5 +85,10 @@ class BPMNDiagramImplTest {
         assertEquals(1, newBpmnDiagram.getDataAssociations().size());
         assertEquals(1, newBpmnDiagram.getFlows().size());
         assertEquals(1, newBpmnDiagram.getMessageFlows().size());
+
+        for (Map.Entry<BPMNNode, BPMNNode> entry : originalToClonedNodeMap.entrySet()) {
+            assertEquals(entry.getKey().getLabel(), entry.getValue().getLabel());
+            assertEquals(entry.getKey().getClass(), entry.getValue().getClass());
+        }
     }
 }
