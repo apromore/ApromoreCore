@@ -25,6 +25,7 @@
 
 package org.apromore.service;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.Map;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
@@ -168,6 +169,22 @@ public interface ProcessService {
      */
     String getBPMNRepresentation(final String name, final Integer processId, final String branch,
                                  final Version version, final Integer userId) throws RepositoryException;
+
+    /**
+     * Gives back a BMP Model represented in BPMN 2.0 with linked processes.
+     *
+     * @param name       the process model name
+     * @param processId  the processId
+     * @param branch     the branch name
+     * @param version    the version of the process model.
+     * @param username   the username of the user to getting the process model.
+     * @param includeLinkedSubprocesses true to add linked subprocesses to the bpmn xml.
+     * @return the XML as a String
+     * @throws RepositoryException if for some reason the process model can not be found.
+     */
+    String getBPMNRepresentation(final String name, final Integer processId, final String branch,
+                                 final Version version, final String username, final boolean includeLinkedSubprocesses)
+        throws RepositoryException, ParserConfigurationException, ExportFormatException;
 
 	boolean hasWritePermissionOnProcess(User userByName, List<Integer> processIds);
 

@@ -11764,6 +11764,11 @@ class Editor {
             me.setDirty(true);
         });
 
+        eventBus.on('selection.changed', function(context) {
+          var newSelection = context.newSelection;
+
+          me.updateFontSize(newSelection)
+        });
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -11850,9 +11855,12 @@ class Editor {
         const overlays = this.actualEditor.get('overlays');
         const auxes = overlays.get({ type: 'aux'});
         let minTop = 0, minLeft = 0, maxBottom = 0, maxRight = 0;
+        const hyperlinks = [];
         auxes.forEach(async (aux) => {
             const overlay = $(aux.htmlContainer);
             const containerId = overlay.parent().data('containerId');
+            const parentLeft = parseInt(overlay.parent().css('left'));
+            const parentTop = parseInt(overlay.parent().css('top'));
             const left = parseInt(overlay.css('left'));
             const top = parseInt(overlay.css('top'));
             const width = parseInt(overlay.css('width'));
@@ -11894,6 +11902,13 @@ class Editor {
                 if (caption) {
                     const aLink = $('a', caption)[0];
                     if (aLink) {
+                        hyperlinks.push({
+                            href: aLink.href,
+                            left: parentLeft + left,
+                            top: parentTop + top + yOffset,
+                            width: aLink.textContent.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aLink.href}">
                             <text x="0" y="${yOffset}" lineHeight="1.2" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 ${aLink.textContent}
@@ -11935,6 +11950,13 @@ class Editor {
                     const iconTextLink = iconLink.textContent;
                     const aIconLink = $('a', iconLink)[0];
                     if (aIconLink) {
+                        hyperlinks.push({
+                            href: aIconLink.href,
+                            left: parentLeft + left + 30,
+                            top: parentTop + top + yOffset,
+                            width: iconTextLink.length,
+                            height: 1
+                        });
                         auxContent += `<a href="${aIconLink.href}">
                             <text lineHeight="20px" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
                                 <tspan x="30" y="${yOffset}">${iconTextLink}</tspan>
@@ -11973,14 +11995,24 @@ class Editor {
         raw = raw.replaceAll('<defs>', `<defs>${_assets__WEBPACK_IMPORTED_MODULE_2__["SYMBOLS"]}`);
         raw = raw.replaceAll('xmlns=""', ''); // Remove empty namespace
         raw = raw.replaceAll('<use href=', '<use xlink:href='); // Apache transcoder expect xlink ns
-        return raw
+        return {
+            raw,
+            hyperlinks
+        }
+    }
+
+    async getSVG2() {
+        if (!this.actualEditor) return '';
+        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
+        const { svg } = result;
+        return await this.processAux(svg);
     }
 
     async getSVG() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
         const { svg } = result;
-        const raw = await this.processAux(svg);
+        const { raw } = await this.processAux(svg);
         return raw;
     }
 
@@ -12163,22 +12195,47 @@ class Editor {
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
+    updateFontSize(selection) {
+      try  {
+        let selectedFontSize = -1;
+        for (let i = 0; i < selection.length; i++) {
+            const element = selection[i]
+            const bo = element.businessObject;
+            const size = parseInt(bo["aux-font-size"])
+            if (selectedFontSize === -1) {
+                selectedFontSize = size
+            } else {
+                if (selectedFontSize !== size) {
+                    selectedFontSize = -1
+                    break;
+                }
+            }
+        }
+        if (selectedFontSize != -1) {
+            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
+        }
+      } catch (r) {
+        // pass
+      }
+    }
+
     async changeFontSize(size) {
         const modeler = this.actualEditor
         if (!modeler) return;
 
+        let eventBus = modeler.get('eventBus');
         let elements = modeler.get('selection').get();
-        if (elements.length) {
-            elements.forEach((element) => {
-                const bo = element.businessObject;
-                bo["aux-font-size"] = size+"px";
-            });
-            const eventBus = modeler.get('eventBus');
-            eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
-            eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
-        } else {
-            this.changeGlobalFontSize(size);
+        if (!elements || !elements.length) {
+            // this.changeGlobalFontSize(size);
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
         }
+        elements.forEach((element) => {
+            const bo = element.businessObject;
+            bo["aux-font-size"] = size+"px";
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
 };
@@ -12470,7 +12527,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key)) {
+    if (has(collection, key) && key !== 'remove') {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -54842,6 +54899,7 @@ module.exports = function(langTag) {
 
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -54866,23 +54924,25 @@ const lighten = function (colorCode) {
 };
 
 const getCurrentColor = function (element){
-        if(!element)
-        {
-            return;
-        }
-         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
-         if (
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
-             ){
-             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
-             }else{
-             return di.get('color:background-color') || di.get('bioc:fill');
-             }
+  if (!element) {
+    return;
   }
+  let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -54950,6 +55010,7 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -67589,15 +67650,13 @@ var ResourceTimetableSelectBox = __webpack_require__(322),
     ResourceCostField = __webpack_require__(325);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
   var entries = [];
-
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
@@ -69279,7 +69338,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
+ *        whiteList, onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -69296,7 +69355,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -70102,7 +70161,14 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
@@ -97280,10 +97346,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
@@ -129345,6 +129413,7 @@ class EditorApp {
                     isPublished: this.isPublished,
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
+                    getSVG2: this.getSVG2.bind(this),
                     addToRegion: this.addToRegion.bind(this),
                     undo: () => me.editor.undo(),
                     redo: () => me.editor.redo(),
@@ -129365,6 +129434,11 @@ class EditorApp {
     async getSVG() {
         if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
         return await this.editor.getSVG();
+    }
+
+    async getSVG2() {
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
+        return await this.editor.getSVG2();
     }
 
     /**
@@ -129983,11 +130057,16 @@ class Export {
 
     async exportBPMN() {
         var xml = await this.facade.getXML();
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.bpmn';
-        hiddenElement.click();
+
+        if (Apromore.BPMNEditor.Plugins.Export.exportXML) {
+            Apromore.BPMNEditor.Plugins.Export.exportXML(xml)
+        } else {
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.click();
+        }
     }
 
 };
@@ -130147,7 +130226,9 @@ class File {
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = await this.facade.getSVG();
+        var result = await this.facade.getSVG2();
+        var svgClone = result.raw;
+        var hyperlinks = result.hyperlinks;
 
         // Expand margin and insert a logo
         var xy = null, width, height;
@@ -130182,10 +130263,31 @@ class File {
         catch (e) {
             throw new Error ('SVG to PDF error. Error message: ' + e.message);
         }
+        var xoffset = xy[0] - 20;
+        var yoffset = xy[1] - 40;
+
+        var linkParams = '';
+        var ratio = 0.75;
+        // left, bottom, right, top
+        hyperlinks.forEach((hyperlink, index) => {
+            var l = (hyperlink.left - xoffset) * ratio;
+            var b = (height - hyperlink.top + yoffset) * ratio;
+            var r = l + hyperlink.width * 5;
+            var t = b + hyperlink.height * 5;
+            linkParams = linkParams + (
+                encodeURIComponent(hyperlink.href) + ',' +
+                Math.round(l) + ',' + // left
+                Math.round(b) + ',' + // bottom
+                Math.round(r) + ',' + // right
+                Math.round(t) + // top
+                ((index + 1 === hyperlinks.length) ? '' : ',')
+             )
+        });
 
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
-        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) + "&format=pdf";
+        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) +
+            "&format=pdf" + "&hyperlinks=" + linkParams;
         xhr.open("POST", _config__WEBPACK_IMPORTED_MODULE_0__["default"].PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'blob';
