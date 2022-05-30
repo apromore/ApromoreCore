@@ -261,19 +261,8 @@ public class ParquetExport extends AbstractParquetProducer {
                                        Path writeFilePath,
                                        Schema schema) throws IOException {
         Configuration conf = new Configuration();
-        System.out.println("------ starting parquet write ------");
-        System.out.println("----> writeFilePath: " + writeFilePath.toString());
-        System.out.println("----> recordsToWrite size: " + recordsToWrite.size());
-        System.out.println("----> schema: " + schema.toString());
-        conf.set("fs.hdfs.impl",
-            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
-        );
-        conf.set("fs.file.impl",
-            org.apache.hadoop.fs.LocalFileSystem.class.getName()
-        );
-
-        System.out.println("----> config: " + conf);
-        System.out.println("----> config class: " + conf.getClass());
+        conf.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        conf.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
         try (ParquetWriter<GenericData.Record> pqWriter = AvroParquetWriter
             .<GenericData.Record>builder(writeFilePath)
             .withSchema(schema)
@@ -281,11 +270,9 @@ public class ParquetExport extends AbstractParquetProducer {
             .withCompressionCodec(CompressionCodecName.SNAPPY)
             .build()) {
 
-            System.out.println("------ starting writeToParquet ------");
             for (GenericData.Record recordGen : recordsToWrite) {
                 pqWriter.write(recordGen);
             }
-            System.out.println("===> DONE writing");
         }
     }
 }
