@@ -490,7 +490,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
   public void deleteLogAccess(Integer logId, String groupRowGuid, String username,
       AccessType accessType) {
 
-    removeLogPermissions(logId, groupRowGuid, username, accessType);
+    removeLogPermissions(logId, groupRowGuid, accessType);
   }
 
   @Override
@@ -555,21 +555,27 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     for (Folder folder : subFoldersWithCurrentFolders) {
       folderIds.add(folder.getId());
       removeGroupFolder(group, folder);
+
+      // Update Folder's user attribute when this user is removed from owner list
+      if (group.getUser().equals(folder.getCreatedBy()) && accessType.isOwner()) {
+        for (GroupFolder groupFolder : folder.getGroupFolders()) {
+          if ("USER".equals(groupFolder.getGroup().getType().toString())
+              && groupFolder.getGroup().getUser() != folder.getCreatedBy()) {
+            folder.setCreatedBy(groupFolder.getGroup().getUser());
+          }
+        }
+      }
     }
 
-//    Set<GroupFolder> groupFolderSet = folder.getGroupFolders();
-//    groupFolderSet.remove(1);
-//    folder.setGroupFolders(groupFolderSet);
-//    folderRepository.save(folder);
+    for (Process process : processRepository.findByFolderIdIn(folderIds)) {
+      removeProcessPermissions(process.getId(), group.getRowGuid(),
+          AccessType.getAccessType(groupProcessRepository.findByGroupAndProcess(group, process).getAccessRights()));
+    }
 
-//
-//    for (Process process : processRepository.findByFolderIdIn(folderIds)) {
-//      removeGroupProcess(group, process);
-//    }
-//
-//    for (Log log : logRepository.findByFolderIdIn(folderIds)) {
-//      removeGroupLog(group, log);
-//    }
+    for (Log log : logRepository.findByFolderIdIn(folderIds)) {
+      removeLogPermissions(log.getId(), group.getRowGuid(),
+          AccessType.getAccessType(groupLogRepository.findByGroupAndLog(group, log).getAccessRights()));
+    }
     return "";
 
   }
@@ -596,8 +602,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
   @Override
   @Transactional(readOnly = false)
-  public String removeLogPermissions(Integer logId, String groupRowGuid, String username,
-      AccessType accessType) {
+  public String removeLogPermissions(Integer logId, String groupRowGuid, AccessType accessType) {
     Log log = logRepository.findById(logId).get();
     Group group = groupRepository.findByRowGuid(groupRowGuid);
     removeGroupLog(group, log);

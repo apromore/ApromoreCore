@@ -436,7 +436,7 @@ public class ManagerServiceImpl implements ManagerService {
       AccessType accessType) throws UserNotFoundException {
     LOGGER.info("User \"{}\" (id {}) remove permissions from log id {} (access type {})", username,
         userId, logId, accessType);
-    return authorizationSrv.removeLogPermissions(logId, userId, username, accessType);
+    return authorizationSrv.removeLogPermissions(logId, userId, accessType);
   }
 
   /**
