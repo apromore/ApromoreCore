@@ -286,7 +286,7 @@ public interface AuthorizationService {
 
     String removeProcessPermissions(Integer processId, String groupRowGuid, AccessType accessType);
 
-    String removeLogPermissions(Integer logId, String groupRowGuid, String username, AccessType accessType);
+    String removeLogPermissions(Integer logId, String groupRowGuid, AccessType accessType);
 
     String removeUsermetadataPermissions(Integer usermetadataId, String groupRowGuid);
 
