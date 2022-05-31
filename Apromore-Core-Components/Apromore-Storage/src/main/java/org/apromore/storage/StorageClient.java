@@ -57,6 +57,14 @@ public interface StorageClient {
         return prefix;
     }
 
+    default void copyStreamNoClose(InputStream sourceFile, OutputStream targetFile) throws Exception {
+        byte[] buf = new byte[COPY_BUFFER_SIZE];
+        int length;
+        while ((length = sourceFile.read(buf)) > 0) {
+            targetFile.write(buf, 0, length);
+        }
+    }
+
     default void copyStream(InputStream sourceFile, OutputStream targetFile) throws Exception {
         byte[] buf = new byte[COPY_BUFFER_SIZE];
         int length;
