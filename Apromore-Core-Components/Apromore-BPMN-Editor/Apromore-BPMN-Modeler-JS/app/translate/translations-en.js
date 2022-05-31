@@ -94,5 +94,6 @@ module.exports = {
 
   'properties': 'Properties',
   'metadata.properties': 'Metadata Properties',
-  'attachments': 'Attachments'
+  'attachments': 'Attachments',
+  'logtimetable.name': 'Log timetable'
 };

@@ -99,5 +99,6 @@ module.exports = {
   'attachments.image.upload': '画像アップロード',
   'attachments.image.link': '画像用リンク',
   'attachments.image.text': '画像用テキスト',
-  'attachments.icon.list': 'アイコン一覧'
+  'attachments.icon.list': 'アイコン一覧',
+  'logtimetable.name': 'Log timetable'
 };
