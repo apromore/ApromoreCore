@@ -22,8 +22,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
       timetablesWithNoEmptyName.forEach(function (timetable) {
         timetableOptions.push({
-           name: timetable.name == 'Log timetable' ?
-                   translate('logtimetable.name') : timetable.name,
+           name: timetable.name == 'Log timetable' ? translate('logtimetable.name') : timetable.name,
            value: timetable.id
         });
       });
