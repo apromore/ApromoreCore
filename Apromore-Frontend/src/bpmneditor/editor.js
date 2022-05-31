@@ -576,12 +576,13 @@ export default class Editor {
                 }
             }
         }
-        if (selectedFontSize != -1) {
-            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
-        }
       } catch (r) {
         // pass
       }
+      if (selectedFontSize == -1) {
+        selectedFontSize = 16;
+      }
+      Apromore.BPMNEditor.updateFontSize(selectedFontSize);
     }
 
     async changeFontSize(size) {
