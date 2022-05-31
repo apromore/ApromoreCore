@@ -77,8 +77,8 @@ public class SimulationInfoService {
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
     private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
-    private static final String DEFAULT_CALENDER_NAME="24/7";
-    private static final String CUSTOM_CALENDER_NAME="Log timetable";
+    private static final String DEFAULT_CALENDER_NAME = "24/7";
+    private static final String CUSTOM_CALENDER_NAME = "Log timetable";
 
 
     private JAXBContext jaxbContext;
