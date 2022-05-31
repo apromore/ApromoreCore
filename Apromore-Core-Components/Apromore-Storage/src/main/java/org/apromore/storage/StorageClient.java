@@ -22,6 +22,7 @@
 
 package org.apromore.storage;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -57,7 +58,7 @@ public interface StorageClient {
         return prefix;
     }
 
-    default void copyStreamNoClose(InputStream sourceFile, OutputStream targetFile) throws Exception {
+    default void copyStreamNoClose(InputStream sourceFile, OutputStream targetFile) throws IOException {
         byte[] buf = new byte[COPY_BUFFER_SIZE];
         int length;
         while ((length = sourceFile.read(buf)) > 0) {
