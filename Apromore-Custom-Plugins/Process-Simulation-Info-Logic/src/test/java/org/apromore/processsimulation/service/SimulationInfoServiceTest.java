@@ -238,7 +238,7 @@ class SimulationInfoServiceTest {
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
-        assertEquals("Generic 24/7", processSimulationInfo.getTimetables().get(0).getName());
+        assertEquals("24/7", processSimulationInfo.getTimetables().get(0).getName());
         assertEquals("A_CUSTOM_TIMETABLE_ID", processSimulationInfo.getTimetables().get(0).getId());
         assertTrue(processSimulationInfo.getTimetables().get(0).isDefaultTimetable());
         assertNotNull(processSimulationInfo.getTimetables().get(0).getRules());
@@ -279,11 +279,11 @@ class SimulationInfoServiceTest {
         assertEquals(2, processSimulationInfo.getTimetables().size());
 
         assertTimetableInfo(processSimulationInfo.getTimetables().get(0),
-            "Mock Business Calendar", "A_CUSTOM_TIMETABLE_ID", true,
+            "Log timetable", "A_CUSTOM_TIMETABLE_ID", true,
             "09:00:00.000", "17:00:00.000", DayOfWeek.MONDAY, DayOfWeek.FRIDAY);
 
         assertTimetableInfo(processSimulationInfo.getTimetables().get(1),
-            "Generic 24/7", "A_DEFAULT_TIMETABLE_ID", false,
+            "24/7", "A_DEFAULT_TIMETABLE_ID", false,
             "00:00:00.000", "23:59:59.999", DayOfWeek.MONDAY, DayOfWeek.SUNDAY);
 
         assertNotNull(processSimulationInfo.getResources());
@@ -875,7 +875,7 @@ class SimulationInfoServiceTest {
         Node timeTableNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/timetables/timetable[1]");
         assertEquals("A_CUSTOM_TIMETABLE_ID", timeTableNode.getAttributes().getNamedItem("id").getNodeValue());
-        assertEquals("Generic 24/7", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("24/7", timeTableNode.getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("true", timeTableNode.getAttributes().getNamedItem("default").getNodeValue());
 
         Node timeTableRuleNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
