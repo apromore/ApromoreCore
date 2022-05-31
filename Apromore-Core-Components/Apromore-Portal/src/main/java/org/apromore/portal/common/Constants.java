@@ -94,12 +94,13 @@ public abstract class Constants {
     public static final String AUTH_SERVICE = "authorizationService";
     public static final String WORKSPACE_SERVICE = "workspaceService";
 
-    public static final String[] SWAGGER2_AUTH_WHITELIST = {
-            "/v2/api-docs",
+    public static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/v3/api-docs/**",
             "/configuration/**",
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
+            "/swagger/**",
             "/webjars/**"
     };
 

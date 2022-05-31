@@ -23,6 +23,7 @@
 package org.apromore.service.logimporter.dateparser;
 
 import static org.apromore.service.logimporter.dateparser.DateUtil.determineDateFormat;
+import static org.apromore.service.logimporter.dateparser.DateUtil.parseToTimestamp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -169,7 +170,9 @@ class DateUtilUnitTest {
         assertEquals("dd-MM-yyyy HH:mm:ss", determineDateFormat("19-12-2019 15:13:05"));
         assertEquals("MM-dd-yyyy HH:mm:ss", determineDateFormat("12-19-2019 15:13:05"));
         assertEquals("yyyy-MM-dd HH:mm:ss", determineDateFormat("2019-12-19 15:13:05"));
+        assertEquals("yyyy-MM-dd/HH:mm:ss", determineDateFormat("2019-12-19/15:13:05"));
         assertEquals("yyyy-dd-MM HH:mm:ss", determineDateFormat("2019-19-12 15:13:05"));
+        assertEquals("yyyy-dd-MM/HH:mm:ss", determineDateFormat("2019-19-12/15:13:05"));
         assertEquals("dd-MM-yyyy'T'HH:mm:ss", determineDateFormat("19-12-2019T15:13:05"));
         assertEquals("MM-dd-yyyy'T'HH:mm:ss", determineDateFormat("12-19-2019T15:13:05"));
         assertEquals("yyyy-MM-dd'T'HH:mm:ss", determineDateFormat("2019-12-19T15:13:05"));
@@ -548,5 +551,19 @@ class DateUtilUnitTest {
         assertEquals("yyyy dd MM HH:mm:ss.S", determineDateFormat("2019 19 12 15:13:05.9"));
         assertEquals("dd MMM yyyy HH:mm:ss.S", determineDateFormat("19 DEC 2019 15:13:05.9"));
         assertEquals("dd MMMM yyyy HH:mm:ss.S", determineDateFormat("19 DECEMBER 2019 15:13:05.9"));
+    }
+
+    @Test
+    void parseToTimestampTest() {
+        assertNull(parseToTimestamp("1", "y", null));
+        assertNull(parseToTimestamp("19-12-2019 15:13:05.9", null, null));
+        assertNull(parseToTimestamp("19-12-2019 15:13:05.9", "", null));
+        assertNull(parseToTimestamp(null, "dd-MM-yyyy HH:mm:ss.S", null));
+        assertNull(parseToTimestamp("", "dd-MM-yyyy HH:mm:ss.S", null));
+        assertEquals("1970-01-01 00:00:04.0", parseToTimestamp("04/01/2011 02:13:05", "ss", null).toString());
+        assertEquals("2020-07-28 23:07:57.111",
+            parseToTimestamp("2020-07-28T23:07:57.111", "yyyy-MM-dd'T'HH:mm:ss.SSS", null).toString());
+        assertEquals("2020-07-28 23:07:57.0",
+            parseToTimestamp("2020-07-28T23:07:57", "yyyy-MM-dd'T'HH:mm:ss.SSS", null).toString());
     }
 }

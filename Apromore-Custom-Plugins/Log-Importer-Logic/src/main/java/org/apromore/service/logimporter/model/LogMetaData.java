@@ -23,18 +23,22 @@
 
 package org.apromore.service.logimporter.model;
 
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
-
+import org.eclipse.collections.impl.list.Interval;
 
 @Data
 @NoArgsConstructor
+@Slf4j
 public class LogMetaData {
 
     /**
@@ -114,16 +118,32 @@ public class LogMetaData {
         if (header.size() != count) {
             throw new InvalidLogMetadataException(
                 "Failed to construct valid log sample!  Only specified attribute type for " + count + " of "
-                + header.size() + " headers: " + header);
+                    + header.size() + " headers: " + header);
         }
+
+        List<Integer> indexList = new ArrayList<>();
+        indexList.addAll(stringAttributesPos);
+        indexList.addAll(integerAttributesPos);
+        indexList.addAll(doubleAttributesPos);
+        indexList.addAll(timestampAttributesPos);
 
         int dateTypeCount = stringAttributesPos.size() + integerAttributesPos.size() + doubleAttributesPos.size()
             + timestampAttributesPos.size();
+
         if (dateTypeCount != count) {
-            throw new InvalidLogMetadataException(
-                "Failed to construct valid log sample!  Only specified data type for " + count + " of "
-                    + dateTypeCount + " headers: " + header);
+            List<Integer> missingIndexList = findMissingIndex(indexList, dateTypeCount);
+            log.info("Only specified data type for {} of {} headers: {}. Add missing index to String data type",
+                dateTypeCount, header.size(), header);
+            stringAttributesPos.addAll(missingIndexList);
         }
+    }
+
+    protected List<Integer> findMissingIndex(List<Integer> indexList, Integer count) {
+
+        List<Integer> fullList = Interval.zeroTo(count);
+        Collections.sort(indexList);
+
+        return new ArrayList<>(Sets.difference(Sets.newHashSet(fullList), Sets.newHashSet(indexList)));
     }
 
     public List<String> getPerspectives() throws InvalidLogMetadataException {
@@ -147,7 +167,7 @@ public class LogMetaData {
                     result.add(header.get(i));
                 } else {
                     throw new InvalidLogMetadataException("Found invalid Log Metadata that eventAttributesPos doesn't"
-                                                          + " match with perspectivePos");
+                        + " match with perspectivePos");
                 }
             }
         }

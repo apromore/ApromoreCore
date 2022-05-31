@@ -26,6 +26,8 @@
 
 package org.apromore.portal.dialogController;
 
+import static org.apromore.portal.menu.PluginCatalog.PLUGIN_PREDICTOR_MANAGER_SUB_MENU;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +50,7 @@ import org.apromore.portal.controller.DashboardPopupLogSubMenuController;
 import org.apromore.portal.controller.DiscoverPopupLogSubMenuController;
 import org.apromore.portal.controller.FilterPopupLogSubMenuController;
 import org.apromore.portal.controller.LogFilterPopupLogSubMenuController;
+import org.apromore.portal.controller.PredictorTrainerSubMenuController;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.menu.MenuGroup;
@@ -192,15 +195,36 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             case PluginCatalog.PLUGIN_VIEW_EXISTING_LOG_FILTER:
                 addExistingLogFilterViewMenuItem(popup);
                 return;
+            case PluginCatalog.PLUGIN_CREATE_NEW_PREDICTOR:
+                addNewPredictorMenuItem(popup);
+                return;
             case PluginCatalog.PLUGIN_DISCOVER_MODEL_SUB_MENU:
             case PluginCatalog.PLUGIN_DASHBOARD_SUB_MENU:
             case PluginCatalog.PLUGIN_LOG_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_FILTER_SUB_MENU:
             case PluginCatalog.PLUGIN_APPLY_CALENDAR_SUB_MENU:
+            case PLUGIN_PREDICTOR_MANAGER_SUB_MENU:
                 addSubMenuItem(popup,menuItem.getId());
                 return;
         }
         addPluginMenuitem(popup, menuItem);  // handle null or unknown menuitem id
+    }
+
+    private void addNewPredictorMenuItem(Menupopup popup) {
+        Menuitem item = new Menuitem();
+        item.setLabel("Create new predictor");
+        item.setImage("~./icons/predictor-add-top.svg");
+        item.addEventListener(ON_CLICK, event -> createNewPredictorTrainer());
+        popup.appendChild(item);
+    }
+
+    private void createNewPredictorTrainer() {
+        try {
+            PortalPlugin plugin = portalPluginMap.get(PluginCatalog.PLUGIN_PREDICTOR_TRAINER);
+            plugin.execute(getPortalContext());
+        } catch (Exception e) {
+            LOGGER.error("Error in showing New Predictor trainer", e);
+        }
     }
 
     private void addExistingLogFilterViewMenuItem(Menupopup popup) {
@@ -358,6 +382,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     private void addNewDashboardMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
+        item.addSclass("ap-context-menu-item");
         item.setLabel(Labels.getLabel("portal_create_new_dashboard"));
         item.setImage("~./themes/ap/common/img/icons/add-dashboard.svg");
         item.addEventListener(ON_CLICK, event -> createNewDashboard());
@@ -467,7 +492,15 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                             (LogSummaryType) selections.iterator().next());
                     }
                     return;
-                default: return;
+                case PLUGIN_PREDICTOR_MANAGER_SUB_MENU:
+                    if (pluginAvailable(PluginCatalog.PLUGIN_PREDICTOR_TRAINER)) {
+                        // New log sub menu controller
+                        new PredictorTrainerSubMenuController(this, mainController, popup,
+                            (LogSummaryType) selections.iterator().next());
+                    }
+                    return;
+                default:
+                    return;
             }
 
         } catch (Exception e) {

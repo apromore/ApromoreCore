@@ -30,12 +30,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -68,13 +70,18 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Window;
 
 import static org.apromore.common.Constants.DRAFT_BRANCH_NAME;
 import static org.apromore.common.Constants.TRUNK_NAME;
+import static org.apromore.plugin.portal.PortalContexts.getPageDefinition;
 import static org.apromore.portal.common.LabelConstants.MESSAGEBOX_DEFAULT_TITLE;
 
 /**
@@ -102,6 +109,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
+  public static final String PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY = "portal_saveModelFirst_message";
+  private static final String PROCESS_SERVICE_BEAN = "processService";
   private EventQueue<Event> qeBPMNEditor =
       EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
 
@@ -114,6 +123,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private UserType currentUserType;
   private AccessType currentUserAccessType;
   private boolean isViewLink = false;
+  @Wire
+  private Popup popup;
 
   public BPMNEditorController() {
     super();
@@ -145,9 +156,13 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     process = session.getProcess();
     vst = session.getVersion();
 
+    Map<String, Object> param = new HashMap<>();
+
     if (isNewProcess) {
       currentUserAccessType = AccessType.OWNER;
+      param.put("isNewProcess", true);
     } else {
+      param.put("isNewProcess", false);
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
         currentUserAccessType = mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
@@ -172,7 +187,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
     }
 
-    Map<String, Object> param = new HashMap<>();
     try {
       PluginMessages pluginMessages = null;
       String bpmnXML = (String) session.get(BPMN_XML);
@@ -236,6 +250,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           && processPublishPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
       param.put("isPublished", isProcessPublished());
       Executions.getCurrent().pushArg(param);
+
+      populateLinkedProcessesList();
 
     } catch (Exception e) {
       LOGGER.error("", e);
@@ -367,7 +383,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         }
 
         if (isNewProcess || process == null) {
-          Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+          Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
         } else {
           PortalContext portalContext = mainC.getPortalContext();
           try {
@@ -392,7 +408,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     this.addEventListener("onPublishModel", event -> {
       if (isNewProcess || process == null) {
-        Notification.error(Labels.getLabel("portal_saveModelFirst_message"));
+        Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
         return;
       }
 
@@ -404,6 +420,69 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       arg.put("selectedModel", process);
       publishModelPlugin.setSimpleParams(arg);
       publishModelPlugin.execute(portalContext);
+    });
+
+    this.addEventListener("onClickSubprocessBtn", event -> {
+      if (isNewProcess || process == null) {
+        Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
+        return;
+      }
+
+      boolean isViewer = AccessType.VIEWER.equals(currentUserAccessType);
+      String elementId =  (String) event.getData();
+
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+      User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+      boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+          (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
+
+      if (isViewer && !hasLinkedProcessAccess) {
+        Notification.error(Labels.getLabel("bpmnEditor_subProcessLinkNoEdit_message",
+            "Only owner/editor and add or edit a link"));
+      } else if (hasLinkedProcessAccess) {
+        viewLinkedSubprocess(elementId);
+      } else {
+        linkSubprocess(elementId);
+      }
+    });
+
+    this.addEventListener("onViewSubprocess", event -> {
+      String elementId =  (String) event.getData();
+      viewLinkedSubprocess(elementId);
+    });
+
+    this.addEventListener("onLinkSubprocess", event -> {
+      String elementId =  (String) event.getData();
+      linkSubprocess(elementId);
+    });
+
+    this.addEventListener("onDeleteSubprocess", event -> {
+      String elementId =  (String) event.getData();
+      unlinkSubprocess(elementId);
+    });
+
+    this.addEventListener("onUnlinkSubprocess", event -> {
+      String elementId =  (String) event.getData();
+      unlinkSubprocess(elementId);
+      Notification.info("Process successfully unlinked");
+    });
+
+    this.addEventListener("onDownloadXML", event -> {
+      String xml = (String) event.getData();
+      //Show window if there is a linked subprocess. Otherwise, download.
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+      if (process == null || !processService.hasLinkedProcesses(process.getId(), currentUserType.getUsername())) {
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        Filedownload.save(is, "text/xml", "diagram.bpmn");
+      } else {
+        Map<String, Object> args = new HashMap<>();
+        args.put("process", process);
+        args.put("version", vst);
+        Window downloadBPMNPrompt = (Window) Executions.createComponents(
+            getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+        downloadBPMNPrompt.doModal();
+      }
     });
 
     BPMNEditorController editorController = this;
@@ -419,6 +498,13 @@ public class BPMNEditorController extends BaseController implements Composer<Com
         }
       }
     });
+
+    this.addEventListener("onChangeFont", event -> {
+      Component win = event.getTarget();
+      popup=(Popup)win.getFellow("popup");
+      popup.open(event.getTarget(),"at_pointer");
+    });
+
   }
 
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
@@ -500,7 +586,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     if (isViewLink) {
       String publishId = Executions.getCurrent().getParameter("publishId");
       ProcessPublishService processPublishService = (ProcessPublishService) SpringUtil.getBean("processPublishService");
-      ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
 
       //Check if link is published. If not, show an error.
       if (!processPublishService.isPublished(publishId)) {
@@ -547,6 +633,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
     param.put("username", currentUserType.getUsername());
+    param.put("isNewProcess", false);
     Executions.getCurrent().pushArg(param);
   }
 
@@ -563,10 +650,92 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     return i18nSession.getPreferredLangTag();
   }
 
+  private void linkSubprocess(String elementId) throws IOException {
+    if (isNewProcess || process == null) {
+      Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
+      return;
+    }
+
+    boolean isViewer = AccessType.VIEWER.equals(currentUserAccessType);
+
+    if (isViewer) {
+      Notification.error(Labels.getLabel("bpmnEditor_subProcessLinkNoEdit_message",
+          "Only owner/editor and add or edit a link"));
+    } else {
+      Map<String, Object> args = new HashMap<>();
+      args.put("mainController", mainC);
+      args.put("parentProcessId", process.getId());
+      args.put("elementId", elementId);
+      String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
+      Window linkSubProcessModal =
+          (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
+      linkSubProcessModal.doModal();
+    }
+  }
+
+  private void viewLinkedSubprocess(String elementId) throws UserNotFoundException {
+    if (isNewProcess || process == null) {
+      Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
+      return;
+    }
+
+    ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+    ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+    User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+    boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+        (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
+
+    if (!hasLinkedProcessAccess) {
+      Notification.error("No process is linked");
+      return;
+    }
+
+    VersionSummaryType version = linkedProcess.getVersionSummaries().stream()
+        .filter(v -> v.getVersionNumber().equals(linkedProcess.getLastVersion()))
+        .findFirst().orElse(null);
+    try {
+      mainC.editProcess2(linkedProcess, version, linkedProcess.getOriginalNativeType(), new HashSet<>(), false);
+    } catch (InterruptedException e) {
+      Notification.error("Unable to view linked process");
+      LOGGER.error("Unable to view linked process", e);
+      // Restore interrupted state...
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private void unlinkSubprocess(String elementId) {
+    if (isNewProcess || process == null) {
+      //If the process isn't saved, there are no link details.
+      return;
+    }
+
+    ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+    processService.unlinkSubprocess(process.getId(), elementId);
+  }
+
+  private void populateLinkedProcessesList() throws UserNotFoundException {
+    if (isNewProcess || process == null) {
+      //If the process isn't saved, there are no link details.
+      return;
+    }
+
+    ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+    Map<String, Integer> linkedProcesses = processService.getLinkedProcesses(process.getId(), currentUserType.getUsername());
+
+    for (String subProcessId : linkedProcesses.keySet()) {
+      ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), subProcessId);
+      String linkedProcessName = linkedProcess.getName() + " (v" + linkedProcess.getLastVersion() + ")";
+
+      Clients.evalJavaScript("setLinkedSubProcess('" + subProcessId + "','" + linkedProcessName + "');");
+    }
+  }
+
   @Override
   public void doAfterCompose(Component comp) throws Exception {
       // TODO Auto-generated method stub
 
   }
+
+
 
 }

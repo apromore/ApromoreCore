@@ -18,6 +18,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.apromore.security.impl.UsernamePasswordAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -41,6 +41,9 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider;
 
+  @Value("${contentSecurityPolicy}")
+  String contentSecurityPolicy;
+
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 
@@ -52,9 +55,17 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
 
-    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
-        .antMatchers("/**/js/*").antMatchers("/robots.txt");
+    web.ignoring()
+        .antMatchers("/**/css/*")
+        .antMatchers("/**/font/**")
+        .antMatchers("/**/img/**")
+        .antMatchers("/**/images/**")
+        .antMatchers("/**/themes/**")
+        .antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*")
+        .antMatchers("/favicon.ico")
+        .antMatchers("/portalPluginResource/**")
+        .antMatchers("/robots.txt");
   }
 
 
@@ -64,15 +75,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.headers()
-            .frameOptions()
-            .sameOrigin()
-            .addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy",
-                "default-src 'self'; font-src 'self' data: fonts.googleapis.com fonts.gstatic.com; form-action 'self';"
-                + " frame-ancestors 'self'; img-src 'self' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline';"
-                + " style-src 'self' 'unsafe-inline' fonts.googleapis.com;"))
-            .httpStrictTransportSecurity()
-                .includeSubDomains(true)
-                .maxAgeInSeconds(63072000);
+        .frameOptions().sameOrigin()
+        .contentSecurityPolicy(contentSecurityPolicy);
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
@@ -90,7 +94,6 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/zkau/*").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers(Constants.SWAGGER2_AUTH_WHITELIST).permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin()

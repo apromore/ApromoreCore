@@ -23,6 +23,8 @@
 
 import Log from './logger';
 import Utils from './utils';
+// import { GLYPHS } from './assets';
+import { SYMBOLS } from './assets';
 
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
@@ -127,6 +129,11 @@ export default class Editor {
             me.setDirty(true);
         });
 
+        eventBus.on('selection.changed', function(context) {
+          var newSelection = context.newSelection;
+
+          me.updateFontSize(newSelection)
+        });
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -166,11 +173,212 @@ export default class Editor {
         return xml;
     }
 
+    async processAux(svg) {
+        const me = this;
+
+        function getBase64(url) {
+            return new Promise(resolve => {
+                const img = new Image();
+
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    const canvas = document.createElement("canvas");
+                    canvas.width =this.width;
+                    canvas.height =this.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(this, 0, 0);
+                    const dataURL = canvas.toDataURL("image/png");
+                    resolve({
+                        dataURL,
+                        img2: img
+                    });
+                };
+                img.src = url;
+          });
+        }
+
+        async function getBase64Async(url) {
+          const result = await loadImage(url);
+          return result;
+        }
+
+        function nsResolver(prefix) {
+            switch (prefix) {
+                case 'xlink':
+                    return 'http://www.w3.org/1999/xlink';
+                case 'svg':
+                    return 'http://www.w3.org/2000/svg';
+                default:
+                    return 'http://www.w3.org/2000/svg';
+            }
+        }
+
+        const PULL_EXT = false;
+        const USE_SYMBOLS = true;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svg, 'image/svg+xml');
+        const overlays = this.actualEditor.get('overlays');
+        const auxes = overlays.get({ type: 'aux'});
+        let minTop = 0, minLeft = 0, maxBottom = 0, maxRight = 0;
+        const hyperlinks = [];
+        auxes.forEach(async (aux) => {
+            const overlay = $(aux.htmlContainer);
+            const containerId = overlay.parent().data('containerId');
+            const parentLeft = parseInt(overlay.parent().css('left'));
+            const parentTop = parseInt(overlay.parent().css('top'));
+            const left = parseInt(overlay.css('left'));
+            const top = parseInt(overlay.css('top'));
+            const width = parseInt(overlay.css('width'));
+            const height = parseInt(overlay.css('height'));
+            const right = left + width;
+            const bottom = top + height;
+            if (minLeft > left) { minLeft = left; }
+            if (minTop > top) { minTop = top; }
+            if (maxRight < right) { maxRight = right; }
+            if (maxBottom < bottom) { maxBottom = bottom; }
+
+            const context = doc.evaluate("//svg:g[@data-element-id='" + containerId + "']",
+                doc, nsResolver, XPathResult.ANY_TYPE, null);
+            const container = context.iterateNext();
+            const auxImage = $('.aux-image', overlay);
+            const img = $('.aux-image img', overlay)[0];
+
+            let auxContent = '';
+            let yOffset = 0;
+            let img2, dataURL;
+
+            // Image handling
+            if (container && img && img.complete && img.naturalWidth && img.naturalHeight) {
+                var href = img.currentSrc;
+                if (href.startsWith('http') && PULL_EXT) {
+                    let result = await getBase64Async(href);
+                    dataURL = result.dataURL;
+                    img2 = result.img2;
+                } else {
+                    dataURL = href;
+                    img2 = img;
+                }
+                const ratio = img2.naturalHeight / img2.naturalWidth;
+                const imgWidth = width - 8;
+                const imgHeight = ratio * imgWidth;
+                auxContent += `<image href="${dataURL}" width="${imgWidth}" height="${imgHeight}"/>`;
+                yOffset += imgHeight + 20;
+                const caption = $('.caption', auxImage);
+                if (caption) {
+                    const aLink = $('a', caption)[0];
+                    if (aLink) {
+                        hyperlinks.push({
+                            href: aLink.href,
+                            left: parentLeft + left,
+                            top: parentTop + top + yOffset,
+                            width: aLink.textContent.length,
+                            height: 1
+                        });
+                        auxContent += `<a href="${aLink.href}">
+                            <text x="0" y="${yOffset}" lineHeight="1.2" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
+                                ${aLink.textContent}
+                            </text>
+                        </a>`
+                        yOffset += 18.5;
+                    }
+                }
+            }
+
+            // Icons handling
+            const iconItems = $('.aux-icon-item', overlay);
+            iconItems.each((index, iconItem) => {
+                let char = ''
+                let icon = $('.aux-icon', iconItem);
+                icon = icon && icon[0];
+                if (icon) {
+                   let span = $('span', icon);
+                   let className = span.attr('class');
+                   if (USE_SYMBOLS) {
+                       if (className && className.length) {
+                           auxContent += `<use href="#${className}" width="20" height="24" x="0" y="${yOffset - 12}" />`;
+                       }
+                   } else {
+                       if (span.hasClass('ap-icon-computer')) {
+                          char = '&#xEA01;'
+                       } else {
+                          char = window.getComputedStyle(span[0],':before').content || '';
+                          char = char.replaceAll('"', '');
+                       }
+                        auxContent += `<text lineHeight="1.2" style="font-family: icomoon; font-size: 20px; font-weight: normal; fill: black;">
+                           <tspan x="0" y="${yOffset}">${char}</tspan>
+                       </text>`;
+                   }
+                }
+                let iconLink = $('.aux-icon-link', iconItem);
+                iconLink = iconLink && iconLink[0];
+                if (iconLink) {
+                    const iconTextLink = iconLink.textContent;
+                    const aIconLink = $('a', iconLink)[0];
+                    if (aIconLink) {
+                        hyperlinks.push({
+                            href: aIconLink.href,
+                            left: parentLeft + left + 30,
+                            top: parentTop + top + yOffset,
+                            width: iconTextLink.length,
+                            height: 1
+                        });
+                        auxContent += `<a href="${aIconLink.href}">
+                            <text lineHeight="20px" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
+                                <tspan x="30" y="${yOffset}">${iconTextLink}</tspan>
+                            </text></a>`
+                    } else {
+                        auxContent += `<text lineHeight="20px" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
+                                <tspan x="30" y="${yOffset}">${iconTextLink}</tspan>
+                            </text>`
+                    }
+                }
+                yOffset += 26;
+            })
+            if (auxContent.length) {
+                auxContent = `<g transform="matrix(1 0 0 1 ${left} ${top})">${auxContent}</g>`;
+                const parser2 = new DOMParser();
+                const auxTarget = parser2.parseFromString(auxContent, 'image/svg+xml');
+                container.appendChild(auxTarget.childNodes[0])
+           }
+        });
+        // Fix viewBox
+        const svgDummy = doc.evaluate("//svg:svg", doc, nsResolver, XPathResult.ANY_TYPE, null);
+        const svgRoot = svgDummy.iterateNext();
+        const viewBox = svgRoot.getAttribute('viewBox');
+        const coords = viewBox.split(' ').map((x) => parseInt(x));
+        coords[0] = coords[0] + minLeft;
+        coords[1] = coords[1] + minTop;
+        coords[2] = coords[2] + (maxRight - minLeft);
+        coords[3] = coords[3] + (maxBottom - minTop);
+        svgRoot.setAttribute('viewBox', coords.join(' '));
+        svgRoot.setAttribute('width', '' + coords[2]);
+        svgRoot.setAttribute('height', '' + coords[3]);
+        let raw = new XMLSerializer().serializeToString(doc);
+        // For glyph-based approach, uncomment the following
+        // However this is not supported by Apache SVG2PDF transcoder
+        // raw = raw.replaceAll('<defs>', `<defs>${GLYPHS}`);
+        raw = raw.replaceAll('<defs>', `<defs>${SYMBOLS}`);
+        raw = raw.replaceAll('xmlns=""', ''); // Remove empty namespace
+        raw = raw.replaceAll('<use href=', '<use xlink:href='); // Apache transcoder expect xlink ns
+        return {
+            raw,
+            hyperlinks
+        }
+    }
+
+    async getSVG2() {
+        if (!this.actualEditor) return '';
+        const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
+        const { svg } = result;
+        return await this.processAux(svg);
+    }
+
     async getSVG() {
         if (!this.actualEditor) return '';
         const result = await this.actualEditor.saveSVG({ format: true }).catch(err => {throw err;});
-        const {svg} = result;
-        return svg;
+        const { svg } = result;
+        const { raw } = await this.processAux(svg);
+        return raw;
     }
 
     zoomFitToModel() {
@@ -310,4 +518,89 @@ export default class Editor {
             y: shape.y + (shape.height || 0) / 2
         }
     }
+
+    getDimensions(shapeId) {
+        var shape = this.actualEditor.get('elementRegistry').get(shapeId);
+        return {
+            x: shape.x,
+            y: shape.y,
+            width: shape.width,
+            height: shape.height
+        }
+    }
+
+    async refreshAll() {
+        if (!this.actualEditor) return ;
+        var eventBus = this.actualEditor.get('eventBus');
+        var elementRegistry = editor.get('elementRegistry');
+        var elements = elementRegistry.getAll();
+        eventBus.fire('elements.changed', { elements });
+    }
+
+    async changeGlobalFontSize(size) {
+        const modeler = this.actualEditor
+        const config = modeler.get('config');
+        if (!config) return;
+
+        config.textRenderer = {
+            defaultStyle:
+            {
+              fontSize: size+"px"
+            },
+            externalStyle: {
+              fontSize: size+"px"
+            }
+        };
+        modeler.get('textRenderer').setFontSize(size);
+        let elementRegistry = modeler.get('elementRegistry');
+        let elements = elementRegistry.getAll();
+        let eventBus = modeler.get('eventBus');
+
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
+    updateFontSize(selection) {
+      try  {
+        let selectedFontSize = -1;
+        for (let i = 0; i < selection.length; i++) {
+            const element = selection[i]
+            const bo = element.businessObject;
+            const size = parseInt(bo["aux-font-size"])
+            if (selectedFontSize === -1) {
+                selectedFontSize = size
+            } else {
+                if (selectedFontSize !== size) {
+                    selectedFontSize = -1
+                    break;
+                }
+            }
+        }
+        if (selectedFontSize != -1) {
+            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
+        }
+      } catch (r) {
+        // pass
+      }
+    }
+
+    async changeFontSize(size) {
+        const modeler = this.actualEditor
+        if (!modeler) return;
+
+        let eventBus = modeler.get('eventBus');
+        let elements = modeler.get('selection').get();
+        if (!elements || !elements.length) {
+            // this.changeGlobalFontSize(size);
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
+        }
+        elements.forEach((element) => {
+            const bo = element.businessObject;
+            bo["aux-font-size"] = size+"px";
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
 };

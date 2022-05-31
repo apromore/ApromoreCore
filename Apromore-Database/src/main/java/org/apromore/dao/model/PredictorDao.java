@@ -1,23 +1,28 @@
 /*-
  * #%L
- * This file is part of "Apromore Enterprise Edition".
+ * This file is part of "Apromore Core".
  * %%
- * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
+ * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
  * %%
- * NOTICE:  All information contained herein is, and remains the
- * property of Apromore Pty Ltd and its suppliers, if any.
- * The intellectual and technical concepts contained herein are
- * proprietary to Apromore Pty Ltd and its suppliers and may
- * be covered by U.S. and Foreign Patents, patents in process,
- * and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this
- * material is strictly forbidden unless prior written permission
- * is obtained from Apromore Pty Ltd.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
 
 package org.apromore.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -36,7 +41,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apromore.dao.jpa.PpmExplainationToJsonConverter;
 import org.apromore.dao.jpa.PpmSchemaToJsonConverter;
+import org.apromore.dao.jpa.PpmValidationToJsonConverter;
 
 @Entity
 @Table(name = "predictor")
@@ -47,6 +54,8 @@ public class PredictorDao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "log_id")
+    private int logId;
     @Column(name = "name")
     private String name;
     @Column(name = "prediction_type")
@@ -54,12 +63,23 @@ public class PredictorDao {
     private PredictionType predictionType;
     @Column(name = "target_attribute")
     private String targetAttribute;
+    @Column(name = "feature_encoding_type")
+    @Enumerated(EnumType.STRING)
+    private FeatureEncodingType featureEncodingType;
     @Column(name = "ppm_status")
     @Enumerated(EnumType.STRING)
     private PpmStatus ppmStatus;
     @Column(name = "ppm_schema")
     @Convert(converter = PpmSchemaToJsonConverter.class)
     private PpmSchema ppmSchema;
+    @Column(name = "validation")
+    @Convert(converter = PpmValidationToJsonConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Validation validation;
+    @Column(name = "explanation")
+    @Convert(converter = PpmExplainationToJsonConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Explanation explanation;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "prediction_predictor",
         joinColumns = @JoinColumn(name = "predictor_id", referencedColumnName = "id"),

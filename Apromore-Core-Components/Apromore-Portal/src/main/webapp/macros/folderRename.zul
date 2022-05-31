@@ -26,7 +26,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 
-<window width="500px" closable="false" position="center" mode="modal" title="Rename folder" id="winFolderRename">
+<window width="500px" closable="false" position="center" mode="modal" title="${labels.file_renameFolder_text}" id="winFolderRename">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">

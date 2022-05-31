@@ -24,6 +24,8 @@ package org.apromore.service.logimporter.utilities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.apromore.service.logimporter.constants.ColumnType;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +38,7 @@ class ImporterStringUtilsTest {
     void stringTest() {
         assertEquals(ColumnType.STRING, ImporterStringUtils.getColumnType("abc"));
         assertEquals(ColumnType.STRING, ImporterStringUtils.getColumnType(""));
+        assertEquals(ColumnType.STRING, ImporterStringUtils.getColumnType("1.0.0"));
     }
 
     /**
@@ -44,6 +47,8 @@ class ImporterStringUtilsTest {
     @Test
     void intTest() {
         assertEquals(ColumnType.INT, ImporterStringUtils.getColumnType("123"));
+        assertEquals(ColumnType.INT, ImporterStringUtils.getColumnType(new ArrayList<>(Arrays.asList(
+            "1", null, "2", null, "3", "", "4"))));
     }
 
     /**
@@ -52,6 +57,8 @@ class ImporterStringUtilsTest {
     @Test
     void doubleTest() {
         assertEquals(ColumnType.DOUBLE, ImporterStringUtils.getColumnType("123.456"));
+        assertEquals(ColumnType.DOUBLE, ImporterStringUtils.getColumnType(new ArrayList<>(Arrays.asList(
+            "1.1", null, "2.2", null, "3.3", "", "4.4"))));
     }
 
     /**
@@ -65,6 +72,8 @@ class ImporterStringUtilsTest {
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("false"));
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("False"));
         assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType("FALSE"));
+        assertEquals(ColumnType.BOOLEAN, ImporterStringUtils.getColumnType(new ArrayList<>(Arrays.asList(
+            "True", null, "TRUE", null, "false", "", "FALSE"))));
     }
 
     /**
@@ -80,5 +89,7 @@ class ImporterStringUtilsTest {
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("1/1/20"));
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("1/31/2015"));
         assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType("01/31/2021"));
+        assertEquals(ColumnType.TIMESTAMP, ImporterStringUtils.getColumnType(new ArrayList<>(Arrays.asList(
+            "1/1/20", null, "2/1/20", null, "3/1/20", "", "4/1/20"))));
     }
 }

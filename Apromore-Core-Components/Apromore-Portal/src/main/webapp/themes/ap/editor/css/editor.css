@@ -375,6 +375,10 @@
   border: 1px solid transparent;
 }
 
+.djs-overlay-aux.empty {
+  display: none !important;
+}
+
 .djs-overlay-aux:hover {
   border: 1px solid #c0c0c0;
 }
@@ -477,4 +481,26 @@
 
 .access-type-viewer .djs-overlay-aux a {
   pointer-events: auto;
+}
+
+#link-subprocess-details {
+    display: flex;
+    line-height: 24px;
+}
+
+#link-subprocess-details > * {
+    margin-right: 5px;
+}
+
+#link-subprocess-view {
+    max-width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#link-subprocess-view.link-subprocess-view-link:hover {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
 }

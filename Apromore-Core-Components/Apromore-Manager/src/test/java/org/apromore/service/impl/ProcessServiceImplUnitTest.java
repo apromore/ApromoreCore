@@ -30,6 +30,8 @@ import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,6 +61,7 @@ import org.apromore.dao.ProcessBranchRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.StorageRepository;
+import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Group;
@@ -71,6 +74,7 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.Storage;
+import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
@@ -119,6 +123,7 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
     private FolderRepository folderRepository;
     private StorageRepository storageRepo;
     private StorageManagementFactory<StorageClient> storageFactory;
+    private SubprocessProcessRepository subprocessProcessRepository;
 
     @BeforeEach
     final void setUp() throws Exception {
@@ -139,10 +144,12 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         config = new ConfigBean();
         storageRepo = createMock(StorageRepository.class);
         storageFactory = createMock(StorageManagementFactory.class);
+        subprocessProcessRepository = createMock(SubprocessProcessRepository.class);
 
         processService = new ProcessServiceImpl(nativeRepo, groupRepo, processBranchRepo, processRepo,
                 processModelVersionRepo, groupProcessRepo, lockSrv, usrSrv, fmtSrv, ui, workspaceSrv,
-                authorizationService, folderRepository, config, storageRepo, storageFactory);
+                authorizationService, folderRepository, config, storageRepo, storageFactory,
+                subprocessProcessRepository);
     }
 
     @Test
@@ -1094,6 +1101,62 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         assertEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
     }
 
+    @Test
+    void testGetBPMNRepresentationWithLinkedSubprocess() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(123, Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version version = createVersion("1.0.0");
+        NativeType nativeType = createNativeType();
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
+
+        Process process = createProcess(user, nativeType, folder);
+        ProcessBranch branch = createBranch(process);
+        Storage storage = createStorage();
+        String filename = "subProcess_model.bpmn";
+        storage.setKey(filename);
+        ProcessModelVersion pmv = createPMV(branch, nativeDoc, version, storage);
+        SubprocessProcess subprocessProcess = createSubprocessProcess(process, "sid-AC6D1FDA-70FC-4A1F-AACB-E1EF020C699C", process);
+
+        // Parameter setup
+        Integer processId = process.getId();
+        String processName = process.getName();
+        String branchName = branch.getBranchName();
+        String versionNumber = version.toString();
+
+        StorageManagementFactory<StorageClient> storageManagementFactory;
+        storageManagementFactory = new StorageManagementFactoryImpl<StorageClient>();
+        URL url = getClass().getClassLoader().getResource("file_store_dir/model/" + filename);
+        File file = new File(url.getFile());
+        StorageClient client = storageManagementFactory.getStorageClient("FILE::" + file.getParent().substring(0,
+            file.getParent().length() - 5));
+
+        // Mock Recording
+        expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber))
+            .andReturn(pmv).anyTimes();
+        expect(storageFactory.getStorageClient(storage.getStoragePath()))
+            .andReturn(client).anyTimes();
+        expect(processRepo.findUniqueByID(processId)).andReturn(process);
+        expect(processModelVersionRepo.getLatestProcessModelVersion(processId, branchName)).andReturn(pmv);
+
+        expect(subprocessProcessRepository.getLinkedSubProcesses(processId)).andReturn(List.of(subprocessProcess));
+        expect(usrSrv.findUserByLogin("userName1")).andReturn(user);
+        expect(authorizationService.getProcessAccessTypeByUser(processId, user)).andReturn(AccessType.VIEWER);
+        replayAll();
+
+        // Mock call
+        String bpmnResult =
+            processService.getBPMNRepresentation(processName, processId, branchName, version, "userName1", true);
+
+        // Verify mock and result
+        verifyAll();
+        assertNotEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
+
+        assertEquals(3, bpmnResult.split("</subProcess>").length); //The subProcess tag appears twice
+    }
+
 
     @Test
     void testDeleteProcessModel_BranchHasMoreThanOnePMV() throws Exception {
@@ -1226,6 +1289,38 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
                             ProcessServiceImpl.sanitizeBPMN(getResourceAsStream("BPMN_models/" + s[0])))),
                     s[2]);
         }
+    }
+
+    /**
+     * Test the {@link ProcessServiceImpl#hasLinkedProcesses} method.
+     */
+    @Test
+    void testHasLinkedProcess() throws UserNotFoundException {
+        Folder folder = createFolder();
+        Group group = createGroup(123, Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        User user2 = createUser("userName2", group, createSet(group), createSet(role));
+
+        NativeType nativeType = createNativeType();
+        Process process = createProcess(user, nativeType, folder);
+        SubprocessProcess subprocessProcess = createSubprocessProcess(process, "Test", process);
+
+        int processId = process.getId();
+
+        expect(subprocessProcessRepository.getLinkedSubProcesses(-1)).andReturn(new ArrayList<>());
+        expect(usrSrv.findUserByLogin("userName1")).andReturn(user).anyTimes();
+        expect(usrSrv.findUserByLogin("userName2")).andReturn(user2).anyTimes();
+
+        expect(subprocessProcessRepository.getLinkedSubProcesses(processId)).andReturn(List.of(subprocessProcess)).times(2);
+        expect(authorizationService.getProcessAccessTypeByUser(processId, user)).andReturn(AccessType.VIEWER);
+        expect(authorizationService.getProcessAccessTypeByUser(processId, user2)).andReturn(null);
+        replayAll();
+
+        assertFalse(processService.hasLinkedProcesses(-1, "userName1"));
+        assertTrue(processService.hasLinkedProcesses(processId, "userName1"));
+        assertFalse(processService.hasLinkedProcesses(processId, "userName2"));
+        verifyAll();
     }
 
     /**
@@ -1402,5 +1497,13 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         return gp;
     }
 
+    private SubprocessProcess createSubprocessProcess(Process parentProcess, String subProcessId, Process linkedProcess) {
+        SubprocessProcess subprocessProcess = new SubprocessProcess();
+        subprocessProcess.setId(1L);
+        subprocessProcess.setSubprocessParent(parentProcess);
+        subprocessProcess.setSubprocessId(subProcessId);
+        subprocessProcess.setLinkedProcess(linkedProcess);
+        return subprocessProcess;
+    }
 
 }

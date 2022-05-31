@@ -112,6 +112,9 @@ public class ConfigBean {
     // Switch for PD on new data layer
     private boolean enableNewPD;
 
+    // Switch to Conformance Checker on new data layer
+    private boolean enableNewConformanceCheck;
+
     // Maximum upload size
     private long maxUploadSize;
 
@@ -139,12 +142,8 @@ public class ConfigBean {
 	return site.getEditor();
     }
 
-    public String getMajorVersionNumber() {
-	return version.getNumber().split("\\.")[0];
-    }
-
-    public String getMinorVersionNumber() {
-	return version.getNumber().split("\\.")[1];
+    public String getVersionNumber() {
+	return version.getNumber();
     }
 
     public String getVersionEdition() {

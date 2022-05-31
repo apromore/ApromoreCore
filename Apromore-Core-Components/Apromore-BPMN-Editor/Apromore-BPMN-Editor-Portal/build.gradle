@@ -4,11 +4,15 @@ version = '1.1'
 description = 'Apromore BPMN Editor'
 
 dependencies {
-   
-    implementation project(':Apromore-Core-Components:Apromore-Portal')
+
+    implementation project(':Apromore-Core-Components:Apromore-Storage')
     implementation project(':Apromore-Core-Components:Apromore-Manager')
+    implementation project(':Apromore-Core-Components:Apromore-Portal')
+    implementation project(':Apromore-Zk')
     implementation project(':Apromore-Plugins:plugin-core:portal:api')
     implementation project(':Apromore-Plugins:plugin-core:editor:api')
     implementation project(':Apromore-Custom-Plugins:Apromore-Editor:pdf')
+
+    testImplementation'org.mockito:mockito-inline:3.8.0'
 
 }

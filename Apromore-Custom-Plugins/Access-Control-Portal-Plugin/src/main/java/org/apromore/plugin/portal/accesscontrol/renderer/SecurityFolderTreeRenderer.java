@@ -26,6 +26,7 @@ package org.apromore.plugin.portal.accesscontrol.renderer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
@@ -33,6 +34,7 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.accesscontrol.controllers.SecuritySetupController;
 import org.apromore.portal.common.FolderTreeNode;
+import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.GroupAccessType;
@@ -65,9 +67,18 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
       PortalLoggerFactory.getLogger(SecurityFolderTreeRenderer.class);
 
   private SecuritySetupController securitySetupController;
+  private Map<FolderTreeNodeTypes, List<Integer>> searchResult=null;
 
   public SecurityFolderTreeRenderer(SecuritySetupController securitySetupController) {
     this.securitySetupController = securitySetupController;
+    searchResult=null;
+  }
+
+  public SecurityFolderTreeRenderer(SecuritySetupController securitySetupController,Map<FolderTreeNodeTypes, List<Integer>> searchResult) {
+    this.securitySetupController = securitySetupController;
+    this.searchResult=searchResult;
+    EventQueues.lookup("accessControl", EventQueues.DESKTOP, true)
+        .publish(new Event("onSelect", null, null));
   }
 
   /*
@@ -98,6 +109,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
     switch (ctn.getType()) {
       case Folder:
         FolderType folder = (FolderType) ctn.getData();
+        hideOrShow(treeItem,folder.getId(),FolderTreeNodeTypes.Folder);
         FolderType currentFolder =
             this.securitySetupController.getMainController().getPortalSession().getCurrentFolder();
 
@@ -109,6 +121,11 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
         } else {
           treeItem.setOpen(false);
         }
+
+        if (ctn.getChildCount()==0 ) {
+          dataRow.addSclass("ap-tree-leaf-node");
+        }
+
 
         if (folder.getId() == 0) {
           hl.appendChild(new Image("~./img/icon/svg/folder_home.svg"));
@@ -126,6 +143,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
       case Process:
         summaryType = (SummaryType) ctn.getData();
+        hideOrShow(treeItem,summaryType.getId(),FolderTreeNodeTypes.Process);
         if (summaryType instanceof ProcessSummaryType) {
           ProcessSummaryType process = (ProcessSummaryType) summaryType;
           hl.appendChild(new Image("~./img/icon/svg/bpmn_model.svg"));
@@ -141,6 +159,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
       case Log:
         summaryType = (SummaryType) ctn.getData();
+        hideOrShow(treeItem,summaryType.getId(),FolderTreeNodeTypes.Log);
         if (summaryType instanceof LogSummaryType) {
           LogSummaryType log = (LogSummaryType) summaryType;
           hl.appendChild(new Image("~./img/icon/svg/log_icon.svg"));
@@ -215,17 +234,19 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
           UserSessionManager.setCurrentSecurityItem(selectedId);
           UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
           EventQueues.lookup("accessControl", EventQueues.DESKTOP, true)
-              .publish(new Event("onSelect", null, hasOwnership ? selectedItem : null));
-          // if (securitySetupController != null) {
-          // securitySetupController.getPermissionsController().loadUsers(selectedId,
-          // clickedNodeValue.getType());
-          // securitySetupController.getFindGroupsController().updateSelection();
-          // }
+              .publish(new Event("onSelect", null, selectedItem));
         } catch (Exception ex) {
           LOGGER.error("SecurityFolderTree Renderer failed to render an item", ex);
         }
       }
     });
+  }
+
+  private void hideOrShow(Treeitem treeItem, Integer id, FolderTreeNodeTypes type) {
+    if (searchResult == null) {
+      return;
+    }
+    treeItem.setVisible(searchResult.get(type) != null && searchResult.get(type).contains(id));
   }
 
 

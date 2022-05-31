@@ -26,13 +26,14 @@
   <listhead hflex="1" sizable="true" sclass="ap-listbox-process-head">
     <listheader width="40px" visible="true" id="columnType"  />
     <listheader label="Score"  visible="false" id="columnScore"/>
-    <listheader label="Name" id="columnName"  sclass="ap-head-left-align"  />                   <!-- name -->
-    <listheader label="ID" width="80px" align="center" id="columnId" /> <!-- id -->
+    <listheader label="${labels.common_name_text}" id="columnName"  sclass="ap-head-left-align"  />                   <!-- name -->
+    <listheader label="${labels.common_id_text}" width="80px" align="center" id="columnId" /> <!-- id -->
     <listheader label="Format" width="80px" align="center" visible="false"/>                 <!-- originalNativeType -->
     <listheader label="Domain"  visible="false"/>                   <!-- domain -->
     <listheader label="Rating" width="90px" align="center" visible="false"/> <!-- ranking -->
-    <listheader label="Last version" id="columnLastVersion" width="120px" align="center"/> <!-- lastVersion -->
-    <listheader label="Last update" width="170px" align="center" id="columnLastUpdate"   /> <!-- lastVersion -->
-    <listheader label="Owner"  id="columnOwner"  sclass="ap-head-left-align"   />                   <!-- owner -->
+    <listheader label="${labels.common_last_version_text}" id="columnLastVersion" width="120px" align="center"/> <!-- lastVersion -->
+    <listheader label="${labels.common_creation_text}"  width="170px" align="center" id="columnCreated"   />
+    <listheader label="${labels.common_last_update_text}" width="170px" align="center" id="columnLastUpdate"   /> <!-- lastVersion -->
+    <listheader label="${labels.common_owner_text}"  id="columnOwner"  sclass="ap-head-left-align"   />                   <!-- owner -->
   </listhead>
 </listbox>

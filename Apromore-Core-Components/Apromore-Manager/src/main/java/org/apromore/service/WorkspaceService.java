@@ -59,7 +59,11 @@ public interface WorkspaceService {
 
     Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
 
+    Page<Process> getAllProcesses(Integer folderId, Pageable pageable);
+
     Page<Log> getLogs(String userId, Integer folderId, Pageable pageable);
+
+    Page<Log> getAllLogs(Integer folderId, Pageable pageable);
 
     Integer createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 
@@ -237,4 +241,6 @@ public interface WorkspaceService {
 
 
 	boolean hasWritePermissionOnFolder(User userByName, List<Integer> selectedFolders);
+
+    void updateOwnerAfterDeleteUser(User user);
 }

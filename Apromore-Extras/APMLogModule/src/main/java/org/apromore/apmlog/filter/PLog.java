@@ -29,7 +29,6 @@ import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.logobjects.ImmutableLog;
 import org.apromore.apmlog.stats.LogStatsAnalyzer;
 import org.apromore.apmlog.stats.TimeStatsProcessor;
-import org.apromore.calendar.model.CalendarModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -124,8 +123,8 @@ public class PLog extends AbstractLogImpl implements Serializable {
         this.pTraces.clear();
         if (traces != null && !traces.isEmpty()) {
             this.pTraces.addAll(traces);
-            updateStats();
         }
+        updateStats();
     }
 
     public void resetIndex() {
@@ -165,9 +164,10 @@ public class PLog extends AbstractLogImpl implements Serializable {
         immutableIndexPTraceMap = pTraces.stream().collect(Collectors.toMap(PTrace::getImmutableIndex, x -> x));
         List<ATrace> traceList = new ArrayList<>(pTraces);
 
-        List<ActivityInstance> instances = traceList.stream()
-                .flatMap(x -> x.getActivityInstances().stream())
-                .collect(Collectors.toList());
+        List<ActivityInstance> instances = traceList.isEmpty() ? null :
+                traceList.stream()
+                        .flatMap(x -> x.getActivityInstances().stream())
+                        .collect(Collectors.toList());
 
         setActivityInstances(instances);
     }

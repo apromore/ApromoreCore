@@ -1,0 +1,60 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<window id="winLinkSubprocess"
+        viewModel="@id('vm_linkSubProcess') @init('org.apromore.plugin.portal.bpmneditor.viewmodel.LinkSubProcessViewModel')"
+        width="500px"
+        position="center"
+        title="${labels.bpmnEditor_linkSubProcess_text}"
+        mode="modal">
+    <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
+    <vlayout spacing="0">
+        <radiogroup selectedItem="@bind(vm_linkSubProcess.linkType)"
+                    onCheck="@command('onCheckLinkType')">
+            <vlayout style="padding:5px;">
+                <radio label="${labels.bpmnEditor_linkNewProcess_text}" value="NEW"/>
+                <radio label="${labels.bpmnEditor_linkExistingProcess_text}" value="EXISTING"/>
+            </vlayout>
+        </radiogroup>
+        <div style="padding:5px;">
+            <listbox mold="paging" pageSize="10"
+                     model="@load(vm_linkSubProcess.processList)"
+                     selectedItem="@bind(vm_linkSubProcess.selectedProcess)"
+                     sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-listbox-enabled' : 'ap-listbox-disabled')">
+                <listhead>
+                    <listheader label="${labels.bpmnEditor_listExistingProcess_text}"/>
+                </listhead>
+                <template name="model">
+                    <listitem value="${each}">
+                        <listcell label="${each.name}"/>
+                    </listitem>
+                </template>
+            </listbox>
+        </div>
+        <div sclass="ap-window-footer-actions" height="42px">
+            <button label="Link" iconSclass="z-icon-check-circle"
+                    onClick="@command('linkSubProcess', window=winLinkSubprocess)"/>
+            <button label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"
+                    onClick="winLinkSubprocess.detach()"/>
+        </div>
+    </vlayout>
+</window>

@@ -176,7 +176,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
         }
 
         for (List<String> myLine : lines) {
-            if (match(TIMESTAMP_PATTERN, myLine.get(pos))) {
+            if (null != myLine.get(pos) && match(TIMESTAMP_PATTERN, myLine.get(pos))) {
                 return true;
             }
         }
@@ -312,6 +312,7 @@ public class MetaDataUtilitiesImpl implements MetaDataUtilities {
                     doubleAttributesPos.add(i);
                     break;
                 case STRING:
+                case BOOLEAN:
                     stringAttributesPos.add(i);
                     break;
                 case TIMESTAMP:

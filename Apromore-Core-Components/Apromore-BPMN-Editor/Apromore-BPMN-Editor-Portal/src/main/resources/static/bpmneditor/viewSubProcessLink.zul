@@ -1,0 +1,46 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+
+<window id="winViewSubprocessLink"
+        viewModel="@id('vm_linkSubProcess') @init('org.apromore.plugin.portal.bpmneditor.viewmodel.ViewSubProcessLinkViewModel')"
+        width="500px"
+        position="center"
+        title="Preview process"
+        closable="true"
+        mode="modal">
+    <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
+    <vlayout spacing="0">
+        <div style="padding:5px;">
+            <label value="@load(vm_linkSubProcess.linkedProcessMessage)"/>
+        </div>
+        <div sclass="ap-window-footer-actions" height="42px">
+            <button label="View" iconSclass="z-icon-check-circle"
+                    onClick="@command('viewLinkedProcess')"/>
+            <button label="Edit" iconSclass="z-icon-check-circle"
+                    disabled="@load(vm_linkSubProcess.viewMode)"
+                    onClick="@command('editLinkedProcess')"/>
+            <button label="Unlink" iconSclass="z-icon-check-circle"
+                    disabled="@load(vm_linkSubProcess.viewMode)"
+                    onClick="@command('unlinkSubProcess', window=winViewSubprocessLink)"/>
+        </div>
+    </vlayout>
+</window>

@@ -327,6 +327,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             }
             tempLogMetaData.getOtherTimestamps().clear();
             tempLogMetaData.getOtherTimestamps().putAll(storedSchemaMapping.getOtherTimestamps());
+            tempLogMetaData.setIntegerAttributesPos(storedSchemaMapping.getIntegerAttributesPos());
+            tempLogMetaData.setDoubleAttributesPos(storedSchemaMapping.getDoubleAttributesPos());
+            tempLogMetaData.setStringAttributesPos(storedSchemaMapping.getStringAttributesPos());
+            tempLogMetaData.setTimestampAttributesPos(storedSchemaMapping.getTimestampAttributesPos());
         }
     }
 
@@ -354,9 +358,18 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             lb = (Listbox) window.getFellow(String.valueOf(pos));
 
+            Listbox dataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + pos);
+            String dataTypeSelected = dataTypeListBox.getSelectedItem().getValue();
+
             if (lb.getSelectedIndex() == ignoreAttributeIndex) {
                 logMetaData.getIgnoredPos().remove(Integer.valueOf(pos));
-                logMetaData.getEventAttributesPos().add(pos);
+
+                if (TIMESTAMP_TYPE_LABEL.equals(dataTypeSelected)) {
+                    timestampSelected(pos, OTHER_TIMESTAMP_LABEL);
+                } else {
+                    logMetaData.getEventAttributesPos().add(pos);
+                }
+
                 lb.setSelectedIndex(eventAttributeIndex);
             }
         }
@@ -370,8 +383,20 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
         for (int pos = 0; pos < logMetaData.getHeader().size(); pos++) {
             lb = (Listbox) window.getFellow(String.valueOf(pos));
+
+            Listbox dataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + pos);
+            String dataTypeSelected = dataTypeListBox.getSelectedItem().getValue();
+
             if (lb.getSelectedIndex() == eventAttributeIndex) {
-                logMetaData.getEventAttributesPos().remove(Integer.valueOf(pos));
+
+                if (TIMESTAMP_TYPE_LABEL.equals(dataTypeSelected)) {
+                    logMetaData.getOtherTimestamps().remove(pos);
+                    closePopUpBox(pos);
+                    hideFormatBtn(formatBtns[pos]);
+                    hideParsedIcon(parsedIcons[pos]);
+                } else {
+                    logMetaData.getEventAttributesPos().remove(Integer.valueOf(pos));
+                }
                 logMetaData.getIgnoredPos().add(pos);
                 lb.setSelectedIndex(ignoreAttributeIndex);
             }
@@ -458,10 +483,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return logModel;
     }
 
-    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log)
+    public void storeMetadataAsJSON(LogMetaData logMetaData, Log log, String username)
         throws UserNotFoundException {
-
-        String username = portalContext.getCurrentUser().getUsername();
         String logMetadataJsonStr;
         String perspectiveJsonStr;
 
@@ -844,21 +867,57 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     }
 
     private void setDataTypeMetaData(String selected, int colPos) {
+
+        Listbox attributeTypeListBox = (Listbox) window.getFellow(Integer.toString(colPos));
+        String attributeTypeSelected = attributeTypeListBox.getSelectedItem().getValue();
+        Checkbox maskBtn = (Checkbox) window.getFellow(MASK_CHECKBOX_ID + colPos);
+
         switch (selected) {
             case INTEGER_TYPE_LABEL:
                 logMetaData.getIntegerAttributesPos().add(colPos);
+                unassignOtherTimestamp(colPos, attributeTypeSelected, maskBtn);
                 break;
             case REAL_TYPE_LABEL:
                 logMetaData.getDoubleAttributesPos().add(colPos);
+                unassignOtherTimestamp(colPos, attributeTypeSelected, maskBtn);
                 break;
             case STRING_TYPE_LABEL:
                 logMetaData.getStringAttributesPos().add(colPos);
+                unassignOtherTimestamp(colPos, attributeTypeSelected, maskBtn);
                 break;
             case TIMESTAMP_TYPE_LABEL:
+                // Remove pos from Case/Event attribute list
+                if (CASE_ATTRIBUTE_LABEL.equals(attributeTypeSelected)) {
+                    logMetaData.getCaseAttributesPos().remove(Integer.valueOf(colPos));
+                } else if (EVENT_ATTRIBUTE_LABEL.equals(attributeTypeSelected)) {
+                    logMetaData.getEventAttributesPos().remove(Integer.valueOf(colPos));
+                }
                 logMetaData.getTimestampAttributesPos().add(colPos);
+                if (!IGNORE_LABEL.equals(attributeTypeSelected)) {
+                    timestampSelected(colPos, OTHER_TIMESTAMP_LABEL);
+                }
+                hideCheckbox(maskBtn);
                 break;
             default:
         }
+    }
+
+    private void unassignOtherTimestamp(int colPos, String attributeTypeSelected, Checkbox maskBtn) {
+        if (logMetaData.getOtherTimestamps().containsKey(colPos)) {
+
+            logMetaData.getOtherTimestamps().remove(colPos);
+
+            if (CASE_ATTRIBUTE_LABEL.equals(attributeTypeSelected)) {
+                logMetaData.getCaseAttributesPos().add(colPos);
+            } else if (EVENT_ATTRIBUTE_LABEL.equals(attributeTypeSelected)) {
+                logMetaData.getEventAttributesPos().add(colPos);
+            }
+        }
+
+        closePopUpBox(colPos);
+        hideFormatBtn(formatBtns[colPos]);
+        hideParsedIcon(parsedIcons[colPos]);
+        showCheckbox(maskBtn);
     }
 
     private void setDropDownLists() {
@@ -870,7 +929,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         menuItems.put(ACTIVITY_LABEL, getLabel("activity"));
         menuItems.put(END_TIMESTAMP_LABEL, getLabel("end_timestamp"));
         menuItems.put(START_TIMESTAMP_LABEL, getLabel("start_timestamp"));
-        menuItems.put(OTHER_TIMESTAMP_LABEL, getLabel("other_timestamp"));
         menuItems.put(RESOURCE_LABEL, getLabel("resource"));
         menuItems.put(ROLE_LABEL, getLabel("role"));
         menuItems.put(CASE_ATTRIBUTE_LABEL, getLabel("case_attribute"));
@@ -900,9 +958,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
                     || (myItem.getKey().equals(START_TIMESTAMP_LABEL) && logMetaData.getStartTimestampPos() == pos)
 
-                    || (myItem.getKey().equals(OTHER_TIMESTAMP_LABEL) &&
-                    ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
-
                     || (myItem.getKey().equals(RESOURCE_LABEL) && logMetaData.getResourcePos() == pos)
 
                     || (myItem.getKey().equals(ROLE_LABEL) && logMetaData.getRolePos() == pos)
@@ -913,7 +968,8 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     // When this head is in Perspective tag list, select PERSPECTIVE_LABEL instead of
                     // EVENT_ATTRIBUTE_LABEL
                     ||
-                    (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && logMetaData.getEventAttributesPos().contains(pos)
+                    (myItem.getKey().equals(EVENT_ATTRIBUTE_LABEL) && (logMetaData.getEventAttributesPos().contains(pos)
+                        || ((Map<Integer, String>) logMetaData.getOtherTimestamps()).containsKey(pos))
                         && !logMetaData.getPerspectivePos().contains(pos))
 
                     || (myItem.getKey().equals(IGNORE_LABEL) && logMetaData.getIgnoredPos().contains(pos))
@@ -926,13 +982,17 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             }
 
             box.addEventListener(ON_SELECT, (Event event) -> {
-                String selected = box.getSelectedItem().getValue();
                 int colPos = Integer.parseInt(box.getId());
 
                 resetSelect(colPos);
                 closePopUpBox(colPos);
                 hideFormatBtn(formatBtns[colPos]);
                 hideParsedIcon(parsedIcons[colPos]);
+
+                String selected = box.getSelectedItem().getValue();
+
+                Listbox dataTypeListBox = (Listbox) window.getFellow(DATA_TYPE_ID_PREFIX + colPos);
+                String dataTypeSelected = dataTypeListBox.getSelectedItem().getValue();
 
                 switch (selected) {
                     case CASE_ID_LABEL:
@@ -987,11 +1047,19 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                         timestampSelected(colPos, selected);
                         break;
                     case CASE_ATTRIBUTE_LABEL:
-                        logMetaData.getCaseAttributesPos().add(colPos);
+                        if (TIMESTAMP_TYPE_LABEL.equals(dataTypeSelected)) {
+                            timestampSelected(colPos, OTHER_TIMESTAMP_LABEL);
+                        } else {
+                            logMetaData.getCaseAttributesPos().add(colPos);
+                        }
                         resetDatatypeDropDownList(colPos);
                         break;
                     case EVENT_ATTRIBUTE_LABEL:
-                        logMetaData.getEventAttributesPos().add(colPos);
+                        if (TIMESTAMP_TYPE_LABEL.equals(dataTypeSelected)) {
+                            timestampSelected(colPos, OTHER_TIMESTAMP_LABEL);
+                        } else {
+                            logMetaData.getEventAttributesPos().add(colPos);
+                        }
                         resetDatatypeDropDownList(colPos);
                         break;
                     case IGNORE_LABEL:
@@ -1218,6 +1286,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
 
     private void hideCheckbox(Checkbox checkbox) {
         checkbox.setSclass("ap-csv-importer-format-icon ap-hidden");
+    }
+
+    private void showCheckbox(Checkbox checkbox) {
+        checkbox.setSclass("ap-iconized-checkbox");
     }
 
     protected void enableAnonymizeToggle(boolean isEnable) {
@@ -1453,7 +1525,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
     private void saveXLog(LogModel logModel, boolean isPublic) {
 
         try {
-            storeMetadataAsJSON(logMetaData, logModel.getImportLog());
+            storeMetadataAsJSON(logMetaData, logModel.getImportLog(), portalContext.getCurrentUser().getUsername());
             String successMessage;
             if (logModel.isRowLimitExceeded()) {
                 successMessage = MessageFormat.format(getLabel("limit_reached"), logModel.getRowsCount());

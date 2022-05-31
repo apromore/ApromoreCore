@@ -24,11 +24,20 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.portal.util.CostTable;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -36,16 +45,13 @@ import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 public class CostTableController extends DataListController {
     private Window costTableWindow;
@@ -64,12 +70,11 @@ public class CostTableController extends DataListController {
     }
 
     private void generateData() {
-        Map<String, Double> currentMapper = userOptions.getCostTable().getCostRates();
         records = new ListModelList<AttributeCost>();
         rows = new ArrayList<>();
         for (Object role : parent.getProcessAnalyst().getRoleValues()) {
             String attrVal = (String) role;
-            Double costValue = currentMapper.containsKey(attrVal) ? currentMapper.get(attrVal) : 1.0;
+            Double costValue = userOptions.getCostTable().getCost(attrVal);
             AttributeCost ac = AttributeCost.valueOf(attrVal, costValue);
             records.add(ac);
             rows.add(new String[]{ac.getAttributeId(), String.format("%6.2f", ac.getCostValue())});
@@ -117,6 +122,17 @@ public class CostTableController extends DataListController {
     @Override
     public void onEvent(Event event) throws Exception {
         if (costTableWindow == null) {
+            try {
+                ImmutableList<Object> roleValues = parent.getProcessAnalyst().getRoleValues();
+                if (roleValues.isEmpty()) {
+                    Messagebox.show(parent.getLabel("costTableEmpty_message"));
+                    return;
+                }
+            } catch (Exception e) {
+                Messagebox.show(parent.getLabel("costTableEmpty_message"));
+                return;
+            }
+
             Map<String, Object> arg = new HashMap<>();
             arg.put("pdLabels", parent.getLabels());
             arg.put("viewOnly", viewOnly);

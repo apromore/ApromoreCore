@@ -27,6 +27,8 @@ package org.apromore.portal.dialogController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.ArtifactOrderTypes;
@@ -42,6 +44,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.util.ArtifactsComparator;
 import org.slf4j.Logger;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -58,6 +61,8 @@ public class ProcessListboxController extends BaseListboxController {
   private static final Logger LOGGER =
       PortalLoggerFactory.getLogger(ProcessListboxController.class);
   private static final String ARTIFACT_COMPARATOR="ARTIFACT_COMPARATOR";
+  private static final String SORT_ASCENDING="ASCENDING";
+
 
   public ProcessListboxController(MainController mainController) {
     super(mainController, "~./macros/listbox/processSummaryListbox.zul",
@@ -146,6 +151,12 @@ public class ProcessListboxController extends BaseListboxController {
     columnOwner.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_OWNER));
     columnOwner.addEventListener(Events.ON_SORT, this::forwardSortEvent);
 
+    Listheader columnCreated = (Listheader) this.getListBox().getFellow("columnCreated");
+    columnCreated.setSortAscending(new ArtifactsComparator(true, ArtifactOrderTypes.BY_CREATED_DATE));
+    columnCreated.setSortDescending(new ArtifactsComparator(false, ArtifactOrderTypes.BY_CREATED_DATE));
+    columnCreated.addEventListener(Events.ON_SORT, this::forwardSortEvent);
+
+
   }
 
   private void forwardSortEvent(Event evt) {
@@ -161,7 +172,7 @@ public class ProcessListboxController extends BaseListboxController {
   }
 
   public void redrawList(ArtifactsComparator comparator) {
-
+    setSortingInformationInCookie(comparator);
     Executions.getCurrent().getDesktop().setAttribute(ARTIFACT_COMPARATOR, comparator);
     ListModel<Object> listModel = getListBox().getListModel();
 
@@ -236,8 +247,12 @@ public class ProcessListboxController extends BaseListboxController {
         currentFolder == null ? 0 : currentFolder.getId(), 0, SummaryListModel.pageSize);
     ArtifactsComparator comparator = (ArtifactsComparator) Executions.getCurrent().getDesktop().getAttribute(ARTIFACT_COMPARATOR);
     if (comparator == null) {
-      comparator = new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE);
-      Executions.getCurrent().getDesktop().setAttribute(ARTIFACT_COMPARATOR,comparator);
+      comparator = getSortedInformationFromCookie();
+      if (comparator == null) {
+        comparator = new ArtifactsComparator(true, ArtifactOrderTypes.BY_TYPE);
+      }
+      setSortingInformationInCookie(comparator);
+      Executions.getCurrent().getDesktop().setAttribute(ARTIFACT_COMPARATOR, comparator);
     }
 
 
@@ -254,6 +269,39 @@ public class ProcessListboxController extends BaseListboxController {
     }
 
     return model;
+  }
+
+  private void setSortingInformationInCookie(ArtifactsComparator comparator) {
+    Clients.evalJavaScript("Ap.common.setCookie('PORTAL_SORTING_TYPE','" + comparator.getArtifactOrder().name() + "')");
+    Clients.evalJavaScript("Ap.common.setCookie('PORTAL_SORTING_ORDER','" + (comparator.isAsc()?SORT_ASCENDING:"DESCENDING") + "')");
+  }
+
+  private String getCookieValue(String cookieName, Cookie[] cookiesData) {
+    if (cookiesData != null && cookieName != null) {
+      for (Cookie cookie : cookiesData) {
+        if (cookieName.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
+    }
+    return "";
+  }
+
+  private ArtifactsComparator getSortedInformationFromCookie() {
+    try {
+      Cookie[] cookiesData =
+          ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getCookies();
+      String sortingType = getCookieValue("PORTAL_SORTING_TYPE", cookiesData);
+      String sortingOrder = getCookieValue("PORTAL_SORTING_ORDER", cookiesData);
+      if (!sortingType.isEmpty()) {
+        return new ArtifactsComparator(SORT_ASCENDING.equals(sortingOrder),
+            ArtifactOrderTypes.valueOf(sortingType) != null ? ArtifactOrderTypes.valueOf(sortingType) :
+                ArtifactOrderTypes.BY_TYPE);
+      }
+    } catch (Exception ex) {
+      LOGGER.error("Error in retrieving sort information", ex);
+    }
+    return null;
   }
 
   private List<Object> sortArtifacts(List<FolderType> subFolders, List<SummaryType> processSummaries,

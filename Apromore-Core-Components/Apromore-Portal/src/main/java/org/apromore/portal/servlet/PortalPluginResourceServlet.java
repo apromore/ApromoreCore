@@ -57,6 +57,7 @@ public class PortalPluginResourceServlet extends HttpServlet {
 
     @Override
     public void init() {
+        contentTypeMap.put("ico", "image/x-icon");  // for legacy favicon.ico
         contentTypeMap.put("png", "image/png");
         contentTypeMap.put("svg", "image/svg+xml");
         contentTypeMap.put("css", "text/css"); // for customised icon-fonts
@@ -74,7 +75,7 @@ public class PortalPluginResourceServlet extends HttpServlet {
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         Pattern p = Pattern.compile("/(?<resource>.*\\.(?<extension>[^/\\.]*))");
-        Matcher m = p.matcher(req.getPathInfo());
+        Matcher m = p.matcher(req.getPathInfo() == null ? req.getRequestURI() : req.getPathInfo());
         if (!m.matches()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Unable to parse path " + req.getPathInfo());
             return;

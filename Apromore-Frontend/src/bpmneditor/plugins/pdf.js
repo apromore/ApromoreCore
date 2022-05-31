@@ -68,7 +68,9 @@ export default class File {
         var resource = location.href;
 
         // Get the serialized svg image source
-        var svgClone = await this.facade.getSVG();
+        var result = await this.facade.getSVG2();
+        var svgClone = result.raw;
+        var hyperlinks = result.hyperlinks;
 
         // Expand margin and insert a logo
         var xy = null, width, height;
@@ -98,14 +100,36 @@ export default class File {
                     logo.replace('${xx yy}', (xy[0]) + " " + (xy[1] - 20)) + '</svg>'
                 );
             }
+            svgClone = svgClone.replaceAll('<image href=', '<image xlink:href=');
         }
         catch (e) {
             throw new Error ('SVG to PDF error. Error message: ' + e.message);
         }
+        var xoffset = xy[0] - 20;
+        var yoffset = xy[1] - 40;
+
+        var linkParams = '';
+        var ratio = 0.75;
+        // left, bottom, right, top
+        hyperlinks.forEach((hyperlink, index) => {
+            var l = (hyperlink.left - xoffset) * ratio;
+            var b = (height - hyperlink.top + yoffset) * ratio;
+            var r = l + hyperlink.width * 5;
+            var t = b + hyperlink.height * 5;
+            linkParams = linkParams + (
+                encodeURIComponent(hyperlink.href) + ',' +
+                Math.round(l) + ',' + // left
+                Math.round(b) + ',' + // bottom
+                Math.round(r) + ',' + // right
+                Math.round(t) + // top
+                ((index + 1 === hyperlinks.length) ? '' : ',')
+             )
+        });
 
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
-        var params = "resource=" + resource + "&data=" + svgClone + "&format=pdf";
+        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) +
+            "&format=pdf" + "&hyperlinks=" + linkParams;
         xhr.open("POST", CONFIG.PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.responseType = 'blob';

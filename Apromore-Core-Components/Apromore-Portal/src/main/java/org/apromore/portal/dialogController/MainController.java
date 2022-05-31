@@ -165,9 +165,6 @@ public class MainController extends BaseController implements MainControllerInte
     public Tab tabCrumbs;
     private Paginal pg;
     private String host;
-    private String majorVersionNumber;
-    private String minorVersionNumber;
-    private String buildDate;
     private PortalPlugin logVisualizerPlugin = null;
     public PortalSession portalSession;
     private Map<String, PortalPlugin> portalPluginMap;
@@ -569,7 +566,7 @@ public class MainController extends BaseController implements MainControllerInte
         editSession.setProcessName(process.getName());
         editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
         editSession.setPublicModel(process.isMakePublic());
-        editSession.setOriginalBranchName(version.getName()); // Note: version name is the branch name
+        editSession.setOriginalBranchName(TRUNK_NAME); // Note: version name is the branch name
         editSession.setOriginalVersionNumber(version.getVersionNumber());
         editSession.setCurrentVersionNumber(version.getVersionNumber());
         editSession.setMaxVersionNumber(findMaxVersion(process));
@@ -607,7 +604,7 @@ public class MainController extends BaseController implements MainControllerInte
         editProcess2(process, version, nativeType, new HashSet<RequestParameterType<?>>(), false);
     }
 
-    public void openNewProcess() throws Exception {
+    public ProcessSummaryType openNewProcess() throws Exception {
 
         String username = UserSessionManager.getCurrentUser().getUsername();
         String userId = UserSessionManager.getCurrentUser().getId();
@@ -661,6 +658,8 @@ public class MainController extends BaseController implements MainControllerInte
 
         editProcess2(process, version, process.getOriginalNativeType(), new HashSet<>(),
                 true);
+
+        return process;
     }
 
     /**
@@ -1035,10 +1034,6 @@ public class MainController extends BaseController implements MainControllerInte
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
         LOGGER.trace("Loading properties of webapp");
-
-        setMajorVersionNumber(getConfig().getMajorVersionNumber());
-        setMinorVersionNumber(getConfig().getMinorVersionNumber());
-
     }
 
     public String getContactEmail() {
@@ -1068,30 +1063,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     public BaseDetailController getDetailListbox() {
         return baseDetailController;
-    }
-
-    public String getMajorVersionNumber() {
-        return majorVersionNumber;
-    }
-
-    public void setMajorVersionNumber(final String newMajorVersionNumber) {
-        majorVersionNumber = newMajorVersionNumber;
-    }
-
-    public String getMinorVersionNumber() {
-        return majorVersionNumber;
-    }
-
-    public void setMinorVersionNumber(final String newMinorVersionNumber) {
-        minorVersionNumber = newMinorVersionNumber;
-    }
-
-    public String getBuildDate() {
-        return buildDate;
-    }
-
-    public void setBuildDate(final String newBuildDate) {
-        buildDate = newBuildDate;
     }
 
     private void updateTabs(String userId) {

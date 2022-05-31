@@ -27,7 +27,6 @@ package org.apromore.plugin.portal.accesscontrol.controllers;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.dialogController.BaseController;
-import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
@@ -38,15 +37,11 @@ import org.apromore.plugin.portal.accesscontrol.renderer.SecurityFolderTreeRende
  * @author Igor
  */
 public class SecurityFolderTreeController extends BaseController {
-
     public SecurityFolderTreeController(SecuritySetupController securitySetupController, Window win, int currentFolderId) {
         Tree tree = (Tree) win.getFellow("mainTree").getFellow("folderTree");
-
-        MainController mainController = securitySetupController.getMainController();
-//        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
-        FolderTree folderTree = new FolderTree(true, currentFolderId, mainController, true);
-        FolderTreeModel model = new FolderTreeModel(folderTree.getRoot(), folderTree.getCurrentFolder());
+        FolderTree folderTree = new FolderTree(true, currentFolderId, securitySetupController.getMainController(), true,true);
         tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController));
-        tree.setModel(model);
+        new TreeSearchController(tree,securitySetupController);
+        tree.setModel(new FolderTreeModel(folderTree.getRoot(), folderTree.getCurrentFolder()));
     }
 }

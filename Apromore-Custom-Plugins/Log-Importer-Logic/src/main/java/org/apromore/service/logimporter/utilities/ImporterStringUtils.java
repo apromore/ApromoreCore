@@ -25,6 +25,9 @@ package org.apromore.service.logimporter.utilities;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.apromore.service.logimporter.constants.ColumnType;
 import org.apromore.service.logimporter.constants.Constants;
 import org.apromore.service.logimporter.dateparser.DateUtil;
@@ -94,7 +97,12 @@ public class ImporterStringUtils {
         temp.put(ColumnType.DOUBLE, 0);
         temp.put(ColumnType.TIMESTAMP, 0);
 
-        stringList.forEach(st -> {
+        List<String> filteredList = stringList.stream()
+            .filter(Objects::nonNull)
+            .filter(Predicate.not(String::isEmpty))
+            .collect(Collectors.toList());
+
+        filteredList.forEach(st -> {
             ColumnType columnType = getColumnType(st);
             temp.put(columnType, temp.get(columnType) + 1);
         });

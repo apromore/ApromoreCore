@@ -795,4 +795,46 @@ describe('simulation-tab', function() {
       expect(getProcessSimulationInfo(bpmnFactory, elementRegistry).currency).to.equal('EUR');
     }));
   });
+
+
+  describe('Arrival time', function() {
+    var getTimetableField,
+        timeTableField,
+        timeTableLabel;
+
+    beforeEach(inject(function(commandStack, propertiesPanel) {
+
+      getTimetableField = function() {
+        return domQuery('select[name=arrivalTimetable]', propertiesPanel._container);
+      };
+
+      timeTableField = getTimetableField();
+
+      timeTableLabel = domQuery('label[for=camunda-arrivalTimetable]', getEntry(container, 'arrivalTimetable'));
+    }));
+
+    it('should have correct label', function() {
+      // then
+      expect(timeTableLabel.textContent).to.equal('Timetables');
+    });
+
+    it('should fetch the value',function() {
+      // then
+      expect(timeTableField.value).to.equal('DEFAULT_TIMETABLE');
+    });
+
+    it('should set correct value', inject(function(bpmnFactory, elementRegistry) {
+
+      // assume
+      expect(timeTableField.value).to.equal('DEFAULT_TIMETABLE');
+
+      // when
+      TestHelper.triggerValue(timeTableField, '', 'change');
+
+      // then
+      expect(timeTableField.value).to.equal('');
+     
+    }));
+  });
+
 });

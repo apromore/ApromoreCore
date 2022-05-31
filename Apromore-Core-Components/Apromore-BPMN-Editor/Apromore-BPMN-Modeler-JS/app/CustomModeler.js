@@ -14,6 +14,8 @@ import ColorPickerModule from './modules/color-picker';
 import AttachmentModule from './modules/attachment';
 import EmbeddedCommentsModule from './modules/comments';
 import ResizeTasksModule from './modules/resize-tasks';
+import LinkSubprocessModule from './modules/link-subprocess';
+import CustomBpmnRendererModule from './modules/bpmn-renderer';
 
 var domify = require('min-dom').domify,
   domQuery = require('min-dom').query,
@@ -96,6 +98,8 @@ export default function CustomModeler(options) {
   options.additionalModules.push(AttachmentModule);
   options.additionalModules.push(EmbeddedCommentsModule);
   options.additionalModules.push(ResizeTasksModule);
+  options.additionalModules.push(LinkSubprocessModule);
+  options.additionalModules.push(CustomBpmnRendererModule);
   Modeler.call(this, options);
 }
 

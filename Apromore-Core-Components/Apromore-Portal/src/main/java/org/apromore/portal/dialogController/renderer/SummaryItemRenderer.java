@@ -129,6 +129,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(process));
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
+        listItem.appendChild(renderProcessCreatedDate(process));
         listItem.appendChild(renderProcessLastUpdate(process));
         listItem.appendChild(renderOwner(process));
 
@@ -185,6 +186,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
+        listItem.appendChild(renderLogLastUpdate(log));
         listItem.appendChild(renderLogLastUpdate(log));
         listItem.appendChild(renderOwner(log));
 
@@ -253,7 +255,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
 
         // Skip 5 columns that don't apply to folders
         Listcell spacer = new Listcell();
-        spacer.setSpan(6);
+        spacer.setSpan(7);
         listitem.appendChild(spacer);
 
         /*
@@ -300,6 +302,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listitem.appendChild(new Listcell(""));
         listitem.appendChild(new Listcell(""));
         listitem.appendChild(new Listcell(""));
+        listitem.appendChild(renderFolderDate(folder.getCreatedDate()));
         listitem.appendChild(renderFolderDate(folder.getLastUpdate()));
         listitem.appendChild(renderFolderOwner(folder.getOwnerName()));
         // Append columns for any folder attributes supplied via plugins
@@ -430,6 +433,19 @@ public class SummaryItemRenderer implements ListitemRenderer {
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getLastVersion()));
     }
+
+    protected Listcell renderProcessCreatedDate(final ProcessSummaryType process) {
+        String createDate = process.getCreateDate();
+       if (createDate != null) {
+            if (dateTimeFormatter != null) {
+                createDate = DateTimeUtils.normalize(createDate, dateTimeFormatter);
+            } else {
+                createDate = DateTimeUtils.normalize(createDate);
+            }
+        }
+        return wrapIntoListCell(new Label(createDate));
+    }
+
 
     protected Listcell renderProcessLastUpdate(final ProcessSummaryType process) {
         List<VersionSummaryType> summaries = process.getVersionSummaries();

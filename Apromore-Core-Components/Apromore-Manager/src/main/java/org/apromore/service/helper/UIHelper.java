@@ -238,8 +238,16 @@ public class UIHelper implements UserInterfaceHelper {
     public SummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
         assert pageIndex != null;
+        Page<Process> processes;
 
-        Page<Process> processes = workspaceService.getProcesses(userId, folderId,PageRequest.of(pageIndex, pageSize));
+        if(userId!=null) {
+            processes = workspaceService.getProcesses(userId, folderId, PageRequest.of(pageIndex, pageSize));
+        }else{
+            processes = workspaceService.getAllProcesses(folderId, PageRequest.of(pageIndex, pageSize));
+        }
+        if(processes==null){
+            return new SummariesType();
+        }
 
         SummariesType processSummaries = new SummariesType();
         processSummaries.setTotalCount(pRepository.count());
@@ -256,8 +264,12 @@ public class UIHelper implements UserInterfaceHelper {
     public SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
         assert pageIndex != null;
-
-        Page<Log> logs = workspaceService.getLogs(userId, folderId, PageRequest.of(pageIndex, pageSize));
+        Page<Log> logs=null;
+        if(userId!=null) {
+            logs = workspaceService.getLogs(userId, folderId, PageRequest.of(pageIndex, pageSize));
+        }else{
+            logs = workspaceService.getAllLogs(folderId, PageRequest.of(pageIndex, pageSize));
+        }
 
         SummariesType logSummaries = new SummariesType();
         logSummaries.setTotalCount(lRepository.count());
@@ -301,12 +313,13 @@ public class UIHelper implements UserInterfaceHelper {
      * @param process
      * @return the populated process summary
      */
-    private ProcessSummaryType buildProcessSummary(final Process process) {
+    public ProcessSummaryType buildProcessSummary(final Process process) {
         ProcessSummaryType processSummary = new ProcessSummaryType();
         processSummary.setId(process.getId());
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
         processSummary.setRanking(process.getRanking());
+        processSummary.setCreateDate(process.getCreateDate());
 
         ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(process.getId(), "MAIN");
         if (latestVersion != null) {

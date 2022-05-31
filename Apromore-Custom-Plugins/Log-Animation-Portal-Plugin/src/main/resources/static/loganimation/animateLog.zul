@@ -59,7 +59,7 @@
 
         <n:div class="ap-header">
             <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
-            <n:div class="ap-header-title">Log Animator</n:div>
+            <n:div class="ap-header-title">${labels.lf_title_text}</n:div>
             <n:div class="ap-header-actions">
                 <n:a href="${labels.help_logAnimator}" target="_blank">
                     <n:button class="ap-icon ap-icon-help"/>

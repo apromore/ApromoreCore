@@ -43,6 +43,7 @@ public class FolderType {
     protected Boolean hasOwnership;
     protected String ownerName;
     protected String lastUpdate;
+    protected String createdDate;
 
     /**
      * Gets the value of the folders property.
@@ -262,4 +263,11 @@ public class FolderType {
 		this.lastUpdate = lastUpdate;
 	}
 
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
 }

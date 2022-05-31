@@ -840,7 +840,13 @@ function merge(target) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "is", function() { return is; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAny", function() { return isAny; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getBusinessObject", function() { return getBusinessObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDi", function() { return getDi; });
+/* harmony import */ var min_dash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+
+
+
 /**
  * Is an element of the given BPMN type?
  *
@@ -857,6 +863,20 @@ function is(element, type) {
 
 
 /**
+ * Return true if element has any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {Array<string>} types
+ *
+ * @return {boolean}
+ */
+function isAny(element, types) {
+  return Object(min_dash__WEBPACK_IMPORTED_MODULE_0__["some"])(types, function(t) {
+    return is(element, t);
+  });
+}
+
+/**
  * Return the business object for a given element.
  *
  * @param  {djs.model.Base|ModdleElement} element
@@ -865,6 +885,19 @@ function is(element, type) {
  */
 function getBusinessObject(element) {
   return (element && element.businessObject) || element;
+}
+
+/**
+ * Return the di object for a given element.
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {ModdleElement}
+ */
+function getDi(element) {
+  var bo = getBusinessObject(element);
+
+  return bo && bo.di;
 }
 
 /***/ }),
@@ -1520,365 +1553,6 @@ CmdHelper.setList = function(element, businessObject, listPropertyName, updatedO
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var domQuery = __webpack_require__(2).query,
-    domClear = __webpack_require__(2).clear,
-    domClasses = __webpack_require__(2).classes,
-    is = __webpack_require__(1).is,
-    forEach = __webpack_require__(14),
-    domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(32).default;
-
-var SPACE_REGEX = /\s/;
-
-// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
-var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
-
-// for ID validation as per BPMN Schema (QName - Namespace)
-var ID_REGEX = /^[a-z_][\w-.]*$/i;
-
-var HTML_ESCAPE_MAP = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&#39;'
-};
-
-function selectedOption(selectBox) {
-  if (selectBox.selectedIndex >= 0) {
-    return selectBox.options[selectBox.selectedIndex].value;
-  }
-}
-
-module.exports.selectedOption = selectedOption;
-
-
-function selectedType(elementSyntax, inputNode) {
-  var typeSelect = domQuery(elementSyntax, inputNode);
-  return selectedOption(typeSelect);
-}
-
-module.exports.selectedType = selectedType;
-
-
-/**
- * Retrieve the root element the document this
- * business object is contained in.
- *
- * @return {ModdleElement}
- */
-function getRoot(businessObject) {
-  var parent = businessObject;
-  while (parent.$parent) {
-    parent = parent.$parent;
-  }
-  return parent;
-}
-
-module.exports.getRoot = getRoot;
-
-
-/**
- * filters all elements in the list which have a given type.
- * removes a new list
- */
-function filterElementsByType(objectList, type) {
-  var list = objectList || [];
-  var result = [];
-  forEach(list, function(obj) {
-    if (is(obj, type)) {
-      result.push(obj);
-    }
-  });
-  return result;
-}
-
-module.exports.filterElementsByType = filterElementsByType;
-
-
-function findRootElementsByType(businessObject, referencedType) {
-  var root = getRoot(businessObject);
-
-  return filterElementsByType(root.rootElements, referencedType);
-}
-
-module.exports.findRootElementsByType = findRootElementsByType;
-
-
-function removeAllChildren(domElement) {
-  while (domElement.firstChild) {
-    domElement.removeChild(domElement.firstChild);
-  }
-}
-
-module.exports.removeAllChildren = removeAllChildren;
-
-
-/**
- * adds an empty option to the list
- */
-function addEmptyParameter(list) {
-  return list.push({ 'label': '', 'value': '', 'name': '' });
-}
-
-module.exports.addEmptyParameter = addEmptyParameter;
-
-
-/**
- * returns a dropdown option label depending on the defined event attributes
- */
-function getOptionLabel(obj) {
-  var label = obj.name || '';
-
-  if (obj.errorCode)
-    label += ' (code=' + obj.errorCode + ')';
-  if (obj.escalationCode)
-    label += ' (code=' + obj.escalationCode + ')';
-
-  return label;
-}
-
-/**
- * returns a list with all root elements for the given parameter 'referencedType'
- */
-function refreshOptionsModel(businessObject, referencedType) {
-  var model = [];
-  var referableObjects = findRootElementsByType(businessObject, referencedType);
-  forEach(referableObjects, function(obj) {
-    model.push({
-      label: getOptionLabel(obj),
-      value: obj.id,
-      name: obj.name
-    });
-  });
-  return model;
-}
-
-module.exports.refreshOptionsModel = refreshOptionsModel;
-
-
-/**
- * fills the drop down with options
- */
-function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
-  var options = refreshOptionsModel(businessObject, referencedType);
-  addEmptyParameter(options);
-  var selectBox = domQuery(domSelector, entryNode);
-  domClear(selectBox);
-
-  forEach(options, function(option) {
-    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
-    selectBox.appendChild(optionEntry);
-  });
-  return options;
-}
-
-module.exports.updateOptionsDropDown = updateOptionsDropDown;
-
-
-/**
- * checks whether the id value is valid
- *
- * @param {ModdleElement} bo
- * @param {String} idValue
- * @param {Function} translate
- *
- * @return {String} error message
- */
-function isIdValid(bo, idValue, translate) {
-  var assigned = bo.$model.ids.assigned(idValue);
-
-  var idExists = assigned && assigned !== bo;
-
-  if (!idValue || idExists) {
-    return translate('Element must have an unique id.');
-  }
-
-  return validateId(idValue, translate);
-}
-
-module.exports.isIdValid = isIdValid;
-
-
-function validateId(idValue, translate) {
-
-  if (containsSpace(idValue)) {
-    return translate('Id must not contain spaces.');
-  }
-
-  if (!ID_REGEX.test(idValue)) {
-
-    if (QNAME_REGEX.test(idValue)) {
-      return translate('Id must not contain prefix.');
-    }
-
-    return translate('Id must be a valid QName.');
-  }
-}
-
-module.exports.validateId = validateId;
-
-
-function containsSpace(value) {
-  return SPACE_REGEX.test(value);
-}
-
-module.exports.containsSpace = containsSpace;
-
-/**
- * generate a semantic id with given prefix
- */
-function nextId(prefix) {
-  var ids = new Ids([32,32,1]);
-
-  return ids.nextPrefixed(prefix);
-}
-
-module.exports.nextId = nextId;
-
-
-function triggerClickEvent(element) {
-  var evt;
-  var eventType = 'click';
-
-  if (document.createEvent) {
-    try {
-
-      // Chrome, Safari, Firefox
-      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
-    } catch (e) {
-
-      // IE 11, PhantomJS (wat!)
-      evt = document.createEvent('MouseEvent');
-
-      evt.initEvent((eventType), true, true);
-    }
-    return element.dispatchEvent(evt);
-  } else {
-
-    // Welcome IE
-    evt = document.createEventObject();
-
-    return element.fireEvent('on' + eventType, evt);
-  }
-}
-
-module.exports.triggerClickEvent = triggerClickEvent;
-
-
-function escapeHTML(str) {
-  str = '' + str;
-
-  return str && str.replace(/[&<>"']/g, function(match) {
-    return HTML_ESCAPE_MAP[match];
-  });
-}
-
-module.exports.escapeHTML = escapeHTML;
-
-function createDropdown(dropdown) {
-  var menu = dropdown.menu;
-
-  var dropdownNode = domify(
-    '<div class="group__dropdown">' +
-      '<button class="group__dropdown-button">' +
-      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
-      '</button>' +
-      '<div class="group__dropdown-menu"></div>' +
-    '</div>'
-  );
-
-  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
-      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
-
-  buttonNode.addEventListener('click', function(event) {
-    domClasses(dropdownNode).toggle('group__dropdown--open');
-
-    createOnGlobalClick(event);
-  });
-
-  forEach(menu, function(menuItem) {
-    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
-      menuItem.id +
-      '">' + escapeHTML(menuItem.label) + '</div>');
-
-    menuItemNode.addEventListener('click', function() {
-      menuItem.onClick();
-
-      domClasses(dropdownNode).remove('group__dropdown--open');
-    });
-
-    menuNode.appendChild(menuItemNode);
-  });
-
-  var _onGlobalClick;
-
-  function createOnGlobalClick(_event) {
-    function onGlobalClick(event) {
-      if (event === _event) {
-        return;
-      }
-
-      var target = event.target;
-
-      if (menuNode !== target && !menuNode.contains(target)) {
-        domClasses(dropdownNode).remove('group__dropdown--open');
-
-        document.removeEventListener('click', onGlobalClick);
-      }
-    }
-
-    if (_onGlobalClick) {
-      document.removeEventListener('click', _onGlobalClick);
-    }
-
-    document.addEventListener('click', onGlobalClick);
-
-    _onGlobalClick = onGlobalClick;
-  }
-
-  return dropdownNode;
-}
-
-module.exports.createDropdown = createDropdown;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var ElementHelper = {};
-module.exports = ElementHelper;
-
-/**
- * Creates a new element and set the parent to it
- *
- * @method ElementHelper#createElement
- *
- * @param {String} elementType of the new element
- * @param {Object} properties of the new element in key-value pairs
- * @param {moddle.object} parent of the new element
- * @param {BpmnFactory} factory which creates the new element
- *
- * @returns {djs.model.Base} element which is created
- */
-ElementHelper.createElement = function(elementType, properties, parent, factory) {
-  var element = factory.create(elementType, properties);
-  element.$parent = parent;
-
-  return element;
-};
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -12766,6 +12440,365 @@ return jQuery;
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var domQuery = __webpack_require__(2).query,
+    domClear = __webpack_require__(2).clear,
+    domClasses = __webpack_require__(2).classes,
+    is = __webpack_require__(1).is,
+    forEach = __webpack_require__(14),
+    domify = __webpack_require__(2).domify,
+    Ids = __webpack_require__(28).default;
+
+var SPACE_REGEX = /\s/;
+
+// for QName validation as per http://www.w3.org/TR/REC-xml/#NT-NameChar
+var QNAME_REGEX = /^([a-z][\w-.]*:)?[a-z_][\w-.]*$/i;
+
+// for ID validation as per BPMN Schema (QName - Namespace)
+var ID_REGEX = /^[a-z_][\w-.]*$/i;
+
+var HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '\'': '&#39;'
+};
+
+function selectedOption(selectBox) {
+  if (selectBox.selectedIndex >= 0) {
+    return selectBox.options[selectBox.selectedIndex].value;
+  }
+}
+
+module.exports.selectedOption = selectedOption;
+
+
+function selectedType(elementSyntax, inputNode) {
+  var typeSelect = domQuery(elementSyntax, inputNode);
+  return selectedOption(typeSelect);
+}
+
+module.exports.selectedType = selectedType;
+
+
+/**
+ * Retrieve the root element the document this
+ * business object is contained in.
+ *
+ * @return {ModdleElement}
+ */
+function getRoot(businessObject) {
+  var parent = businessObject;
+  while (parent.$parent) {
+    parent = parent.$parent;
+  }
+  return parent;
+}
+
+module.exports.getRoot = getRoot;
+
+
+/**
+ * filters all elements in the list which have a given type.
+ * removes a new list
+ */
+function filterElementsByType(objectList, type) {
+  var list = objectList || [];
+  var result = [];
+  forEach(list, function(obj) {
+    if (is(obj, type)) {
+      result.push(obj);
+    }
+  });
+  return result;
+}
+
+module.exports.filterElementsByType = filterElementsByType;
+
+
+function findRootElementsByType(businessObject, referencedType) {
+  var root = getRoot(businessObject);
+
+  return filterElementsByType(root.rootElements, referencedType);
+}
+
+module.exports.findRootElementsByType = findRootElementsByType;
+
+
+function removeAllChildren(domElement) {
+  while (domElement.firstChild) {
+    domElement.removeChild(domElement.firstChild);
+  }
+}
+
+module.exports.removeAllChildren = removeAllChildren;
+
+
+/**
+ * adds an empty option to the list
+ */
+function addEmptyParameter(list) {
+  return list.push({ 'label': '', 'value': '', 'name': '' });
+}
+
+module.exports.addEmptyParameter = addEmptyParameter;
+
+
+/**
+ * returns a dropdown option label depending on the defined event attributes
+ */
+function getOptionLabel(obj) {
+  var label = obj.name || '';
+
+  if (obj.errorCode)
+    label += ' (code=' + obj.errorCode + ')';
+  if (obj.escalationCode)
+    label += ' (code=' + obj.escalationCode + ')';
+
+  return label;
+}
+
+/**
+ * returns a list with all root elements for the given parameter 'referencedType'
+ */
+function refreshOptionsModel(businessObject, referencedType) {
+  var model = [];
+  var referableObjects = findRootElementsByType(businessObject, referencedType);
+  forEach(referableObjects, function(obj) {
+    model.push({
+      label: getOptionLabel(obj),
+      value: obj.id,
+      name: obj.name
+    });
+  });
+  return model;
+}
+
+module.exports.refreshOptionsModel = refreshOptionsModel;
+
+
+/**
+ * fills the drop down with options
+ */
+function updateOptionsDropDown(domSelector, businessObject, referencedType, entryNode) {
+  var options = refreshOptionsModel(businessObject, referencedType);
+  addEmptyParameter(options);
+  var selectBox = domQuery(domSelector, entryNode);
+  domClear(selectBox);
+
+  forEach(options, function(option) {
+    var optionEntry = domify('<option value="' + escapeHTML(option.value) + '">' + escapeHTML(option.label) + '</option>');
+    selectBox.appendChild(optionEntry);
+  });
+  return options;
+}
+
+module.exports.updateOptionsDropDown = updateOptionsDropDown;
+
+
+/**
+ * checks whether the id value is valid
+ *
+ * @param {ModdleElement} bo
+ * @param {String} idValue
+ * @param {Function} translate
+ *
+ * @return {String} error message
+ */
+function isIdValid(bo, idValue, translate) {
+  var assigned = bo.$model.ids.assigned(idValue);
+
+  var idExists = assigned && assigned !== bo;
+
+  if (!idValue || idExists) {
+    return translate('Element must have an unique id.');
+  }
+
+  return validateId(idValue, translate);
+}
+
+module.exports.isIdValid = isIdValid;
+
+
+function validateId(idValue, translate) {
+
+  if (containsSpace(idValue)) {
+    return translate('Id must not contain spaces.');
+  }
+
+  if (!ID_REGEX.test(idValue)) {
+
+    if (QNAME_REGEX.test(idValue)) {
+      return translate('Id must not contain prefix.');
+    }
+
+    return translate('Id must be a valid QName.');
+  }
+}
+
+module.exports.validateId = validateId;
+
+
+function containsSpace(value) {
+  return SPACE_REGEX.test(value);
+}
+
+module.exports.containsSpace = containsSpace;
+
+/**
+ * generate a semantic id with given prefix
+ */
+function nextId(prefix) {
+  var ids = new Ids([32,32,1]);
+
+  return ids.nextPrefixed(prefix);
+}
+
+module.exports.nextId = nextId;
+
+
+function triggerClickEvent(element) {
+  var evt;
+  var eventType = 'click';
+
+  if (document.createEvent) {
+    try {
+
+      // Chrome, Safari, Firefox
+      evt = new MouseEvent((eventType), { view: window, bubbles: true, cancelable: true });
+    } catch (e) {
+
+      // IE 11, PhantomJS (wat!)
+      evt = document.createEvent('MouseEvent');
+
+      evt.initEvent((eventType), true, true);
+    }
+    return element.dispatchEvent(evt);
+  } else {
+
+    // Welcome IE
+    evt = document.createEventObject();
+
+    return element.fireEvent('on' + eventType, evt);
+  }
+}
+
+module.exports.triggerClickEvent = triggerClickEvent;
+
+
+function escapeHTML(str) {
+  str = '' + str;
+
+  return str && str.replace(/[&<>"']/g, function(match) {
+    return HTML_ESCAPE_MAP[match];
+  });
+}
+
+module.exports.escapeHTML = escapeHTML;
+
+function createDropdown(dropdown) {
+  var menu = dropdown.menu;
+
+  var dropdownNode = domify(
+    '<div class="group__dropdown">' +
+      '<button class="group__dropdown-button">' +
+      '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>' +
+      '</button>' +
+      '<div class="group__dropdown-menu"></div>' +
+    '</div>'
+  );
+
+  var buttonNode = domQuery('.group__dropdown-button', dropdownNode),
+      menuNode = domQuery('.group__dropdown-menu', dropdownNode);
+
+  buttonNode.addEventListener('click', function(event) {
+    domClasses(dropdownNode).toggle('group__dropdown--open');
+
+    createOnGlobalClick(event);
+  });
+
+  forEach(menu, function(menuItem) {
+    var menuItemNode = domify('<div class="group__dropdown-menu-item" data-dropdown-action="' +
+      menuItem.id +
+      '">' + escapeHTML(menuItem.label) + '</div>');
+
+    menuItemNode.addEventListener('click', function() {
+      menuItem.onClick();
+
+      domClasses(dropdownNode).remove('group__dropdown--open');
+    });
+
+    menuNode.appendChild(menuItemNode);
+  });
+
+  var _onGlobalClick;
+
+  function createOnGlobalClick(_event) {
+    function onGlobalClick(event) {
+      if (event === _event) {
+        return;
+      }
+
+      var target = event.target;
+
+      if (menuNode !== target && !menuNode.contains(target)) {
+        domClasses(dropdownNode).remove('group__dropdown--open');
+
+        document.removeEventListener('click', onGlobalClick);
+      }
+    }
+
+    if (_onGlobalClick) {
+      document.removeEventListener('click', _onGlobalClick);
+    }
+
+    document.addEventListener('click', onGlobalClick);
+
+    _onGlobalClick = onGlobalClick;
+  }
+
+  return dropdownNode;
+}
+
+module.exports.createDropdown = createDropdown;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var ElementHelper = {};
+module.exports = ElementHelper;
+
+/**
+ * Creates a new element and set the parent to it
+ *
+ * @method ElementHelper#createElement
+ *
+ * @param {String} elementType of the new element
+ * @param {Object} properties of the new element in key-value pairs
+ * @param {moddle.object} parent of the new element
+ * @param {BpmnFactory} factory which creates the new element
+ *
+ * @returns {djs.model.Base} element which is created
+ */
+ElementHelper.createElement = function(elementType, properties, parent, factory) {
+  var element = factory.create(elementType, properties);
+  element.$parent = parent;
+
+  return element;
+};
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -12801,7 +12834,7 @@ module.exports = isArray;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     isDigit = __webpack_require__(20).isDigit;
 
@@ -13260,70 +13293,6 @@ module.exports = ValidationErrorHelper;
 
 /***/ }),
 /* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
-
-
-
-const AUX_PROPS = {
-  LEFT: 'aux-left',
-  TOP: 'aux-top',
-  WIDTH: 'aux-width',
-  HEIGHT: 'aux-height',
-  LINK_URL: 'aux-link-url',
-  LINK_TEXT: 'aux-link-text',
-  IMG_SRC: 'aux-img-src',
-  IMG_URL: 'aux-img-url',
-  ICON_URL: 'aux-icon-url',
-  ICON_TEXT: 'aux-icon-text',
-  ICON_NAME: 'aux-icon-name',
-  ICON_SET: 'aux-icon-set'
-}
-
-function getExtensionElements(element, bpmnFactory) {
-  var extensionElements = element.extensionElements;
-
-  if (!extensionElements || !extensionElements.values) {
-    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
-      { values: [] }, element, bpmnFactory);
-    element.extensionElements = extensionElements;
-  }
-
-  return extensionElements;
-}
-
-function getAux(element, bpmnFactory, type, init) {
-  var extensionElements = getExtensionElements(element, bpmnFactory);
-  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
-    type) || [])[0];
-
-  if (!aux) {
-    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
-    extensionElements.values.push(aux);
-  }
-
-  return aux;
-}
-
-function refreshOverlay(bpmnjs, element) {
-  setTimeout(function () {
-    var auxModule = bpmnjs.get('aux');
-    auxModule.createAux(element);
-  }, 500);
-}
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13332,9 +13301,9 @@ function refreshOverlay(bpmnjs, element) {
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 // input entities
-var textInputField = __webpack_require__(111),
+var textInputField = __webpack_require__(112),
     checkboxField = __webpack_require__(262),
-    selectBoxField = __webpack_require__(112),
+    selectBoxField = __webpack_require__(113),
     comboBoxField = __webpack_require__(263),
     textBoxField = __webpack_require__(270),
     validationAwareTextInputField = __webpack_require__(271),
@@ -13508,10 +13477,74 @@ module.exports = EntryFactory;
 
 
 /***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+const AUX_PROPS = {
+  LEFT: 'aux-left',
+  TOP: 'aux-top',
+  WIDTH: 'aux-width',
+  HEIGHT: 'aux-height',
+  LINK_URL: 'aux-link-url',
+  LINK_TEXT: 'aux-link-text',
+  IMG_SRC: 'aux-img-src',
+  IMG_URL: 'aux-img-url',
+  ICON_URL: 'aux-icon-url',
+  ICON_TEXT: 'aux-icon-text',
+  ICON_NAME: 'aux-icon-name',
+  ICON_SET: 'aux-icon-set'
+}
+
+function getExtensionElements(element, bpmnFactory) {
+  var extensionElements = element.extensionElements;
+
+  if (!extensionElements || !extensionElements.values) {
+    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
+      { values: [] }, element, bpmnFactory);
+    element.extensionElements = extensionElements;
+  }
+
+  return extensionElements;
+}
+
+function getAux(element, bpmnFactory, type, init) {
+  var extensionElements = getExtensionElements(element, bpmnFactory);
+  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
+    type) || [])[0];
+
+  if (!aux) {
+    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
+    extensionElements.values.push(aux);
+  }
+
+  return aux;
+}
+
+function refreshOverlay(bpmnjs, element) {
+  setTimeout(function () {
+    var auxModule = bpmnjs.get('aux');
+    auxModule.createAux(element);
+  }, 500);
+}
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var freeGlobal = __webpack_require__(83);
+var freeGlobal = __webpack_require__(84);
 
 /** Detect free variable `self`. */
 var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -13526,7 +13559,7 @@ module.exports = root;
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     extensionElementsHelper = __webpack_require__(21),
     createUUID = __webpack_require__(20).createUUID,
     getRoot = __webpack_require__(20).getRoot;
@@ -13618,7 +13651,7 @@ module.exports = ProcessSimulationHelper;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayEach = __webpack_require__(55),
-    baseEach = __webpack_require__(28),
+    baseEach = __webpack_require__(29),
     castFunction = __webpack_require__(163),
     isArray = __webpack_require__(8);
 
@@ -13708,7 +13741,7 @@ var domify = __webpack_require__(2).domify,
     domClasses = __webpack_require__(2).classes,
     domEvent = __webpack_require__(2).event;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var MAX_DESCRIPTION_LENGTH = 200;
 
@@ -13884,7 +13917,7 @@ function translate(template, replacements) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayLikeKeys = __webpack_require__(153),
-    baseKeys = __webpack_require__(85),
+    baseKeys = __webpack_require__(86),
     isArrayLike = __webpack_require__(19);
 
 /**
@@ -14019,7 +14052,7 @@ module.exports = {
 
 
 var cmdHelper = __webpack_require__(4),
-    elementHelper = __webpack_require__(6);
+    elementHelper = __webpack_require__(7);
 
 var is = __webpack_require__(1).is;
 
@@ -14076,7 +14109,7 @@ module.exports = ExtensionElementsHelper;
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(354);
+module.exports = __webpack_require__(357);
 
 module.exports.Collection = __webpack_require__(138);
 
@@ -33975,7 +34008,7 @@ module.exports = isObjectLike;
 
 var baseMatches = __webpack_require__(166),
     baseMatchesProperty = __webpack_require__(209),
-    identity = __webpack_require__(31),
+    identity = __webpack_require__(32),
     isArray = __webpack_require__(8),
     property = __webpack_require__(218);
 
@@ -34031,99 +34064,6 @@ module.exports = getNative;
 
 /***/ }),
 /* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseForOwn = __webpack_require__(82),
-    createBaseEach = __webpack_require__(162);
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Symbol = __webpack_require__(30),
-    getRawTag = __webpack_require__(156),
-    objectToString = __webpack_require__(157);
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(12);
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-
-/***/ }),
-/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34296,6 +34236,99 @@ Ids.prototype.clear = function () {
 
 
 /***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseForOwn = __webpack_require__(83),
+    createBaseEach = __webpack_require__(162);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(31),
+    getRawTag = __webpack_require__(156),
+    objectToString = __webpack_require__(157);
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(12);
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports) {
+
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+
+/***/ }),
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34414,7 +34447,7 @@ Ids.prototype.clear = function () {
 
 var DEFAULT = __webpack_require__(132);
 var parser = __webpack_require__(135);
-var FilterXSS = __webpack_require__(339);
+var FilterXSS = __webpack_require__(342);
 
 /**
  * filter xss function
@@ -34575,7 +34608,7 @@ module.exports = isIndex;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsTypedArray = __webpack_require__(159),
-    baseUnary = __webpack_require__(84),
+    baseUnary = __webpack_require__(85),
     nodeUtil = __webpack_require__(160);
 
 /* Node.js helper references. */
@@ -34607,7 +34640,7 @@ module.exports = isTypedArray;
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObject = __webpack_require__(15);
 
 /** `Object#toString` result references. */
@@ -34830,7 +34863,7 @@ module.exports = getMapData;
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObjectLike = __webpack_require__(25);
 
 /** `Object#toString` result references. */
@@ -34892,7 +34925,7 @@ module.exports = toKey;
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     ValidationErrorHelper = __webpack_require__(9),
     is = __webpack_require__(1).is;
@@ -35054,7 +35087,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
 var cmdHelper = __webpack_require__(4);
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 function ensureNotNull(prop) {
   if (!prop) {
@@ -36427,9 +36460,9 @@ module.exports = arrayMap;
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31),
+var identity = __webpack_require__(32),
     overRest = __webpack_require__(230),
-    setToString = __webpack_require__(101);
+    setToString = __webpack_require__(102);
 
 /**
  * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -36500,7 +36533,7 @@ module.exports = arrayIncludes;
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var defineProperty = __webpack_require__(102);
+var defineProperty = __webpack_require__(103);
 
 /**
  * The base implementation of `assignValue` and `assignMergeValue` without
@@ -36600,7 +36633,77 @@ module.exports = getHolder;
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11);
+var elementHelper = __webpack_require__(7),
+    ProcessSimulationHelper = __webpack_require__(13),
+    RuleHelper = __webpack_require__(129),
+    createUUID = __webpack_require__(20).createUUID;
+
+var TimetableHelper = {};
+
+TimetableHelper.getTimetables = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var timetables = processSimulationInfo.timetables;
+
+  if (!timetables) {
+    timetables = elementHelper.createElement('qbp:Timetables',
+      { values : [] }, null, bpmnFactory);
+
+    processSimulationInfo.timetables = timetables;
+  }
+
+  return timetables;
+};
+
+TimetableHelper.createTimetable = function(bpmnFactory, elementRegistry) {
+  var timetables = TimetableHelper.getTimetables(bpmnFactory, elementRegistry);
+
+  var timetable = elementHelper.createElement('qbp:Timetable', {
+    name: 'Timetable',
+    id: 'qbp_' + createUUID(),
+  }, timetables, bpmnFactory);
+
+  var rules = RuleHelper.createRules(bpmnFactory);
+  var rule = RuleHelper.createRule(bpmnFactory);
+  RuleHelper.addRuleToRules(rule, rules);
+
+  timetable.rules = rules;
+
+  return timetable;
+};
+
+TimetableHelper.createDefaultTimetable = function(bpmnFactory, elementRegistry, translate) {
+  var timetables = TimetableHelper.getTimetables(bpmnFactory, elementRegistry);
+
+  var defaultTimetable = (timetables.get('values').filter(function(t) {
+    return t.default === 'true';
+  }) || [])[0];
+
+  if (!defaultTimetable) {
+    defaultTimetable = elementHelper.createElement('qbp:Timetable',
+      {
+        id: 'DEFAULT_TIMETABLE',
+        default: 'true',
+        name: translate('arrivalTimetable.name'),
+      }, timetables, bpmnFactory);
+
+    var rules = RuleHelper.createRules(bpmnFactory);
+    var rule = RuleHelper.createRule(bpmnFactory);
+    RuleHelper.addRuleToRules(rule, rules);
+
+    defaultTimetable.rules = rules;
+
+    timetables.values.push(defaultTimetable);
+  }
+};
+
+module.exports = TimetableHelper;
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var entryFactory = __webpack_require__(10);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(9);
@@ -36968,10 +37071,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13);
 
 var DistributionHelper = {};
@@ -37025,7 +37128,7 @@ DistributionHelper.getArrivalRateDistribution = function(bpmnFactory, elementReg
 module.exports = DistributionHelper;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
@@ -37081,7 +37184,7 @@ module.exports = function getFlowElementsByType(element, type) {
 };
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37094,9 +37197,9 @@ var domQuery = __webpack_require__(2).query,
     domify = __webpack_require__(2).domify,
     forEach = __webpack_require__(14);
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(5),
+    utils = __webpack_require__(6),
     escapeHTML = utils.escapeHTML;
 
 function getSelectBox(node, id) {
@@ -37324,7 +37427,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37380,7 +37483,7 @@ function setDefaultParameters(options) {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37390,7 +37493,7 @@ function setDefaultParameters(options) {
  */
 
 var DEFAULT = __webpack_require__(133);
-var FilterCSS = __webpack_require__(337);
+var FilterCSS = __webpack_require__(340);
 
 
 /**
@@ -37418,7 +37521,7 @@ if (typeof window !== 'undefined') {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -37458,21 +37561,21 @@ module.exports = {
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(149);
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var colorString = __webpack_require__(349);
-var convert = __webpack_require__(352);
+var colorString = __webpack_require__(352);
+var convert = __webpack_require__(355);
 
 var _slice = [].slice;
 
@@ -37954,7 +38057,7 @@ module.exports = Color;
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFor = __webpack_require__(151),
@@ -37976,7 +38079,7 @@ module.exports = baseForOwn;
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -37987,7 +38090,7 @@ module.exports = freeGlobal;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(53)))
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports) {
 
 /**
@@ -38007,7 +38110,7 @@ module.exports = baseUnary;
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isPrototype = __webpack_require__(57),
@@ -38043,7 +38146,7 @@ module.exports = baseKeys;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 /**
@@ -38064,7 +38167,7 @@ module.exports = overArg;
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(41),
@@ -38097,7 +38200,7 @@ module.exports = Stack;
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -38129,7 +38232,7 @@ module.exports = toSource;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(194),
@@ -38163,7 +38266,7 @@ module.exports = baseIsEqual;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var SetCache = __webpack_require__(60),
@@ -38253,7 +38356,7 @@ module.exports = equalArrays;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports) {
 
 /**
@@ -38279,16 +38382,16 @@ module.exports = arrayPush;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var DataView = __webpack_require__(206),
     Map = __webpack_require__(58),
     Promise = __webpack_require__(207),
-    Set = __webpack_require__(93),
-    WeakMap = __webpack_require__(94),
-    baseGetTag = __webpack_require__(29),
-    toSource = __webpack_require__(88);
+    Set = __webpack_require__(94),
+    WeakMap = __webpack_require__(95),
+    baseGetTag = __webpack_require__(30),
+    toSource = __webpack_require__(89);
 
 /** `Object#toString` result references. */
 var mapTag = '[object Map]',
@@ -38343,7 +38446,7 @@ module.exports = getTag;
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -38356,7 +38459,7 @@ module.exports = Set;
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -38369,7 +38472,7 @@ module.exports = WeakMap;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(15);
@@ -38390,7 +38493,7 @@ module.exports = isStrictComparable;
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports) {
 
 /**
@@ -38416,10 +38519,10 @@ module.exports = matchesStrictComparable;
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGet = __webpack_require__(98);
+var baseGet = __webpack_require__(99);
 
 /**
  * Gets the value at `path` of `object`. If the resolved value is
@@ -38455,10 +38558,10 @@ module.exports = get;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(99),
+var castPath = __webpack_require__(100),
     toKey = __webpack_require__(47);
 
 /**
@@ -38485,7 +38588,7 @@ module.exports = baseGet;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(8),
@@ -38512,7 +38615,7 @@ module.exports = castPath;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayFilter = __webpack_require__(63),
@@ -38570,11 +38673,11 @@ module.exports = filter;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseSetToString = __webpack_require__(231),
-    shortOut = __webpack_require__(103);
+    shortOut = __webpack_require__(104);
 
 /**
  * Sets the `toString` method of `func` to return `string`.
@@ -38590,7 +38693,7 @@ module.exports = setToString;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27);
@@ -38607,7 +38710,7 @@ module.exports = defineProperty;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports) {
 
 /** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -38650,7 +38753,7 @@ module.exports = shortOut;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports) {
 
 /**
@@ -38680,7 +38783,7 @@ module.exports = baseFindIndex;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports) {
 
 /**
@@ -38708,10 +38811,10 @@ module.exports = arrayIncludesWith;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayPush = __webpack_require__(91),
+var arrayPush = __webpack_require__(92),
     isFlattenable = __webpack_require__(238);
 
 /**
@@ -38752,7 +38855,7 @@ module.exports = baseFlatten;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports) {
 
 /**
@@ -38775,7 +38878,7 @@ module.exports = noop;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseTrim = __webpack_require__(244),
@@ -38845,7 +38948,7 @@ module.exports = toNumber;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39002,10 +39105,10 @@ function splitStr(str, position) {
 }
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13);
 
 var SequenceFlowHelper = {};
@@ -39052,13 +39155,13 @@ SequenceFlowHelper.getSequenceFlowById = function(bpmnFactory, elementRegistry, 
 module.exports = SequenceFlowHelper;
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -39145,13 +39248,13 @@ module.exports = textField;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
@@ -39297,10 +39400,10 @@ module.exports = selectbox;
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assignValue = __webpack_require__(114),
+var assignValue = __webpack_require__(115),
     copyObject = __webpack_require__(264),
     createAssigner = __webpack_require__(265),
     isArrayLike = __webpack_require__(19),
@@ -39361,7 +39464,7 @@ module.exports = assign;
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseAssignValue = __webpack_require__(69),
@@ -39395,7 +39498,7 @@ module.exports = assignValue;
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var createFind = __webpack_require__(267),
@@ -39443,7 +39546,7 @@ module.exports = find;
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toFinite = __webpack_require__(269);
@@ -39485,11 +39588,11 @@ module.exports = toInteger;
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31),
-    metaMap = __webpack_require__(118);
+var identity = __webpack_require__(32),
+    metaMap = __webpack_require__(119);
 
 /**
  * The base implementation of `setData` without support for hot loop shorting.
@@ -39508,10 +39611,10 @@ module.exports = baseSetData;
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var WeakMap = __webpack_require__(94);
+var WeakMap = __webpack_require__(95);
 
 /** Used to store function metadata. */
 var metaMap = WeakMap && new WeakMap;
@@ -39520,14 +39623,14 @@ module.exports = metaMap;
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var composeArgs = __webpack_require__(120),
-    composeArgsRight = __webpack_require__(121),
+var composeArgs = __webpack_require__(121),
+    composeArgsRight = __webpack_require__(122),
     countHolders = __webpack_require__(279),
     createCtor = __webpack_require__(49),
-    createRecurry = __webpack_require__(122),
+    createRecurry = __webpack_require__(123),
     getHolder = __webpack_require__(72),
     reorder = __webpack_require__(288),
     replaceHolders = __webpack_require__(50),
@@ -39618,7 +39721,7 @@ module.exports = createHybrid;
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports) {
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -39663,7 +39766,7 @@ module.exports = composeArgs;
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports) {
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -39710,12 +39813,12 @@ module.exports = composeArgsRight;
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isLaziable = __webpack_require__(280),
-    setData = __webpack_require__(126),
-    setWrapToString = __webpack_require__(127);
+    setData = __webpack_require__(127),
+    setWrapToString = __webpack_require__(128);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -39772,11 +39875,11 @@ module.exports = createRecurry;
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metaMap = __webpack_require__(118),
-    noop = __webpack_require__(107);
+var metaMap = __webpack_require__(119),
+    noop = __webpack_require__(108);
 
 /**
  * Gets metadata for `func`.
@@ -39793,7 +39896,7 @@ module.exports = getData;
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseCreate = __webpack_require__(40),
@@ -39821,7 +39924,7 @@ module.exports = LodashWrapper;
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports) {
 
 /**
@@ -39847,11 +39950,11 @@ module.exports = copyArray;
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSetData = __webpack_require__(117),
-    shortOut = __webpack_require__(103);
+var baseSetData = __webpack_require__(118),
+    shortOut = __webpack_require__(104);
 
 /**
  * Sets metadata for `func`.
@@ -39873,12 +39976,12 @@ module.exports = setData;
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getWrapDetails = __webpack_require__(285),
     insertWrapDetails = __webpack_require__(286),
-    setToString = __webpack_require__(101),
+    setToString = __webpack_require__(102),
     updateWrapDetails = __webpack_require__(287);
 
 /**
@@ -39900,10 +40003,49 @@ module.exports = setWrapToString;
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
+    createUUID = __webpack_require__(20).createUUID;
+
+var RuleHelper = {};
+
+RuleHelper.createRules = function(bpmnFactory) {
+  return elementHelper.createElement('qbp:Rules',
+    { values: [] }, null, bpmnFactory);
+};
+
+RuleHelper.createRule = function(bpmnFactory) {
+  return elementHelper.createElement('qbp:Rule', {
+    id: createUUID(),
+    name: 'Timeslot',
+    fromTime: '09:00:00.000+00:00',
+    fromWeekDay: 'MONDAY',
+    toTime: '17:00:00.000+00:00',
+    toWeekDay: 'FRIDAY'
+  }, null, bpmnFactory);
+};
+
+RuleHelper.addRuleToRules = function(rule, rules) {
+  rules.values.push(rule);
+};
+
+RuleHelper.getTimetableRules = function(timetable) {
+  return timetable && timetable.rules.values || [];
+};
+
+RuleHelper.getTimetableRulesElement = function(timetable) {
+  return timetable && timetable.rules;
+};
+
+module.exports = RuleHelper;
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     createUUID = __webpack_require__(20).createUUID;
 
@@ -39974,115 +40116,6 @@ ResourceHelper.getResourceIds = function(bpmnFactory, element) {
 module.exports = ResourceHelper;
 
 /***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(6),
-    ProcessSimulationHelper = __webpack_require__(13),
-    RuleHelper = __webpack_require__(130),
-    createUUID = __webpack_require__(20).createUUID;
-
-var TimetableHelper = {};
-
-TimetableHelper.getTimetables = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var timetables = processSimulationInfo.timetables;
-
-  if (!timetables) {
-    timetables = elementHelper.createElement('qbp:Timetables',
-      { values : [] }, null, bpmnFactory);
-
-    processSimulationInfo.timetables = timetables;
-  }
-
-  return timetables;
-};
-
-TimetableHelper.createTimetable = function(bpmnFactory, elementRegistry) {
-  var timetables = TimetableHelper.getTimetables(bpmnFactory, elementRegistry);
-
-  var timetable = elementHelper.createElement('qbp:Timetable', {
-    name: 'Timetable',
-    id: 'qbp_' + createUUID(),
-  }, timetables, bpmnFactory);
-
-  var rules = RuleHelper.createRules(bpmnFactory);
-  var rule = RuleHelper.createRule(bpmnFactory);
-  RuleHelper.addRuleToRules(rule, rules);
-
-  timetable.rules = rules;
-
-  return timetable;
-};
-
-TimetableHelper.createDefaultTimetable = function(bpmnFactory, elementRegistry, translate) {
-  var timetables = TimetableHelper.getTimetables(bpmnFactory, elementRegistry);
-
-  var defaultTimetable = (timetables.get('values').filter(function(t) {
-    return t.default === 'true';
-  }) || [])[0];
-
-  if (!defaultTimetable) {
-    defaultTimetable = elementHelper.createElement('qbp:Timetable',
-      {
-        id: 'DEFAULT_TIMETABLE',
-        default: 'true',
-        name: translate('arrivalTimetable.name'),
-      }, timetables, bpmnFactory);
-
-    var rules = RuleHelper.createRules(bpmnFactory);
-    var rule = RuleHelper.createRule(bpmnFactory);
-    RuleHelper.addRuleToRules(rule, rules);
-
-    defaultTimetable.rules = rules;
-
-    timetables.values.push(defaultTimetable);
-  }
-};
-
-module.exports = TimetableHelper;
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(6),
-    createUUID = __webpack_require__(20).createUUID;
-
-var RuleHelper = {};
-
-RuleHelper.createRules = function(bpmnFactory) {
-  return elementHelper.createElement('qbp:Rules',
-    { values: [] }, null, bpmnFactory);
-};
-
-RuleHelper.createRule = function(bpmnFactory) {
-  return elementHelper.createElement('qbp:Rule', {
-    id: createUUID(),
-    name: 'Timeslot',
-    fromTime: '09:00:00.000+00:00',
-    fromWeekDay: 'MONDAY',
-    toTime: '17:00:00.000+00:00',
-    toWeekDay: 'FRIDAY'
-  }, null, bpmnFactory);
-};
-
-RuleHelper.addRuleToRules = function(rule, rules) {
-  rules.values.push(rule);
-};
-
-RuleHelper.getTimetableRules = function(timetable) {
-  return timetable && timetable.rules.values || [];
-};
-
-RuleHelper.getTimetableRulesElement = function(timetable) {
-  return timetable && timetable.rules;
-};
-
-module.exports = RuleHelper;
-
-/***/ }),
 /* 131 */
 /***/ (function(module, exports) {
 
@@ -40136,9 +40169,9 @@ module.exports = function(translate) {
  * @author Zongmin Lei<leizongmin@gmail.com>
  */
 
-var FilterCSS = __webpack_require__(78).FilterCSS;
-var getDefaultCSSWhiteList = __webpack_require__(78).getDefaultWhiteList;
-var _ = __webpack_require__(79);
+var FilterCSS = __webpack_require__(79).FilterCSS;
+var getDefaultCSSWhiteList = __webpack_require__(79).getDefaultWhiteList;
+var _ = __webpack_require__(80);
 
 function getDefaultWhiteList() {
   return {
@@ -41046,7 +41079,7 @@ module.exports = {
  * @author Zongmin Lei<leizongmin@gmail.com>
  */
 
-var _ = __webpack_require__(79);
+var _ = __webpack_require__(80);
 
 /**
  * get tag name
@@ -42473,7 +42506,7 @@ module.exports = {
 /* 142 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-left\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-top\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-width\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-height\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-img-url\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icons\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"isMany\":true,\"type\":\"Icon\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-text\",\"isAttr\":true,\"type\":\"String\"}]}]}");
+module.exports = JSON.parse("{\"name\":\"Apromore\",\"prefix\":\"ap\",\"uri\":\"http://apromore.org\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"ApromoreProp\",\"extends\":[\"bpmn:BaseElement\"],\"properties\":[{\"name\":\"aux-link-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-link-text\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-left\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-top\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-width\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-height\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-font-size\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Img\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-img-src\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-img-url\",\"isAttr\":true,\"type\":\"String\"}]},{\"name\":\"Icons\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"isMany\":true,\"type\":\"Icon\"}]},{\"name\":\"Icon\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"aux-icon-name\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-url\",\"isAttr\":true,\"type\":\"String\"},{\"name\":\"aux-icon-text\",\"isAttr\":true,\"type\":\"String\"}]}]}");
 
 /***/ }),
 /* 143 */
@@ -42580,8 +42613,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(347);
-var translationsJa = __webpack_require__(348);
+var translationsEn = __webpack_require__(350);
+var translationsJa = __webpack_require__(351);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -42611,13 +42644,14 @@ module.exports = function(langTag) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($j) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ColorContextPad; });
-/* harmony import */ var color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(81);
+/* harmony import */ var color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(82);
 /* harmony import */ var color__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(color__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 
 
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -42640,6 +42674,27 @@ const lighten = function (colorCode) {
   const lightness = start + 0.8 * (100 - start);
   return color.lightness(lightness).hex();
 };
+
+const getCurrentColor = function (element){
+  if (!element) {
+    return;
+  }
+  let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -42673,6 +42728,7 @@ class ColorContextPad {
 
     function launchPalette(event, element) {
       let el = $j(`.ap-editor-set-color`)
+      let currentColor = getCurrentColor(element)
       el.spectrum({
         type: "color",
         showInput: true,
@@ -42683,6 +42739,7 @@ class ColorContextPad {
         hideAfterPaletteSelect: true,
         containerClassName: 'ap-editor-cpicker-wrapper',
         palette,
+        color: currentColor,
         change: function (newColor) {
           let colorCode = newColor.toHexString();
           let color;
@@ -42705,6 +42762,7 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -42736,7 +42794,7 @@ ColorContextPad.$inject = [
   'translate'
 ];
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 146 */
@@ -42751,7 +42809,7 @@ ColorContextPad.$inject = [
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(355);
+module.exports = __webpack_require__(358);
 
 
 /***/ }),
@@ -42767,7 +42825,7 @@ module.exports = __webpack_require__(355);
     "use strict";
 
     if (true) { // AMD
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -45659,7 +45717,7 @@ module.exports = __webpack_require__(355);
 
 })( jQuery );
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 149 */
@@ -45846,7 +45904,7 @@ module.exports = baseTimes;
 /* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isObjectLike = __webpack_require__(25);
 
 /** `Object#toString` result references. */
@@ -45870,7 +45928,7 @@ module.exports = baseIsArguments;
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30);
+var Symbol = __webpack_require__(31);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -45974,7 +46032,7 @@ module.exports = stubFalse;
 /* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetTag = __webpack_require__(29),
+var baseGetTag = __webpack_require__(30),
     isLength = __webpack_require__(56),
     isObjectLike = __webpack_require__(25);
 
@@ -46040,7 +46098,7 @@ module.exports = baseIsTypedArray;
 /* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(83);
+/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(84);
 
 /** Detect free variable `exports`. */
 var freeExports =  true && exports && !exports.nodeType && exports;
@@ -46077,7 +46135,7 @@ module.exports = nodeUtil;
 /* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(86);
+var overArg = __webpack_require__(87);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeKeys = overArg(Object.keys, Object);
@@ -46127,7 +46185,7 @@ module.exports = createBaseEach;
 /* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(31);
+var identity = __webpack_require__(32);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -46287,7 +46345,7 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 
 var arrayEach = __webpack_require__(55),
     baseCreate = __webpack_require__(40),
-    baseForOwn = __webpack_require__(82),
+    baseForOwn = __webpack_require__(83),
     baseIteratee = __webpack_require__(26),
     getPrototype = __webpack_require__(221),
     isArray = __webpack_require__(8),
@@ -46358,7 +46416,7 @@ module.exports = transform;
 
 var baseIsMatch = __webpack_require__(167),
     getMatchData = __webpack_require__(208),
-    matchesStrictComparable = __webpack_require__(96);
+    matchesStrictComparable = __webpack_require__(97);
 
 /**
  * The base implementation of `_.matches` which doesn't clone `source`.
@@ -46384,8 +46442,8 @@ module.exports = baseMatches;
 /* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stack = __webpack_require__(87),
-    baseIsEqual = __webpack_require__(89);
+var Stack = __webpack_require__(88),
+    baseIsEqual = __webpack_require__(90);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -46719,7 +46777,7 @@ module.exports = stackSet;
 var isFunction = __webpack_require__(39),
     isMasked = __webpack_require__(179),
     isObject = __webpack_require__(15),
-    toSource = __webpack_require__(88);
+    toSource = __webpack_require__(89);
 
 /**
  * Used to match `RegExp`
@@ -47146,11 +47204,11 @@ module.exports = mapCacheSet;
 /* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stack = __webpack_require__(87),
-    equalArrays = __webpack_require__(90),
+var Stack = __webpack_require__(88),
+    equalArrays = __webpack_require__(91),
     equalByTag = __webpack_require__(198),
     equalObjects = __webpack_require__(201),
-    getTag = __webpack_require__(92),
+    getTag = __webpack_require__(93),
     isArray = __webpack_require__(8),
     isBuffer = __webpack_require__(36),
     isTypedArray = __webpack_require__(38);
@@ -47309,10 +47367,10 @@ module.exports = arraySome;
 /* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     Uint8Array = __webpack_require__(199),
     eq = __webpack_require__(43),
-    equalArrays = __webpack_require__(90),
+    equalArrays = __webpack_require__(91),
     mapToArray = __webpack_require__(200),
     setToArray = __webpack_require__(62);
 
@@ -47581,7 +47639,7 @@ module.exports = getAllKeys;
 /* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayPush = __webpack_require__(91),
+var arrayPush = __webpack_require__(92),
     isArray = __webpack_require__(8);
 
 /**
@@ -47698,7 +47756,7 @@ module.exports = Promise;
 /* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isStrictComparable = __webpack_require__(95),
+var isStrictComparable = __webpack_require__(96),
     keys = __webpack_require__(18);
 
 /**
@@ -47728,12 +47786,12 @@ module.exports = getMatchData;
 /* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsEqual = __webpack_require__(89),
-    get = __webpack_require__(97),
+var baseIsEqual = __webpack_require__(90),
+    get = __webpack_require__(98),
     hasIn = __webpack_require__(215),
     isKey = __webpack_require__(64),
-    isStrictComparable = __webpack_require__(95),
-    matchesStrictComparable = __webpack_require__(96),
+    isStrictComparable = __webpack_require__(96),
+    matchesStrictComparable = __webpack_require__(97),
     toKey = __webpack_require__(47);
 
 /** Used to compose bitmasks for value comparisons. */
@@ -47945,7 +48003,7 @@ module.exports = toString;
 /* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     arrayMap = __webpack_require__(65),
     isArray = __webpack_require__(8),
     isSymbol = __webpack_require__(46);
@@ -48047,7 +48105,7 @@ module.exports = baseHasIn;
 /* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(99),
+var castPath = __webpack_require__(100),
     isArguments = __webpack_require__(35),
     isArray = __webpack_require__(8),
     isIndex = __webpack_require__(37),
@@ -48150,7 +48208,7 @@ module.exports = baseProperty;
 /* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGet = __webpack_require__(98);
+var baseGet = __webpack_require__(99);
 
 /**
  * A specialized version of `baseProperty` which supports deep paths.
@@ -48172,7 +48230,7 @@ module.exports = basePropertyDeep;
 /* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(86);
+var overArg = __webpack_require__(87);
 
 /** Built-in value references. */
 var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -48187,7 +48245,7 @@ module.exports = getPrototype;
 "use strict";
 
 
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 
 /**
  * A handler capable of creating a new element under a provided parent
@@ -48297,7 +48355,7 @@ function ensureNotNull(prop, name) {
 
 var forEach = __webpack_require__(14);
 
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 
 /**
  * A handler that implements a BPMN 2.0 property update
@@ -48578,8 +48636,8 @@ MultiCommandHandler.prototype.preExecute = function(context) {
 "use strict";
 
 
-var createDropdown = __webpack_require__(5).createDropdown,
-    escapeHTML = __webpack_require__(5).escapeHTML;
+var createDropdown = __webpack_require__(6).createDropdown,
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query,
@@ -48592,8 +48650,8 @@ var domify = __webpack_require__(2).domify,
     domMatches = __webpack_require__(2).matches;
 
 var forEach = __webpack_require__(14),
-    filter = __webpack_require__(100),
-    get = __webpack_require__(97),
+    filter = __webpack_require__(101),
+    get = __webpack_require__(98),
     keys = __webpack_require__(18),
     isEmpty = __webpack_require__(228),
     isArray = __webpack_require__(8),
@@ -48606,9 +48664,9 @@ var forEach = __webpack_require__(14),
     map = __webpack_require__(251),
     reduce = __webpack_require__(253);
 
-var updateSelection = __webpack_require__(109);
+var updateSelection = __webpack_require__(110);
 
-var scrollTabs = __webpack_require__(356).default;
+var scrollTabs = __webpack_require__(359).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -49964,7 +50022,7 @@ function normalizeEndOfLineSequences(string) {
 /* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28);
+var baseEach = __webpack_require__(29);
 
 /**
  * The base implementation of `_.filter` without support for iteratee shorthands.
@@ -49991,8 +50049,8 @@ module.exports = baseFilter;
 /* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseKeys = __webpack_require__(85),
-    getTag = __webpack_require__(92),
+var baseKeys = __webpack_require__(86),
+    getTag = __webpack_require__(93),
     isArguments = __webpack_require__(35),
     isArray = __webpack_require__(8),
     isArrayLike = __webpack_require__(19),
@@ -50151,8 +50209,8 @@ module.exports = overRest;
 /***/ (function(module, exports, __webpack_require__) {
 
 var constant = __webpack_require__(232),
-    defineProperty = __webpack_require__(102),
-    identity = __webpack_require__(31);
+    defineProperty = __webpack_require__(103),
+    identity = __webpack_require__(32);
 
 /**
  * The base implementation of `setToString` without support for hot loop shorting.
@@ -50211,7 +50269,7 @@ module.exports = constant;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseDifference = __webpack_require__(234),
-    baseFlatten = __webpack_require__(106),
+    baseFlatten = __webpack_require__(107),
     baseUniq = __webpack_require__(239);
 
 /**
@@ -50254,9 +50312,9 @@ module.exports = baseXor;
 
 var SetCache = __webpack_require__(60),
     arrayIncludes = __webpack_require__(68),
-    arrayIncludesWith = __webpack_require__(105),
+    arrayIncludesWith = __webpack_require__(106),
     arrayMap = __webpack_require__(65),
-    baseUnary = __webpack_require__(84),
+    baseUnary = __webpack_require__(85),
     cacheHas = __webpack_require__(61);
 
 /** Used as the size to enable large array optimizations. */
@@ -50325,7 +50383,7 @@ module.exports = baseDifference;
 /* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFindIndex = __webpack_require__(104),
+var baseFindIndex = __webpack_require__(105),
     baseIsNaN = __webpack_require__(236),
     strictIndexOf = __webpack_require__(237);
 
@@ -50398,7 +50456,7 @@ module.exports = strictIndexOf;
 /* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(30),
+var Symbol = __webpack_require__(31),
     isArguments = __webpack_require__(35),
     isArray = __webpack_require__(8);
 
@@ -50426,7 +50484,7 @@ module.exports = isFlattenable;
 
 var SetCache = __webpack_require__(60),
     arrayIncludes = __webpack_require__(68),
-    arrayIncludesWith = __webpack_require__(105),
+    arrayIncludesWith = __webpack_require__(106),
     cacheHas = __webpack_require__(61),
     createSet = __webpack_require__(240),
     setToArray = __webpack_require__(62);
@@ -50502,8 +50560,8 @@ module.exports = baseUniq;
 /* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Set = __webpack_require__(93),
-    noop = __webpack_require__(107),
+var Set = __webpack_require__(94),
+    noop = __webpack_require__(108),
     setToArray = __webpack_require__(62);
 
 /** Used as references for various `Number` constants. */
@@ -50568,7 +50626,7 @@ module.exports = isArrayLikeObject;
 
 var isObject = __webpack_require__(15),
     now = __webpack_require__(243),
-    toNumber = __webpack_require__(108);
+    toNumber = __webpack_require__(109);
 
 /** Error message constants. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -50842,7 +50900,7 @@ module.exports = trimmedEndIndex;
 /* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFlatten = __webpack_require__(106);
+var baseFlatten = __webpack_require__(107);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -50972,7 +51030,7 @@ module.exports = arrayAggregator;
 /* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28);
+var baseEach = __webpack_require__(29);
 
 /**
  * Aggregates elements of `collection` on `accumulator` with keys transformed
@@ -51058,7 +51116,7 @@ module.exports = map;
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(28),
+var baseEach = __webpack_require__(29),
     isArrayLike = __webpack_require__(19);
 
 /**
@@ -51087,7 +51145,7 @@ module.exports = baseMap;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayReduce = __webpack_require__(254),
-    baseEach = __webpack_require__(28),
+    baseEach = __webpack_require__(29),
     baseIteratee = __webpack_require__(26),
     baseReduce = __webpack_require__(255),
     isArray = __webpack_require__(8);
@@ -51212,17 +51270,17 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
 var ElementHelper = __webpack_require__(48),
-    SequenceFlowHelper = __webpack_require__(110),
+    SequenceFlowHelper = __webpack_require__(111),
     suppressValidationError = __webpack_require__(9).suppressValidationError;
 
 var createSimulationParametersTab = __webpack_require__(258),
-    createTaskTab = __webpack_require__(300),
-    createTimetableTab = __webpack_require__(305),
-    createResourceTab = __webpack_require__(317),
-    createGatewayTab = __webpack_require__(325),
-    createCustomTab = __webpack_require__(328),
-    createAuxTab = __webpack_require__(332),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(341);
+    createTaskTab = __webpack_require__(301),
+    createTimetableTab = __webpack_require__(306),
+    createResourceTab = __webpack_require__(318),
+    createGatewayTab = __webpack_require__(326),
+    createCustomTab = __webpack_require__(329),
+    createAuxTab = __webpack_require__(335),
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(344);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -51476,10 +51534,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, show
 var ProcessInstancesField = __webpack_require__(261),
     StartDateField = __webpack_require__(294),
     StartTimeField = __webpack_require__(295),
-    TrimStartField = __webpack_require__(296),
-    TrimEndField = __webpack_require__(297),
-    DistributionFields = __webpack_require__(298),
-    CurrencySelectBox = __webpack_require__(299);
+    TimeTableField= __webpack_require__(296),
+    TrimStartField = __webpack_require__(297),
+    TrimEndField = __webpack_require__(298),
+    DistributionFields = __webpack_require__(299),
+    CurrencySelectBox = __webpack_require__(300);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -51491,6 +51550,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
     ProcessInstancesField(bpmnFactory, elementRegistry, translate),
     StartDateField(bpmnFactory, elementRegistry, translate),
     StartTimeField(bpmnFactory, elementRegistry, translate),
+    TimeTableField(bpmnFactory, elementRegistry, translate),
     TrimStartField(bpmnFactory, elementRegistry, translate),
     TrimEndField(bpmnFactory, elementRegistry, translate),
     CurrencySelectBox(bpmnFactory, elementRegistry, translate)
@@ -51503,7 +51563,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4);
 
 var ProcessSimulationHelper = __webpack_require__(13),
@@ -51559,7 +51619,7 @@ var domify = __webpack_require__(2).domify;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(5).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -51641,15 +51701,15 @@ module.exports = checkbox;
 "use strict";
 
 
-var assign = __webpack_require__(113),
-    find = __webpack_require__(115);
+var assign = __webpack_require__(114),
+    find = __webpack_require__(116);
 
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
-var selectEntryFactory = __webpack_require__(112),
+var selectEntryFactory = __webpack_require__(113),
     entryFieldDescription = __webpack_require__(16);
 
 
@@ -51770,7 +51830,7 @@ module.exports = comboBox;
 /* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assignValue = __webpack_require__(114),
+var assignValue = __webpack_require__(115),
     baseAssignValue = __webpack_require__(69);
 
 /**
@@ -51926,9 +51986,9 @@ module.exports = createFind;
 /* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFindIndex = __webpack_require__(104),
+var baseFindIndex = __webpack_require__(105),
     baseIteratee = __webpack_require__(26),
-    toInteger = __webpack_require__(116);
+    toInteger = __webpack_require__(117);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -51987,7 +52047,7 @@ module.exports = findIndex;
 /* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toNumber = __webpack_require__(108);
+var toNumber = __webpack_require__(109);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0,
@@ -52040,7 +52100,7 @@ module.exports = toFinite;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -52089,7 +52149,7 @@ module.exports = textBox;
 "use strict";
 
 
-var textField = __webpack_require__(111);
+var textField = __webpack_require__(112);
 
 /**
  * This function is a wrapper around TextInputEntryFactory.
@@ -52152,7 +52212,7 @@ module.exports = validationAwareTextField;
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var cmdHelper = __webpack_require__(4);
 
@@ -52160,7 +52220,7 @@ var domQuery = __webpack_require__(2).query,
     domAttr = __webpack_require__(2).attr,
     domClosest = __webpack_require__(2).closest;
 
-var filter = __webpack_require__(100),
+var filter = __webpack_require__(101),
     forEach = __webpack_require__(14),
     keys = __webpack_require__(18);
 
@@ -52168,7 +52228,7 @@ var domify = __webpack_require__(2).domify;
 
 var entryFieldDescription = __webpack_require__(16);
 
-var updateSelection = __webpack_require__(109);
+var updateSelection = __webpack_require__(110);
 
 var TABLE_ROW_DIV_SNIPPET = '<div class="bpp-field-wrapper bpp-table-row">';
 var DELETE_ROW_BUTTON_SNIPPET = '<button class="action-button clear" data-action="deleteElement">' +
@@ -52548,7 +52608,7 @@ module.exports = label;
 
 var domify = __webpack_require__(2).domify;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -52702,16 +52762,16 @@ module.exports = bind;
 /* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSetData = __webpack_require__(117),
+var baseSetData = __webpack_require__(118),
     createBind = __webpack_require__(277),
     createCurry = __webpack_require__(278),
-    createHybrid = __webpack_require__(119),
+    createHybrid = __webpack_require__(120),
     createPartial = __webpack_require__(289),
-    getData = __webpack_require__(123),
+    getData = __webpack_require__(124),
     mergeData = __webpack_require__(290),
-    setData = __webpack_require__(126),
-    setWrapToString = __webpack_require__(127),
-    toInteger = __webpack_require__(116);
+    setData = __webpack_require__(127),
+    setWrapToString = __webpack_require__(128),
+    toInteger = __webpack_require__(117);
 
 /** Error message constants. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -52850,8 +52910,8 @@ module.exports = createBind;
 
 var apply = __webpack_require__(67),
     createCtor = __webpack_require__(49),
-    createHybrid = __webpack_require__(119),
-    createRecurry = __webpack_require__(122),
+    createHybrid = __webpack_require__(120),
+    createRecurry = __webpack_require__(123),
     getHolder = __webpack_require__(72),
     replaceHolders = __webpack_require__(50),
     root = __webpack_require__(12);
@@ -52928,7 +52988,7 @@ module.exports = countHolders;
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(70),
-    getData = __webpack_require__(123),
+    getData = __webpack_require__(124),
     getFuncName = __webpack_require__(281),
     lodash = __webpack_require__(283);
 
@@ -53009,7 +53069,7 @@ module.exports = realNames;
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(70),
-    LodashWrapper = __webpack_require__(124),
+    LodashWrapper = __webpack_require__(125),
     baseLodash = __webpack_require__(71),
     isArray = __webpack_require__(8),
     isObjectLike = __webpack_require__(25),
@@ -53162,8 +53222,8 @@ module.exports = lodash;
 /***/ (function(module, exports, __webpack_require__) {
 
 var LazyWrapper = __webpack_require__(70),
-    LodashWrapper = __webpack_require__(124),
-    copyArray = __webpack_require__(125);
+    LodashWrapper = __webpack_require__(125),
+    copyArray = __webpack_require__(126);
 
 /**
  * Creates a clone of `wrapper`.
@@ -53294,7 +53354,7 @@ module.exports = updateWrapDetails;
 /* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var copyArray = __webpack_require__(125),
+var copyArray = __webpack_require__(126),
     isIndex = __webpack_require__(37);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -53378,8 +53438,8 @@ module.exports = createPartial;
 /* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var composeArgs = __webpack_require__(120),
-    composeArgsRight = __webpack_require__(121),
+var composeArgs = __webpack_require__(121),
+    composeArgsRight = __webpack_require__(122),
     replaceHolders = __webpack_require__(50);
 
 /** Used as the internal argument placeholder. */
@@ -53486,7 +53546,7 @@ var assign = __webpack_require__(0).assign,
     forEach = __webpack_require__(0).forEach,
     debounce = __webpack_require__(0).debounce;
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -53790,7 +53850,7 @@ function setPosition(el, x, y) {
 "use strict";
 
 
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domQuery = __webpack_require__(2).query;
 
 
@@ -53920,7 +53980,7 @@ function noop() {}
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
-    escapeHTML = __webpack_require__(5).escapeHTML;
+    escapeHTML = __webpack_require__(6).escapeHTML;
 
 var entryFieldDescription = __webpack_require__(16);
 
@@ -54121,7 +54181,100 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
+  TimetableHelper = __webpack_require__(73);
+
+module.exports = function (bpmnFactory, elementRegistry, translate) {
+
+  var timetables;
+  var selectedDefault;
+
+  return entryFactory.selectBox(translate, {
+    id: 'arrivalTimetable',
+    label: translate('timetableEntry.label'),
+    modelProperty: 'arrivalTimetable',
+    selectOptions: function (_element, _inputNode) {
+      let timetableOptions = [];
+      timetables = TimetableHelper.getTimetables(bpmnFactory, elementRegistry).values || [];
+      let currentDefault = getCurrentDefaultItem();
+      selectedDefault = currentDefault ? currentDefault.id : '';
+
+      let timetablesWithNoEmptyName = timetables.filter(function (timetable) {
+        return timetable.name;
+      });
+
+      timetablesWithNoEmptyName.forEach(function (timetable) {
+        timetableOptions.push({
+          name: timetable.name,
+          value: timetable.id
+        });
+      });
+
+      return timetableOptions;
+    },
+
+    get: function (element, node) {
+      return { arrivalTimetable: selectedDefault };
+    },
+
+    set: function (element, values, node) {
+      selectedDefault = values.arrivalTimetable;
+
+      let currentTimetable = getCurrentDefaultItem();
+      let updateTimetable = getNewtDefaultItem(values.arrivalTimetable);
+
+      if (currentTimetable && updateTimetable && currentTimetable.id === updateTimetable.id) {
+        return;
+      }
+
+      if (currentTimetable && currentTimetable.default) {
+        delete currentTimetable.default;
+      }
+      if (updateTimetable) {
+        updateTimetable.default = 'true';
+      }
+    }
+
+  });
+
+
+
+  function getCurrentDefaultItem() {
+    if (!timetables || timetables.length == 0) {
+      return [];
+    }
+    let currentDefault = timetables.filter(function (timetable) {
+      return timetable.default;
+    });
+
+    if (currentDefault && currentDefault.length > 0) {
+      return currentDefault[0];
+    }
+
+  }
+
+  function getNewtDefaultItem(newTimetableId) {
+    if (!timetables || timetables.length == 0) {
+      return [];
+    }
+
+    let newDefault = timetables.filter(function (timetable) {
+      return timetable.id === newTimetableId;
+    });
+
+    if (newDefault && newDefault.length > 0) {
+      return newDefault[0];
+    }
+
+  }
+};
+
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(9),
     ProcessSimulationHelper = __webpack_require__(13);
@@ -54166,10 +54319,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationHelper = __webpack_require__(9),
     ProcessSimulationHelper = __webpack_require__(13);
@@ -54214,12 +54367,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var distributionEntries = __webpack_require__(73),
+var distributionEntries = __webpack_require__(74),
     ProcessSimulationHelper = __webpack_require__(13),
-    DistributionHelper = __webpack_require__(74);
+    DistributionHelper = __webpack_require__(75);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -54235,10 +54388,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     ProcessSimulationHelper = __webpack_require__(13);
 
@@ -54290,11 +54443,11 @@ function createCurrencyOptions() {
 }
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTaskGroups = __webpack_require__(301);
+    createTaskGroups = __webpack_require__(302);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -54314,12 +54467,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    getFlowElementsByType = __webpack_require__(75),
-    createTaskEntries = __webpack_require__(302);
+    getFlowElementsByType = __webpack_require__(76),
+    createTaskEntries = __webpack_require__(303);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -54349,11 +54502,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TaskResourceSelectBox = __webpack_require__(303),
-    DistributionFields = __webpack_require__(304);
+var TaskResourceSelectBox = __webpack_require__(304),
+    DistributionFields = __webpack_require__(305);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var id = options.task.id;
@@ -54369,12 +54522,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
-    ResourceHelper = __webpack_require__(128),
+    ResourceHelper = __webpack_require__(130),
     ElementHelper = __webpack_require__(48);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -54420,12 +54573,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var distributionEntries = __webpack_require__(73),
+var distributionEntries = __webpack_require__(74),
     ElementHelper = __webpack_require__(48),
-    DistributionHelper = __webpack_require__(74);
+    DistributionHelper = __webpack_require__(75);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -54444,11 +54597,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createTimetableGroups = __webpack_require__(306);
+    createTimetableGroups = __webpack_require__(307);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -54468,12 +54621,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createTimetableEntry = __webpack_require__(307),
-    createTimetableDetailEntries = __webpack_require__(308),
-    createTimeslotDetailEntries = __webpack_require__(311);
+var createTimetableEntry = __webpack_require__(308),
+    createTimetableDetailEntries = __webpack_require__(309),
+    createTimeslotDetailEntries = __webpack_require__(312);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -54524,15 +54677,15 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    extensionElementsEntry = __webpack_require__(76);
+    extensionElementsEntry = __webpack_require__(77);
 
 var suppressValidationError = __webpack_require__(9).suppressValidationError;
 
-var TimetableHelper = __webpack_require__(129);
+var TimetableHelper = __webpack_require__(73);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -54618,11 +54771,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimetableNameField = __webpack_require__(309),
-    createTimeslotEntry = __webpack_require__(310);
+var TimetableNameField = __webpack_require__(310),
+    createTimeslotEntry = __webpack_require__(311);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
 
@@ -54646,10 +54799,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(9);
 
@@ -54699,12 +54852,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    extensionElementsEntry = __webpack_require__(76),
-    RuleHelper = __webpack_require__(130),
+    extensionElementsEntry = __webpack_require__(77),
+    RuleHelper = __webpack_require__(129),
     suppressValidationError = __webpack_require__(9).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, options) {
@@ -54772,14 +54925,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, opti
 };
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var TimeslotNameField = __webpack_require__(312),
-    FromWeekDaySelectBox = __webpack_require__(313),
-    ToWeekDaySelectBox = __webpack_require__(314),
-    FromTimeField = __webpack_require__(315),
-    ToTimeField = __webpack_require__(316);
+var TimeslotNameField = __webpack_require__(313),
+    FromWeekDaySelectBox = __webpack_require__(314),
+    ToWeekDaySelectBox = __webpack_require__(315),
+    FromTimeField = __webpack_require__(316),
+    ToTimeField = __webpack_require__(317);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -54818,10 +54971,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(9);
 
@@ -54876,10 +55029,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(131),
     validationErrorHelper = __webpack_require__(9);
@@ -54935,10 +55088,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     getWeekDays = __webpack_require__(131),
     validationErrorHelper = __webpack_require__(9);
@@ -55006,7 +55159,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
@@ -55045,7 +55198,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
@@ -55104,11 +55257,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createResourceGroups = __webpack_require__(318);
+    createResourceGroups = __webpack_require__(319);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -55128,11 +55281,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createResourceEntry = __webpack_require__(319),
-    createResourceDetailEntries = __webpack_require__(320);
+var createResourceEntry = __webpack_require__(320),
+    createResourceDetailEntries = __webpack_require__(321);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -55165,12 +55318,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cmdHelper = __webpack_require__(4),
-    extensionElementsEntry = __webpack_require__(76),
-    ResourceHelper = __webpack_require__(128),
+    extensionElementsEntry = __webpack_require__(77),
+    ResourceHelper = __webpack_require__(130),
     suppressValidationError = __webpack_require__(9).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -55240,24 +55393,22 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ResourceTimetableSelectBox = __webpack_require__(321),
-    ResourceNameField = __webpack_require__(322),
-    ResourceAmountField = __webpack_require__(323),
-    ResourceCostField = __webpack_require__(324);
+var ResourceTimetableSelectBox = __webpack_require__(322),
+    ResourceNameField = __webpack_require__(323),
+    ResourceAmountField = __webpack_require__(324),
+    ResourceCostField = __webpack_require__(325);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
   var entries = [];
-
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
@@ -55270,12 +55421,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
-    TimetableHelper = __webpack_require__(129);
+    TimetableHelper = __webpack_require__(73);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -55323,10 +55474,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(9);
 
@@ -55382,10 +55533,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(9);
 
@@ -55440,10 +55591,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var entryFactory = __webpack_require__(11),
+var entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
     validationErrorHelper = __webpack_require__(9);
 
@@ -55500,11 +55651,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createGatewayGroups = __webpack_require__(326);
+    createGatewayGroups = __webpack_require__(327);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -55525,13 +55676,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is,
-    getFlowElementsByType = __webpack_require__(75),
-    createGatewayEntries = __webpack_require__(327);
+    getFlowElementsByType = __webpack_require__(76),
+    createGatewayEntries = __webpack_require__(328);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -55565,13 +55716,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    entryFactory = __webpack_require__(11),
+    entryFactory = __webpack_require__(10),
     cmdHelper = __webpack_require__(4),
-    SequenceFlowHelper = __webpack_require__(110);
+    SequenceFlowHelper = __webpack_require__(111);
 
 var validationErrorHelper = __webpack_require__(9);
 var fixNumber = __webpack_require__(20).fixNumber;
@@ -55639,11 +55790,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createCustomGroups = __webpack_require__(329);
+    createCustomGroups = __webpack_require__(330);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
 
@@ -55670,12 +55821,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 };
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is;
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var properties = __webpack_require__(330);
+var properties = __webpack_require__(331);
+var createCustomEntries = __webpack_require__(333);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var bo = getBusinessObject(element),
@@ -55688,7 +55840,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
   var customGroup = {
     id : groupId,
     label: groupLabel,
-    entries: []
+    entries: createCustomEntries(element, bpmnFactory, elementRegistry, translate)
   };
 
   properties(customGroup, element, bpmnFactory, translate);
@@ -55699,14 +55851,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 };
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var properties = __webpack_require__(331),
-    elementHelper = __webpack_require__(6),
+var properties = __webpack_require__(332),
+    elementHelper = __webpack_require__(7),
     cmdHelper = __webpack_require__(4);
 
 
@@ -55739,7 +55891,7 @@ module.exports = function(group, element, bpmnFactory, translate) {
 
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55748,16 +55900,16 @@ module.exports = function(group, element, bpmnFactory, translate) {
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
-var factory = __webpack_require__(11);
+var factory = __webpack_require__(10);
 
-var elementHelper = __webpack_require__(6),
+var elementHelper = __webpack_require__(7),
     extensionElementsHelper = __webpack_require__(21),
     cmdHelper = __webpack_require__(4),
-    utils = __webpack_require__(5);
+    utils = __webpack_require__(6);
 
-var assign = __webpack_require__(113),
+var assign = __webpack_require__(114),
     forEach = __webpack_require__(14),
-    find = __webpack_require__(115);
+    find = __webpack_require__(116);
 
 function generatePropertyId() {
   return utils.nextId('Property_');
@@ -55958,11 +56110,110 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
 
 /***/ }),
-/* 332 */
+/* 333 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var LinkedSubprocessField = __webpack_require__(334);
+
+module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+
+  var entries = [];
+
+  entries.push(
+    LinkedSubprocessField(element, bpmnFactory, elementRegistry, translate)
+  );
+
+  return entries;
+};
+
+/***/ }),
+/* 334 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var domify = __webpack_require__(2).domify;
+var domEvent = __webpack_require__(2).event;
+var is = __webpack_require__(1).is;
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+
+module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+    let html = domify('<div id="link-subprocess-details"></div>');
+
+    if (is(element, 'bpmn:SubProcess')) {
+        var bo = getBusinessObject(element);
+        let linkedProcessName = bo.get("linked-process") || 'None';
+        let isLinked = false;
+
+        if (linkedSubProcesses) {
+            linkedProcessName = linkedSubProcesses[element.id] || 'None';
+            isLinked = typeof linkedSubProcesses[element.id] === 'string';
+        }
+
+        let linkedProcessLabel = domify(`<label id="link-subprocess-label">Linked subprocess:</label>`);
+        let linkedProcessLink = domify(`<span id="link-subprocess-view">${linkedProcessName}</span>`);
+        let editBtn = domify(`<input id="link-subprocess-edit" value="Edit" type="button">`);
+        let unlinkBtn = domify(`<input id="link-subprocess-remove" value="Unlink" type="button">`);
+
+        if (isLinked) {
+            linkedProcessLink.classList.add('link-subprocess-view-link');
+        } else {
+            linkedProcessLink.classList.remove('link-subprocess-view-link');
+        }
+
+        html.appendChild(linkedProcessLabel);
+        html.appendChild(linkedProcessLink);
+        html.appendChild(editBtn);
+        html.appendChild(unlinkBtn);
+
+        domEvent.bind(linkedProcessLink, 'click', function () {
+            if (Apromore.BPMNEditor.viewSubprocess) {
+                Apromore.BPMNEditor.viewSubprocess(element.id);
+            } else {
+                console.log('view subprocess function not found');
+            }
+        })
+
+        domEvent.bind(editBtn, 'click', function () {
+            if (Apromore.BPMNEditor.linkSubprocess) {
+                Apromore.BPMNEditor.linkSubprocess(element.id);
+            } else {
+                console.log('link subprocess function not found');
+            }
+        })
+
+        domEvent.bind(unlinkBtn, 'click', function () {
+            if (Apromore.BPMNEditor.unlinkSubprocess) {
+                Apromore.BPMNEditor.unlinkSubprocess(element.id);
+            } else {
+                console.log('unlink subprocess function not found');
+            }
+        })
+
+    }
+
+    // default validation method
+    var defaultFunction = function() {
+      return {};
+    };
+
+    return {
+        id: 'link-subprocess',
+        description: '',
+        get: defaultFunction,
+        set: defaultFunction,
+        validate: defaultFunction,
+        html: html,
+        type: 'text',
+        cssClasses: ['linked-subprocess']
+    };
+}
+
+
+/***/ }),
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createAuxGroups = __webpack_require__(333);
+    createAuxGroups = __webpack_require__(336);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
@@ -55982,11 +56233,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 333 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var createAuxEntries = __webpack_require__(334);
+var createAuxEntries = __webpack_require__(337);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
   var bo = getBusinessObject(element),
@@ -56005,18 +56256,18 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 334 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
-var entryFactory = __webpack_require__(11);
+var entryFactory = __webpack_require__(10);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var elementHelper = __webpack_require__(6);
+var elementHelper = __webpack_require__(7);
 var extensionElementsHelper = __webpack_require__(21);
-var IconPickerField = __webpack_require__(335);
-var IconSetPickerField = __webpack_require__(336);
-var ImagePickerField = __webpack_require__(340);
-var { AUX_PROPS } = __webpack_require__(10);
+var IconPickerField = __webpack_require__(338);
+var IconSetPickerField = __webpack_require__(339);
+var ImagePickerField = __webpack_require__(343);
+var { AUX_PROPS } = __webpack_require__(11);
 
 function getExtensionElements(element, bpmnFactory) {
   var extensionElements = element.extensionElements;
@@ -56197,19 +56448,19 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   ];
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 335 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
-var { ensureNotNull, setDefaultParameters } = __webpack_require__(77);
+var { ensureNotNull, setDefaultParameters } = __webpack_require__(78);
 
 var ICONS = [
   [
@@ -56302,19 +56553,19 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 336 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var xss = __webpack_require__(34);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var elementHelper = __webpack_require__(6);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var elementHelper = __webpack_require__(7);
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
-var { ensureNotNull, setDefaultParameters } = __webpack_require__(77);
-var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(10);
+var { ensureNotNull, setDefaultParameters } = __webpack_require__(78);
+var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(11);
 
 var ICONS = [
   [
@@ -56426,11 +56677,12 @@ function updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus) {
 function updateIndices() {
   let setContainer = $('#ap-bpmn-icon-set');
   $('.icon-item', setContainer).each((index, itemEl) => {
-    $(itemEl).data('icon-index', index);
-    $('.icon-url', itemEl).data('icon-index', index);
-    $('.icon-text', itemEl).data('icon-index', index);
-    $('.icon-name', itemEl).data('icon-index', index);
-    $('.remove', itemEl).data('icon-index', index);
+    //Update DOM so the updated data-icon-index can be used as a selector
+    $(itemEl).attr('data-icon-index', index);
+    $('.icon-url', itemEl).attr('data-icon-index', index);
+    $('.icon-text', itemEl).attr('data-icon-index', index);
+    $('.icon-name', itemEl).attr('data-icon-index', index);
+    $('.remove', itemEl).attr('data-icon-index', index);
   })
 }
 
@@ -56453,7 +56705,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
   function showPickerSetFor(item, index) {
     $(SET_PICKER_SEL).detach().insertAfter(item);
     $(SET_PICKER_SEL).show();
-    $(SET_PICKER_SEL).data("icon-index", index);
+    $(SET_PICKER_SEL).attr('data-icon-index', index);
     let currentIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
     let currentIconName = currentIcon.data('icon-name')
     selectIcon(currentIconName);
@@ -56476,7 +56728,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });
     iconEl.on('click', () => {
-      let index = $(event.currentTarget).data("icon-index");
+      let index = $(event.currentTarget).attr('data-icon-index');
       if (currentIndex === index) {
         $(SET_PICKER_SEL).hide();
         currentIndex = -1;
@@ -56487,7 +56739,7 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
     });
     eraseEl.on('click', () => {
       $(SET_PICKER_SEL).hide();
-      let index = $(event.target).data("icon-index");
+      let index = $(event.target).attr('data-icon-index');
       let row = $(`#ap-bpmn-icon-set .icon-item[data-icon-index=${index}]`);
       row.remove();
       updateIndices();
@@ -56538,7 +56790,7 @@ module.exports = function(options) {
         } else {
           newIconName = this.id;
         }
-        let index = $(SET_PICKER_SEL).data("icon-index");
+        let index = $(SET_PICKER_SEL).attr('data-icon-index');
         let rowIcon = $(`#ap-bpmn-icon-set .icon-name[data-icon-index=${index}]`);
         rowIcon.data('icon-name', newIconName);
         let iconNameEl = $('span', rowIcon);
@@ -56570,10 +56822,10 @@ module.exports = function(options) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 337 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -56583,7 +56835,7 @@ module.exports = function(options) {
  */
 
 var DEFAULT = __webpack_require__(133);
-var parseStyle = __webpack_require__(338);
+var parseStyle = __webpack_require__(341);
 var _ = __webpack_require__(134);
 
 
@@ -56689,7 +56941,7 @@ module.exports = FilterCSS;
 
 
 /***/ }),
-/* 338 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -56769,7 +57021,7 @@ module.exports = parseStyle;
 
 
 /***/ }),
-/* 339 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -56778,12 +57030,12 @@ module.exports = parseStyle;
  * @author Zongmin Lei<leizongmin@gmail.com>
  */
 
-var FilterCSS = __webpack_require__(78).FilterCSS;
+var FilterCSS = __webpack_require__(79).FilterCSS;
 var DEFAULT = __webpack_require__(132);
 var parser = __webpack_require__(135);
 var parseTag = parser.parseTag;
 var parseAttr = parser.parseAttr;
-var _ = __webpack_require__(79);
+var _ = __webpack_require__(80);
 
 /**
  * returns `true` if the input value is `undefined` or `null`
@@ -56986,16 +57238,16 @@ module.exports = FilterXSS;
 
 
 /***/ }),
-/* 340 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var cmdHelper = __webpack_require__(4);
-var escapeHTML = __webpack_require__(5).escapeHTML;
+var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
-var { ensureNotNull, setDefaultParameters } = __webpack_require__(77);
+var { ensureNotNull, setDefaultParameters } = __webpack_require__(78);
 
 const MAX_IMAGE_SIZE = 1000000; // 1MB max image size
 
@@ -57056,14 +57308,14 @@ module.exports = function(options) {
   return resource;
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 341 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(342);
+    intermediateAndBoundaryEventGroups = __webpack_require__(345);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -57079,12 +57331,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 342 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    getFlowElementsByType = __webpack_require__(75),
-    intermediateAndBoundaryEventEntries = __webpack_require__(343);
+    getFlowElementsByType = __webpack_require__(76),
+    intermediateAndBoundaryEventEntries = __webpack_require__(346);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -57118,12 +57370,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 343 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ElementHelper = __webpack_require__(48),
-    DistributionHelper = __webpack_require__(74),
-    distributionEntries = __webpack_require__(73);
+    DistributionHelper = __webpack_require__(75),
+    distributionEntries = __webpack_require__(74);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -57145,11 +57397,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 344 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(345);
-            var content = __webpack_require__(346);
+var api = __webpack_require__(348);
+            var content = __webpack_require__(349);
 
             content = content.__esModule ? content.default : content;
 
@@ -57169,7 +57421,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 345 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57444,7 +57696,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 346 */
+/* 349 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57461,7 +57713,7 @@ ___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: abs
 
 
 /***/ }),
-/* 347 */
+/* 350 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -57564,7 +57816,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 348 */
+/* 351 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -57661,16 +57913,23 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
-/* 349 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
 var colorNames = __webpack_require__(136);
-var swizzle = __webpack_require__(350);
+var swizzle = __webpack_require__(353);
 var hasOwnProperty = Object.hasOwnProperty;
 
 var reverseNames = {};
@@ -57913,13 +58172,13 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 350 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(351);
+var isArrayish = __webpack_require__(354);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -57949,7 +58208,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 351 */
+/* 354 */
 /***/ (function(module, exports) {
 
 module.exports = function isArrayish(obj) {
@@ -57964,11 +58223,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 352 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(137);
-var route = __webpack_require__(353);
+var route = __webpack_require__(356);
 
 var convert = {};
 
@@ -58048,7 +58307,7 @@ module.exports = convert;
 
 
 /***/ }),
-/* 353 */
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(137);
@@ -58151,7 +58410,7 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 354 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58359,7 +58618,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 355 */
+/* 358 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58380,7 +58639,7 @@ var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_brows
 var lodash = __webpack_require__(23);
 
 // EXTERNAL MODULE: ./node_modules/ids/dist/index.esm.js
-var index_esm = __webpack_require__(32);
+var index_esm = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/min-dash/dist/index.esm.js
 var dist_index_esm = __webpack_require__(0);
@@ -80155,49 +80414,6 @@ AutoPlaceSelectionBehavior.$inject = [
   autoPlace: [ 'type', AutoPlace ],
   autoPlaceSelectionBehavior: [ 'type', AutoPlaceSelectionBehavior ]
 });
-// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
-
-
-
-
-
-/**
- * Return true if element has any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {Array<string>} types
- *
- * @return {boolean}
- */
-function isAny(element, types) {
-  return Object(dist_index_esm["some"])(types, function(t) {
-    return Object(ModelUtil["is"])(element, t);
-  });
-}
-
-
-/**
- * Return the parent of the element with any of the given types.
- *
- * @param {djs.model.Base} element
- * @param {string|Array<string>} anyType
- *
- * @return {djs.model.Base}
- */
-function ModelingUtil_getParent(element, anyType) {
-
-  if (typeof anyType === 'string') {
-    anyType = [ anyType ];
-  }
-
-  while ((element = element.parent)) {
-    if (isAny(element, anyType)) {
-      return element;
-    }
-  }
-
-  return null;
-}
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/auto-place/BpmnAutoPlaceUtil.js
 
 
@@ -80222,7 +80438,7 @@ function BpmnAutoPlaceUtil_getNewShapePosition(source, element) {
     return getTextAnnotationPosition(source, element);
   }
 
-  if (isAny(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     return getDataElementPosition(source, element);
   }
 
@@ -84882,10 +85098,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
@@ -88178,12 +88396,12 @@ function BpmnReplace(
 
     // retain default flow's reference between inclusive <-> exclusive gateways and activities
     if (
-      isAny(oldBusinessObject, [
+      Object(ModelUtil["isAny"])(oldBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
       ]) &&
-      isAny(newBusinessObject, [
+      Object(ModelUtil["isAny"])(newBusinessObject, [
         'bpmn:ExclusiveGateway',
         'bpmn:InclusiveGateway',
         'bpmn:Activity'
@@ -89785,6 +90003,33 @@ ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
   __init__: [ 'replaceMenuProvider' ],
   replaceMenuProvider: [ 'type', ReplaceMenuProvider ]
 });
+// CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/util/ModelingUtil.js
+
+
+
+
+/**
+ * Return the parent of the element with any of the given types.
+ *
+ * @param {djs.model.Base} element
+ * @param {string|Array<string>} anyType
+ *
+ * @return {djs.model.Base}
+ */
+function ModelingUtil_getParent(element, anyType) {
+
+  if (typeof anyType === 'string') {
+    anyType = [ anyType ];
+  }
+
+  while ((element = element.parent)) {
+    if (Object(ModelUtil["isAny"])(element, anyType)) {
+      return element;
+    }
+  }
+
+  return null;
+}
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/resize/ResizeUtil.js
 
 
@@ -90356,7 +90601,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
 
-  if (isAny(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:Lane', 'bpmn:Participant' ]) && isExpanded(businessObject)) {
 
     var childLanes = getChildLanes(element);
 
@@ -90522,7 +90767,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
   }
 
   if (
-    isAny(businessObject, [
+    Object(ModelUtil["isAny"])(businessObject, [
       'bpmn:FlowNode',
       'bpmn:InteractionNode',
       'bpmn:DataObjectReference',
@@ -90567,7 +90812,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     });
   }
 
-  if (isAny(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
+  if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ])) {
     Object(dist_index_esm["assign"])(actions, {
       'connect': {
         group: 'connect',
@@ -90889,7 +91134,7 @@ function BpmnDistributeElements(distributeElements) {
 
   distributeElements.registerFilter(function(elements) {
     return Object(dist_index_esm["filter"])(elements, function(element) {
-      var cannotDistribute = isAny(element, [
+      var cannotDistribute = Object(ModelUtil["isAny"])(element, [
         'bpmn:Association',
         'bpmn:BoundaryEvent',
         'bpmn:DataInputAssociation',
@@ -91385,7 +91630,7 @@ function BpmnGridSnapping(eventBus) {
     var context = event.context,
         shape = event.shape;
 
-    if (isAny(shape, [
+    if (Object(ModelUtil["isAny"])(shape, [
       'bpmn:Participant',
       'bpmn:SubProcess',
       'bpmn:TextAnnotation'
@@ -93470,7 +93715,7 @@ function LabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     if (force ||
-        isAny(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
+        Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
         isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -93519,7 +93764,7 @@ LabelEditingProvider.prototype.activate = function(element) {
 
   // tasks
   if (
-    isAny(element, [
+    Object(ModelUtil["isAny"])(element, [
       'bpmn:Task',
       'bpmn:Participant',
       'bpmn:Lane',
@@ -93618,7 +93863,7 @@ LabelEditingProvider.prototype.getEditingBBox = function(element) {
 
   // internal labels for tasks and collapsed call activities,
   // sub processes and participants
-  if (isAny(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
       isCollapsedPool(element) ||
       isCollapsedSubProcess(element)) {
 
@@ -94390,7 +94635,7 @@ function getEventDefinition(element) {
 
 function shouldReplace(shape, host) {
   return !isLabel(shape) &&
-    isAny(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
+    Object(ModelUtil["isAny"])(shape, [ 'bpmn:IntermediateThrowEvent', 'bpmn:IntermediateCatchEvent' ]) && !!host;
 }
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/features/modeling/behavior/BoundaryEventBehavior.js
@@ -94502,7 +94747,7 @@ function RootElementReferenceBehavior(
   injector.invoke(CommandInterceptor, this);
 
   function canHaveRootElementReference(element) {
-    return isAny(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
+    return Object(ModelUtil["isAny"])(element, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ]) ||
       hasAnyEventDefinition(element, [
         'bpmn:ErrorEventDefinition',
         'bpmn:EscalationEventDefinition',
@@ -94531,7 +94776,7 @@ function RootElementReferenceBehavior(
   }
 
   function getRootElement(businessObject) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.get('messageRef');
     }
 
@@ -94542,7 +94787,7 @@ function RootElementReferenceBehavior(
   }
 
   function setRootElement(businessObject, rootElement) {
-    if (isAny(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
+    if (Object(ModelUtil["isAny"])(businessObject, [ 'bpmn:ReceiveTask', 'bpmn:SendTask' ])) {
       return businessObject.set('messageRef', rootElement);
     }
 
@@ -94714,7 +94959,7 @@ function FixHoverBehavior(elementRegistry, eventBus, canvas) {
 
     // ensure elements are not dropped onto a bpmn:Lane but onto
     // the underlying bpmn:Participant
-    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !isAny(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
+    if (Object(ModelUtil["is"])(hover, 'bpmn:Lane') && !Object(ModelUtil["isAny"])(shape, [ 'bpmn:Lane', 'bpmn:Participant' ])) {
       event.hover = getLanesRoot(hover);
       event.hoverGfx = elementRegistry.getGraphics(event.hover);
     }
@@ -95392,7 +95637,7 @@ function DataStoreBehavior(
         shape = context.shape,
         rootElement = canvas.getRootElement();
 
-    if (isAny(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
+    if (Object(ModelUtil["isAny"])(shape, [ 'bpmn:Participant', 'bpmn:SubProcess' ])
         && Object(ModelUtil["is"])(rootElement, 'bpmn:Collaboration')) {
       getDataStores(rootElement)
         .filter(function(dataStore) {
@@ -96301,7 +96546,7 @@ function IsHorizontalFix(eventBus) {
   this.executed([ 'shape.move', 'shape.create', 'shape.resize' ], function(event) {
     var bo = Object(ModelUtil["getBusinessObject"])(event.context.shape);
 
-    if (isAny(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
+    if (Object(ModelUtil["isAny"])(bo, elementTypesToUpdate) && !bo.di.get('isHorizontal')) {
 
       // set attribute directly to avoid modeling#updateProperty side effects
       bo.di.set('isHorizontal', true);
@@ -99207,7 +99452,7 @@ function canStartConnection(element) {
     return null;
   }
 
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:FlowNode',
     'bpmn:InteractionNode',
     'bpmn:DataObjectReference',
@@ -99462,7 +99707,7 @@ function canDrop(element, target, position) {
   }
 
   // allow moving DataInput / DataOutput within its original container only
-  if (isAny(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:DataInput', 'bpmn:DataOutput' ])) {
 
     if (element.parent) {
       return target === element.parent;
@@ -99486,7 +99731,7 @@ function canDrop(element, target, position) {
       return isExpanded(target);
     }
 
-    return isAny(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
+    return Object(ModelUtil["isAny"])(target, [ 'bpmn:Participant', 'bpmn:Lane' ]);
   }
 
   // disallow dropping data store reference if there is no process to append to
@@ -99500,8 +99745,8 @@ function canDrop(element, target, position) {
   // rendered and moved to top (Process or Collaboration level)
   //
   // artifacts may be placed wherever, too
-  if (isAny(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
-    return isAny(target, [
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Artifact', 'bpmn:DataAssociation', 'bpmn:DataStoreReference' ])) {
+    return Object(ModelUtil["isAny"])(target, [
       'bpmn:Collaboration',
       'bpmn:Lane',
       'bpmn:Participant',
@@ -99874,13 +100119,13 @@ function canConnectSequenceFlow(source, target) {
 
 function canConnectDataAssociation(source, target) {
 
-  if (isAny(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
+  if (Object(ModelUtil["isAny"])(source, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(target, [ 'bpmn:Activity', 'bpmn:ThrowEvent' ])) {
     return { type: 'bpmn:DataInputAssociation' };
   }
 
-  if (isAny(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
-      isAny(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
+  if (Object(ModelUtil["isAny"])(target, [ 'bpmn:DataObjectReference', 'bpmn:DataStoreReference' ]) &&
+      Object(ModelUtil["isAny"])(source, [ 'bpmn:Activity', 'bpmn:CatchEvent' ])) {
     return { type: 'bpmn:DataOutputAssociation' };
   }
 
@@ -99913,7 +100158,7 @@ function BpmnRules_canInsert(shape, flow, position) {
   // about connection rules (yet)
 
   return (
-    isAny(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
+    Object(ModelUtil["isAny"])(flow, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ]) &&
     !isLabel(flow) &&
     Object(ModelUtil["is"])(shape, 'bpmn:FlowNode') &&
     !Object(ModelUtil["is"])(shape, 'bpmn:BoundaryEvent') &&
@@ -100190,7 +100435,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
     }
 
     var entry = Object(dist_index_esm["find"])(orders, function(o) {
-      return isAny(element, [ o.type ]);
+      return Object(ModelUtil["isAny"])(element, [ o.type ]);
     });
 
     return entry && entry.order || { level: 1 };
@@ -100217,7 +100462,7 @@ function BpmnOrderingProvider(eventBus, canvas, translate) {
 
     while (actualParent) {
 
-      if (isAny(actualParent, containers)) {
+      if (Object(ModelUtil["isAny"])(actualParent, containers)) {
         break;
       }
 
@@ -102798,7 +103043,7 @@ BpmnFactory.$inject = [ 'moddle' ];
 
 
 BpmnFactory.prototype._needsId = function(element) {
-  return isAny(element, [
+  return Object(ModelUtil["isAny"])(element, [
     'bpmn:RootElement',
     'bpmn:FlowElement',
     'bpmn:MessageFlow',
@@ -102834,7 +103079,7 @@ BpmnFactory.prototype._ensureId = function(element) {
     prefix = 'Event';
   } else if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
     prefix = 'Gateway';
-  } else if (isAny(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
+  } else if (Object(ModelUtil["isAny"])(element, [ 'bpmn:SequenceFlow', 'bpmn:MessageFlow' ])) {
     prefix = 'Flow';
   } else {
     prefix = (element.$type || '').replace(/^[^:]*:/g, '');
@@ -103112,7 +103357,7 @@ function BpmnUpdater(
 
     // remove condition from connection on reconnect to new source
     // if new source can NOT have condional sequence flow
-    if (connectionBo.conditionExpression && !isAny(newSourceBo, [
+    if (connectionBo.conditionExpression && !Object(ModelUtil["isAny"])(newSourceBo, [
       'bpmn:Activity',
       'bpmn:ExclusiveGateway',
       'bpmn:InclusiveGateway'
@@ -110996,12 +111241,12 @@ function BpmnConnectSnapping(eventBus) {
       context.connectionStart = SnapUtil_mid(start);
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Event', 'bpmn:Gateway' ])) {
         snapToPosition(event, SnapUtil_mid(hover));
       }
 
       // snap hover
-      if (isAny(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
+      if (Object(ModelUtil["isAny"])(hover, [ 'bpmn:Task', 'bpmn:SubProcess' ])) {
         snapToTargetMid(event, hover);
       }
 
@@ -113001,7 +113246,7 @@ Modeler.prototype._modules = [].concat(
 );
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/index.js
-var bpmn_js_properties_panel = __webpack_require__(80);
+var bpmn_js_properties_panel = __webpack_require__(81);
 var bpmn_js_properties_panel_default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel);
 
 // EXTERNAL MODULE: ./node_modules/camunda-bpmn-moddle/resources/camunda.json
@@ -113018,7 +113263,7 @@ var provider_default = /*#__PURE__*/__webpack_require__.n(app_provider);
 var ap = __webpack_require__(142);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(344);
+var customModeler = __webpack_require__(347);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(144);
@@ -113035,7 +113280,7 @@ var ColorContextPad = __webpack_require__(145);
   colorContextPad: [ 'type', ColorContextPad["a" /* default */] ]
 });
 // EXTERNAL MODULE: ./node_modules/jquery/dist/jquery.js
-var jquery = __webpack_require__(7);
+var jquery = __webpack_require__(5);
 var jquery_default = /*#__PURE__*/__webpack_require__.n(jquery);
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/lib/helper/CmdHelper.js
@@ -113046,7 +113291,7 @@ var ExtensionElementsHelper = __webpack_require__(21);
 var ExtensionElementsHelper_default = /*#__PURE__*/__webpack_require__.n(ExtensionElementsHelper);
 
 // EXTERNAL MODULE: ./app/modules/attachment/common.js
-var common = __webpack_require__(10);
+var common = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./node_modules/interactjs/dist/interact.min.js
 var interact_min = __webpack_require__(146);
@@ -113122,6 +113367,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var dwidth = 120;
     var dheight = 120;
     var urlText;
+    var contentCount = 0;
 
     if ((!url || !url.length) && !img && !icons) {
       return;
@@ -113155,6 +113401,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
         }
       }
       $overlay.append(jquery_default()(`<div class="aux-image">${imgEl}</div>`));
+      contentCount++;
     }
     if (icons && icons.values && icons.values.length) {
       let iconEls = '';
@@ -113185,6 +113432,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
       })
       $footer.css('height', (iconCount * ICON_ITEM_HEIGHT) + 'px');
       $overlay.append($footer);
+      contentCount++;
     }
 
     $overlay.find('.toggle').click(function(e) {
@@ -113300,6 +113548,12 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var auxCls = "ap-aux-" + element.id;
     $overlay.parent().data("ap-el-id", element.id);
     $overlay.parent().addClass(auxCls);
+    if (!contentCount) {
+        $overlay.parent().addClass('empty');
+    } else {
+        $overlay.parent().removeClass('empty');
+    }
+
     $overlay.parent().css('width', width + 'px');
     $overlay.parent().css('height', height + 'px');
 
@@ -113673,7 +113927,2140 @@ ResizeTasks_ResizeTasks.$inject = [ 'bpmnRules', 'eventBus' ];
   resizeTasks: [ 'type', ResizeTasks_ResizeTasks ]
 });
 
+// CONCATENATED MODULE: ./app/modules/link-subprocess/LinkSubprocess.js
+
+
+
+
+
+const LinkSubprocess_TYPE = 'linkSubprocessBtn';
+
+function LinkSubprocess(eventBus, overlays) {
+
+    function createLinkSubprocessBtn(element) {
+        let id = element.id;
+        let subprocess = jquery_default()(`[data-element-id=${id}]`)[0];
+        let subprocessBBox = subprocess.getBBox();
+        let $overlay = jquery_default()(LinkSubprocess.OVERLAY_HTML);
+
+        $overlay.click(() => {
+            if (Apromore.BPMNEditor.clickSubprocessBtn) {
+                Apromore.BPMNEditor.clickSubprocessBtn(id);
+            } else {
+                console.log('click subprocess btn function not found');
+            }
+        });
+
+        overlays.remove({ element, type: LinkSubprocess_TYPE });
+        // attach an overlay to an element
+        overlays.add(element, LinkSubprocess_TYPE, {
+            position: {
+                bottom: 21,
+                left: subprocessBBox.width / 2 - 15
+            },
+            html: $overlay
+        });
+
+    }
+
+    eventBus.on('shape.added', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && !isExpanded(element)) {
+            LinkSubprocess_defer(function() {
+              createLinkSubprocessBtn(element);
+            });
+            return;
+        }
+
+    });
+
+    eventBus.on('shape.changed', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && !isExpanded(element)) {
+            LinkSubprocess_defer(function() {
+              createLinkSubprocessBtn(element);
+            });
+        } else {
+            overlays.remove({ element, type: LinkSubprocess_TYPE });
+        }
+
+    });
+
+    //Send an event when a subprocess is deleted to delete any links it has in db
+    eventBus.on('shape.remove', function(event) {
+        var element = event.element;
+
+        if (Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && Apromore.BPMNEditor.deleteSubprocess) {
+            let id = element.id;
+            Apromore.BPMNEditor.deleteSubprocess(id);
+        }
+
+    });
+
+}
+
+LinkSubprocess.$inject = [ 'eventBus', 'overlays' ];
+
+LinkSubprocess.OVERLAY_HTML =
+    '<div class="sub-process-marker-overlay" style="width:15px;height:15px">' +
+    '</div>';
+
+function LinkSubprocess_defer(fn) {
+    setTimeout(fn, 0);
+}
+
+// CONCATENATED MODULE: ./app/modules/link-subprocess/index.js
+
+
+/* harmony default export */ var link_subprocess = ({
+  __init__: [ 'linkSubprocess' ],
+  'linkSubprocess': [ 'type', LinkSubprocess ]
+});
+
+// CONCATENATED MODULE: ./app/modules/bpmn-renderer/CustomBpmnRenderer.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var CustomBpmnRenderer_RENDERER_IDS = new index_esm["default"]();
+
+var CustomBpmnRenderer_TASK_BORDER_RADIUS = 10;
+var CustomBpmnRenderer_INNER_OUTER_DIST = 3;
+
+var CustomBpmnRenderer_DEFAULT_FILL_OPACITY = .95,
+    CustomBpmnRenderer_HIGH_FILL_OPACITY = .35;
+
+var CustomBpmnRenderer_ELEMENT_LABEL_DISTANCE = 10;
+
+function CustomBpmnRenderer(
+    config, eventBus, styles, pathMap,
+    canvas, textRenderer, priority) {
+
+  BaseRenderer.call(this, eventBus, priority);
+
+  var defaultFillColor = config && config.defaultFillColor,
+      defaultStrokeColor = config && config.defaultStrokeColor,
+      defaultLabelColor = config && config.defaultLabelColor;
+
+  var rendererId = CustomBpmnRenderer_RENDERER_IDS.next();
+
+  var markers = {};
+
+  var computeStyle = styles.computeStyle;
+
+  function addMarker(id, options) {
+    var attrs = Object(dist_index_esm["assign"])({
+      fill: 'black',
+      strokeWidth: 1,
+      strokeLinecap: 'round',
+      strokeDasharray: 'none'
+    }, options.attrs);
+
+    var ref = options.ref || { x: 0, y: 0 };
+
+    var scale = options.scale || 1;
+
+    // fix for safari / chrome / firefox bug not correctly
+    // resetting stroke dash array
+    if (attrs.strokeDasharray === 'none') {
+      attrs.strokeDasharray = [10000, 1];
+    }
+
+    var marker = index_esm_create('marker');
+
+    index_esm_attr(options.element, attrs);
+
+    index_esm_append(marker, options.element);
+
+    index_esm_attr(marker, {
+      id: id,
+      viewBox: '0 0 20 20',
+      refX: ref.x,
+      refY: ref.y,
+      markerWidth: 20 * scale,
+      markerHeight: 20 * scale,
+      orient: 'auto'
+    });
+
+    var defs = Object(min_dom_dist_index_esm["query"])('defs', canvas._svg);
+
+    if (!defs) {
+      defs = index_esm_create('defs');
+
+      index_esm_append(canvas._svg, defs);
+    }
+
+    index_esm_append(defs, marker);
+
+    markers[id] = marker;
+  }
+
+  function colorEscape(str) {
+
+    // only allow characters and numbers
+    return str.replace(/[^0-9a-zA-z]+/g, '_');
+  }
+
+  function marker(type, fill, stroke) {
+    var id = type + '-' + colorEscape(fill) + '-' + colorEscape(stroke) + '-' + rendererId;
+
+    if (!markers[id]) {
+      createMarker(id, type, fill, stroke);
+    }
+
+    return 'url(#' + id + ')';
+  }
+
+  function createMarker(id, type, fill, stroke) {
+
+    if (type === 'sequenceflow-end') {
+      var sequenceflowEnd = index_esm_create('path');
+      index_esm_attr(sequenceflowEnd, { d: 'M 1 5 L 11 10 L 1 15 Z' });
+
+      addMarker(id, {
+        element: sequenceflowEnd,
+        ref: { x: 11, y: 10 },
+        scale: 0.5,
+        attrs: {
+          fill: stroke,
+          stroke: stroke
+        }
+      });
+    }
+
+    if (type === 'messageflow-start') {
+      var messageflowStart = index_esm_create('circle');
+      index_esm_attr(messageflowStart, { cx: 6, cy: 6, r: 3.5 });
+
+      addMarker(id, {
+        element: messageflowStart,
+        attrs: {
+          fill: fill,
+          stroke: stroke
+        },
+        ref: { x: 6, y: 6 }
+      });
+    }
+
+    if (type === 'messageflow-end') {
+      var messageflowEnd = index_esm_create('path');
+      index_esm_attr(messageflowEnd, { d: 'm 1 5 l 0 -3 l 7 3 l -7 3 z' });
+
+      addMarker(id, {
+        element: messageflowEnd,
+        attrs: {
+          fill: fill,
+          stroke: stroke,
+          strokeLinecap: 'butt'
+        },
+        ref: { x: 8.5, y: 5 }
+      });
+    }
+
+    if (type === 'association-start') {
+      var associationStart = index_esm_create('path');
+      index_esm_attr(associationStart, { d: 'M 11 5 L 1 10 L 11 15' });
+
+      addMarker(id, {
+        element: associationStart,
+        attrs: {
+          fill: 'none',
+          stroke: stroke,
+          strokeWidth: 1.5
+        },
+        ref: { x: 1, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'association-end') {
+      var associationEnd = index_esm_create('path');
+      index_esm_attr(associationEnd, { d: 'M 1 5 L 11 10 L 1 15' });
+
+      addMarker(id, {
+        element: associationEnd,
+        attrs: {
+          fill: 'none',
+          stroke: stroke,
+          strokeWidth: 1.5
+        },
+        ref: { x: 12, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'conditional-flow-marker') {
+      var conditionalflowMarker = index_esm_create('path');
+      index_esm_attr(conditionalflowMarker, { d: 'M 0 10 L 8 6 L 16 10 L 8 14 Z' });
+
+      addMarker(id, {
+        element: conditionalflowMarker,
+        attrs: {
+          fill: fill,
+          stroke: stroke
+        },
+        ref: { x: -1, y: 10 },
+        scale: 0.5
+      });
+    }
+
+    if (type === 'conditional-default-flow-marker') {
+      var conditionaldefaultflowMarker = index_esm_create('path');
+      index_esm_attr(conditionaldefaultflowMarker, { d: 'M 6 4 L 10 16' });
+
+      addMarker(id, {
+        element: conditionaldefaultflowMarker,
+        attrs: {
+          stroke: stroke
+        },
+        ref: { x: 0, y: 10 },
+        scale: 0.5
+      });
+    }
+  }
+
+  function drawCircle(parentGfx, width, height, offset, attrs) {
+
+    if (Object(dist_index_esm["isObject"])(offset)) {
+      attrs = offset;
+      offset = 0;
+    }
+
+    offset = offset || 0;
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    if (attrs.fill === 'none') {
+      delete attrs.fillOpacity;
+    }
+
+    var cx = width / 2,
+        cy = height / 2;
+
+    var circle = index_esm_create('circle');
+    index_esm_attr(circle, {
+      cx: cx,
+      cy: cy,
+      r: Math.round((width + height) / 4 - offset)
+    });
+    index_esm_attr(circle, attrs);
+
+    index_esm_append(parentGfx, circle);
+
+    return circle;
+  }
+
+  function drawRect(parentGfx, width, height, r, offset, attrs) {
+
+    if (Object(dist_index_esm["isObject"])(offset)) {
+      attrs = offset;
+      offset = 0;
+    }
+
+    offset = offset || 0;
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    var rect = index_esm_create('rect');
+    index_esm_attr(rect, {
+      x: offset,
+      y: offset,
+      width: width - offset * 2,
+      height: height - offset * 2,
+      rx: r,
+      ry: r
+    });
+    index_esm_attr(rect, attrs);
+
+    index_esm_append(parentGfx, rect);
+
+    return rect;
+  }
+
+  function drawDiamond(parentGfx, width, height, attrs) {
+
+    var x_2 = width / 2;
+    var y_2 = height / 2;
+
+    var points = [{ x: x_2, y: 0 }, { x: width, y: y_2 }, { x: x_2, y: height }, { x: 0, y: y_2 }];
+
+    var pointsString = points.map(function(point) {
+      return point.x + ',' + point.y;
+    }).join(' ');
+
+    attrs = computeStyle(attrs, {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    var polygon = index_esm_create('polygon');
+    index_esm_attr(polygon, {
+      points: pointsString
+    });
+    index_esm_attr(polygon, attrs);
+
+    index_esm_append(parentGfx, polygon);
+
+    return polygon;
+  }
+
+  function drawLine(parentGfx, waypoints, attrs) {
+    attrs = computeStyle(attrs, [ 'no-fill' ], {
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: 'none'
+    });
+
+    var line = createLine(waypoints, attrs);
+
+    index_esm_append(parentGfx, line);
+
+    return line;
+  }
+
+  function drawPath(parentGfx, d, attrs) {
+
+    attrs = computeStyle(attrs, [ 'no-fill' ], {
+      strokeWidth: 2,
+      stroke: 'black'
+    });
+
+    var path = index_esm_create('path');
+    index_esm_attr(path, { d: d });
+    index_esm_attr(path, attrs);
+
+    index_esm_append(parentGfx, path);
+
+    return path;
+  }
+
+  function drawMarker(type, parentGfx, path, attrs) {
+    return drawPath(parentGfx, path, Object(dist_index_esm["assign"])({ 'data-marker': type }, attrs));
+  }
+
+  function as(type) {
+    return function(parentGfx, element) {
+      return handlers[type](parentGfx, element);
+    };
+  }
+
+  function renderer(type) {
+    return handlers[type];
+  }
+
+  function renderEventContent(element, parentGfx) {
+
+    var event = getSemantic(element);
+    var isThrowing = isThrowEvent(event);
+
+    if (event.eventDefinitions && event.eventDefinitions.length>1) {
+      if (event.parallelMultiple) {
+        return renderer('bpmn:ParallelMultipleEventDefinition')(parentGfx, element, isThrowing);
+      }
+      else {
+        return renderer('bpmn:MultipleEventDefinition')(parentGfx, element, isThrowing);
+      }
+    }
+
+    if (isTypedEvent(event, 'bpmn:MessageEventDefinition')) {
+      return renderer('bpmn:MessageEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:TimerEventDefinition')) {
+      return renderer('bpmn:TimerEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:ConditionalEventDefinition')) {
+      return renderer('bpmn:ConditionalEventDefinition')(parentGfx, element);
+    }
+
+    if (isTypedEvent(event, 'bpmn:SignalEventDefinition')) {
+      return renderer('bpmn:SignalEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:EscalationEventDefinition')) {
+      return renderer('bpmn:EscalationEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:LinkEventDefinition')) {
+      return renderer('bpmn:LinkEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:ErrorEventDefinition')) {
+      return renderer('bpmn:ErrorEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:CancelEventDefinition')) {
+      return renderer('bpmn:CancelEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:CompensateEventDefinition')) {
+      return renderer('bpmn:CompensateEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    if (isTypedEvent(event, 'bpmn:TerminateEventDefinition')) {
+      return renderer('bpmn:TerminateEventDefinition')(parentGfx, element, isThrowing);
+    }
+
+    return null;
+  }
+
+  function renderLabel(parentGfx, label, options) {
+
+    options = Object(dist_index_esm["assign"])({
+      size: {
+        width: 100
+      }
+    }, options);
+
+    var text = textRenderer.createText(label || '', options);
+
+    index_esm_classes(text).add('djs-label');
+
+    index_esm_append(parentGfx, text);
+
+    return text;
+  }
+
+  function renderEmbeddedLabel(parentGfx, element, align) {
+    var semantic = getSemantic(element);
+
+    var fontOverride = getFontOverride(element);
+
+    return renderLabel(parentGfx, semantic.name, {
+      box: element,
+      align: align,
+      padding: 5,
+      style: Object(dist_index_esm["assign"])({
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+      }, fontOverride)
+    });
+  }
+
+  function getFontOverride(element) {
+    var fontOverride = {};
+    if (element.businessObject) {
+      var fontSize = element.businessObject["aux-font-size"];
+      if (fontSize) {
+         fontOverride = Object.assign(fontOverride, { fontSize })
+      }
+    }
+    return fontOverride;
+  }
+
+  function renderExternalLabel(parentGfx, element) {
+
+    var box = {
+      width: 90,
+      height: 30,
+      x: element.width / 2 + element.x,
+      y: element.height / 2 + element.y
+    };
+
+    var fontOverride = getFontOverride(element);
+
+    return renderLabel(parentGfx, getLabel(element), {
+      box: box,
+      fitBox: true,
+      style: Object(dist_index_esm["assign"])(
+        {},
+        textRenderer.getExternalStyle(),
+        fontOverride,
+        {
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+        }
+      )
+    });
+  }
+
+  function renderLaneLabel(parentGfx, text, element) {
+    var textBox = renderLabel(parentGfx, text, {
+      box: {
+        height: 30,
+        width: element.height
+      },
+      align: 'center-middle',
+      style: {
+        fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+      }
+    });
+
+    var top = -1 * element.height;
+
+    SvgTransformUtil_transform(textBox, 0, -top, 270);
+  }
+
+  function createPathFromConnection(connection) {
+    var waypoints = connection.waypoints;
+
+    var pathData = 'm  ' + waypoints[0].x + ',' + waypoints[0].y;
+    for (var i = 1; i < waypoints.length; i++) {
+      pathData += 'L' + waypoints[i].x + ',' + waypoints[i].y + ' ';
+    }
+    return pathData;
+  }
+
+  var handlers = this.handlers = {
+    'bpmn:Event': function(parentGfx, element, attrs) {
+
+      if (!('fillOpacity' in attrs)) {
+        attrs.fillOpacity = CustomBpmnRenderer_DEFAULT_FILL_OPACITY;
+      }
+
+      return drawCircle(parentGfx, element.width, element.height, attrs);
+    },
+    'bpmn:StartEvent': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var semantic = getSemantic(element);
+
+      if (!semantic.isInterrupting) {
+        attrs = {
+          strokeDasharray: '6',
+          strokeLinecap: 'round',
+          fill: getFillColor(element, defaultFillColor),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        };
+      }
+
+      var circle = renderer('bpmn:Event')(parentGfx, element, attrs);
+
+      renderEventContent(element, parentGfx);
+
+      return circle;
+    },
+    'bpmn:MessageEventDefinition': function(parentGfx, element, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_MESSAGE', {
+        xScaleFactor: 0.9,
+        yScaleFactor: 0.9,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.235,
+          my: 0.315
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(element, defaultStrokeColor) : getFillColor(element, defaultFillColor);
+      var stroke = isThrowing ? getFillColor(element, defaultFillColor) : getStrokeColor(element, defaultStrokeColor);
+
+      var messagePath = drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: stroke
+      });
+
+      return messagePath;
+    },
+    'bpmn:TimerEventDefinition': function(parentGfx, element) {
+      var circle = drawCircle(parentGfx, element.width, element.height, 0.2 * element.height, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData = pathMap.getScaledPath('EVENT_TIMER_WH', {
+        xScaleFactor: 0.75,
+        yScaleFactor: 0.75,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.5,
+          my: 0.5
+        }
+      });
+
+      drawPath(parentGfx, pathData, {
+        strokeWidth: 2,
+        strokeLinecap: 'square',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      for (var i = 0;i < 12; i++) {
+
+        var linePathData = pathMap.getScaledPath('EVENT_TIMER_LINE', {
+          xScaleFactor: 0.75,
+          yScaleFactor: 0.75,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.5,
+            my: 0.5
+          }
+        });
+
+        var width = element.width / 2;
+        var height = element.height / 2;
+
+        drawPath(parentGfx, linePathData, {
+          strokeWidth: 1,
+          strokeLinecap: 'square',
+          transform: 'rotate(' + (i * 30) + ',' + height + ',' + width + ')',
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+      }
+
+      return circle;
+    },
+    'bpmn:EscalationEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_ESCALATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.2
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:ConditionalEventDefinition': function(parentGfx, event) {
+      var pathData = pathMap.getScaledPath('EVENT_CONDITIONAL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.222
+        }
+      });
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:LinkEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_LINK', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.57,
+          my: 0.263
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:ErrorEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_ERROR', {
+        xScaleFactor: 1.1,
+        yScaleFactor: 1.1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.2,
+          my: 0.722
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:CancelEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_CANCEL_45', {
+        xScaleFactor: 1.0,
+        yScaleFactor: 1.0,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.638,
+          my: -0.055
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      var path = drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+
+      SvgTransformUtil_rotate(path, 45);
+
+      return path;
+    },
+    'bpmn:CompensateEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_COMPENSATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.22,
+          my: 0.5
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:SignalEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_SIGNAL', {
+        xScaleFactor: 0.9,
+        yScaleFactor: 0.9,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.5,
+          my: 0.2
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill,
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:MultipleEventDefinition': function(parentGfx, event, isThrowing) {
+      var pathData = pathMap.getScaledPath('EVENT_MULTIPLE', {
+        xScaleFactor: 1.1,
+        yScaleFactor: 1.1,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.222,
+          my: 0.36
+        }
+      });
+
+      var fill = isThrowing ? getStrokeColor(event, defaultStrokeColor) : 'none';
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: fill
+      });
+    },
+    'bpmn:ParallelMultipleEventDefinition': function(parentGfx, event) {
+      var pathData = pathMap.getScaledPath('EVENT_PARALLEL_MULTIPLE', {
+        xScaleFactor: 1.2,
+        yScaleFactor: 1.2,
+        containerWidth: event.width,
+        containerHeight: event.height,
+        position: {
+          mx: 0.458,
+          my: 0.194
+        }
+      });
+
+      return drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(event, defaultStrokeColor),
+        stroke: getStrokeColor(event, defaultStrokeColor)
+      });
+    },
+    'bpmn:EndEvent': function(parentGfx, element) {
+      var circle = renderer('bpmn:Event')(parentGfx, element, {
+        strokeWidth: 4,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      renderEventContent(element, parentGfx, true);
+
+      return circle;
+    },
+    'bpmn:TerminateEventDefinition': function(parentGfx, element) {
+      var circle = drawCircle(parentGfx, element.width, element.height, 8, {
+        strokeWidth: 4,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return circle;
+    },
+    'bpmn:IntermediateEvent': function(parentGfx, element) {
+      var outer = renderer('bpmn:Event')(parentGfx, element, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      /* inner */
+      drawCircle(parentGfx, element.width, element.height, CustomBpmnRenderer_INNER_OUTER_DIST, {
+        strokeWidth: 1,
+        fill: getFillColor(element, 'none'),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      renderEventContent(element, parentGfx);
+
+      return outer;
+    },
+    'bpmn:IntermediateCatchEvent': as('bpmn:IntermediateEvent'),
+    'bpmn:IntermediateThrowEvent': as('bpmn:IntermediateEvent'),
+
+    'bpmn:Activity': function(parentGfx, element, attrs) {
+
+      attrs = attrs || {};
+
+      if (!('fillOpacity' in attrs)) {
+        attrs.fillOpacity = CustomBpmnRenderer_DEFAULT_FILL_OPACITY;
+      }
+
+      return drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS, attrs);
+    },
+
+    'bpmn:Task': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var rect = renderer('bpmn:Activity')(parentGfx, element, attrs);
+
+      renderEmbeddedLabel(parentGfx, element, 'center-middle');
+      attachTaskMarkers(parentGfx, element);
+
+      return rect;
+    },
+    'bpmn:ServiceTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathDataBG = pathMap.getScaledPath('TASK_TYPE_SERVICE', {
+        abspos: {
+          x: 12,
+          y: 18
+        }
+      });
+
+      /* service bg */ drawPath(parentGfx, pathDataBG, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var fillPathData = pathMap.getScaledPath('TASK_TYPE_SERVICE_FILL', {
+        abspos: {
+          x: 17.2,
+          y: 18
+        }
+      });
+
+      /* service fill */ drawPath(parentGfx, fillPathData, {
+        strokeWidth: 0,
+        fill: getFillColor(element, defaultFillColor)
+      });
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SERVICE', {
+        abspos: {
+          x: 17,
+          y: 22
+        }
+      });
+
+      /* service */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:UserTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var x = 15;
+      var y = 12;
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_USER_1', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 0.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData2 = pathMap.getScaledPath('TASK_TYPE_USER_2', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user2 path */ drawPath(parentGfx, pathData2, {
+        strokeWidth: 0.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var pathData3 = pathMap.getScaledPath('TASK_TYPE_USER_3', {
+        abspos: {
+          x: x,
+          y: y
+        }
+      });
+
+      /* user3 path */ drawPath(parentGfx, pathData3, {
+        strokeWidth: 0.5,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:ManualTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_MANUAL', {
+        abspos: {
+          x: 17,
+          y: 15
+        }
+      });
+
+      /* manual path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 0.5, // 0.25,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:SendTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SEND', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: 21,
+        containerHeight: 14,
+        position: {
+          mx: 0.285,
+          my: 0.357
+        }
+      });
+
+      /* send path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getFillColor(element, defaultFillColor)
+      });
+
+      return task;
+    },
+    'bpmn:ReceiveTask' : function(parentGfx, element) {
+      var semantic = getSemantic(element);
+
+      var task = renderer('bpmn:Task')(parentGfx, element);
+      var pathData;
+
+      if (semantic.instantiate) {
+        drawCircle(parentGfx, 28, 28, 20 * 0.22, { strokeWidth: 1 });
+
+        pathData = pathMap.getScaledPath('TASK_TYPE_INSTANTIATING_SEND', {
+          abspos: {
+            x: 7.77,
+            y: 9.52
+          }
+        });
+      } else {
+
+        pathData = pathMap.getScaledPath('TASK_TYPE_SEND', {
+          xScaleFactor: 0.9,
+          yScaleFactor: 0.9,
+          containerWidth: 21,
+          containerHeight: 14,
+          position: {
+            mx: 0.3,
+            my: 0.4
+          }
+        });
+      }
+
+      /* receive path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:ScriptTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('TASK_TYPE_SCRIPT', {
+        abspos: {
+          x: 15,
+          y: 20
+        }
+      });
+
+      /* script path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:BusinessRuleTask': function(parentGfx, element) {
+      var task = renderer('bpmn:Task')(parentGfx, element);
+
+      var headerPathData = pathMap.getScaledPath('TASK_TYPE_BUSINESS_RULE_HEADER', {
+        abspos: {
+          x: 8,
+          y: 8
+        }
+      });
+
+      var businessHeaderPath = drawPath(parentGfx, headerPathData);
+      index_esm_attr(businessHeaderPath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, '#aaaaaa'),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var headerData = pathMap.getScaledPath('TASK_TYPE_BUSINESS_RULE_MAIN', {
+        abspos: {
+          x: 8,
+          y: 8
+        }
+      });
+
+      var businessPath = drawPath(parentGfx, headerData);
+      index_esm_attr(businessPath, {
+        strokeWidth: 1,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return task;
+    },
+    'bpmn:SubProcess': function(parentGfx, element, attrs) {
+      attrs = Object(dist_index_esm["assign"])({
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs);
+
+      var rect = renderer('bpmn:Activity')(parentGfx, element, attrs);
+
+      var expanded = isExpanded(element);
+
+      if (isEventSubProcess(element)) {
+        index_esm_attr(rect, {
+          strokeDasharray: '1,2'
+        });
+      }
+
+      renderEmbeddedLabel(parentGfx, element, expanded ? 'center-top' : 'center-middle');
+
+      if (expanded) {
+        attachTaskMarkers(parentGfx, element);
+      } else {
+        attachTaskMarkers(parentGfx, element, ['SubProcessMarker']);
+      }
+
+      return rect;
+    },
+    'bpmn:AdHocSubProcess': function(parentGfx, element) {
+      return renderer('bpmn:SubProcess')(parentGfx, element);
+    },
+    'bpmn:Transaction': function(parentGfx, element) {
+      var outer = renderer('bpmn:SubProcess')(parentGfx, element);
+
+      var innerAttrs = styles.style([ 'no-fill', 'no-events' ], {
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      /* inner path */ drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS - 2, CustomBpmnRenderer_INNER_OUTER_DIST, innerAttrs);
+
+      return outer;
+    },
+    'bpmn:CallActivity': function(parentGfx, element) {
+      return renderer('bpmn:SubProcess')(parentGfx, element, {
+        strokeWidth: 5
+      });
+    },
+    'bpmn:Participant': function(parentGfx, element) {
+
+      var attrs = {
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var lane = renderer('bpmn:Lane')(parentGfx, element, attrs);
+
+      var expandedPool = isExpanded(element);
+
+      if (expandedPool) {
+        drawLine(parentGfx, [
+          { x: 30, y: 0 },
+          { x: 30, y: element.height }
+        ], {
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+        var text = getSemantic(element).name;
+        renderLaneLabel(parentGfx, text, element);
+      } else {
+
+        // Collapsed pool draw text inline
+        var text2 = getSemantic(element).name;
+        renderLabel(parentGfx, text2, {
+          box: element, align: 'center-middle',
+          style: {
+            fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+          }
+        });
+      }
+
+      var participantMultiplicity = !!(getSemantic(element).participantMultiplicity);
+
+      if (participantMultiplicity) {
+        renderer('ParticipantMultiplicityMarker')(parentGfx, element);
+      }
+
+      return lane;
+    },
+    'bpmn:Lane': function(parentGfx, element, attrs) {
+      var rect = drawRect(parentGfx, element.width, element.height, 0, Object(dist_index_esm["assign"])({
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_HIGH_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs));
+
+      var semantic = getSemantic(element);
+
+      if (semantic.$type === 'bpmn:Lane') {
+        var text = semantic.name;
+        renderLaneLabel(parentGfx, text, element);
+      }
+
+      return rect;
+    },
+    'bpmn:InclusiveGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      /* circle path */
+      drawCircle(parentGfx, element.width, element.height, element.height * 0.24, {
+        strokeWidth: 2.5,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:ExclusiveGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_EXCLUSIVE', {
+        xScaleFactor: 0.4,
+        yScaleFactor: 0.4,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.32,
+          my: 0.3
+        }
+      });
+
+      if ((getDi(element).isMarkerVisible)) {
+        drawPath(parentGfx, pathData, {
+          strokeWidth: 1,
+          fill: getStrokeColor(element, defaultStrokeColor),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        });
+      }
+
+      return diamond;
+    },
+    'bpmn:ComplexGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_COMPLEX', {
+        xScaleFactor: 0.5,
+        yScaleFactor:0.5,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.46,
+          my: 0.26
+        }
+      });
+
+      /* complex path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:ParallelGateway': function(parentGfx, element) {
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      var pathData = pathMap.getScaledPath('GATEWAY_PARALLEL', {
+        xScaleFactor: 0.6,
+        yScaleFactor:0.6,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.46,
+          my: 0.2
+        }
+      });
+
+      /* parallel path */ drawPath(parentGfx, pathData, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return diamond;
+    },
+    'bpmn:EventBasedGateway': function(parentGfx, element) {
+
+      var semantic = getSemantic(element);
+
+      var diamond = renderer('bpmn:Gateway')(parentGfx, element);
+
+      /* outer circle path */ drawCircle(parentGfx, element.width, element.height, element.height * 0.20, {
+        strokeWidth: 1,
+        fill: 'none',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var type = semantic.eventGatewayType;
+      var instantiate = !!semantic.instantiate;
+
+      function drawEvent() {
+
+        var pathData = pathMap.getScaledPath('GATEWAY_EVENT_BASED', {
+          xScaleFactor: 0.18,
+          yScaleFactor: 0.18,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.36,
+            my: 0.44
+          }
+        });
+
+        var attrs = {
+          strokeWidth: 2,
+          fill: getFillColor(element, 'none'),
+          stroke: getStrokeColor(element, defaultStrokeColor)
+        };
+
+        /* event path */ drawPath(parentGfx, pathData, attrs);
+      }
+
+      if (type === 'Parallel') {
+
+        var pathData = pathMap.getScaledPath('GATEWAY_PARALLEL', {
+          xScaleFactor: 0.4,
+          yScaleFactor:0.4,
+          containerWidth: element.width,
+          containerHeight: element.height,
+          position: {
+            mx: 0.474,
+            my: 0.296
+          }
+        });
+
+        var parallelPath = drawPath(parentGfx, pathData);
+        index_esm_attr(parallelPath, {
+          strokeWidth: 1,
+          fill: 'none'
+        });
+      } else if (type === 'Exclusive') {
+
+        if (!instantiate) {
+          var innerCircle = drawCircle(parentGfx, element.width, element.height, element.height * 0.26);
+          index_esm_attr(innerCircle, {
+            strokeWidth: 1,
+            fill: 'none',
+            stroke: getStrokeColor(element, defaultStrokeColor)
+          });
+        }
+
+        drawEvent();
+      }
+
+
+      return diamond;
+    },
+    'bpmn:Gateway': function(parentGfx, element) {
+      var attrs = {
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      return drawDiamond(parentGfx, element.width, element.height, attrs);
+    },
+    'bpmn:SequenceFlow': function(parentGfx, element) {
+      var pathData = createPathFromConnection(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      var attrs = {
+        strokeLinejoin: 'round',
+        markerEnd: marker('sequenceflow-end', fill, stroke),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var path = drawPath(parentGfx, pathData, attrs);
+
+      var sequenceFlow = getSemantic(element);
+
+      var source;
+
+      if (element.source) {
+        source = element.source.businessObject;
+
+        // conditional flow marker
+        if (sequenceFlow.conditionExpression && source.$instanceOf('bpmn:Activity')) {
+          index_esm_attr(path, {
+            markerStart: marker('conditional-flow-marker', fill, stroke)
+          });
+        }
+
+        // default marker
+        if (source.default && (source.$instanceOf('bpmn:Gateway') || source.$instanceOf('bpmn:Activity')) &&
+            source.default === sequenceFlow) {
+          index_esm_attr(path, {
+            markerStart: marker('conditional-default-flow-marker', fill, stroke)
+          });
+        }
+      }
+
+      return path;
+    },
+    'bpmn:Association': function(parentGfx, element, attrs) {
+
+      var semantic = getSemantic(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      attrs = Object(dist_index_esm["assign"])({
+        strokeDasharray: '0.5, 5',
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      }, attrs || {});
+
+      if (semantic.associationDirection === 'One' ||
+          semantic.associationDirection === 'Both') {
+        attrs.markerEnd = marker('association-end', fill, stroke);
+      }
+
+      if (semantic.associationDirection === 'Both') {
+        attrs.markerStart = marker('association-start', fill, stroke);
+      }
+
+      return drawLine(parentGfx, element.waypoints, attrs);
+    },
+    'bpmn:DataInputAssociation': function(parentGfx, element) {
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      return renderer('bpmn:Association')(parentGfx, element, {
+        markerEnd: marker('association-end', fill, stroke)
+      });
+    },
+    'bpmn:DataOutputAssociation': function(parentGfx, element) {
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      return renderer('bpmn:Association')(parentGfx, element, {
+        markerEnd: marker('association-end', fill, stroke)
+      });
+    },
+    'bpmn:MessageFlow': function(parentGfx, element) {
+
+      var semantic = getSemantic(element),
+          di = getDi(element);
+
+      var fill = getFillColor(element, defaultFillColor),
+          stroke = getStrokeColor(element, defaultStrokeColor);
+
+      var pathData = createPathFromConnection(element);
+
+      var attrs = {
+        markerEnd: marker('messageflow-end', fill, stroke),
+        markerStart: marker('messageflow-start', fill, stroke),
+        strokeDasharray: '10, 12',
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+        strokeWidth: '1.5px',
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      var path = drawPath(parentGfx, pathData, attrs);
+
+      if (semantic.messageRef) {
+        var midPoint = path.getPointAtLength(path.getTotalLength() / 2);
+
+        var markerPathData = pathMap.getScaledPath('MESSAGE_FLOW_MARKER', {
+          abspos: {
+            x: midPoint.x,
+            y: midPoint.y
+          }
+        });
+
+        var messageAttrs = { strokeWidth: 1 };
+
+        if (di.messageVisibleKind === 'initiating') {
+          messageAttrs.fill = 'white';
+          messageAttrs.stroke = 'black';
+        } else {
+          messageAttrs.fill = '#888';
+          messageAttrs.stroke = 'white';
+        }
+
+        var message = drawPath(parentGfx, markerPathData, messageAttrs);
+
+        var labelText = semantic.messageRef.name;
+        var label = renderLabel(parentGfx, labelText, {
+          align: 'center-top',
+          fitBox: true,
+          style: {
+            fill: getStrokeColor(element, defaultLabelColor, defaultStrokeColor)
+          }
+        });
+
+        var messageBounds = message.getBBox(),
+            labelBounds = label.getBBox();
+
+        var translateX = midPoint.x - labelBounds.width / 2,
+            translateY = midPoint.y + messageBounds.height / 2 + CustomBpmnRenderer_ELEMENT_LABEL_DISTANCE;
+
+        SvgTransformUtil_transform(label, translateX, translateY, 0);
+
+      }
+
+      return path;
+    },
+    'bpmn:DataObject': function(parentGfx, element) {
+      var pathData = pathMap.getScaledPath('DATA_OBJECT_PATH', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.474,
+          my: 0.296
+        }
+      });
+
+      var elementObject = drawPath(parentGfx, pathData, {
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var semantic = getSemantic(element);
+
+      if (isCollection(semantic)) {
+        renderDataItemCollection(parentGfx, element);
+      }
+
+      return elementObject;
+    },
+    'bpmn:DataObjectReference': as('bpmn:DataObject'),
+    'bpmn:DataInput': function(parentGfx, element) {
+
+      var arrowPathData = pathMap.getRawPath('DATA_ARROW');
+
+      // page
+      var elementObject = renderer('bpmn:DataObject')(parentGfx, element);
+
+      /* input arrow path */ drawPath(parentGfx, arrowPathData, { strokeWidth: 1 });
+
+      return elementObject;
+    },
+    'bpmn:DataOutput': function(parentGfx, element) {
+      var arrowPathData = pathMap.getRawPath('DATA_ARROW');
+
+      // page
+      var elementObject = renderer('bpmn:DataObject')(parentGfx, element);
+
+      /* output arrow path */ drawPath(parentGfx, arrowPathData, {
+        strokeWidth: 1,
+        fill: 'black'
+      });
+
+      return elementObject;
+    },
+    'bpmn:DataStoreReference': function(parentGfx, element) {
+      var DATA_STORE_PATH = pathMap.getScaledPath('DATA_STORE', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0,
+          my: 0.133
+        }
+      });
+
+      var elementStore = drawPath(parentGfx, DATA_STORE_PATH, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        fillOpacity: CustomBpmnRenderer_DEFAULT_FILL_OPACITY,
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      return elementStore;
+    },
+    'bpmn:BoundaryEvent': function(parentGfx, element) {
+
+      var semantic = getSemantic(element),
+          cancel = semantic.cancelActivity;
+
+      var attrs = {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      };
+
+      if (!cancel) {
+        attrs.strokeDasharray = '6';
+        attrs.strokeLinecap = 'round';
+      }
+
+      // apply fillOpacity
+      var outerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
+        fillOpacity: 1
+      });
+
+      // apply no-fill
+      var innerAttrs = Object(dist_index_esm["assign"])({}, attrs, {
+        fill: 'none'
+      });
+
+      var outer = renderer('bpmn:Event')(parentGfx, element, outerAttrs);
+
+      /* inner path */ drawCircle(parentGfx, element.width, element.height, CustomBpmnRenderer_INNER_OUTER_DIST, innerAttrs);
+
+      renderEventContent(element, parentGfx);
+
+      return outer;
+    },
+    'bpmn:Group': function(parentGfx, element) {
+
+      var group = drawRect(parentGfx, element.width, element.height, CustomBpmnRenderer_TASK_BORDER_RADIUS, {
+        stroke: getStrokeColor(element, defaultStrokeColor),
+        strokeWidth: 1,
+        strokeDasharray: '8,3,1,3',
+        fill: 'none',
+        pointerEvents: 'none'
+      });
+
+      return group;
+    },
+    'label': function(parentGfx, element) {
+      return renderExternalLabel(parentGfx, element);
+    },
+    'bpmn:TextAnnotation': function(parentGfx, element) {
+      var style = {
+        'fill': 'none',
+        'stroke': 'none'
+      };
+
+      var textElement = drawRect(parentGfx, element.width, element.height, 0, 0, style);
+
+      var textPathData = pathMap.getScaledPath('TEXT_ANNOTATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.0,
+          my: 0.0
+        }
+      });
+
+      drawPath(parentGfx, textPathData, {
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      var text = getSemantic(element).text || '';
+      renderLabel(parentGfx, text, {
+        box: element,
+        align: 'left-top',
+        padding: 5,
+        style: {
+          fill: getLabelColor(element, defaultLabelColor, defaultStrokeColor)
+        }
+      });
+
+      return textElement;
+    },
+    'ParticipantMultiplicityMarker': function(parentGfx, element) {
+      var markerPath = pathMap.getScaledPath('MARKER_PARALLEL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2) / element.width),
+          my: (element.height - 15) / element.height
+        }
+      });
+
+      drawMarker('participant-multiplicity', parentGfx, markerPath, {
+        strokeWidth: 2,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'SubProcessMarker': function(parentGfx, element) {
+      var markerRect = drawRect(parentGfx, 14, 14, 0, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+
+      // Process marker is placed in the middle of the box
+      // therefore fixed values can be used here
+      SvgTransformUtil_translate(markerRect, element.width / 2 - 7.5, element.height - 20);
+
+      var markerPath = pathMap.getScaledPath('MARKER_SUB_PROCESS', {
+        xScaleFactor: 1.5,
+        yScaleFactor: 1.5,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: (element.width / 2 - 7.5) / element.width,
+          my: (element.height - 20) / element.height
+        }
+      });
+
+      drawMarker('sub-process', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'ParallelMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_PARALLEL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.parallel) / element.width),
+          my: (element.height - 20) / element.height
+        }
+      });
+
+      drawMarker('parallel', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'SequentialMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_SEQUENTIAL', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.seq) / element.width),
+          my: (element.height - 19) / element.height
+        }
+      });
+
+      drawMarker('sequential', parentGfx, markerPath, {
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'CompensationMarker': function(parentGfx, element, position) {
+      var markerMath = pathMap.getScaledPath('MARKER_COMPENSATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.compensation) / element.width),
+          my: (element.height - 13) / element.height
+        }
+      });
+
+      drawMarker('compensation', parentGfx, markerMath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    },
+    'LoopMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_LOOP', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.loop) / element.width),
+          my: (element.height - 7) / element.height
+        }
+      });
+
+      drawMarker('loop', parentGfx, markerPath, {
+        strokeWidth: 1,
+        fill: getFillColor(element, defaultFillColor),
+        stroke: getStrokeColor(element, defaultStrokeColor),
+        strokeLinecap: 'round',
+        strokeMiterlimit: 0.5
+      });
+    },
+    'AdhocMarker': function(parentGfx, element, position) {
+      var markerPath = pathMap.getScaledPath('MARKER_ADHOC', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: ((element.width / 2 + position.adhoc) / element.width),
+          my: (element.height - 15) / element.height
+        }
+      });
+
+      drawMarker('adhoc', parentGfx, markerPath, {
+        strokeWidth: 1,
+        fill: getStrokeColor(element, defaultStrokeColor),
+        stroke: getStrokeColor(element, defaultStrokeColor)
+      });
+    }
+  };
+
+  function attachTaskMarkers(parentGfx, element, taskMarkers) {
+    var obj = getSemantic(element);
+
+    var subprocess = taskMarkers && taskMarkers.indexOf('SubProcessMarker') !== -1;
+    var position;
+
+    if (subprocess) {
+      position = {
+        seq: -21,
+        parallel: -22,
+        compensation: -42,
+        loop: -18,
+        adhoc: 10
+      };
+    } else {
+      position = {
+        seq: -3,
+        parallel: -6,
+        compensation: -27,
+        loop: 0,
+        adhoc: 10
+      };
+    }
+
+    Object(dist_index_esm["forEach"])(taskMarkers, function(marker) {
+      renderer(marker)(parentGfx, element, position);
+    });
+
+    if (obj.isForCompensation) {
+      renderer('CompensationMarker')(parentGfx, element, position);
+    }
+
+    if (obj.$type === 'bpmn:AdHocSubProcess') {
+      renderer('AdhocMarker')(parentGfx, element, position);
+    }
+
+    var loopCharacteristics = obj.loopCharacteristics,
+        isSequential = loopCharacteristics && loopCharacteristics.isSequential;
+
+    if (loopCharacteristics) {
+
+      if (isSequential === undefined) {
+        renderer('LoopMarker')(parentGfx, element, position);
+      }
+
+      if (isSequential === false) {
+        renderer('ParallelMarker')(parentGfx, element, position);
+      }
+
+      if (isSequential === true) {
+        renderer('SequentialMarker')(parentGfx, element, position);
+      }
+    }
+  }
+
+  function renderDataItemCollection(parentGfx, element) {
+
+    var yPosition = (element.height - 18) / element.height;
+
+    var pathData = pathMap.getScaledPath('DATA_OBJECT_COLLECTION_PATH', {
+      xScaleFactor: 1,
+      yScaleFactor: 1,
+      containerWidth: element.width,
+      containerHeight: element.height,
+      position: {
+        mx: 0.33,
+        my: yPosition
+      }
+    });
+
+    /* collection path */ drawPath(parentGfx, pathData, {
+      strokeWidth: 2
+    });
+  }
+
+
+  // extension API, use at your own risk
+  this._drawPath = drawPath;
+
+}
+
+
+inherits_browser_default()(CustomBpmnRenderer, BaseRenderer);
+
+CustomBpmnRenderer.$inject = [
+  'config.CustomBpmnRenderer',
+  'eventBus',
+  'styles',
+  'pathMap',
+  'canvas',
+  'textRenderer'
+];
+
+
+CustomBpmnRenderer.prototype.canRender = function(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:BaseElement');
+};
+
+CustomBpmnRenderer.prototype.drawShape = function(parentGfx, element) {
+  var type = element.type;
+  var h = this.handlers[type];
+
+  /* jshint -W040 */
+  return h(parentGfx, element);
+};
+
+CustomBpmnRenderer.prototype.drawConnection = function(parentGfx, element) {
+  var type = element.type;
+  var h = this.handlers[type];
+
+  /* jshint -W040 */
+  return h(parentGfx, element);
+};
+
+CustomBpmnRenderer.prototype.getShapePath = function(element) {
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Event')) {
+    return getCirclePath(element);
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Activity')) {
+    return getRoundRectPath(element, CustomBpmnRenderer_TASK_BORDER_RADIUS);
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Gateway')) {
+    return getDiamondPath(element);
+  }
+
+  return getRectPath(element);
+};
+// CONCATENATED MODULE: ./app/modules/text-renderer/CustomTextRenderer.js
+
+
+
+
+var CustomTextRenderer_DEFAULT_FONT_SIZE = 12;
+var CustomTextRenderer_LINE_HEIGHT_RATIO = 1.2;
+
+var CustomTextRenderer_MIN_TEXT_ANNOTATION_HEIGHT = 30;
+
+function CustomTextRenderer(config) {
+
+  var defaultStyle = Object(dist_index_esm["assign"])({
+    fontFamily: 'Arial, sans-serif',
+    fontSize: CustomTextRenderer_DEFAULT_FONT_SIZE,
+    fontWeight: 'normal',
+    lineHeight: CustomTextRenderer_LINE_HEIGHT_RATIO
+  }, config && config.defaultStyle || {});
+
+  var fontSize = parseInt(defaultStyle.fontSize, 10) - 1;
+
+  var externalStyle = Object(dist_index_esm["assign"])({}, defaultStyle, {
+    fontSize: fontSize
+  }, config && config.externalStyle || {});
+
+  var textUtil = new Text({
+    style: defaultStyle
+  });
+
+  /**
+   * Get the new bounds of an externally rendered,
+   * layouted label.
+   *
+   * @param  {Bounds} bounds
+   * @param  {string} text
+   *
+   * @return {Bounds}
+   */
+  this.getExternalLabelBounds = function(bounds, text) {
+
+    var layoutedDimensions = textUtil.getDimensions(text, {
+      box: {
+        width: 90,
+        height: 30,
+        x: bounds.width / 2 + bounds.x,
+        y: bounds.height / 2 + bounds.y
+      },
+      style: externalStyle
+    });
+
+    // resize label shape to fit label text
+    return {
+      x: Math.round(bounds.x + bounds.width / 2 - layoutedDimensions.width / 2),
+      y: Math.round(bounds.y),
+      width: Math.ceil(layoutedDimensions.width),
+      height: Math.ceil(layoutedDimensions.height)
+    };
+
+  };
+
+  /**
+   * Get the new bounds of text annotation.
+   *
+   * @param  {Bounds} bounds
+   * @param  {string} text
+   *
+   * @return {Bounds}
+   */
+  this.getTextAnnotationBounds = function(bounds, text) {
+
+    var layoutedDimensions = textUtil.getDimensions(text, {
+      box: bounds,
+      style: defaultStyle,
+      align: 'left-top',
+      padding: 5
+    });
+
+    return {
+      x: bounds.x,
+      y: bounds.y,
+      width: bounds.width,
+      height: Math.max(CustomTextRenderer_MIN_TEXT_ANNOTATION_HEIGHT, Math.round(layoutedDimensions.height))
+    };
+  };
+
+  /**
+   * Create a layouted text element.
+   *
+   * @param {string} text
+   * @param {Object} [options]
+   *
+   * @return {SVGElement} rendered text
+   */
+  this.createText = function(text, options) {
+    return textUtil.createText(text, options || {});
+  };
+
+  this.setFontSize = function(fontSize) {
+    defaultStyle.fontSize = fontSize;
+    externalStyle.fontSize = fontSize - 1;
+  };
+
+  /**
+   * Get default text style.
+   */
+  this.getDefaultStyle = function() {
+    return defaultStyle;
+  };
+
+  /**
+   * Get the external text style.
+   */
+  this.getExternalStyle = function() {
+    return externalStyle;
+  };
+
+}
+
+CustomTextRenderer.$inject = [
+  'config.textRenderer'
+];
+// CONCATENATED MODULE: ./app/modules/bpmn-renderer/index.js
+
+
+
+
+/* harmony default export */ var bpmn_renderer = ({
+  __init__: [ 'bpmnRenderer' ],
+  bpmnRenderer: [ 'type', CustomBpmnRenderer ],
+  textRenderer: [ 'type', CustomTextRenderer ],
+  pathMap: [ 'type', PathMap ]
+});
 // CONCATENATED MODULE: ./app/CustomModeler.js
+
+
 
 
 
@@ -113772,6 +116159,8 @@ function CustomModeler(options) {
   options.additionalModules.push(modules_attachment);
   options.additionalModules.push(modules_comments);
   options.additionalModules.push(resize_tasks);
+  options.additionalModules.push(link_subprocess);
+  options.additionalModules.push(bpmn_renderer);
   Modeler.call(this, options);
 }
 
@@ -113794,7 +116183,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 356 */
+/* 359 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
