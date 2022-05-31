@@ -42,6 +42,7 @@ import org.zkoss.zk.ui.Sessions;
 public class XesToParquetConverterService {
     public static final int TEMP_FILE_NAME_LENGTH = 50;
     public static final String UNDER_SCORE = "_";
+    public static final String ENCODING_LOG_PARQUET = "encodingLogParquet";
 
     private RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder()
         .withinRange('0', 'z')
@@ -61,7 +62,7 @@ public class XesToParquetConverterService {
 
             return new ParquetExporterService(apmLogWrapper)
                 .saveParquetFile(
-                    (String) Sessions.getCurrent().getAttribute("encodingLogParquet"),
+                    (String) Sessions.getCurrent().getAttribute(ENCODING_LOG_PARQUET),
                     apmLogWrapper.getLabel()
                         + UNDER_SCORE
                         + randomStringGenerator.generate(TEMP_FILE_NAME_LENGTH).toLowerCase(Locale.ROOT)
