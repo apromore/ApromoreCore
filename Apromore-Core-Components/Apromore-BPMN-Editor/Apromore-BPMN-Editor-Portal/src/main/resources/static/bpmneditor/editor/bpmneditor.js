@@ -12180,10 +12180,10 @@ class Editor {
         config.textRenderer = {
             defaultStyle:
             {
-              fontSize: size+"px"
+              fontSize: size
             },
             externalStyle: {
-              fontSize: size+"px"
+              fontSize: size
             }
         };
         modeler.get('textRenderer').setFontSize(size);
@@ -129515,10 +129515,10 @@ class EditorApp {
           processName: '',
 		  textRenderer: {
 		    defaultStyle: {
-		      fontSize: "14px"
+		      fontSize: 16
 		    },
 		    externalStyle: {
-		      fontSize: "14px"
+		      fontSize: 16
 		    }
   		}	
         }
