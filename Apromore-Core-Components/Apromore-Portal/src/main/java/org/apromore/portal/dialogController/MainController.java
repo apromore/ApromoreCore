@@ -70,6 +70,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.portal.util.CostTable;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.zk.ApromoreDesktopCleanup;
@@ -305,6 +306,21 @@ public class MainController extends BaseController implements MainControllerInte
                             reloadSummaries();
                             break;
                     }
+                }
+            });
+
+            // Updates from Access Controller
+            EventQueue eqAccessRight =
+                EventQueues.lookup(EventQueueTypes.UPDATE_USERMETADATA, EventQueues.APPLICATION, true);
+            eqAccessRight.subscribe((Event event) -> {
+                switch (event.getName()) {
+                    case "update_usermetadata":
+                        String userName = UserSessionManager.getCurrentUser().getUsername();
+                        String evUserName = (String) event.getData();
+                        if (userName.equals(evUserName)) {
+                            reloadSummaries();
+                        }
+                        break;
                 }
             });
 
