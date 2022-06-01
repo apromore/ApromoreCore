@@ -18,33 +18,30 @@
 
 package org.apromore.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Configurable;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.util.Locale;
 
-@Entity
-@Table(name = "attribute_type",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id"})
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public enum AttributeType {
+    CASE_ID,
+    START_TIME,
+    END_TIME,
+    ACTIVITY,
+    RESOURCE,
+    ROLE,
+    EVENT_ATTRIBUTE,
+    CASE_ATTRIBUTE,
+    IGNORED_ATTRIBUTE;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase(Locale.ROOT);
     }
-)
-@Configurable("attribute_type")
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AttributeType extends BaseEntity {
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private AttributeTypes type;
+
+    @JsonValue
+    public String getAttributeType() {
+        return toString();
+    }
 }

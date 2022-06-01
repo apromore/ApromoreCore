@@ -18,13 +18,10 @@
 
 package org.apromore.dao.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -34,46 +31,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Configurable;
 
-
-
 @Entity
-@Table(name = "logical_log_attribute",
+@Table(name = "attribute_type",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"id"})
     }
 )
-@Configurable("logical_log_attribute")
-@Getter
+@Configurable("attribute_type")
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LogicalLogAttribute extends BaseEntity {
-
-    @ManyToOne
-    @JoinColumn(name = "event_log_id", referencedColumnName = "id", nullable = false)
-    Log log;
-
-    @Column(name = "logical_name")
-    private String logicalName;
-
-    @OneToOne(mappedBy = "logicalLogAttribute", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    PhysicalLogAttribute physicalLogAttribute;
-
-    @ManyToOne
-    @JoinColumn(name = "attribute_type_id", nullable = false)
-    private AttributeTypeDao attributeTypeDao;
-
-    @ManyToOne
-    @JoinColumn(name = "data_type_id", nullable = false)
-    private DataType dataType;
-
-    @Column(name = "date_format")
-    private String dateFormat;
-
-    @Column(name = "is_masked")
-    private boolean isMasked;
-
-    @Column(name = "attribute_index")
-    private int index;
+public class AttributeTypeDao extends BaseEntity {
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private AttributeType type;
 }
