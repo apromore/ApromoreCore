@@ -74,6 +74,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Window;
@@ -155,9 +156,13 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     process = session.getProcess();
     vst = session.getVersion();
 
+    Map<String, Object> param = new HashMap<>();
+
     if (isNewProcess) {
       currentUserAccessType = AccessType.OWNER;
+      param.put("isNewProcess", true);
     } else {
+      param.put("isNewProcess", false);
       try {
         User user = mainC.getSecurityService().getUserById(currentUserType.getId());
         currentUserAccessType = mainC.getAuthorizationService().getProcessAccessTypeByUser(process.getId(), user);
@@ -182,7 +187,6 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Clients.evalJavaScript("Ap.common.injectGlobalClass(\"access-type-viewer\")");
     }
 
-    Map<String, Object> param = new HashMap<>();
     try {
       PluginMessages pluginMessages = null;
       String bpmnXML = (String) session.get(BPMN_XML);
@@ -464,6 +468,23 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Notification.info("Process successfully unlinked");
     });
 
+    this.addEventListener("onDownloadXML", event -> {
+      String xml = (String) event.getData();
+      //Show window if there is a linked subprocess. Otherwise, download.
+      ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
+      if (process == null || !processService.hasLinkedProcesses(process.getId(), currentUserType.getUsername())) {
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        Filedownload.save(is, "text/xml", "diagram.bpmn");
+      } else {
+        Map<String, Object> args = new HashMap<>();
+        args.put("process", process);
+        args.put("version", vst);
+        Window downloadBPMNPrompt = (Window) Executions.createComponents(
+            getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+        downloadBPMNPrompt.doModal();
+      }
+    });
+
     BPMNEditorController editorController = this;
     qeBPMNEditor.subscribe(new EventListener<Event>() {
       @Override
@@ -612,6 +633,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("langTag", getLanguageTag());
     param.put("doAutoLayout", "false");
     param.put("username", currentUserType.getUsername());
+    param.put("isNewProcess", false);
     Executions.getCurrent().pushArg(param);
   }
 
@@ -651,7 +673,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     }
   }
 
-  private void viewLinkedSubprocess(String elementId) {
+  private void viewLinkedSubprocess(String elementId) throws UserNotFoundException {
     if (isNewProcess || process == null) {
       Notification.error(Labels.getLabel(PORTAL_SAVE_MODEL_FIRST_MESSAGE_KEY));
       return;
@@ -659,8 +681,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
     ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
+    User user = mainC.getSecurityService().getUserById(currentUserType.getId());
+    boolean hasLinkedProcessAccess = (linkedProcess != null) &&
+        (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
 
-    if (linkedProcess == null) {
+    if (!hasLinkedProcessAccess) {
       Notification.error("No process is linked");
       return;
     }

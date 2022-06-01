@@ -268,8 +268,19 @@ export default class EditorApp {
         let me = this;
 
         if (this.useSimulationPanel) {
-            this.layout_regions.center.addListener('resize', function () {
-                me.zoomFitToModel();
+            this.layout_regions.center.addListener('resize', function (event) {
+            try{
+                const listerTypes=me.editorCommandStackListeners;
+                if(listerTypes){
+                for (const listerType of listerTypes) {
+                          if(listerType && listerType.type ==='Toolbar'){
+                            return;
+                        }
+                    }
+                }
+                }catch(e){}
+
+            me.zoomFitToModel();
             });
         }
 
@@ -501,6 +512,7 @@ export default class EditorApp {
                     isPublished: this.isPublished,
                     getXML: this.getXML.bind(this),
                     getSVG: this.getSVG.bind(this),
+                    getSVG2: this.getSVG2.bind(this),
                     addToRegion: this.addToRegion.bind(this),
                     undo: () => me.editor.undo(),
                     redo: () => me.editor.redo(),
@@ -521,6 +533,11 @@ export default class EditorApp {
     async getSVG() {
         if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
         return await this.editor.getSVG();
+    }
+
+    async getSVG2() {
+        if (!this.editor) return Promise.reject(new Error('The Editor was not created (EditorApp.getSVG)'));
+        return await this.editor.getSVG2();
     }
 
     /**

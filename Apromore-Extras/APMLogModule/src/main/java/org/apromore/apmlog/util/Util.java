@@ -189,9 +189,16 @@ public class Util {
     }
 
     public static DecimalFormat getDecimalFormat() {
-        NumberFormatStyle nfs =
-                (NumberFormatStyle) Executions.getCurrent().getDesktop().getAttribute("numberFormatStyle");
+        DecimalFormat decimalFormat;
 
-        return nfs != null ? nfs.getDecimalFormat() : new DecimalFormat("##############0.##");
+        try {
+            NumberFormatStyle nfs =
+                    (NumberFormatStyle) Executions.getCurrent().getDesktop().getAttribute("numberFormatStyle");
+            decimalFormat = nfs.getDecimalFormat();
+        } catch (Exception e) {
+            decimalFormat = new DecimalFormat("##############0.##");
+        }
+
+        return decimalFormat;
     }
 }

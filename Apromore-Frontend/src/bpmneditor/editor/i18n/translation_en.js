@@ -102,14 +102,14 @@ Apromore.I18N.Undo.redoDesc = "Redo the last undone action";
 if(!Apromore.I18N.View) Apromore.I18N.View = {};
 
 Apromore.I18N.View.group = "Zoom";
-Apromore.I18N.View.zoomIn = "Zoom In";
-Apromore.I18N.View.zoomInDesc = "Zoom into the model";
-Apromore.I18N.View.zoomOut = "Zoom Out";
-Apromore.I18N.View.zoomOutDesc = "Zoom out of the model";
+Apromore.I18N.View.zoomIn = "Zoom in";
+Apromore.I18N.View.zoomInDesc = "Zoom in";
+Apromore.I18N.View.zoomOut = "Zoom out";
+Apromore.I18N.View.zoomOutDesc = "Zoom out";
 Apromore.I18N.View.zoomStandard = "Zoom Standard";
 Apromore.I18N.View.zoomStandardDesc = "Zoom to the standard level";
-Apromore.I18N.View.zoomFitToModel = "Zoom fit to model";
-Apromore.I18N.View.zoomFitToModelDesc = "Zoom to fit the model size";
+Apromore.I18N.View.zoomFitToModel = "Fit to screen";
+Apromore.I18N.View.zoomFitToModelDesc = "Fit to screen";
 
 if(!Apromore.I18N.SimulationPanel) Apromore.I18N.SimulationPanel = {};
 

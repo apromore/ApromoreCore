@@ -279,7 +279,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key)) {
+    if (has(collection, key) && key !== 'remove') {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -42651,6 +42651,7 @@ module.exports = function(langTag) {
 
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -42675,23 +42676,25 @@ const lighten = function (colorCode) {
 };
 
 const getCurrentColor = function (element){
-        if(!element)
-        {
-            return;
-        }
-         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
-         if (
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
-             ){
-             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
-             }else{
-             return di.get('color:background-color') || di.get('bioc:fill');
-             }
+  if (!element) {
+    return;
   }
+  let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -42759,6 +42762,7 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -55398,15 +55402,13 @@ var ResourceTimetableSelectBox = __webpack_require__(322),
     ResourceCostField = __webpack_require__(325);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
   var entries = [];
-
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
@@ -57088,7 +57090,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
+ *        whiteList, onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -57105,7 +57107,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -57911,7 +57913,14 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧'
 };
 
 /***/ }),
@@ -85089,10 +85098,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
@@ -113356,6 +113367,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var dwidth = 120;
     var dheight = 120;
     var urlText;
+    var contentCount = 0;
 
     if ((!url || !url.length) && !img && !icons) {
       return;
@@ -113389,6 +113401,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
         }
       }
       $overlay.append(jquery_default()(`<div class="aux-image">${imgEl}</div>`));
+      contentCount++;
     }
     if (icons && icons.values && icons.values.length) {
       let iconEls = '';
@@ -113419,6 +113432,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
       })
       $footer.css('height', (iconCount * ICON_ITEM_HEIGHT) + 'px');
       $overlay.append($footer);
+      contentCount++;
     }
 
     $overlay.find('.toggle').click(function(e) {
@@ -113534,6 +113548,12 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var auxCls = "ap-aux-" + element.id;
     $overlay.parent().data("ap-el-id", element.id);
     $overlay.parent().addClass(auxCls);
+    if (!contentCount) {
+        $overlay.parent().addClass('empty');
+    } else {
+        $overlay.parent().removeClass('empty');
+    }
+
     $overlay.parent().css('width', width + 'px');
     $overlay.parent().css('height', height + 'px');
 

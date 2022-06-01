@@ -61,11 +61,16 @@ export default class Export {
 
     async exportBPMN() {
         var xml = await this.facade.getXML();
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.bpmn';
-        hiddenElement.click();
+
+        if (Apromore.BPMNEditor.Plugins.Export.exportXML) {
+            Apromore.BPMNEditor.Plugins.Export.exportXML(xml)
+        } else {
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.click();
+        }
     }
 
 };

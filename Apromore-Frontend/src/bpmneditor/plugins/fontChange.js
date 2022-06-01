@@ -38,10 +38,10 @@ export default class FontChange {
             'btnId': 'ap-id-editor-fontchange-btn',
             'name': Apromore.I18N.FontSize.fontsize,
             'functionality': this.fontChange.bind(this),
-            'icon': CONFIG.PATH + "images/ap/measure.svg",
+            'icon': CONFIG.PATH + "images/ap/font-size.svg",
             'description': Apromore.I18N.FontSize.fontSizeDesc,
             'index': 1,
-            'groupOrder': 5
+            'groupOrder': 3
         });
 
     }
