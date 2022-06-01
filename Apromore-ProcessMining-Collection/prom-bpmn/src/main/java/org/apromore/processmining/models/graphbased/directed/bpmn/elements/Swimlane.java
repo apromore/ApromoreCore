@@ -27,9 +27,7 @@ import java.awt.Graphics2D;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 
 import org.apromore.processmining.models.graphbased.AttributeMap;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
@@ -150,6 +148,13 @@ public class Swimlane extends BPMNNode implements Decorated, ContainingDirectedG
 		getAttributeMap().put(AttributeMap.LABELHORIZONTALALIGNMENT, SwingConstants.CENTER);
 		getAttributeMap().put(AttributeMap.LABELALONGEDGE, true);
 		getAttributeMap().put(AttributeMap.PREF_ORIENTATION, SwingConstants.WEST);
+	}
+
+	@Override
+	public Swimlane copy() {
+		Swimlane copy = new Swimlane(getGraph(), getLabel(), getSwimlaneType());
+		copy.setId(getId().toString());
+		return copy;
 	}
 }
 
