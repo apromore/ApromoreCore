@@ -35,6 +35,7 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @KeycloakConfiguration
 @EnableWebSecurity
@@ -104,8 +105,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
     super.configure(http);
 
     http.headers()
+        .contentSecurityPolicy(contentSecurityPolicy).and()
         .frameOptions().sameOrigin()
-        .contentSecurityPolicy(contentSecurityPolicy);
+        .referrerPolicy(ReferrerPolicy.NO_REFERRER);
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
             .ignoringAntMatchers(Constants.API_WHITELIST)
