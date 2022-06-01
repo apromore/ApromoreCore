@@ -18,33 +18,34 @@
 
 package org.apromore.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Configurable;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.util.Locale;
 
-@Entity
-@Table(name = "data_type",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id"})
+/**
+ * Each column must have a specified data_type from the following list:
+ * "double" (double-precision floating-point number)
+ * "int" (integer number)
+ * "string" (text)
+ * "date" (timestamp)
+ * These values were chosen to match https://www.xes-standard.org/_media/xes/xesstandarddefinition-2.0.pdf §2.2,
+ * which also includes some we’re not using: “boolean”, “id”, “list”.
+ */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public enum DataType {
+    STRING,
+    DATE,
+    DOUBLE,
+    INT;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase(Locale.ROOT);
     }
-)
-@Configurable("data_type")
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class DataType extends BaseEntity {
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private DataTypes type;
+
+    @JsonValue
+    public String getDataType() {
+        return toString();
+    }
 }
