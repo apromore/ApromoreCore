@@ -195,4 +195,12 @@ public class SubProcess extends Activity implements Decorated,ContainingDirected
 	public void decorate(Graphics2D g2d, double x, double y, double width, double height) {
 		super.decorate(g2d, x, y, width, height);
 	}
+
+	@Override
+	public SubProcess copy() {
+		SubProcess copy = new SubProcess(getGraph(), getLabel(), isBLooped(),
+			isBAdhoc(), isBCompensation(), isBMultiinstance(), isBCollapsed());
+		copy.setId(getId().toString());
+		return copy;
+	}
 }

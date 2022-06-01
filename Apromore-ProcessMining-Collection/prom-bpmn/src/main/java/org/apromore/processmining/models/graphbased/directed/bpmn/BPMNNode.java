@@ -23,6 +23,7 @@ package org.apromore.processmining.models.graphbased.directed.bpmn;
 
 import java.awt.Color;
 
+import lombok.Setter;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraph;
 import org.apromore.processmining.models.graphbased.directed.AbstractDirectedGraphNode;
 import org.apromore.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
@@ -54,7 +55,8 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 	public static final Color PRIMITIVETEXTCOLOR = new Color(0, 0, 0, 230);
 
 
-	private final AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> graph;
+	@Setter
+	private AbstractDirectedGraph<BPMNNode, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> graph;
 	private SubProcess parentSubProcess;
 	private Swimlane parentSwimlane;
 
@@ -181,4 +183,6 @@ public abstract class BPMNNode extends AbstractDirectedGraphNode implements Cont
 			subprocess.addChild(this);
 		}
 	}
+
+	public abstract BPMNNode copy();
 }
