@@ -750,6 +750,10 @@ public class BPMNDiagramImpl extends AbstractDirectedGraph<BPMNNode, BPMNEdge<? 
         } else if (node instanceof Activity) {
             activities.add((Activity) node);
         }
+        else {
+            throw new IllegalArgumentException("Unsupported node type for " + node.getLabel()
+                + ", id=" + node.getId());
+        }
 
         graphElementAdded(node);
         return node;
