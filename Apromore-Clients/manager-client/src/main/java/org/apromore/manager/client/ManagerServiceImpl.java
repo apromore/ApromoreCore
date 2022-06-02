@@ -420,15 +420,15 @@ public class ManagerServiceImpl implements ManagerService {
   }
 
   @Override
-  public String removeFolderPermissions(int folderId, String userId) {
+  public String removeFolderPermissions(int folderId, String userId, AccessType accessType) {
     LOGGER.info("User id {} remove folder id {} permissions", userId, folderId);
-    return authorizationSrv.removeFolderPermissions(folderId, userId);
+    return authorizationSrv.removeFolderPermissions(folderId, userId, accessType);
   }
 
   @Override
-  public String removeProcessPermissions(int processId, String userId) {
+  public String removeProcessPermissions(int processId, String userId, AccessType accessType) {
     LOGGER.info("User id {} remove permissions from process model id {}", userId, processId);
-    return authorizationSrv.removeProcessPermissions(processId, userId);
+    return authorizationSrv.removeProcessPermissions(processId, userId, accessType);
   }
 
   @Override
@@ -436,7 +436,7 @@ public class ManagerServiceImpl implements ManagerService {
       AccessType accessType) throws UserNotFoundException {
     LOGGER.info("User \"{}\" (id {}) remove permissions from log id {} (access type {})", username,
         userId, logId, accessType);
-    return authorizationSrv.removeLogPermissions(logId, userId, username, accessType);
+    return authorizationSrv.removeLogPermissions(logId, userId, accessType);
   }
 
   /**
