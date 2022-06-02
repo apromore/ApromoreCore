@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
     }
 )
 @Configurable("data_type")
-@Setter
 @Getter
 @Builder
 @NoArgsConstructor

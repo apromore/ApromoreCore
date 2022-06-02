@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 )
 @Configurable("physical_log_attribute")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
