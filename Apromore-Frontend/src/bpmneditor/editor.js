@@ -545,10 +545,10 @@ export default class Editor {
         config.textRenderer = {
             defaultStyle:
             {
-              fontSize: size+"px"
+              fontSize: size
             },
             externalStyle: {
-              fontSize: size+"px"
+              fontSize: size
             }
         };
         modeler.get('textRenderer').setFontSize(size);

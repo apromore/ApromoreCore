@@ -242,10 +242,10 @@ public class ParquetExporterService extends AbstractParquetProducer {
         String label;
         switch (xesCode.toLowerCase()) {
             case XESAttributeCodes.CONCEPT_NAME:
-                label = XESAttributeCodes.getDisplayLabelForSingle(XESAttributeCodes.CONCEPT_NAME);
+                label = "activity";
                 break;
             case XESAttributeCodes.ORG_RESOURCE:
-                label = XESAttributeCodes.getDisplayLabelForSingle(XESAttributeCodes.ORG_RESOURCE);
+                label = "resource";
                 break;
             case XESAttributeCodes.ORG_GROUP:
             case "group":

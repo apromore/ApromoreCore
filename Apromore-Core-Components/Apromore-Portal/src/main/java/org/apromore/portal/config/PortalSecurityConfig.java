@@ -29,6 +29,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @Configuration
 @EnableWebSecurity
@@ -75,8 +76,9 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.headers()
+        .contentSecurityPolicy(contentSecurityPolicy).and()
         .frameOptions().sameOrigin()
-        .contentSecurityPolicy(contentSecurityPolicy);
+        .referrerPolicy(ReferrerPolicy.NO_REFERRER);
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
