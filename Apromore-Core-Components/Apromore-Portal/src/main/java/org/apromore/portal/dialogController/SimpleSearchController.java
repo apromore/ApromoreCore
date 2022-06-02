@@ -234,14 +234,14 @@ public class SimpleSearchController {
         // Remove any element of the search history if it is equal to the query or not unique
         {
             Set<String> searchSet = new HashSet<>();
-            searchSet.add(query.toUpperCase());
+            searchSet.add(query.trim().toUpperCase());
             Iterator<SearchHistoriesType> iterator = searchHist.iterator();
             while (iterator.hasNext()) {
                 SearchHistoriesType sh = iterator.next();
-                if (searchSet.contains(sh.getSearch().toUpperCase())) {
+                if (searchSet.contains(sh.getSearch().trim().toUpperCase())) {
                     iterator.remove();
                 }
-                searchSet.add(sh.getSearch().toUpperCase());
+                searchSet.add(sh.getSearch().trim().toUpperCase());
             }
         }
 
