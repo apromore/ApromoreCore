@@ -21,7 +21,7 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
         editor = editorApp.getEditor();
 
         spyOn(Promise, 'reject');
-        spyOn(editor, 'getSVG').and.callFake(async () => {throw new Error('Editor Error')});
+        spyOn(editor, 'getSVG2').and.callFake(async () => {throw new Error('Editor Error')});
 
         let plugin = editorApp.getActivatedPlugins()[4];
         await plugin.exportPDF().catch(err => {
@@ -34,7 +34,7 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
         editor = editorApp.getEditor();
 
         spyOn(Promise, 'reject');
-        spyOn(editor, 'getSVG').and.callFake(async () => 1); // return a wrong type.
+        spyOn(editor, 'getSVG2').and.callFake(async () => 1); // return a wrong type.
 
         let plugin = editorApp.getActivatedPlugins()[4];
         await plugin.exportPDF().catch(err => {

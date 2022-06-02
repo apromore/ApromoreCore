@@ -88,4 +88,11 @@ public class TextAnnotation extends BPMNNode implements Decorated {
 		getAttributeMap().put(AttributeMap.BORDERWIDTH, 2);
 		getAttributeMap().put(AttributeMap.STROKECOLOR, Color.white);
 	}
+
+	@Override
+	public TextAnnotation copy() {
+		TextAnnotation copy = new TextAnnotation(getGraph(), getLabel());
+		copy.setId(getId().toString());
+		return copy;
+	}
 }

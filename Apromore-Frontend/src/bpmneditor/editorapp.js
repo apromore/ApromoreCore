@@ -593,10 +593,10 @@ export default class EditorApp {
           processName: '',
 		  textRenderer: {
 		    defaultStyle: {
-		      fontSize: "14px"
+		      fontSize: 16
 		    },
 		    externalStyle: {
-		      fontSize: "14px"
+		      fontSize: 16
 		    }
   		}	
         }

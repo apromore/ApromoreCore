@@ -163,6 +163,13 @@ public class Event extends BPMNNode implements Decorated, BoundaryDirectedGraphN
 		return null;
 	}
 
+	@Override
+	public Event copy() {
+		Event copy = new Event(getGraph(), getLabel(), eventType, eventTrigger, eventUse, isInterrupting, exceptionFor);
+		copy.setId(getId().toString());
+		return copy;
+	}
+
 	public void decorate(Graphics2D g2d, double x, double y, double width, double height) {
 		double scalefactor = width / 33;
 		GeneralPath eventDecorator = new GeneralPath();

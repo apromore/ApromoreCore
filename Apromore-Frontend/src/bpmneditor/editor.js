@@ -545,10 +545,10 @@ export default class Editor {
         config.textRenderer = {
             defaultStyle:
             {
-              fontSize: size+"px"
+              fontSize: size
             },
             externalStyle: {
-              fontSize: size+"px"
+              fontSize: size
             }
         };
         modeler.get('textRenderer').setFontSize(size);
@@ -576,12 +576,13 @@ export default class Editor {
                 }
             }
         }
-        if (selectedFontSize != -1) {
-            Apromore.BPMNEditor.updateFontSize(selectedFontSize);
-        }
       } catch (r) {
         // pass
       }
+      if (selectedFontSize == -1) {
+        selectedFontSize = 16;
+      }
+      Apromore.BPMNEditor.updateFontSize(selectedFontSize);
     }
 
     async changeFontSize(size) {
