@@ -115,6 +115,8 @@ public class ConfigBean {
     // Switch to Conformance Checker on new data layer
     private boolean enableNewConformanceCheck;
 
+    private boolean enableLogAnimationNewDataLayer;
+
     // Maximum upload size
     private long maxUploadSize;
 
