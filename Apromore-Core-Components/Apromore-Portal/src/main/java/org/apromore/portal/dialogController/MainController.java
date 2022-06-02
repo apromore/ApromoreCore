@@ -305,22 +305,22 @@ public class MainController extends BaseController implements MainControllerInte
                         case Constants.EVENT_QUEUE_REFRESH_SCREEN:
                             reloadSummaries();
                             break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + event.getName());
                     }
                 }
             });
 
             // Updates from Access Controller
-            EventQueue eqAccessRight =
+            EventQueue<Event> eqAccessRight =
                 EventQueues.lookup(EventQueueTypes.UPDATE_USERMETADATA, EventQueues.APPLICATION, true);
             eqAccessRight.subscribe((Event event) -> {
-                switch (event.getName()) {
-                    case "update_usermetadata":
-                        String userName = UserSessionManager.getCurrentUser().getUsername();
-                        String evUserName = (String) event.getData();
-                        if (userName.equals(evUserName)) {
-                            reloadSummaries();
-                        }
-                        break;
+                if ("update_usermetadata".equals(event.getName())) {
+                    String userName = UserSessionManager.getCurrentUser().getUsername();
+                    String evUserName = (String) event.getData();
+                    if (userName.equals(evUserName)) {
+                        reloadSummaries();
+                    }
                 }
             });
 
