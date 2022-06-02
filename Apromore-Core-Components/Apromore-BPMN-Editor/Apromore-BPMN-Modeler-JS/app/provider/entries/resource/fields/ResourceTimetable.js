@@ -5,6 +5,7 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedResource = options.getSelectedResource;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'resource-timetable',
@@ -22,7 +23,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       timetablesWithNoEmptyName.forEach(function(timetable) {
         timetableOptions.push({
-          name: timetable.name == 'Log timetable' ? translate('logtimetable.name') : timetable.name,
+          name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
           value: timetable.id
         });
       });
