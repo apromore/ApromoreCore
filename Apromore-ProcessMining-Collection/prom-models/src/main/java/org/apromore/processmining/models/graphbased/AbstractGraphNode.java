@@ -51,4 +51,8 @@ public abstract class AbstractGraphNode extends AbstractGraphElement {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = new NodeID(id);
+	}
+
 }

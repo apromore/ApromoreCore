@@ -116,6 +116,13 @@ public class Gateway extends BPMNNode implements Decorated {
 		return null;
 	}
 
+	@Override
+	public Gateway copy() {
+		Gateway copy = new Gateway(getGraph(), getLabel(), getGatewayType());
+		copy.setId(getId().toString());
+		return copy;
+	}
+
 	public IGraphElementDecoration getDecorator() {
 		return decorator;
 	}
