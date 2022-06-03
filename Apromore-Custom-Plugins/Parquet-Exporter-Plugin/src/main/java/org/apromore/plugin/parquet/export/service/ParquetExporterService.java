@@ -234,11 +234,11 @@ public class ParquetExporterService extends AbstractParquetProducer {
     private List<ParquetCol> getValidAttributes(Set<String> keys) {
         return keys.stream().sorted()
                 .filter(x -> !invalidAttributes.contains(x.toLowerCase()))
-                .map(this::getParquetCol)
+                .map(ParquetExporterService::getParquetCol)
                 .collect(Collectors.toList());
     }
 
-    private ParquetCol getParquetCol(String xesCode) {
+    public static ParquetCol getParquetCol(String xesCode) {
         String label;
         switch (xesCode.toLowerCase()) {
             case XESAttributeCodes.CONCEPT_NAME:
