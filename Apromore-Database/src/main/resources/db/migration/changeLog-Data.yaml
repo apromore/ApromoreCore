@@ -2179,3 +2179,17 @@ databaseChangeLog:
               FROM (SELECT * FROM user_role) AS user_role_copy
               WHERE roleid = 1
               );
+  - changeSet:
+      id: 20220603152200
+      author: janeh
+      comment: "grant designer role simulate models permission"
+      changes:
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "15"
