@@ -26,7 +26,7 @@ package org.apromore.dao.model;
 
 
 import java.io.Serializable;
-import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -37,10 +37,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
+
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -51,9 +48,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "group_folder")
 @Configurable("group_folder")
-@Getter
-@Setter
-@ToString
 public class GroupFolder implements Serializable {
 
     private Integer id;
@@ -151,20 +145,5 @@ public class GroupFolder implements Serializable {
         return accessRights.isOwnerShip();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        GroupFolder that = (GroupFolder) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
-    }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

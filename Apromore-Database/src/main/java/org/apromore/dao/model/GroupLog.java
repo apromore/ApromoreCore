@@ -25,8 +25,8 @@
 package org.apromore.dao.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.logging.Logger;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -37,10 +37,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
+
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -51,9 +48,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "group_log")
 @Configurable("group_log")
-@Getter
-@Setter
-@ToString
 public class GroupLog implements Serializable {
 
     private static Logger LOGGER = Logger.getLogger(GroupLog.class.getCanonicalName());
@@ -153,20 +147,4 @@ public class GroupLog implements Serializable {
         return getAccessRights().isOwnerShip();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        GroupLog groupLog = (GroupLog) o;
-        return getId() != null && Objects.equals(getId(), groupLog.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
