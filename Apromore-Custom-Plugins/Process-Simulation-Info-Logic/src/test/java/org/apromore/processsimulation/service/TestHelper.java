@@ -148,7 +148,7 @@ public class TestHelper {
     public static SimulationData createMockSimulationData() {
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
-        mockCalendarModel.setName("24/7");
+        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
 
         SimulationData simulationData = SimulationData.builder()
             .caseCount(100)
