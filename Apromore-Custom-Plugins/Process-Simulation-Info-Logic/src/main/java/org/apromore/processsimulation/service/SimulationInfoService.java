@@ -210,16 +210,20 @@ public class SimulationInfoService {
             builder.timetables(List.of(createTimetable(
                 calendarModel, config.getCustomTimetableId(), true)));
         } else {
-            CalendarModel defaultCalendar = calendarService.getGenericCalendar();
-            defaultCalendar.setName(SimulationData.DEFAULT_CALENDAR_NAME);
             calendarModel.setName(CUSTOM_CALENDER_NAME);
             builder.timetables(
                 List.of(
                     createTimetable(calendarModel, config.getCustomTimetableId(), true),
-                    createTimetable(defaultCalendar,
+                    createTimetable(getDefaultCalendarModel(),
                         config.getDefaultTimetableId(), false)
                 ));
         }
+    }
+
+    private CalendarModel getDefaultCalendarModel() {
+        CalendarModel defaultCalendar = calendarService.getGenericCalendar();
+        defaultCalendar.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+        return defaultCalendar;
     }
 
     private Timetable createTimetable(
