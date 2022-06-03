@@ -20,6 +20,7 @@ import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @KeycloakConfiguration
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
@@ -39,6 +41,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
   @Autowired
   private ManagerService manager;
+
+  @Value("${contentSecurityPolicy}")
+  String contentSecurityPolicy;
 
   /**
    * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -87,7 +92,10 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
 
-    http.headers().frameOptions().sameOrigin();
+    http.headers()
+         .contentSecurityPolicy(contentSecurityPolicy).and()
+         .frameOptions().sameOrigin()
+         .referrerPolicy(ReferrerPolicy.NO_REFERRER);
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
             .ignoringAntMatchers(Constants.API_WHITELIST)
