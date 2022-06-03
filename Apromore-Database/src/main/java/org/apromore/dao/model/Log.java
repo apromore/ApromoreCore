@@ -31,6 +31,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,8 +46,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -63,7 +67,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 )
 @Configurable("log")
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class Log implements Serializable {
 
     @Id
@@ -106,6 +112,7 @@ public class Log implements Serializable {
     private CustomCalendar calendar;
 
     @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Set<GroupLog> groupLogs = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -135,4 +142,20 @@ public class Log implements Serializable {
         return newLog;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Log log = (Log) o;
+        return id != null && Objects.equals(id, log.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

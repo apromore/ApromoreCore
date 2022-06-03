@@ -561,12 +561,16 @@ export default class Editor {
     }
 
     updateFontSize(selection) {
+      const DEFAULT_SIZE = 16;
+      let selectedFontSize = -1;
       try  {
-        let selectedFontSize = -1;
         for (let i = 0; i < selection.length; i++) {
             const element = selection[i]
             const bo = element.businessObject;
-            const size = parseInt(bo["aux-font-size"])
+            let size = parseInt(bo["aux-font-size"])
+            if (isNaN(size)) {
+                size = DEFAULT_SIZE
+            }
             if (selectedFontSize === -1) {
                 selectedFontSize = size
             } else {
@@ -579,8 +583,8 @@ export default class Editor {
       } catch (r) {
         // pass
       }
-      if (selectedFontSize == -1) {
-        selectedFontSize = 16;
+      if (selectedFontSize === -1) {
+        selectedFontSize = DEFAULT_SIZE;
       }
       Apromore.BPMNEditor.updateFontSize(selectedFontSize);
     }
