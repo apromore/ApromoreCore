@@ -77,6 +77,7 @@ public class SimulationInfoService {
     private static final Locale DOCUMENT_LOCALE = Locale.ENGLISH;
     private static final DateTimeFormatter TIMETABLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0000");
+    private static final String CUSTOM_CALENDER_NAME = "Log timetable";
 
 
     private JAXBContext jaxbContext;
@@ -204,17 +205,25 @@ public class SimulationInfoService {
 
         CalendarModel calendarModel = simulationData.getCalendarModel();
 
-        if (calendarModel.getName().equals(SimulationData.DEFAULT_CALENDAR_NAME)) {
+        if (calendarModel.is247()) {
+            calendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
             builder.timetables(List.of(createTimetable(
                 calendarModel, config.getCustomTimetableId(), true)));
         } else {
+            calendarModel.setName(CUSTOM_CALENDER_NAME);
             builder.timetables(
                 List.of(
                     createTimetable(calendarModel, config.getCustomTimetableId(), true),
-                    createTimetable(calendarService.getGenericCalendar(),
+                    createTimetable(getDefaultCalendarModel(),
                         config.getDefaultTimetableId(), false)
                 ));
         }
+    }
+
+    private CalendarModel getDefaultCalendarModel() {
+        CalendarModel defaultCalendar = calendarService.getGenericCalendar();
+        defaultCalendar.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+        return defaultCalendar;
     }
 
     private Timetable createTimetable(
