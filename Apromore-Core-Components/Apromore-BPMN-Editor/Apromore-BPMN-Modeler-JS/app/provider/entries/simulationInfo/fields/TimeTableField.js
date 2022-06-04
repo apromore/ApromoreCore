@@ -5,10 +5,11 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
   var timetables;
   var selectedDefault;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'arrivalTimetable',
-    label: translate('timetableEntry.label'),
+    label: translate('arrivalTimetable.name'),
     modelProperty: 'arrivalTimetable',
     selectOptions: function (_element, _inputNode) {
       let timetableOptions = [];
@@ -22,8 +23,8 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
       timetablesWithNoEmptyName.forEach(function (timetable) {
         timetableOptions.push({
-          name: timetable.name,
-          value: timetable.id
+           name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
+           value: timetable.id
         });
       });
 

@@ -12532,7 +12532,7 @@ function forEach(collection, iterator) {
   var convertKey = isArray(collection) ? toNum : identity;
 
   for (var key in collection) {
-    if (has(collection, key) && key !== 'remove') {
+    if (has(collection, key)) {
       val = collection[key];
       result = iterator(val, convertKey(key));
 
@@ -13159,6 +13159,7 @@ function getDi(element) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assignStyle", function() { return assign$1; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "attr", function() { return attr; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "classes", function() { return classes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear", function() { return clear; });
@@ -13170,6 +13171,101 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "query", function() { return query; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryAll", function() { return all; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remove", function() { return remove; });
+/**
+ * Flatten array, one level deep.
+ *
+ * @param {Array<?>} arr
+ *
+ * @return {Array<?>}
+ */
+
+var nativeToString = Object.prototype.toString;
+var nativeHasOwnProperty = Object.prototype.hasOwnProperty;
+function isUndefined(obj) {
+  return obj === undefined;
+}
+function isArray(obj) {
+  return nativeToString.call(obj) === '[object Array]';
+}
+/**
+ * Return true, if target owns a property with the given key.
+ *
+ * @param {Object} target
+ * @param {String} key
+ *
+ * @return {Boolean}
+ */
+
+function has(target, key) {
+  return nativeHasOwnProperty.call(target, key);
+}
+/**
+ * Iterate over collection; returning something
+ * (non-undefined) will stop iteration.
+ *
+ * @param  {Array|Object} collection
+ * @param  {Function} iterator
+ *
+ * @return {Object} return result that stopped the iteration
+ */
+
+function forEach(collection, iterator) {
+  var val, result;
+
+  if (isUndefined(collection)) {
+    return;
+  }
+
+  var convertKey = isArray(collection) ? toNum : identity;
+
+  for (var key in collection) {
+    if (has(collection, key)) {
+      val = collection[key];
+      result = iterator(val, convertKey(key));
+
+      if (result === false) {
+        return val;
+      }
+    }
+  }
+}
+
+function identity(arg) {
+  return arg;
+}
+
+function toNum(arg) {
+  return Number(arg);
+}
+
+/**
+ * Assigns style attributes in a style-src compliant way.
+ *
+ * @param {Element} element
+ * @param {...Object} styleSources
+ *
+ * @return {Element} the element
+ */
+function assign$1(element) {
+  var target = element.style;
+
+  for (var _len = arguments.length, styleSources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    styleSources[_key - 1] = arguments[_key];
+  }
+
+  forEach(styleSources, function (style) {
+    if (!style) {
+      return;
+    }
+
+    forEach(style, function (value, key) {
+      target[key] = value;
+    });
+  });
+
+  return element;
+}
+
 /**
  * Set attribute `name` to `val`, or get attr `name`.
  *
@@ -13456,9 +13552,9 @@ function closest (element, selector, checkYourSelf) {
   return matchesSelector(currentElem, selector) ? currentElem : null;
 }
 
-var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+var bind$1 = window.addEventListener ? 'addEventListener' : 'attachEvent',
     unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
-    prefix = bind !== 'addEventListener' ? 'on' : '';
+    prefix = bind$1 !== 'addEventListener' ? 'on' : '';
 
 /**
  * Bind `el` event `type` to `fn`.
@@ -13472,7 +13568,7 @@ var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
  */
 
 var bind_1 = function(el, type, fn, capture){
-  el[bind](prefix + type, fn, capture || false);
+  el[bind$1](prefix + type, fn, capture || false);
   return fn;
 };
 
@@ -13519,7 +13615,7 @@ var componentEvent = {
 // when delegating.
 var forceCaptureEvents = ['focus', 'blur'];
 
-function bind$1(el, selector, type, fn, capture) {
+function bind$2(el, selector, type, fn, capture) {
   if (forceCaptureEvents.indexOf(type) !== -1) {
     capture = true;
   }
@@ -13551,7 +13647,7 @@ function unbind$1(el, type, fn, capture) {
 }
 
 var delegate = {
-  bind: bind$1,
+  bind: bind$2,
   unbind: unbind$1
 };
 
@@ -13581,7 +13677,7 @@ if (typeof document !== 'undefined') {
  * Wrap map from jquery.
  */
 
-var map = {
+var map$1 = {
   legend: [1, '<fieldset>', '</fieldset>'],
   tr: [2, '<table><tbody>', '</tbody></table>'],
   col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
@@ -13590,27 +13686,27 @@ var map = {
   _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
 };
 
-map.td =
-map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
+map$1.td =
+map$1.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
 
-map.option =
-map.optgroup = [1, '<select multiple="multiple">', '</select>'];
+map$1.option =
+map$1.optgroup = [1, '<select multiple="multiple">', '</select>'];
 
-map.thead =
-map.tbody =
-map.colgroup =
-map.caption =
-map.tfoot = [1, '<table>', '</table>'];
+map$1.thead =
+map$1.tbody =
+map$1.colgroup =
+map$1.caption =
+map$1.tfoot = [1, '<table>', '</table>'];
 
-map.polyline =
-map.ellipse =
-map.polygon =
-map.circle =
-map.text =
-map.line =
-map.path =
-map.rect =
-map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
+map$1.polyline =
+map$1.ellipse =
+map$1.polygon =
+map$1.circle =
+map$1.text =
+map$1.line =
+map$1.path =
+map$1.rect =
+map$1.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
 
 /**
  * Parse `html` and return a DOM Node instance, which could be a TextNode,
@@ -13645,7 +13741,7 @@ function parse(html, doc) {
   }
 
   // wrap map
-  var wrap = map[tag] || map._default;
+  var wrap = map$1[tag] || map$1._default;
   var depth = wrap[0];
   var prefix = wrap[1];
   var suffix = wrap[2];
@@ -66437,10 +66533,11 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
   var timetables;
   var selectedDefault;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'arrivalTimetable',
-    label: translate('timetableEntry.label'),
+    label: translate('arrivalTimetable.name'),
     modelProperty: 'arrivalTimetable',
     selectOptions: function (_element, _inputNode) {
       let timetableOptions = [];
@@ -66454,8 +66551,8 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
       timetablesWithNoEmptyName.forEach(function (timetable) {
         timetableOptions.push({
-          name: timetable.name,
-          value: timetable.id
+           name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
+           value: timetable.id
         });
       });
 
@@ -66991,11 +67088,6 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       var selectedTimetable = timetables.values[idx];
 
       var selectedTimetableName = selectedTimetable && selectedTimetable.name || translate('N/A');
-
-      if (selectedTimetable.get('default') === 'true' && selectedTimetableName !== translate('arrivalTimetable.name')) {
-        var arrivalTimetableTag = ' [' + translate('arrivalTimetable.name') + ']';
-        selectedTimetableName = (selectedTimetable.name || translate('N/A')) + arrivalTimetableTag;
-      }
 
       option.text = selectedTimetableName;
     }
@@ -67680,6 +67772,7 @@ var entryFactory = __webpack_require__(10),
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedResource = options.getSelectedResource;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'resource-timetable',
@@ -67697,8 +67790,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       timetablesWithNoEmptyName.forEach(function(timetable) {
         timetableOptions.push({
-          name: timetable.default && timetable.name !== translate('arrivalTimetable.name') ?
-            timetable.name + ' ' + translate('arrivalTimetable.name') : timetable.name,
+          name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
           value: timetable.id
         });
       });
@@ -69339,7 +69431,7 @@ function shallowCopyObject(obj) {
  * FilterXSS class
  *
  * @param {Object} options
- *        whiteList, onTag, onTagAttr, onIgnoreTag,
+ *        whiteList (or allowList), onTag, onTagAttr, onIgnoreTag,
  *        onIgnoreTagAttr, safeAttrValue, escapeHtml
  *        stripIgnoreTagBody, allowCommentTag, stripBlankChar
  *        css{whiteList, onAttr, onIgnoreAttr} `css=false` means don't use `cssfilter`
@@ -69356,7 +69448,7 @@ function FilterXSS(options) {
     options.onIgnoreTag = DEFAULT.onIgnoreTagStripAll;
   }
 
-  options.whiteList = options.whiteList || DEFAULT.whiteList;
+  options.whiteList = options.whiteList || options.allowList || DEFAULT.whiteList;
   options.onTag = options.onTag || DEFAULT.onTag;
   options.onTagAttr = options.onTagAttr || DEFAULT.onTagAttr;
   options.onIgnoreTag = options.onIgnoreTag || DEFAULT.onIgnoreTag;
@@ -70061,7 +70153,8 @@ module.exports = {
 
   'properties': 'Properties',
   'metadata.properties': 'Metadata Properties',
-  'attachments': 'Attachments'
+  'attachments': 'Attachments',
+  'logtimetable.name': 'Log timetable'
 };
 
 /***/ }),
@@ -70169,7 +70262,8 @@ module.exports = {
   'attachments.image.upload': '画像アップロード',
   'attachments.image.link': '画像用リンク',
   'attachments.image.text': '画像用テキスト',
-  'attachments.icon.list': 'アイコン一覧'
+  'attachments.icon.list': 'アイコン一覧',
+  'logtimetable.name': 'Log timetable'
 };
 
 /***/ }),
@@ -70181,7 +70275,7 @@ var colorNames = __webpack_require__(136);
 var swizzle = __webpack_require__(353);
 var hasOwnProperty = Object.hasOwnProperty;
 
-var reverseNames = {};
+var reverseNames = Object.create(null);
 
 // create a list of reverse color names
 for (var name in colorNames) {
