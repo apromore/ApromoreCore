@@ -1581,7 +1581,7 @@ databaseChangeLog:
                 name: hive_table_name
 
  - changeSet:
-     id: 20220524090000
+     id: 20220606090000
      author: lahirumahanama
      changes:
        - createTable:
