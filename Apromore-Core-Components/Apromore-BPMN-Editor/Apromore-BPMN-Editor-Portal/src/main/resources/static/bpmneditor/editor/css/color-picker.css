@@ -95,7 +95,7 @@
 .sp-container button {
     color: var(--ap-c-button-text) !important;
     background-color: var(--ap-c-button) !important;
-    font-weight: normal;
+    font-weight: normal !important;
     padding-left: 6px;
     font-family: var(--ap-font-base) !important;
 }

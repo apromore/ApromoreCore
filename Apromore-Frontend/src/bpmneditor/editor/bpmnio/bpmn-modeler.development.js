@@ -906,6 +906,7 @@ function getDi(element) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assignStyle", function() { return assign$1; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "attr", function() { return attr; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "classes", function() { return classes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "clear", function() { return clear; });
@@ -917,6 +918,101 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "query", function() { return query; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queryAll", function() { return all; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remove", function() { return remove; });
+/**
+ * Flatten array, one level deep.
+ *
+ * @param {Array<?>} arr
+ *
+ * @return {Array<?>}
+ */
+
+var nativeToString = Object.prototype.toString;
+var nativeHasOwnProperty = Object.prototype.hasOwnProperty;
+function isUndefined(obj) {
+  return obj === undefined;
+}
+function isArray(obj) {
+  return nativeToString.call(obj) === '[object Array]';
+}
+/**
+ * Return true, if target owns a property with the given key.
+ *
+ * @param {Object} target
+ * @param {String} key
+ *
+ * @return {Boolean}
+ */
+
+function has(target, key) {
+  return nativeHasOwnProperty.call(target, key);
+}
+/**
+ * Iterate over collection; returning something
+ * (non-undefined) will stop iteration.
+ *
+ * @param  {Array|Object} collection
+ * @param  {Function} iterator
+ *
+ * @return {Object} return result that stopped the iteration
+ */
+
+function forEach(collection, iterator) {
+  var val, result;
+
+  if (isUndefined(collection)) {
+    return;
+  }
+
+  var convertKey = isArray(collection) ? toNum : identity;
+
+  for (var key in collection) {
+    if (has(collection, key)) {
+      val = collection[key];
+      result = iterator(val, convertKey(key));
+
+      if (result === false) {
+        return val;
+      }
+    }
+  }
+}
+
+function identity(arg) {
+  return arg;
+}
+
+function toNum(arg) {
+  return Number(arg);
+}
+
+/**
+ * Assigns style attributes in a style-src compliant way.
+ *
+ * @param {Element} element
+ * @param {...Object} styleSources
+ *
+ * @return {Element} the element
+ */
+function assign$1(element) {
+  var target = element.style;
+
+  for (var _len = arguments.length, styleSources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    styleSources[_key - 1] = arguments[_key];
+  }
+
+  forEach(styleSources, function (style) {
+    if (!style) {
+      return;
+    }
+
+    forEach(style, function (value, key) {
+      target[key] = value;
+    });
+  });
+
+  return element;
+}
+
 /**
  * Set attribute `name` to `val`, or get attr `name`.
  *
@@ -1203,9 +1299,9 @@ function closest (element, selector, checkYourSelf) {
   return matchesSelector(currentElem, selector) ? currentElem : null;
 }
 
-var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+var bind$1 = window.addEventListener ? 'addEventListener' : 'attachEvent',
     unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
-    prefix = bind !== 'addEventListener' ? 'on' : '';
+    prefix = bind$1 !== 'addEventListener' ? 'on' : '';
 
 /**
  * Bind `el` event `type` to `fn`.
@@ -1219,7 +1315,7 @@ var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
  */
 
 var bind_1 = function(el, type, fn, capture){
-  el[bind](prefix + type, fn, capture || false);
+  el[bind$1](prefix + type, fn, capture || false);
   return fn;
 };
 
@@ -1266,7 +1362,7 @@ var componentEvent = {
 // when delegating.
 var forceCaptureEvents = ['focus', 'blur'];
 
-function bind$1(el, selector, type, fn, capture) {
+function bind$2(el, selector, type, fn, capture) {
   if (forceCaptureEvents.indexOf(type) !== -1) {
     capture = true;
   }
@@ -1298,7 +1394,7 @@ function unbind$1(el, type, fn, capture) {
 }
 
 var delegate = {
-  bind: bind$1,
+  bind: bind$2,
   unbind: unbind$1
 };
 
@@ -1328,7 +1424,7 @@ if (typeof document !== 'undefined') {
  * Wrap map from jquery.
  */
 
-var map = {
+var map$1 = {
   legend: [1, '<fieldset>', '</fieldset>'],
   tr: [2, '<table><tbody>', '</tbody></table>'],
   col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
@@ -1337,27 +1433,27 @@ var map = {
   _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
 };
 
-map.td =
-map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
+map$1.td =
+map$1.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
 
-map.option =
-map.optgroup = [1, '<select multiple="multiple">', '</select>'];
+map$1.option =
+map$1.optgroup = [1, '<select multiple="multiple">', '</select>'];
 
-map.thead =
-map.tbody =
-map.colgroup =
-map.caption =
-map.tfoot = [1, '<table>', '</table>'];
+map$1.thead =
+map$1.tbody =
+map$1.colgroup =
+map$1.caption =
+map$1.tfoot = [1, '<table>', '</table>'];
 
-map.polyline =
-map.ellipse =
-map.polygon =
-map.circle =
-map.text =
-map.line =
-map.path =
-map.rect =
-map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
+map$1.polyline =
+map$1.ellipse =
+map$1.polygon =
+map$1.circle =
+map$1.text =
+map$1.line =
+map$1.path =
+map$1.rect =
+map$1.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
 
 /**
  * Parse `html` and return a DOM Node instance, which could be a TextNode,
@@ -1392,7 +1488,7 @@ function parse(html, doc) {
   }
 
   // wrap map
-  var wrap = map[tag] || map._default;
+  var wrap = map$1[tag] || map$1._default;
   var depth = wrap[0];
   var prefix = wrap[1];
   var suffix = wrap[2];
@@ -42651,6 +42747,7 @@ module.exports = function(langTag) {
 
 
 const palette = [
+  '#000000',
   '#84c7e3',
   '#bb3a50',
   '#34AD61',
@@ -42675,23 +42772,25 @@ const lighten = function (colorCode) {
 };
 
 const getCurrentColor = function (element){
-        if(!element)
-        {
-            return;
-        }
-         let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
-         if (
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
-                    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
-             ){
-             return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
-             }else{
-             return di.get('color:background-color') || di.get('bioc:fill');
-             }
+  if (!element) {
+    return;
   }
+  let di = Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["getDi"])(element);
+  if (element.type === 'label') {
+    return di.label.color;
+  }
+  if (
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:SequenceFlow') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:Association') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataInputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
+    Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
+  ) {
+    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+  } else {
+    return di.get('color:background-color') || di.get('bioc:fill');
+  }
+}
 
 const colors = palette.map(
   (color) => (
@@ -42759,6 +42858,7 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
             color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -54184,10 +54284,11 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
   var timetables;
   var selectedDefault;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'arrivalTimetable',
-    label: translate('timetableEntry.label'),
+    label: translate('arrivalTimetable.name'),
     modelProperty: 'arrivalTimetable',
     selectOptions: function (_element, _inputNode) {
       let timetableOptions = [];
@@ -54201,8 +54302,8 @@ module.exports = function (bpmnFactory, elementRegistry, translate) {
 
       timetablesWithNoEmptyName.forEach(function (timetable) {
         timetableOptions.push({
-          name: timetable.name,
-          value: timetable.id
+           name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
+           value: timetable.id
         });
       });
 
@@ -54738,11 +54839,6 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       var selectedTimetable = timetables.values[idx];
 
       var selectedTimetableName = selectedTimetable && selectedTimetable.name || translate('N/A');
-
-      if (selectedTimetable.get('default') === 'true' && selectedTimetableName !== translate('arrivalTimetable.name')) {
-        var arrivalTimetableTag = ' [' + translate('arrivalTimetable.name') + ']';
-        selectedTimetableName = (selectedTimetable.name || translate('N/A')) + arrivalTimetableTag;
-      }
 
       option.text = selectedTimetableName;
     }
@@ -55398,15 +55494,13 @@ var ResourceTimetableSelectBox = __webpack_require__(322),
     ResourceCostField = __webpack_require__(325);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
   var entries = [];
-
   var getSelectedResource = options.getSelectedResource;
 
-  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
-  entries.push(ResourceNameField(bpmnFactory, elementRegistry, translate,
+  entries.push(ResourceTimetableSelectBox(bpmnFactory, elementRegistry, translate,
     { getSelectedResource: getSelectedResource }));
 
   entries.push(ResourceAmountField(bpmnFactory, elementRegistry, translate,
@@ -55429,6 +55523,7 @@ var entryFactory = __webpack_require__(10),
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedResource = options.getSelectedResource;
+  const LOG_TIMETABLE='Log timetable';
 
   return entryFactory.selectBox(translate, {
     id: 'resource-timetable',
@@ -55446,8 +55541,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       timetablesWithNoEmptyName.forEach(function(timetable) {
         timetableOptions.push({
-          name: timetable.default && timetable.name !== translate('arrivalTimetable.name') ?
-            timetable.name + ' ' + translate('arrivalTimetable.name') : timetable.name,
+          name: timetable.name == LOG_TIMETABLE ? translate('logtimetable.name') : timetable.name,
           value: timetable.id
         });
       });
@@ -57810,7 +57904,8 @@ module.exports = {
 
   'properties': 'Properties',
   'metadata.properties': 'Metadata Properties',
-  'attachments': 'Attachments'
+  'attachments': 'Attachments',
+  'logtimetable.name': 'Log timetable'
 };
 
 /***/ }),
@@ -57911,7 +58006,15 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧',
+  'logtimetable.name': 'Log timetable'
 };
 
 /***/ }),
@@ -57923,7 +58026,7 @@ var colorNames = __webpack_require__(136);
 var swizzle = __webpack_require__(353);
 var hasOwnProperty = Object.hasOwnProperty;
 
-var reverseNames = {};
+var reverseNames = Object.create(null);
 
 // create a list of reverse color names
 for (var name in colorNames) {
@@ -85089,10 +85192,12 @@ DirectEditing.prototype.registerProvider = function(provider) {
 /**
  * Returns true if direct editing is currently active
  *
- * @return {Boolean}
+ * @param {djs.model.Base} [element]
+ *
+ * @return {boolean}
  */
-DirectEditing.prototype.isActive = function() {
-  return !!this._active;
+DirectEditing.prototype.isActive = function(element) {
+  return !!(this._active && (!element || this._active.element === element));
 };
 
 
@@ -113356,6 +113461,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var dwidth = 120;
     var dheight = 120;
     var urlText;
+    var contentCount = 0;
 
     if ((!url || !url.length) && !img && !icons) {
       return;
@@ -113389,6 +113495,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
         }
       }
       $overlay.append(jquery_default()(`<div class="aux-image">${imgEl}</div>`));
+      contentCount++;
     }
     if (icons && icons.values && icons.values.length) {
       let iconEls = '';
@@ -113419,6 +113526,7 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
       })
       $footer.css('height', (iconCount * ICON_ITEM_HEIGHT) + 'px');
       $overlay.append($footer);
+      contentCount++;
     }
 
     $overlay.find('.toggle').click(function(e) {
@@ -113534,6 +113642,12 @@ function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bpmnjs) {
     var auxCls = "ap-aux-" + element.id;
     $overlay.parent().data("ap-el-id", element.id);
     $overlay.parent().addClass(auxCls);
+    if (!contentCount) {
+        $overlay.parent().addClass('empty');
+    } else {
+        $overlay.parent().removeClass('empty');
+    }
+
     $overlay.parent().css('width', width + 'px');
     $overlay.parent().css('height', height + 'px');
 

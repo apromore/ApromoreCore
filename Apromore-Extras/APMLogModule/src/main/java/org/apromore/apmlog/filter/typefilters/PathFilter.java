@@ -24,11 +24,15 @@ package org.apromore.apmlog.filter.typefilters;
 import org.apromore.apmlog.filter.PTrace;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.rules.RuleValue;
+import org.apromore.apmlog.filter.rules.desc.PathDesc;
+import static org.apromore.apmlog.filter.rules.desc.PathDesc.getIntervalLowerBound;
+import static org.apromore.apmlog.filter.rules.desc.PathDesc.getIntervalUpperBound;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.logobjects.ActivityInstance;
 import org.apromore.apmlog.util.CalendarDuration;
+import org.apromore.apmlog.util.Util;
 import org.apromore.calendar.model.CalendarModel;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -37,8 +41,10 @@ import java.util.Set;
 
 /**
  * @author Chii Chang
+ * modified: 2022-05-30 by Chii Chang
  */
 public class PathFilter {
+
     public static boolean toKeep(PTrace trace, LogFilterRule logFilterRule) {
         Choice choice = logFilterRule.getChoice();
         if (choice == Choice.RETAIN) {
@@ -91,11 +97,10 @@ public class PathFilter {
         if (toValSet.contains("[End]")) {
             ActivityInstance lastAct = activityList.get(activityList.size() - 1);
             String val = getAttributeValue(lastAct, attributeKey);
-            if (val != null && fromValSet.contains(val) && conformRequirement(lastAct, null, logFilterRule)) {
+            if (val != null && fromValSet.contains(val)) {
                 return true;
             }
         }
-
 
         for (ActivityInstance act1 : activityList) {
             String val = getAttributeValue(act1, attributeKey);
@@ -177,108 +182,36 @@ public class PathFilter {
         return valSet;
     }
 
-    private static boolean conformRequirement(ActivityInstance act1, ActivityInstance act2, LogFilterRule logFilterRule) {
+    private static boolean conformRequirement(ActivityInstance act1,
+                                              ActivityInstance act2,
+                                              LogFilterRule logFilterRule) {
+
         Set<RuleValue> secondaryValues = logFilterRule.getSecondaryValues();
-        if (secondaryValues != null) {
-            OperationType requireOpt = OperationType.UNKNOWN;
-            String requireAttrKey = "";
-            OperationType lowerBoundOpt = OperationType.UNKNOWN;
-            OperationType upperBoundOpt = OperationType.UNKNOWN;
-            long lowerBoundVal = -1;
-            long upperBoundVal = -1;
-            for (RuleValue ruleValue : secondaryValues) {
-                if (ruleValue.getOperationType() == OperationType.EQUAL) {
-                    requireOpt = OperationType.EQUAL;
-                    requireAttrKey = ruleValue.getKey();
-                }
-                if (ruleValue.getOperationType() == OperationType.NOT_EQUAL) {
-                    requireOpt = OperationType.NOT_EQUAL;
-                    requireAttrKey = ruleValue.getKey();
-                }
-                if (ruleValue.getOperationType() == OperationType.GREATER) {
-                    lowerBoundOpt = OperationType.GREATER;
-                    lowerBoundVal = ruleValue.getLongValue();
-                }
-                if (ruleValue.getOperationType() == OperationType.GREATER_EQUAL) {
-                    lowerBoundOpt = OperationType.GREATER_EQUAL;
-                    lowerBoundVal = ruleValue.getLongValue();
-                }
-                if (ruleValue.getOperationType() == OperationType.LESS) {
-                    upperBoundOpt = OperationType.LESS;
-                    upperBoundVal = ruleValue.getLongValue();
-                }
-                if (ruleValue.getOperationType() == OperationType.LESS_EQUAL) {
-                    upperBoundOpt = OperationType.LESS_EQUAL;
-                    upperBoundVal = ruleValue.getLongValue();
-                }
-            }
-            if (requireOpt == OperationType.EQUAL) {
-                if (!haveSameAttributeValue(act1, act2, requireAttrKey)) return false;
-                else {
-                    if (lowerBoundOpt == OperationType.GREATER) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                    if (lowerBoundOpt == OperationType.GREATER_EQUAL) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                    if (upperBoundOpt == OperationType.LESS) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                    if (upperBoundOpt == OperationType.LESS_EQUAL) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                }
-            }
+        Set<RuleValue> thirdlyValues = logFilterRule.getThirdlyValues();
 
-            if (requireOpt == OperationType.NOT_EQUAL) {
-                if (haveSameAttributeValue(act1, act2, requireAttrKey)) return false;
-                else {
-                    if (lowerBoundOpt == OperationType.GREATER) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                    if (lowerBoundOpt == OperationType.GREATER_EQUAL) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                    if (upperBoundOpt == OperationType.LESS) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                    if (upperBoundOpt == OperationType.LESS_EQUAL) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                }
-            }
-
-            if (requireOpt == OperationType.UNKNOWN) {
-                if (lowerBoundVal != -1) {
-                    if (lowerBoundOpt == OperationType.GREATER) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                    if (lowerBoundOpt == OperationType.GREATER_EQUAL) {
-                        if (!confirmInterval(lowerBoundOpt, act1, act2, lowerBoundVal)) return false;
-                    }
-                }
-                if (upperBoundVal != -1) {
-                    if (upperBoundOpt == OperationType.LESS) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                    if (upperBoundOpt == OperationType.LESS_EQUAL) {
-                        if (!confirmInterval(upperBoundOpt, act1, act2, upperBoundVal)) return false;
-                    }
-                }
-            }
-
-            return true;
-        } else {
-            return true;
+        if (thirdlyValues != null && !thirdlyValues.isEmpty()) {
+            return confirmRequirementWithThirdlyValues(thirdlyValues, secondaryValues, act1, act2);
         }
+
+        RuleValue consRV = getConstraintValue(secondaryValues);
+
+        if (consRV != null && !isTextConstraintMatched(consRV.getKey(), consRV.getOperationType(), act1, act2)) {
+            return false;
+        }
+
+        return confirmIntervalBounds(secondaryValues, act1, act2);
     }
 
+    private static RuleValue getConstraintValue(Set<RuleValue> secondaryValues) {
+        if (secondaryValues == null) {
+            return null;
+        }
 
-    private static boolean haveSameAttributeValue(ActivityInstance act1, ActivityInstance act2, String key) {
-        if (act2 == null) return false;
-        if (!act1.getAttributes().containsKey(key) || !act2.getAttributes().containsKey(key)) return false;
-
-        return act1.getAttributeValue(key).equals(act2.getAttributeValue(key));
+        return secondaryValues.stream()
+                .filter(x -> x.getOperationType() == OperationType.EQUAL ||
+                        x.getOperationType() == OperationType.NOT_EQUAL)
+                .findFirst()
+                .orElse(null);
     }
 
     private static boolean confirmInterval(OperationType operationType, ActivityInstance act1, ActivityInstance act2,
@@ -305,4 +238,101 @@ public class PathFilter {
         }
     }
 
+
+    private static boolean confirmRequirementWithThirdlyValues(Set<RuleValue> thirdlyValues,
+                                                               Set<RuleValue> secondaryValues,
+                                                               ActivityInstance act1,
+                                                               ActivityInstance act2) {
+        RuleValue rv3 = thirdlyValues.iterator().next();
+        String reqAttr = rv3.getKey();
+        OperationType rv3OptType = rv3.getOperationType();
+        if (!act1.getAttributes().containsKey(reqAttr) || !act2.getAttributes().containsKey(reqAttr)) {
+            return false;
+        }
+
+        String act1ReqValStr = act1.getAttributeValue(reqAttr);
+        String act2ReqValStr = act2.getAttributeValue(reqAttr);
+
+        if (!Util.isNumeric(act1ReqValStr) || !Util.isNumeric(act2ReqValStr)) {
+            return false;
+        }
+
+        boolean attrReqMatched = isNumericConstraintMatched(reqAttr, rv3OptType, act1, act2);
+
+        if (!attrReqMatched) {
+            return false;
+        }
+
+        if (secondaryValues == null) {
+            return true;
+        }
+
+        return confirmIntervalBounds(secondaryValues, act1, act2);
+    }
+
+    private static boolean confirmIntervalBounds(Set<RuleValue> secondaryValues,
+                                                 ActivityInstance act1,
+                                                 ActivityInstance act2) {
+        PathDesc.IntervalBound lowerBound = getIntervalLowerBound(secondaryValues);
+        PathDesc.IntervalBound upperBound = getIntervalUpperBound(secondaryValues);
+
+        boolean lowerBoundMatched = true;
+        boolean upperBoundMatched = true;
+
+        if (lowerBound != null) {
+            lowerBoundMatched = confirmInterval(lowerBound.getOperationType(), act1, act2, lowerBound.getValue());
+        }
+
+        if (upperBound != null) {
+            upperBoundMatched = confirmInterval(upperBound.getOperationType(), act1, act2, upperBound.getValue());
+        }
+
+        return lowerBoundMatched && upperBoundMatched;
+    }
+
+    private static boolean isTextConstraintMatched(String attribute,
+                                                   OperationType operationType,
+                                                   ActivityInstance sourceAct,
+                                                   ActivityInstance targetAct) {
+        String act1ReqValStr = sourceAct.getAttributeValue(attribute);
+        String act2ReqValStr = targetAct.getAttributeValue(attribute);
+
+        if (operationType == OperationType.EQUAL) {
+            return act1ReqValStr.equals(act2ReqValStr);
+        } else {
+            return !act1ReqValStr.equals(act2ReqValStr);
+        }
+    }
+
+    private static boolean isNumericConstraintMatched(String attribute,
+                                                      OperationType operationType,
+                                                      ActivityInstance sourceAct,
+                                                      ActivityInstance targetAct) {
+        String act1ReqValStr = sourceAct.getAttributeValue(attribute);
+        String act2ReqValStr = targetAct.getAttributeValue(attribute);
+
+        if (!Util.isNumeric(act1ReqValStr) || !Util.isNumeric(act2ReqValStr)) {
+            return false;
+        }
+
+        double act1ReqVal = Double.parseDouble(act1ReqValStr);
+        double act2ReqVal = Double.parseDouble(act2ReqValStr);
+
+        switch (operationType) {
+            case EQUAL:
+                return act1ReqVal == act2ReqVal;
+            case NOT_EQUAL:
+                return act1ReqVal != act2ReqVal;
+            case GREATER:
+                return act1ReqVal > act2ReqVal;
+            case GREATER_EQUAL:
+                return act1ReqVal >= act2ReqVal;
+            case LESS:
+                return act1ReqVal < act2ReqVal;
+            case LESS_EQUAL:
+                return act1ReqVal <= act2ReqVal;
+            default:
+                return false;
+        }
+    }
 }

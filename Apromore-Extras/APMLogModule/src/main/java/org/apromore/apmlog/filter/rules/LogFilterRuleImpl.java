@@ -31,6 +31,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ * modified: 2022-05-30 by Chii Chang
+ */
 public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
     private final Choice choice;
@@ -40,6 +44,7 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
     private String key;
     private Set<RuleValue> primaryValues;
     private Set<RuleValue> secondaryValues;
+    private Set<RuleValue> thirdlyValues;
     private final Set<String> primaryStringValues;
     private Set<String> secondaryStringValues;
     protected RuleLevel ruleLevel = RuleLevel.CONTENT;
@@ -75,6 +80,11 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
     public void setSecondaryValues(Set<RuleValue> secondaryValues) {
         this.secondaryValues = secondaryValues;
+    }
+
+    @Override
+    public void setThirdlyValues(Set<RuleValue> thirdlyValues) {
+        this.thirdlyValues = thirdlyValues;
     }
 
     public Choice getChoice() {
@@ -121,6 +131,11 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryValues;
     }
 
+    @Override
+    public Set<RuleValue> getThirdlyValues() {
+        return thirdlyValues;
+    }
+
     public void setRuleLevel(RuleLevel ruleLevel) {
         this.ruleLevel = ruleLevel;
     }
@@ -151,9 +166,20 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
             }
         }
 
+        Set<RuleValue> thiValCopy = null;
+        if (thirdlyValues != null) {
+            thiValCopy = new HashSet<>();
+            for (RuleValue ruleValue : thirdlyValues) {
+                thiValCopy.add(ruleValue.clone());
+            }
+        }
+
         LogFilterRule lfr = new LogFilterRuleImpl(
                 choice, inclusion, section, filterType, key, priValCopy, secValCopy);
         lfr.setRuleLevel(ruleLevel);
+        if (thiValCopy != null) {
+            lfr.setThirdlyValues(thiValCopy);
+        }
         return lfr;
     }
 

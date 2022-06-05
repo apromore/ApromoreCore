@@ -573,9 +573,9 @@ public class AccessController extends SelectorComposer<Div> {
       String rowGuid = group.getRowGuid();
       String name = group.getName();
       if (selectedItem instanceof FolderType) {
-        authorizationService.deleteFolderAccess(selectedItemId, rowGuid);
+        authorizationService.deleteFolderAccess(selectedItemId, rowGuid, accessType);
       } else if (selectedItem instanceof ProcessSummaryType) {
-        authorizationService.deleteProcessAccess(selectedItemId, rowGuid);
+        authorizationService.deleteProcessAccess(selectedItemId, rowGuid, accessType);
       } else if (selectedItem instanceof LogSummaryType) {
         authorizationService.deleteLogAccess(selectedItemId, rowGuid, name, accessType);
       } else if (selectedItem instanceof UserMetadataSummaryType) {

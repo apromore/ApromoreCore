@@ -222,7 +222,7 @@
               xml: bpmnXML,
               id : 'editorcanvas',
               fullscreen : true,
-              useSimulationPanel: ${arg.availableSimulateModelPlugin},
+              useSimulationPanel: !${arg.viewOnly},
               isPublished: ${arg.isPublished},
               viewOnly: ${arg.viewOnly},
               langTag: '${arg.langTag}',
@@ -300,7 +300,7 @@
             console.log('afterCheckUnsaved - Proceed with flow on action ...', flowOnEvent);
             if (flowOnEvent === 'onShare' || flowOnEvent === 'onPublishModel') {
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent));
-            } else if (flowOnEvent === 'onSimulateModel') {
+            } else if (flowOnEvent === 'onSimulateModel' || flowOnEvent === 'onDownloadXML') {
               Apromore.BPMNEditor.readXML((xml) => {
                 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), flowOnEvent, xml));
               });
@@ -376,8 +376,15 @@
               zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDeleteSubprocess', elementId));
             };
 
+            Apromore.BPMNEditor.Plugins.Export.exportXML = function(xml) {
+              Apromore.BPMNEditor.beforeCheckUnsaved('onDownloadXML');
+            };
+
+            Apromore.BPMNEditor.updateFontSize = function(newFontSize) {
+              zk.Widget.$('$slider').setCurpos(newFontSize);
+            };
+
             Apromore.BPMNEditor.Plugins.FontChange.change = function() {
-               console.log('onChangeFont Called');
                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onChangeFont'));
             };
             // window.setTimeout(function() {

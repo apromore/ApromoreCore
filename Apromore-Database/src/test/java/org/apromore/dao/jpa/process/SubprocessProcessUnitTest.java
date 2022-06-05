@@ -24,6 +24,7 @@ package org.apromore.dao.jpa.process;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apromore.config.BaseTestClass;
 import org.apromore.dao.ProcessRepository;
@@ -77,6 +78,12 @@ class SubprocessProcessUnitTest extends BaseTestClass {
         assertEquals(process2, existingSubprocessProcessLink.getLinkedProcess());
 
         assertNull(subprocessProcessRepository.getExistingLink(-1, subprocessId));
+    }
+
+    @Test
+    void testGetLinkedSubprocesses() {
+        assertTrue(subprocessProcessRepository.getLinkedSubProcesses(process2.getId()).isEmpty());
+        assertEquals(1, subprocessProcessRepository.getLinkedSubProcesses(process1.getId()).size());
     }
 
 }

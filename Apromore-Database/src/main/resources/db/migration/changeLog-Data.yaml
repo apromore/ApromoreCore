@@ -2181,7 +2181,22 @@ databaseChangeLog:
               );
 
   - changeSet:
-      id:  20220524090001
+      id: 20220603152200
+      author: janeh
+      comment: "grant designer role simulate models permission"
+      changes:
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "6"
+              - column:
+                  name: permissionid
+                  value: "15"
+
+  - changeSet:
+      id:  20220606090001
       author:  lahirumahanama
       changes:
         - insert:

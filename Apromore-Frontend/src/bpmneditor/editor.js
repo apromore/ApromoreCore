@@ -129,6 +129,11 @@ export default class Editor {
             me.setDirty(true);
         });
 
+        eventBus.on('selection.changed', function(context) {
+          var newSelection = context.newSelection;
+
+          me.updateFontSize(newSelection)
+        });
         var connections = elementRegistry.filter(function(e) {return e.waypoints;});
         var connectionDocking = editor.get('connectionDocking');
         connections.forEach(function(connection) {
@@ -540,10 +545,10 @@ export default class Editor {
         config.textRenderer = {
             defaultStyle:
             {
-              fontSize: size+"px"
+              fontSize: size
             },
             externalStyle: {
-              fontSize: size+"px"
+              fontSize: size
             }
         };
         modeler.get('textRenderer').setFontSize(size);
@@ -553,6 +558,35 @@ export default class Editor {
 
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
+    updateFontSize(selection) {
+      const DEFAULT_SIZE = 16;
+      let selectedFontSize = -1;
+      try  {
+        for (let i = 0; i < selection.length; i++) {
+            const element = selection[i]
+            const bo = element.businessObject;
+            let size = parseInt(bo["aux-font-size"])
+            if (isNaN(size)) {
+                size = DEFAULT_SIZE
+            }
+            if (selectedFontSize === -1) {
+                selectedFontSize = size
+            } else {
+                if (selectedFontSize !== size) {
+                    selectedFontSize = -1
+                    break;
+                }
+            }
+        }
+      } catch (r) {
+        // pass
+      }
+      if (selectedFontSize === -1) {
+        selectedFontSize = DEFAULT_SIZE;
+      }
+      Apromore.BPMNEditor.updateFontSize(selectedFontSize);
     }
 
     async changeFontSize(size) {
