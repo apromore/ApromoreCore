@@ -222,7 +222,7 @@
               xml: bpmnXML,
               id : 'editorcanvas',
               fullscreen : true,
-              useSimulationPanel: ${arg.availableSimulateModelPlugin},
+              useSimulationPanel: !${arg.viewOnly},
               isPublished: ${arg.isPublished},
               viewOnly: ${arg.viewOnly},
               langTag: '${arg.langTag}',
