@@ -234,10 +234,7 @@ public class SimpleSearchController {
             Iterator<SearchHistoriesType> iterator = searchHist.iterator();
             while (iterator.hasNext()) {
                 SearchHistoriesType sh = iterator.next();
-                if (sh.getSearch().trim().equalsIgnoreCase(query.trim())) {
-                    iterator.remove();
-                }
-                else if (searchSet.contains(sh.getSearch().toUpperCase()) || searchSet.contains(sh.getSearch().trim().toUpperCase()) ) {
+                if (sh.getSearch().trim().equalsIgnoreCase(query.trim()) || searchSet.contains(sh.getSearch().toUpperCase()) || searchSet.contains(sh.getSearch().trim().toUpperCase()) ) {
                     iterator.remove();
                 }
                 searchSet.add(sh.getSearch().toUpperCase());
