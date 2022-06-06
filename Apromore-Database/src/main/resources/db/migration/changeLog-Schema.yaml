@@ -1804,7 +1804,7 @@ databaseChangeLog:
              - column:
                  constraints:
                    nullable: false
-                 name: hive_table_name
+                 name: catalogue_table_name
                  type: VARCHAR(255)
                  remarks: 'The table name stored in hive'
              - column:

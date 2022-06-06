@@ -74,6 +74,6 @@ public class LogicalLogAttribute extends BaseEntity {
     @Column(name = "is_masked")
     private boolean isMasked;
 
-    @Column(name = "attribute_index")
+    @Column(name = "attribute_index", nullable = false)
     private int index;
 }
