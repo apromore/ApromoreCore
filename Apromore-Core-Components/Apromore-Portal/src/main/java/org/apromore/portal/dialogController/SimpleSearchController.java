@@ -25,7 +25,6 @@
 package org.apromore.portal.dialogController;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,8 +52,6 @@ import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
@@ -198,8 +195,7 @@ public class SimpleSearchController {
             userService.updateUserSearchHistory(currentUser, searchHistories);
         } catch (Exception e) {
             LOGGER.error("Failed search", e);
-            Messagebox.show(Labels.getLabel("portal_seachUnavailable_message"), "Error", Messagebox.OK,
-                    Messagebox.ERROR);
+            // Not require to show error message here
         }
     }
 
@@ -238,10 +234,10 @@ public class SimpleSearchController {
             Iterator<SearchHistoriesType> iterator = searchHist.iterator();
             while (iterator.hasNext()) {
                 SearchHistoriesType sh = iterator.next();
-                if (searchSet.contains(sh.getSearch().trim().toUpperCase())) {
+                if (sh.getSearch().trim().equalsIgnoreCase(query.trim()) || searchSet.contains(sh.getSearch().toUpperCase()) || searchSet.contains(sh.getSearch().trim().toUpperCase()) ) {
                     iterator.remove();
                 }
-                searchSet.add(sh.getSearch().trim().toUpperCase());
+                searchSet.add(sh.getSearch().toUpperCase());
             }
         }
 
