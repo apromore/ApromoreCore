@@ -42,7 +42,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataTypeDao extends BaseEntity {
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private DataType type;
+    @Builder.Default
+    private DataType type = DataType.STRING;
 }

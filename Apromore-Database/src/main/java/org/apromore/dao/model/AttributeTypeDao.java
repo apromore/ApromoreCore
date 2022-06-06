@@ -42,7 +42,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttributeTypeDao extends BaseEntity {
-    @Column(name = "type")
+    @Builder.Default
+    @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private AttributeType type;
+    private AttributeType type = AttributeType.EVENT_ATTRIBUTE;
 }

@@ -38,10 +38,10 @@ public abstract class BaseEntity {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "created_timestamp")
+    @Column(name = "created_timestamp", nullable = false)
     private Timestamp createdTimestamp;
 
     @UpdateTimestamp
-    @Column(name = "updated_timestamp")
+    @Column(name = "updated_timestamp", nullable = false)
     private Timestamp updatedTimestamp;
 }

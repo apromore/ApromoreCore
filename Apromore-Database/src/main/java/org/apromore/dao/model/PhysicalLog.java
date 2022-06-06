@@ -47,9 +47,9 @@ public class PhysicalLog extends BaseEntity {
     @OneToOne(mappedBy = "physicalLog")
     Log log;
 
-    @Column(name = "catalogue_table_name")
+    @Column(name = "catalogue_table_name", nullable = false)
     private String catalogueTableName;
 
-    @Column(name = "file_location")
+    @Column(name = "file_location", nullable = false)
     private String fileLocation;
 }

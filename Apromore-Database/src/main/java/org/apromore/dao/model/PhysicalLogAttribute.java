@@ -47,6 +47,6 @@ public class PhysicalLogAttribute extends BaseEntity {
     @JoinColumn(name = "logical_attribute_id", referencedColumnName = "id", nullable = false)
     LogicalLogAttribute logicalLogAttribute;
 
-    @Column(name = "physical_name")
+    @Column(name = "physical_name", nullable = false)
     private String physicalName;
 }
