@@ -35,9 +35,9 @@ import java.util.Locale;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public enum DataType {
     STRING,
-    DATE,
-    DOUBLE,
-    INT;
+    TIMESTAMP,
+    REAL,
+    INTEGER;
 
     @Override
     public String toString() {

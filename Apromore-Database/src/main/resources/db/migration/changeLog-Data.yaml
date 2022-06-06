@@ -2358,7 +2358,7 @@ databaseChangeLog:
                   value: "2"
               - column:
                   name: type
-                  value: "DATE"
+                  value: "TIMESTAMP"
               - column:
                   name: created_timestamp
                   value: NOW()
@@ -2373,7 +2373,7 @@ databaseChangeLog:
                   value: "3"
               - column:
                   name: type
-                  value: "DOUBLE"
+                  value: "REAL"
               - column:
                   name: created_timestamp
                   value: NOW()
@@ -2388,7 +2388,7 @@ databaseChangeLog:
                   value: "4"
               - column:
                   name: type
-                  value: "INT"
+                  value: "INTEGER"
               - column:
                   name: created_timestamp
                   value: NOW()
