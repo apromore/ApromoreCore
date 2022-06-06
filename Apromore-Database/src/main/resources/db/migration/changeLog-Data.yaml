@@ -2179,6 +2179,7 @@ databaseChangeLog:
               FROM (SELECT * FROM user_role) AS user_role_copy
               WHERE roleid = 1
               );
+
   - changeSet:
       id: 20220603152200
       author: janeh
@@ -2193,3 +2194,204 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "15"
+
+  - changeSet:
+      id:  20220606090001
+      author:  lahirumahanama
+      changes:
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "1"
+              - column:
+                  name: type
+                  value: "CASE_ID"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "2"
+              - column:
+                  name: type
+                  value: "START_TIME"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "3"
+              - column:
+                  name: type
+                  value: "END_TIME"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "4"
+              - column:
+                  name: type
+                  value: "ACTIVITY"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "5"
+              - column:
+                  name: type
+                  value: "RESOURCE"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "6"
+              - column:
+                  name: type
+                  value: "ROLE"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "7"
+              - column:
+                  name: type
+                  value: "EVENT_ATTRIBUTE"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "8"
+              - column:
+                  name: type
+                  value: "CASE_ATTRIBUTE"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: attribute_type
+            columns:
+              - column:
+                  name: id
+                  value: "9"
+              - column:
+                  name: type
+                  value: "IGNORED_ATTRIBUTE"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+
+        - insert:
+            tableName: data_type
+            columns:
+              - column:
+                  name: id
+                  value: "1"
+              - column:
+                  name: type
+                  value: "STRING"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: data_type
+            columns:
+              - column:
+                  name: id
+                  value: "2"
+              - column:
+                  name: type
+                  value: "TIMESTAMP"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: data_type
+            columns:
+              - column:
+                  name: id
+                  value: "3"
+              - column:
+                  name: type
+                  value: "REAL"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
+        - insert:
+            tableName: data_type
+            columns:
+              - column:
+                  name: id
+                  value: "4"
+              - column:
+                  name: type
+                  value: "INTEGER"
+              - column:
+                  name: created_timestamp
+                  value: NOW()
+              - column:
+                  name: updated_timestamp
+                  value: NOW()
