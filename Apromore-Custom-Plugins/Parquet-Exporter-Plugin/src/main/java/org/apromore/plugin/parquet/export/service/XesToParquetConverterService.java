@@ -27,7 +27,6 @@ package org.apromore.plugin.parquet.export.service;
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
 
-import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +52,7 @@ public class XesToParquetConverterService {
     @Inject
     private ParquetExportPlugin parquetExportPlugin;
 
-    public Path exportXesToParquet(int logId, OutputStream outputStream) {
+    public Path exportXesToParquet(int logId) {
         List<Integer> lstList = new ArrayList<>();
         lstList.add(logId);
 
