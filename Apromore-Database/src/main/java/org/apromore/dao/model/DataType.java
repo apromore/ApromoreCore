@@ -25,10 +25,10 @@ import java.util.Locale;
 
 /**
  * Each column must have a specified data_type from the following list:
- * "double" (double-precision floating-point number)
- * "int" (integer number)
- * "string" (text)
- * "date" (timestamp)
+ * "REAL" (double-precision floating-point number)
+ * "INTEGER" (integer number)
+ * "STRING" (text)
+ * "TIMESTAMP" (timestamp)
  * These values were chosen to match https://www.xes-standard.org/_media/xes/xesstandarddefinition-2.0.pdf §2.2,
  * which also includes some we’re not using: “boolean”, “id”, “list”.
  */
