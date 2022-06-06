@@ -44,7 +44,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 )
 @Configurable("logical_log_attribute")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,6 +56,7 @@ public class LogicalLogAttribute extends BaseEntity {
     @Column(name = "logical_name")
     private String logicalName;
 
+    @Setter
     @OneToOne(mappedBy = "logicalLogAttribute", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     PhysicalLogAttribute physicalLogAttribute;
 
