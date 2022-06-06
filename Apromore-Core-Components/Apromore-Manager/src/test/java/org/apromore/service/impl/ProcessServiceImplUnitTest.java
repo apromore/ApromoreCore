@@ -1198,10 +1198,9 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
                 .andReturn(pmvs);
         expect(processBranchRepo.save((ProcessBranch) anyObject())).andReturn(branch).times(2);
         processModelVersionRepo.delete(anyObject());
-        processModelVersionRepo.delete(anyObject());
         expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L).times(2);
-        expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
-                user.getId())).andReturn(draft_pmv10);
+        expect(processModelVersionRepo.getProcessModelVersions(processId, DRAFT_BRANCH_NAME, "1.0")).andReturn(Collections.singletonList(draft_pmv10));
+        processModelVersionRepo.delete(anyObject());
         replayAll();
 
         // Mock Call
@@ -1252,8 +1251,7 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         processModelVersionRepo.delete(anyObject());
         processModelVersionRepo.delete(anyObject());
         expect(processModelVersionRepo.countByStorageId(storage.getId())).andReturn(1L).times(2);
-        expect(processModelVersionRepo.getProcessModelVersionByUser(processId, DRAFT_BRANCH_NAME, "1.0",
-                user.getId())).andReturn(draft_pmv10);
+        expect(processModelVersionRepo.getProcessModelVersions(processId, DRAFT_BRANCH_NAME, "1.0")).andReturn(Collections.singletonList(draft_pmv10));
         processRepo.delete(process);
 
         replayAll();
