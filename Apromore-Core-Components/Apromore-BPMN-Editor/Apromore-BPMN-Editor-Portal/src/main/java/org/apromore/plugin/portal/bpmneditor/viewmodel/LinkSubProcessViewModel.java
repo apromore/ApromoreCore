@@ -55,8 +55,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.bind.annotation.SelectorParam;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -96,7 +94,6 @@ public class LinkSubProcessViewModel {
     @Getter
     private boolean processListEnabled;
     private List<SummaryType> processList;
-    private Tree tree;
 
     @Init
     public void init(@ExecutionArgParam("mainController") final MainController mainC,
@@ -129,9 +126,8 @@ public class LinkSubProcessViewModel {
     @AfterCompose
     public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
         try {
-            EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe(new EventListener() {
-                @Override
-                public void onEvent(Event evt) {
+            EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe((evt) -> {
+                {
                     selectedProcess = null;
                     if ("onSelect".equals(evt.getName())) {
                         Object selItem = evt.getData();
@@ -142,16 +138,15 @@ public class LinkSubProcessViewModel {
                 }
             });
 
-            this.tree = tree;
             List<Integer> processFolderChain = getProcessFolderChain(
                 selectedProcess == null ? 0 : processService.getProcessParentFolder(selectedProcess.getId()));
-            this.tree.setItemRenderer(
+            tree.setItemRenderer(
                 new SubProcessTreeRenderer(mainController.getPortalSession().getCurrentFolder(), selectedProcess,
                     processFolderChain));
             ProcessFolderTree
                 processFolderTree = new ProcessFolderTree(true, 0, mainController);
             new ProcessTreeSearchController(tree, this, mainController);
-            this.tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
+            tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
         } catch (Exception ex) {
             LOGGER.error("Error in loading tree structure", ex);
         }

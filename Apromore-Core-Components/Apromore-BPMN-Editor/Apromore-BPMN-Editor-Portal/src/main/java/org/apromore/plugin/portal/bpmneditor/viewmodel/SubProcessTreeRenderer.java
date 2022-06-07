@@ -50,7 +50,7 @@ import org.zkoss.zul.Treerow;
  *
  * @author Mohammad Ali
  */
-public class SubProcessTreeRenderer implements TreeitemRenderer {
+public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> {
 
     private static final Logger LOGGER =
         PortalLoggerFactory.getLogger(SubProcessTreeRenderer.class);
@@ -71,69 +71,26 @@ public class SubProcessTreeRenderer implements TreeitemRenderer {
     public SubProcessTreeRenderer(Map<FolderTreeNodeTypes, List<Integer>> searchResult) {
         this.searchResult = searchResult;
         publishEvent(null);
-
     }
 
     private void publishEvent(ProcessSummaryType process) {
         EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true)
             .publish(new Event("onSelect", null, process));
-
     }
 
 
     @Override
-    public void render(final Treeitem treeItem, Object treeNode, int i) throws Exception {
-        FolderTreeNode ctn = (FolderTreeNode) treeNode;
-
+    public void render(final Treeitem treeItem, FolderTreeNode ctn, int i) throws Exception {
         Treerow dataRow = new Treerow();
         dataRow.setParent(treeItem);
         treeItem.setValue(ctn);
-      //  treeItem.setOpen(true);
-
         Hlayout hl = new Hlayout();
-
-        SummaryType summaryType;
-
         switch (ctn.getType()) {
             case Folder:
-                FolderType folder = (FolderType) ctn.getData();
-                hideOrShow(treeItem, folder.getId(), FolderTreeNodeTypes.Folder);
-
-                if(this.processChainFolder!=null && this.processChainFolder.contains(folder.getId())){
-                    treeItem.setOpen(true);
-                }
-
-                if (ctn.getChildCount() == 0) {
-                    dataRow.addSclass("ap-tree-leaf-node");
-                }
-
-                if (folder.getId() == 0) {
-                    hl.appendChild(new Image("~./img/icon/svg/folder_home.svg"));
-                    hl.setSclass("ap-ico-home h-inline-block");
-                } else {
-                    hl.appendChild(new Image("~./img/icon/svg/folder_icons.svg"));
-                    hl.setSclass("ap-ico-folder h-inline-block");
-                }
-
-                String folderName = folder.getFolderName();
-                hl.appendChild(new Label(folderName));
+                renderFolder(treeItem, ctn, dataRow, hl);
                 break;
-
             case Process:
-                summaryType = (SummaryType) ctn.getData();
-                if(this.processSummaryType!=null && this.processSummaryType.getId().equals(summaryType.getId())){
-                    treeItem.setSelected(true);
-                }
-                hideOrShow(treeItem, summaryType.getId(), FolderTreeNodeTypes.Process);
-                if (summaryType instanceof ProcessSummaryType) {
-                    ProcessSummaryType process = (ProcessSummaryType) summaryType;
-                    hl.appendChild(new Image("~./img/icon/svg/bpmn_model.svg"));
-                    hl.setSclass("ap-ico-process h-inline-block");
-                    String processName = process.getName();
-                    hl.appendChild(new Label(processName));
-                    dataRow.setSclass("ap-tree-leave");
-                    dataRow.setTooltiptext(processName);
-                }
+                renderProcess(treeItem, ctn, dataRow, hl);
                 break;
 
             default:
@@ -165,7 +122,48 @@ public class SubProcessTreeRenderer implements TreeitemRenderer {
         });
     }
 
-    private void hideOrShow(Treeitem treeItem, Integer id, FolderTreeNodeTypes type) {
+    private void renderProcess(Treeitem treeItem, FolderTreeNode ctn, Treerow dataRow, Hlayout hl) {
+        SummaryType summaryType = (SummaryType) ctn.getData();
+        if(this.processSummaryType!=null && this.processSummaryType.getId().equals(summaryType.getId())){
+            treeItem.setSelected(true);
+        }
+        hideOrShowTreeItem(treeItem, summaryType.getId(), FolderTreeNodeTypes.Process);
+        if (summaryType instanceof ProcessSummaryType) {
+            ProcessSummaryType process = (ProcessSummaryType) summaryType;
+            hl.appendChild(new Image("~./img/icon/svg/bpmn_model.svg"));
+            hl.setSclass("ap-ico-process h-inline-block");
+            String processName = process.getName();
+            hl.appendChild(new Label(processName));
+            dataRow.setSclass("ap-tree-leave");
+            dataRow.setTooltiptext(processName);
+        }
+    }
+
+    private void renderFolder(Treeitem treeItem, FolderTreeNode ctn, Treerow dataRow, Hlayout hl) {
+        FolderType folder = (FolderType) ctn.getData();
+        hideOrShowTreeItem(treeItem, folder.getId(), FolderTreeNodeTypes.Folder);
+
+        if(this.processChainFolder!=null && this.processChainFolder.contains(folder.getId())){
+            treeItem.setOpen(true);
+        }
+
+        if (ctn.getChildCount() == 0) {
+            dataRow.addSclass("ap-tree-leaf-node");
+        }
+
+        if (folder.getId() == 0) {
+            hl.appendChild(new Image("~./img/icon/svg/folder_home.svg"));
+            hl.setSclass("ap-ico-home h-inline-block");
+        } else {
+            hl.appendChild(new Image("~./img/icon/svg/folder_icons.svg"));
+            hl.setSclass("ap-ico-folder h-inline-block");
+        }
+
+        String folderName = folder.getFolderName();
+        hl.appendChild(new Label(folderName));
+    }
+
+    private void hideOrShowTreeItem(Treeitem treeItem, Integer id, FolderTreeNodeTypes type) {
         if (searchResult == null) {
             return;
         }

@@ -47,16 +47,12 @@ public class ProcessFolderTree {
 
     private FolderTreeNode root;
     private boolean loadAll = false;
-    private int currentFolderId;
-    private int autoSelectFolder;
     private FolderTreeNode currentFolder;
     MainController mainController;
 
     public ProcessFolderTree(boolean loadAll, int currentFolderId, MainController mainController) {
         this.mainController = mainController;
         this.loadAll = loadAll;
-        this.currentFolderId = currentFolderId;
-        this.autoSelectFolder = 1;
         root = new FolderTreeNode((FolderType) null, null, true, FolderTreeNodeTypes.Folder);
 
         if (currentFolderId == 0) {
@@ -69,7 +65,7 @@ public class ProcessFolderTree {
 
         root.add(homeNode);
 
-        buildTree(homeNode, this.mainController.getManagerService()
+        buildProcessTree(homeNode, this.mainController.getManagerService()
             .getWorkspaceFolderTree(null), 0, new HashSet<>());
     }
 
@@ -77,7 +73,7 @@ public class ProcessFolderTree {
         return currentFolder;
     }
 
-    private FolderTreeNode buildTree(FolderTreeNode node, List<FolderType> folders, int folderId,
+    private FolderTreeNode buildProcessTree(FolderTreeNode node, List<FolderType> folders, int folderId,
                                      HashSet<Integer> set) {
 
         Collections.sort(folders, new FolderTypeComparator());
@@ -86,40 +82,37 @@ public class ProcessFolderTree {
             node.setOpen(false);
         }
         for (FolderType folder : folders) {
-
             if (!set.contains(folder.getId())) {
-                boolean open = !loadAll;
-                if (loadAll) {
-                    open = false;
-                }
-                if (folderId == 0) {
-                    open = true;
-                }
-                FolderTreeNode childNode =
-                    new FolderTreeNode(folder, null, open, FolderTreeNodeTypes.Folder);
-                set.add(folder.getId());
-                if (this.autoSelectFolder == 1 && currentFolderId == folder.getId()) {
-                    currentFolder = childNode;
-                }
-
-                if (folder.getFolders().size() > 0) {
-                    node.add(buildTree(childNode, folder.getFolders(), folder.getId(), set));
-                } else {
-                    node.add(childNode);
-                    addProcessesAndLogs(childNode, folder.getId());
-                }
+                treeBuildOnData(node, folderId, set, folder);
             } else {
                 node.add(
                     new FolderTreeNode((SummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 
-        addProcessesAndLogs(node, folderId);
+        addProcesses(node, folderId);
 
         return node;
     }
 
-    private void addProcessesAndLogs(FolderTreeNode node, int folderId) {
+    private void treeBuildOnData(FolderTreeNode node, int folderId, HashSet<Integer> set, FolderType folder) {
+        boolean open = false;
+        if (folderId == 0) {
+            open = true;
+        }
+        FolderTreeNode childNode =
+            new FolderTreeNode(folder, null, open, FolderTreeNodeTypes.Folder);
+        set.add(folder.getId());
+
+        if (!folder.getFolders().isEmpty()) {
+            node.add(buildProcessTree(childNode, folder.getFolders(), folder.getId(), set));
+        } else {
+            node.add(childNode);
+            addProcesses(childNode, folder.getId());
+        }
+    }
+
+    private void addProcesses(FolderTreeNode node, int folderId) {
         if (loadAll) {
             final int PAGE_SIZE = 100;
 
