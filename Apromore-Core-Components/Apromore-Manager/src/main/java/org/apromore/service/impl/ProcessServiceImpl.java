@@ -652,13 +652,14 @@ public class ProcessServiceImpl implements ProcessService {
             List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
             deleteProcessModelVersion(pmvs, pvid, branch);
 
-            // Delete corresponding draft version of current user
-            ProcessModelVersion draft = getProcessModelVersionByUser(pvid.getProcessBranch().getProcess().getId(),
-                    DRAFT_BRANCH_NAME, pvid.getVersionNumber(), user.getId());
-            if (draft != null) {
-              ProcessBranch draftBranch = draft.getProcessBranch();
-              List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
-              deleteProcessModelVersion(draft_pmvs, draft, draftBranch);
+            // Delete corresponding draft version of all users
+            List<ProcessModelVersion> draftPmvsToDelete =
+                processModelVersionRepo.getProcessModelVersions(process.getId(), DRAFT_BRANCH_NAME,
+                    pvid.getVersionNumber());
+            for (ProcessModelVersion draftPmv : draftPmvsToDelete) {
+              ProcessBranch draftBranch = draftPmv.getProcessBranch();
+              List<ProcessModelVersion> draftPmvs = draftBranch.getProcessModelVersions();
+              deleteProcessModelVersion(draftPmvs, draftPmv, draftBranch);
             }
             LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
             // Delete the process only when main branch is empty
