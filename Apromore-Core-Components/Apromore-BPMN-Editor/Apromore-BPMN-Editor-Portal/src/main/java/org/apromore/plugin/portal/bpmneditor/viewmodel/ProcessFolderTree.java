@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("unchecked")
 public class ProcessFolderTree {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LinkSubProcessViewModel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessFolderTree.class);
 
     private FolderTreeNode root;
     private boolean loadAll = false;
