@@ -374,7 +374,10 @@ public class MainController extends BaseController implements MainControllerInte
                     .costRates(costRates)
                     .build());
             });
-
+            // force/explicit page titling due to an issue with ZK stale page title
+            Executions.getCurrent().getDesktop().getFirstPage().setTitle(
+                Labels.getLabel("brand_shortName") + " - " + Labels.getLabel("portal_title_text")
+            );
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);
 
@@ -1208,7 +1211,6 @@ public class MainController extends BaseController implements MainControllerInte
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         onCreate(comp);
-
     }
 
     @Override
