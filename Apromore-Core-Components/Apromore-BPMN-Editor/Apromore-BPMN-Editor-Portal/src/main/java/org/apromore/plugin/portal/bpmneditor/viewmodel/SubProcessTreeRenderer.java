@@ -92,9 +92,7 @@ public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> 
             case Process:
                 renderProcess(treeItem, ctn, dataRow, hl);
                 break;
-
             default:
-                assert false : "Folder tree node with type " + ctn.getType() + " is not implemented";
         }
 
         Treecell treeCell = new Treecell();

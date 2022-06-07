@@ -59,17 +59,14 @@ public class ProcessTreeSearchController {
 
     private final MainController mainController;
     private final Tree tree;
-    private final LinkSubProcessViewModel linkSubProcessViewModel;
     private Checkbox searchToggleCheckbox;
     private Textbox searchTextbox;
     private Button searchButton;
     private Button searchButtonClear;
 
-    public ProcessTreeSearchController(Tree tree, LinkSubProcessViewModel linkSubProcessViewModel,
-                                       MainController mainController) {
+    public ProcessTreeSearchController(Tree tree, MainController mainController) {
         this.tree = tree;
         this.searchToggleCheckbox = (Checkbox) tree.query(".ap-listbox-search-toggle");
-        this.linkSubProcessViewModel = linkSubProcessViewModel;
         this.mainController = mainController;
         this.searchTextbox = (Textbox) tree.query(".ap-listbox-search-input");
         this.searchButton = (Button) tree.query(".ap-listbox-search-btn");

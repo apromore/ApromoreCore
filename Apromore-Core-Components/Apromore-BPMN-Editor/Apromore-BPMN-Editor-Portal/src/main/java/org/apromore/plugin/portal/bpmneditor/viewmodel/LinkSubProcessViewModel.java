@@ -126,8 +126,7 @@ public class LinkSubProcessViewModel {
     @AfterCompose
     public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
         try {
-            EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe((evt) -> {
-                {
+            EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe(evt -> {
                     selectedProcess = null;
                     if ("onSelect".equals(evt.getName())) {
                         Object selItem = evt.getData();
@@ -135,7 +134,6 @@ public class LinkSubProcessViewModel {
                             selectedProcess = (ProcessSummaryType) selItem;
                         }
                     }
-                }
             });
 
             List<Integer> processFolderChain = getProcessFolderChain(
@@ -145,7 +143,7 @@ public class LinkSubProcessViewModel {
                     processFolderChain));
             ProcessFolderTree
                 processFolderTree = new ProcessFolderTree(true, 0, mainController);
-            new ProcessTreeSearchController(tree, this, mainController);
+            new ProcessTreeSearchController(tree, mainController);
             tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
         } catch (Exception ex) {
             LOGGER.error("Error in loading tree structure", ex);
