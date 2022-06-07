@@ -1077,4 +1077,17 @@ public class ProcessServiceImpl implements ProcessService {
     }
     return Collections.unmodifiableMap(linkedProcesses);
   }
+
+  @Override
+  public Integer getProcessParentFolder(Integer processId) {
+    if (processId == null) {
+      return 0;
+    }
+    Process processWithFolder = processRepo.findUniqueByID(processId);
+    if (processWithFolder != null && processWithFolder.getFolder() != null) {
+      return processWithFolder.getFolder().getId();
+    } else {
+      return 0;
+    }
+  }
 }
