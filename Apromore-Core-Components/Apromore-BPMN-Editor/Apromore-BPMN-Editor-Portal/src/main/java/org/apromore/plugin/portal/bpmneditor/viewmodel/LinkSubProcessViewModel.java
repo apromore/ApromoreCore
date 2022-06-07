@@ -43,6 +43,8 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.zk.notification.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -64,6 +66,7 @@ import org.zkoss.zul.Tree;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class LinkSubProcessViewModel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinkSubProcessViewModel.class);
     private static final String WINDOW_PARAM = "window";
     private static final String LINK_TYPE_NEW = "NEW";
     private static final String LINK_TYPE_EXISTING = "EXISTING";
@@ -118,7 +121,14 @@ public class LinkSubProcessViewModel {
                 linkType = LINK_TYPE_EXISTING;
                 processListEnabled = true;
             }
+        } catch (UserNotFoundException e) {
+            Messagebox.show("Could not find the current logged in user", "Error", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
+    @AfterCompose
+    public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
+        try {
             EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe(new EventListener() {
                 @Override
                 public void onEvent(Event evt) {
@@ -132,21 +142,19 @@ public class LinkSubProcessViewModel {
                 }
             });
 
-        } catch (UserNotFoundException e) {
-            Messagebox.show("Could not find the current logged in user", "Error", Messagebox.OK, Messagebox.ERROR);
+            this.tree = tree;
+            List<Integer> processFolderChain = getProcessFolderChain(
+                selectedProcess == null ? 0 : processService.getProcessParentFolder(selectedProcess.getId()));
+            this.tree.setItemRenderer(
+                new SubProcessTreeRenderer(mainController.getPortalSession().getCurrentFolder(), selectedProcess,
+                    processFolderChain));
+            ProcessFolderTree
+                processFolderTree = new ProcessFolderTree(true, 0, mainController);
+            new ProcessTreeSearchController(tree, this, mainController);
+            this.tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
+        } catch (Exception ex) {
+            LOGGER.error("Error in loading tree structure", ex);
         }
-    }
-
-    @AfterCompose
-    public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
-        this.tree = tree;
-        List<Integer> processFolderChain = getProcessFolderChain(selectedProcess == null ? 0 : processService.getProcessParentFolder(selectedProcess.getId()));
-        this.tree.setItemRenderer(
-            new SubProcessTreeRenderer(mainController.getPortalSession().getCurrentFolder(), selectedProcess,processFolderChain));
-        ProcessFolderTree
-            processFolderTree = new ProcessFolderTree(true, 0, mainController);
-        new ProcessTreeSearchController(tree, this, mainController);
-        this.tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
     }
 
     @Command
@@ -233,17 +241,17 @@ public class LinkSubProcessViewModel {
 
         while (parentFolder != null && parentFolder != 0) {
             Folder folder = mainController.getWorkspaceService().getFolder(parentFolder);
-            if(folder!=null) {
+            if (folder != null) {
                 upperChainFolder.add(folder.getId());
                 if (folder.getParentFolder() == null) {
-                        parentFolder = null;
-                    } else {
-                        parentFolder = folder.getParentFolder().getId();
-                    }
-                } else {
                     parentFolder = null;
+                } else {
+                    parentFolder = folder.getParentFolder().getId();
                 }
+            } else {
+                parentFolder = null;
             }
+        }
         return upperChainFolder;
     }
 
