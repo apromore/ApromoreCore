@@ -206,7 +206,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version,
+   * @see ProcessService#importProcess(String, Integer, String, Version,
    *      String, InputStream, String, String, String, String, boolean) {@inheritDoc}
    */
   @Override
@@ -523,7 +523,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version,
+   * @see ProcessService#exportProcess(String, Integer, String, Version,
    *      String, String) {@inheritDoc}
    */
   @Override
@@ -543,7 +543,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
+   * @see ProcessService#updateProcessMetaData(Integer, String, String, String,
    *      Version, Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -652,14 +652,13 @@ public class ProcessServiceImpl implements ProcessService {
             List<ProcessModelVersion> pmvs = pvid.getProcessBranch().getProcessModelVersions();
             deleteProcessModelVersion(pmvs, pvid, branch);
 
-            // Delete corresponding draft version of all users
-            List<ProcessModelVersion> draftPmvsToDelete =
-                processModelVersionRepo.getProcessModelVersions(process.getId(), DRAFT_BRANCH_NAME,
-                    pvid.getVersionNumber());
-            for (ProcessModelVersion draftPmv : draftPmvsToDelete) {
-              ProcessBranch draftBranch = draftPmv.getProcessBranch();
-              List<ProcessModelVersion> draftPmvs = draftBranch.getProcessModelVersions();
-              deleteProcessModelVersion(draftPmvs, draftPmv, draftBranch);
+            // Delete corresponding draft version of current user
+            ProcessModelVersion draft = getProcessModelVersionByUser(pvid.getProcessBranch().getProcess().getId(),
+                    DRAFT_BRANCH_NAME, pvid.getVersionNumber(), user.getId());
+            if (draft != null) {
+              ProcessBranch draftBranch = draft.getProcessBranch();
+              List<ProcessModelVersion> draft_pmvs = draftBranch.getProcessModelVersions();
+              deleteProcessModelVersion(draft_pmvs, draft, draftBranch);
             }
             LOGGER.debug("Main branch has {} versions", pvid.getProcessBranch().getProcessModelVersions().size());
             // Delete the process only when main branch is empty
@@ -684,7 +683,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, Integer) {@inheritDoc}
    */
   @Override
@@ -728,7 +727,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -1077,5 +1076,18 @@ public class ProcessServiceImpl implements ProcessService {
       }
     }
     return Collections.unmodifiableMap(linkedProcesses);
+  }
+
+  @Override
+  public Integer getProcessParentFolder(Integer processId) {
+    if (processId == null) {
+      return 0;
+    }
+    Process processWithFolder = processRepo.findUniqueByID(processId);
+    if (processWithFolder != null && processWithFolder.getFolder() != null) {
+      return processWithFolder.getFolder().getId();
+    } else {
+      return 0;
+    }
   }
 }
