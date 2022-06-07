@@ -27,16 +27,19 @@ package org.apromore.plugin.portal.bpmneditor.viewmodel;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import org.apromore.dao.model.User;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeNodeTypes;
+import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.FolderType;
-import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.util.FolderTypeComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA. User: Igor Date: 2/07/12 Time: 6:56 PM To change this template use File
@@ -44,6 +47,7 @@ import org.apromore.portal.util.FolderTypeComparator;
  */
 @SuppressWarnings("unchecked")
 public class ProcessFolderTree {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinkSubProcessViewModel.class);
 
     private FolderTreeNode root;
     private boolean loadAll = false;
@@ -118,15 +122,21 @@ public class ProcessFolderTree {
 
             ManagerService service = this.mainController.getManagerService();
             String userId = UserSessionManager.getCurrentUser().getId();
-            int page = 0;
-            SummariesType processes;
-            do {
-                processes = service.getProcessSummaries(userId, folderId, page, PAGE_SIZE);
-                for (SummaryType summaryType : processes.getSummary()) {
-                    assert summaryType instanceof ProcessSummaryType;
-                    node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
-                }
-            } while (PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
+            try {
+                User user = this.mainController.getSecurityService().getUserById(userId);
+                int page = 0;
+                SummariesType processes;
+                do {
+                    processes = service.getProcessSummaries(userId, folderId, page, PAGE_SIZE);
+                    for (SummaryType summaryType : processes.getSummary()) {
+                        if (ItemHelpers.canModify(user, summaryType)) {
+                            node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
+                        }
+                    }
+                } while (PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
+            } catch (Exception ex) {
+                LOGGER.error("Error in rendering process", ex);
+            }
         }
     }
 
