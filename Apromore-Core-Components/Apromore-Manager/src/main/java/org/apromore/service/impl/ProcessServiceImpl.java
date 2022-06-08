@@ -176,14 +176,14 @@ public class ProcessServiceImpl implements ProcessService {
    */
   @Inject
   public ProcessServiceImpl(final NativeRepository nativeRepo, final GroupRepository groupRepo,
-                            final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
-                            final ProcessModelVersionRepository processModelVersionRepo,
-                            final GroupProcessRepository groupProcessRepo, final LockService lService,
-                            final UserService userSrv, final FormatService formatSrv, final UserInterfaceHelper ui,
-                            final WorkspaceService workspaceService, final AuthorizationService authorizationService,
-                            final FolderRepository folderRepository, final ConfigBean config,
-                            final StorageRepository storageRepo, final StorageManagementFactory storageFactory,
-                            final SubprocessProcessRepository subprocessProcessRepo) {
+      final ProcessBranchRepository processBranchRepo, ProcessRepository processRepo,
+      final ProcessModelVersionRepository processModelVersionRepo,
+      final GroupProcessRepository groupProcessRepo, final LockService lService,
+      final UserService userSrv, final FormatService formatSrv, final UserInterfaceHelper ui,
+      final WorkspaceService workspaceService, final AuthorizationService authorizationService,
+      final FolderRepository folderRepository, final ConfigBean config,
+      final StorageRepository storageRepo, final StorageManagementFactory storageFactory,
+      final SubprocessProcessRepository subprocessProcessRepo) {
     this.groupRepo = groupRepo;
     this.nativeRepo = nativeRepo;
     this.processBranchRepo = processBranchRepo;
@@ -206,15 +206,15 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version,
+   * @see ProcessService#importProcess(String, Integer, String, Version,
    *      String, InputStream, String, String, String, String, boolean) {@inheritDoc}
    */
   @Override
   @Transactional(readOnly = false)
   public ProcessModelVersion importProcess(final String username, final Integer folderId,
-                                           final String processName, final Version version, final String natType,
-                                           final InputStream nativeStream, final String domain, final String documentation,
-                                           final String created, final String lastUpdate, final boolean publicModel)
+      final String processName, final Version version, final String natType,
+      final InputStream nativeStream, final String domain, final String documentation,
+      final String created, final String lastUpdate, final boolean publicModel)
       throws ImportException {
     LOGGER.debug("Executing operation canoniseProcess");
 
@@ -272,9 +272,9 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion insertProcessModelVersion(final String processName,
-                                                        final ProcessBranch branch, final Version version, final NativeType nativeType,
-                                                        final InputStream sanitizedStream, final String lastUpdate, final User user)
-      throws IOException, ObjectCreationException {
+                                                       final ProcessBranch branch, final Version version, final NativeType nativeType,
+                                                       final InputStream sanitizedStream, final String lastUpdate, final User user)
+    throws IOException, ObjectCreationException {
 
     if (enableStorageService) {
       Storage storage = createStorage(processName, version, nativeType, sanitizedStream);
@@ -291,7 +291,7 @@ public class ProcessServiceImpl implements ProcessService {
 
   private Storage createStorage(final String processName, final Version version,
                                 final NativeType nativeType, final InputStream in)
-      throws IOException, ObjectCreationException {
+    throws IOException, ObjectCreationException {
 
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     String now = dateFormat.format(new Date());
@@ -338,8 +338,8 @@ public class ProcessServiceImpl implements ProcessService {
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
     factory.newTransformer(new StreamSource(
-            ProcessServiceImpl.class.getClassLoader().getResourceAsStream("xsd/sanitizeBPMN.xsl")))
-        .transform(new StreamSource(in), new StreamResult(out));
+        ProcessServiceImpl.class.getClassLoader().getResourceAsStream("xsd/sanitizeBPMN.xsl")))
+      .transform(new StreamSource(in), new StreamResult(out));
 
     return new ByteArrayInputStream(out.toByteArray());
   }
@@ -351,9 +351,9 @@ public class ProcessServiceImpl implements ProcessService {
   @Transactional(readOnly = false)
   @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
   public ProcessModelVersion updateProcessModelVersion(final Integer processId,
-                                                       final String branchName, final Version version, final User user, final String lockStatus,
-                                                       final NativeType nativeType, final InputStream nativeStream)
-      throws ImportException, UpdateProcessException {
+      final String branchName, final Version version, final User user, final String lockStatus,
+      final NativeType nativeType, final InputStream nativeStream)
+          throws ImportException, UpdateProcessException {
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String now = dateFormat.format(new Date());
     Process process;
@@ -379,15 +379,15 @@ public class ProcessServiceImpl implements ProcessService {
       ProcessModelVersion pmv;
       if (DRAFT_BRANCH_NAME.equals(branchName)) {
         pmv = processModelVersionRepo
-            .getProcessModelVersionByUser(processId, branchName, version.toString(), user.getId());
+                .getProcessModelVersionByUser(processId, branchName, version.toString(), user.getId());
       } else {
         pmv = processModelVersionRepo
-            .getProcessModelVersion(processId, branchName, version.toString());
+                .getProcessModelVersion(processId, branchName, version.toString());
       }
 
       if (pmv == null) {
-        throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
-            "information of this process.");
+          throw new RepositoryException("Failed to update process " + processName + ". Unable to get storage " +
+              "information of this process.");
       }
 
       pmv.setLastUpdateDate(now);
@@ -410,7 +410,7 @@ public class ProcessServiceImpl implements ProcessService {
         } else {
           // Copy on write, copying into a native document
           pmv.setNativeDocument(formatSrv.storeNative(processName, null, now, null, nativeType,
-              Constants.INITIAL_ANNOTATION, nativeStream));
+            Constants.INITIAL_ANNOTATION, nativeStream));
           pmv.setStorage(null);
         }
 
@@ -434,10 +434,10 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private void writeInputStreamToStorage(InputStream inputStream, Storage storage)
-      throws ObjectCreationException, IOException {
+    throws ObjectCreationException, IOException {
 
     try (OutputStream outputStream = storageFactory.getStorageClient(storage.getStoragePath())
-        .getOutputStream(storage.getPrefix(), storage.getKey())) {
+            .getOutputStream(storage.getPrefix(), storage.getKey())) {
       inputStream.transferTo(outputStream);
     }
   }
@@ -449,9 +449,9 @@ public class ProcessServiceImpl implements ProcessService {
   @Transactional(readOnly = false)
   @Event(message = HistoryEnum.UPDATE_PROCESS_MODEL)
   public ProcessModelVersion createProcessModelVersion(final Integer processId,
-                                                       final String branchName, final Version newVersion, final Version originalVersion,
-                                                       final User user, final String lockStatus, final NativeType nativeType,
-                                                       final InputStream nativeStream) throws ImportException, RepositoryException {
+      final String branchName, final Version newVersion, final Version originalVersion,
+      final User user, final String lockStatus, final NativeType nativeType,
+      final InputStream nativeStream) throws ImportException, RepositoryException {
     ProcessModelVersion pmv;
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     String now = dateFormat.format(new Date());
@@ -523,12 +523,12 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version,
+   * @see ProcessService#exportProcess(String, Integer, String, Version,
    *      String, String) {@inheritDoc}
    */
   @Override
   public ExportFormatResultType exportProcess(final String name, final Integer processId,
-                                              final String branch, final Version version, final String format, final String username)
+      final String branch, final Version version, final String format, final String username)
       throws ExportFormatException {
     try {
       ExportFormatResultType exportResult = new ExportFormatResultType();
@@ -543,14 +543,14 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
+   * @see ProcessService#updateProcessMetaData(Integer, String, String, String,
    *      Version, Version, String, boolean) {@inheritDoc}
    */
   @Override
   @Transactional(readOnly = false)
   public void updateProcessMetaData(final Integer processId, final String processName,
-                                    final String domain, final String username, final Version preVersion,
-                                    final Version newVersion, final String ranking, final boolean tobePublic)
+      final String domain, final String username, final Version preVersion,
+      final Version newVersion, final String ranking, final boolean tobePublic)
       throws UpdateProcessException {
     LOGGER.debug("Executing operation update process meta data.");
 
@@ -577,7 +577,7 @@ public class ProcessServiceImpl implements ProcessService {
 
           if (!isCurrentPublic && tobePublic) {
             groupProcesses
-                .add(new GroupProcess(process, publicGroup, new AccessRights(true, true, false)));
+                    .add(new GroupProcess(process, publicGroup, new AccessRights(true, true, false)));
             process.setGroupProcesses(groupProcesses);
             workspaceSrv.createPublicStatusForUsers(process);
 
@@ -612,10 +612,10 @@ public class ProcessServiceImpl implements ProcessService {
 
     Set<GroupProcess> publicGroupProcesses =
         new HashSet<>(); /*
-     * groupProcesses .stream() .filter(groupProcess ->
-     * publicGroup.equals(groupProcess.getGroup()))
-     * .collect(Collectors.toSet());
-     */
+                          * groupProcesses .stream() .filter(groupProcess ->
+                          * publicGroup.equals(groupProcess.getGroup()))
+                          * .collect(Collectors.toSet());
+                          */
     for (GroupProcess groupProcess : groupProcesses) {
       if (publicGroup.equals(groupProcess.getGroup())) {
         publicGroupProcesses.add(groupProcess);
@@ -644,7 +644,7 @@ public class ProcessServiceImpl implements ProcessService {
             throw new UpdateProcessException("Write permission denied for " + user.getUsername());
           }
           LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName()
-              + " to be deleted.");
+                  + " to be deleted.");
 
           try {
             // Delete the process and branch if there's only one model version
@@ -684,12 +684,12 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, Integer) {@inheritDoc}
    */
   @Override
   public String getBPMNRepresentation(final String name, final Integer processId,
-                                      final String branch, final Version version, @Nullable final Integer userId) throws RepositoryException {
+      final String branch, final Version version, @Nullable final Integer userId) throws RepositoryException {
     String xmlBPMNProcess;
     String format = "BPMN 2.0";
 
@@ -698,18 +698,18 @@ public class ProcessServiceImpl implements ProcessService {
       // The #getProcessModelVersion() method would return more than one result in draft branch
       if (DRAFT_BRANCH_NAME.equals(branch) && userId != null) {
         pmv = processModelVersionRepo
-            .getProcessModelVersionByUser(processId, branch, version.toString(), userId);
+                .getProcessModelVersionByUser(processId, branch, version.toString(), userId);
       } else {
         pmv = processModelVersionRepo
-            .getProcessModelVersion(processId, branch, version.toString());
+                .getProcessModelVersion(processId, branch, version.toString());
       }
       // Work out if we are looking at the original format or native format for this model.
       if (isRequestForNativeFormat(pmv, format)) {
         Storage storage = pmv.getStorage();
         if (storage != null) {
           try (InputStream in = storageFactory
-              .getStorageClient(storage.getStoragePath())
-              .getInputStream(storage.getPrefix(), storage.getKey())) {
+                .getStorageClient(storage.getStoragePath())
+                .getInputStream(storage.getPrefix(), storage.getKey())) {
             xmlBPMNProcess = new String(in.readAllBytes(), StandardCharsets.UTF_8);
           }
         } else {  // null storage indicates we're using the legacy native repository
@@ -728,7 +728,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -775,7 +775,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private void deleteProcessModelVersion(List<ProcessModelVersion> pmvs,
-                                         ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
+      ProcessModelVersion pvidToDelete, ProcessBranch branch) throws ExceptionDao {
     ProcessModelVersion newCurrent = getPreviousVersion(pmvs, pvidToDelete);
     if (newCurrent == null) {
       newCurrent = getNextVersion(pmvs, pvidToDelete);
@@ -788,7 +788,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion getPreviousVersion(List<ProcessModelVersion> pmvs,
-                                                 ProcessModelVersion pvid) {
+      ProcessModelVersion pvid) {
     ProcessModelVersion result = null;
     for (ProcessModelVersion pmv : pmvs) {
       if (pmv.equals(pvid)) {
@@ -805,7 +805,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion getNextVersion(List<ProcessModelVersion> pmvs,
-                                             ProcessModelVersion pvid) {
+      ProcessModelVersion pvid) {
     ProcessModelVersion result = null;
     for (ProcessModelVersion pmv : pmvs) {
       if (pmv.equals(pvid)) {
@@ -833,7 +833,7 @@ public class ProcessServiceImpl implements ProcessService {
       if (storage != null) {
         if (processModelVersionRepo.countByStorageId(storage.getId()) == 0) {
           storageFactory.getStorageClient(storage.getStoragePath())
-              .delete(storage.getPrefix(), storage.getKey());
+                        .delete(storage.getPrefix(), storage.getKey());
           storageRepository.deleteById(storage.getId());
         }
       }
@@ -848,8 +848,8 @@ public class ProcessServiceImpl implements ProcessService {
 
   /* Inserts a new process into the DB. */
   private Process insertProcess(final String processName, final User user,
-                                final NativeType nativeType, final String domain, final Integer folderId,
-                                final String created, final boolean publicModel) throws ImportException {
+      final NativeType nativeType, final String domain, final Integer folderId,
+      final String created, final boolean publicModel) throws ImportException {
     LOGGER.debug("Executing operation Insert Process");
     Process process = new Process();
 
@@ -900,7 +900,7 @@ public class ProcessServiceImpl implements ProcessService {
 
   /* inserts a new branch into the DB. */
   private ProcessBranch insertProcessBranch(final Process process, final String created,
-                                            final String lastUpdated, final String name) throws ImportException {
+      final String lastUpdated, final String name) throws ImportException {
     LOGGER.debug("Executing operation Insert Branch");
     ProcessBranch branch = new ProcessBranch();
 
@@ -921,8 +921,8 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   private ProcessModelVersion createProcessModelVersion(final ProcessBranch branch,
-                                                        final Version version, NativeType nativeType, final String netId, Native nat,
-                                                        Storage storage, final User user) {
+      final Version version, NativeType nativeType, final String netId, Native nat,
+      Storage storage, final User user) {
 
     String now = new SimpleDateFormat(DATE_FORMAT).format(new Date());
     ProcessModelVersion processModel = new ProcessModelVersion();
@@ -948,24 +948,24 @@ public class ProcessServiceImpl implements ProcessService {
 
   /* Did the request ask for the model in the same format as it was originally added? */
   private boolean isRequestForNativeFormat(ProcessModelVersion pmv,
-                                           String format) {
+      String format) {
     return pmv != null && pmv.getNativeType() != null
         && pmv.getNativeType().getNatType().equals(format);
   }
 
 
-  @Override
-  public boolean hasWritePermissionOnProcess(User user, List<Integer> processIds) {
-    return processIds.stream().allMatch(processId -> canUserWriteProcess(user, processId));
-  }
+	@Override
+	public boolean hasWritePermissionOnProcess(User user, List<Integer> processIds) {
+		return processIds.stream().allMatch(processId -> canUserWriteProcess(user, processId));
+	}
 
-  @Override
-  public ProcessModelVersion getProcessModelVersionByUser(Integer processId, String branch, String version,
-                                                          Integer userId) {
+    @Override
+    public ProcessModelVersion getProcessModelVersionByUser(Integer processId, String branch, String version,
+                                                            Integer userId) {
 
-    return processModelVersionRepo.getProcessModelVersionByUser(processId, branch,
-        version, userId);
-  }
+      return processModelVersionRepo.getProcessModelVersionByUser(processId, branch,
+              version, userId);
+    }
 
   @Override
   public Process getProcessById(final Integer processId) throws RepositoryException {
@@ -986,7 +986,7 @@ public class ProcessServiceImpl implements ProcessService {
   @Override
   @Transactional
   public ProcessModelVersion createDraft(Integer processId, String processName, String versionNumber,
-                                         String nativeType, InputStream nativeStream, String userName) throws ImportException {
+                                          String nativeType, InputStream nativeStream, String userName) throws ImportException {
     try {
       Process processModel = getProcessById(processId);
 
@@ -997,16 +997,16 @@ public class ProcessServiceImpl implements ProcessService {
       // Check whether draft branch for this process model is already exist
       ProcessBranch branch = processModel.getProcessBranches().stream().filter(processBranch ->
               processBranch.getBranchName().equals(DRAFT_BRANCH_NAME))
-          .findAny().orElse(null);
+              .findAny().orElse(null);
 
       if (branch == null) {
         branch = insertProcessBranch(processModel, now, now,
-            DRAFT_BRANCH_NAME);
+                DRAFT_BRANCH_NAME);
       }
 
       return insertProcessModelVersion(processName, branch, new Version(versionNumber)
-          , formatSrv.findNativeType(nativeType),
-          nativeStream, now, userSrv.findUserByLogin(userName));
+              , formatSrv.findNativeType(nativeType),
+              nativeStream, now, userSrv.findUserByLogin(userName));
     } catch (Exception e) {
       throw new ImportException("Create draft failed caused by {}", e);
     }
@@ -1017,8 +1017,8 @@ public class ProcessServiceImpl implements ProcessService {
                                          String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException {
     try {
       return updateProcessModelVersion(
-          processId, DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
-          nativeStream);
+              processId, DRAFT_BRANCH_NAME, new Version(versionNumber), userSrv.findUserByLogin(userName), "", formatSrv.findNativeType(nativeType),
+              nativeStream);
     } catch (Exception e) {
       throw new UpdateProcessException("Update draft failed caused by {}", e);
     }
@@ -1091,4 +1091,5 @@ public class ProcessServiceImpl implements ProcessService {
       return 0;
     }
   }
+
 }
