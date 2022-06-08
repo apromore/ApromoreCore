@@ -282,4 +282,6 @@ public interface ProcessService {
     boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
 
     Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
+
+    Integer getProcessParentFolder(Integer processId);
 }

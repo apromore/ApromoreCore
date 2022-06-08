@@ -27,8 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -41,21 +43,28 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.zk.notification.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
+import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.bind.annotation.SelectorParam;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tree;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class LinkSubProcessViewModel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinkSubProcessViewModel.class);
     private static final String WINDOW_PARAM = "window";
     private static final String LINK_TYPE_NEW = "NEW";
     private static final String LINK_TYPE_EXISTING = "EXISTING";
@@ -76,9 +85,11 @@ public class LinkSubProcessViewModel {
     @WireVariable
     private UserInterfaceHelper uiHelper;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String linkType = LINK_TYPE_NEW;
-    @Getter @Setter
+    @Getter
+    @Setter
     private ProcessSummaryType selectedProcess;
     @Getter
     private boolean processListEnabled;
@@ -92,6 +103,7 @@ public class LinkSubProcessViewModel {
         elementId = elId;
         parentProcessId = parentId;
         currentUser = UserSessionManager.getCurrentUser();
+
 
         try {
             ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
@@ -108,6 +120,33 @@ public class LinkSubProcessViewModel {
             }
         } catch (UserNotFoundException e) {
             Messagebox.show("Could not find the current logged in user", "Error", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    @AfterCompose
+    public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
+        try {
+            EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe(evt -> {
+                    selectedProcess = null;
+                    if ("onSelect".equals(evt.getName())) {
+                        Object selItem = evt.getData();
+                        if (selItem instanceof ProcessSummaryType) {
+                            selectedProcess = (ProcessSummaryType) selItem;
+                        }
+                    }
+            });
+
+            List<Integer> processFolderChain = getProcessFolderChain(
+                selectedProcess == null ? 0 : processService.getProcessParentFolder(selectedProcess.getId()));
+            tree.setItemRenderer(
+                new SubProcessTreeRenderer(mainController.getPortalSession().getCurrentFolder(), selectedProcess,
+                    processFolderChain));
+            ProcessFolderTree
+                processFolderTree = new ProcessFolderTree(true, 0, mainController);
+            new ProcessTreeSearchController(tree, mainController);
+            tree.setModel(new FolderTreeModel(processFolderTree.getRoot(), processFolderTree.getCurrentFolder()));
+        } catch (Exception ex) {
+            LOGGER.error("Error in loading tree structure", ex);
         }
     }
 
@@ -132,7 +171,8 @@ public class LinkSubProcessViewModel {
                     BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
 
-                    String linkedProcessName = selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
+                    String linkedProcessName =
+                        selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
                     Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','" + linkedProcessName + "');");
                 }
                 break;
@@ -159,6 +199,7 @@ public class LinkSubProcessViewModel {
 
     /**
      * Get all the processes in a folder and its subfolders.
+     *
      * @param folder the folder which contains the processes or null to include all processes.
      * @return a list of processes in this folder and its subfolders.
      */
@@ -181,4 +222,31 @@ public class LinkSubProcessViewModel {
     public void onCheckLinkType() {
         processListEnabled = LINK_TYPE_EXISTING.equals(linkType);
     }
+
+
+    private List<Integer> getProcessFolderChain(
+        Integer parentFolder) {
+        List<Integer> upperChainFolder = new ArrayList<>();
+        upperChainFolder.add(0);
+        if (parentFolder == null || parentFolder == 0) {
+            return upperChainFolder;
+        }
+
+        while (parentFolder != null && parentFolder != 0) {
+            Folder folder = mainController.getWorkspaceService().getFolder(parentFolder);
+            if (folder != null) {
+                upperChainFolder.add(folder.getId());
+                if (folder.getParentFolder() == null) {
+                    parentFolder = null;
+                } else {
+                    parentFolder = folder.getParentFolder().getId();
+                }
+            } else {
+                parentFolder = null;
+            }
+        }
+        return upperChainFolder;
+    }
+
+
 }
