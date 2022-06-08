@@ -206,7 +206,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version,
+   * @see ProcessService#importProcess(String, Integer, String, Version,
    *      String, InputStream, String, String, String, String, boolean) {@inheritDoc}
    */
   @Override
@@ -523,7 +523,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version,
+   * @see ProcessService#exportProcess(String, Integer, String, Version,
    *      String, String) {@inheritDoc}
    */
   @Override
@@ -543,7 +543,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
+   * @see ProcessService#updateProcessMetaData(Integer, String, String, String,
    *      Version, Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -684,7 +684,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, Integer) {@inheritDoc}
    */
   @Override
@@ -728,7 +728,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -1078,4 +1078,18 @@ public class ProcessServiceImpl implements ProcessService {
     }
     return Collections.unmodifiableMap(linkedProcesses);
   }
+
+  @Override
+  public Integer getProcessParentFolder(Integer processId) {
+    if (processId == null) {
+      return 0;
+    }
+    Process processWithFolder = processRepo.findUniqueByID(processId);
+    if (processWithFolder != null && processWithFolder.getFolder() != null) {
+      return processWithFolder.getFolder().getId();
+    } else {
+      return 0;
+    }
+  }
+
 }
