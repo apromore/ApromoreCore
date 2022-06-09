@@ -19,6 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.processsimulation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,7 +36,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CostingData {
-    private final Double DEFAULT_COST = 0.0D;
+    private final Double defaultCost = 0.0D;
 
     @Getter
     private final String perspective;
@@ -49,7 +50,7 @@ public class CostingData {
     public static final CostingData EMPTY = CostingData.builder().currency("AUD").costRates(new HashMap<>()).build();
 
     public Double getCost(@NonNull String attributeId) {
-        return costRates.getOrDefault(attributeId, DEFAULT_COST);
+        return costRates.getOrDefault(attributeId, defaultCost);
     }
 
     public Map<String, Double> getCostRates() {

@@ -96,7 +96,8 @@ public class SimulationInfoService {
     private ObjectMapper objectMapper;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,UserMetadataService userMetadataService,ObjectMapper objectMapper) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
+                                 UserMetadataService userMetadataService, ObjectMapper objectMapper) {
         this.config = config;
         this.calendarService = calendarService;
         this.userMetadataService = userMetadataService;
@@ -313,7 +314,7 @@ public class SimulationInfoService {
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
                         .timetableId(config.getCustomTimetableId())
-                        .costPerHour(costingData.get(resourceName)==null?0:costingData.get(resourceName))
+                        .costPerHour(costingData.get(resourceName) == null ? 0 : costingData.get(resourceName))
                         .build();
                 }).collect(Collectors.toList()));
         }
@@ -335,8 +336,8 @@ public class SimulationInfoService {
             List<CostingData> costingDataList =
                 objectMapper.readValue(userMetadata.get(0).getContent(), new TypeReference<List<CostingData>>() {
                 });
-            if (costingDataList != null && !costingDataList.isEmpty() &&
-                costingDataList.get(0).getCostRates() != null) {
+            if (costingDataList != null && !costingDataList.isEmpty()
+                && costingDataList.get(0).getCostRates() != null) {
                 costRateMap = costingDataList.get(0).getCostRates();
             }
         } catch (JsonProcessingException ex) {
