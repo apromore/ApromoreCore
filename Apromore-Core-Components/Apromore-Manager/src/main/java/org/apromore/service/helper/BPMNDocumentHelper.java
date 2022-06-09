@@ -40,6 +40,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apromore.exception.ExportFormatException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -264,18 +265,16 @@ public final class BPMNDocumentHelper {
                     for (Node replaceAttribute : replaceAttributes) {
                         if (replaceAttribute != null) {
                             String oldId = replaceAttribute.getTextContent();
-                            String newId = parentId + "_" + oldId;
 
-                            idMap.putIfAbsent(oldId, newId);
+                            idMap.putIfAbsent(oldId, RandomStringUtils.randomAlphabetic(32));
                             replaceAttribute.setTextContent(idMap.get(oldId));
                         }
                     }
                 } else if (INCOMING_TAGS.contains(importedNode.getNodeName())
                     || OUTGOING_TAGS.contains(importedNode.getNodeName())) {
                     String oldId = importedNode.getTextContent();
-                    String newId = parentId + "_" + oldId;
 
-                    idMap.putIfAbsent(oldId, newId);
+                    idMap.putIfAbsent(oldId, RandomStringUtils.randomAlphabetic(32));
                     importedNode.setTextContent(idMap.get(oldId));
                 }
                 toNode.appendChild(importedNode);
