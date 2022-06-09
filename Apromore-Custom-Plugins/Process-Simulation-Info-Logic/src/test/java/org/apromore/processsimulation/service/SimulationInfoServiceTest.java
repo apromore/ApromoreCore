@@ -27,10 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,19 +43,23 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
+import org.apromore.processsimulation.model.CostingData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
@@ -58,6 +67,8 @@ import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
+import org.apromore.service.UserMetadataService;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -77,11 +88,17 @@ class SimulationInfoServiceTest {
     @Mock
     private CustomCalendarService calendarService;
 
+    @Mock
+    private UserMetadataService userMetadataService;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     @BeforeEach
-    void setup() {
+    void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService);
+        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService,objectMapper);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -95,6 +112,17 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
         when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("dummy");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        Map<String, Double> mockRoleToResourceCostPerHour = Map.of(
+            "Role_1", 10.0,
+            "Role_2", 20.0,
+            "Role_3", 30.0);
+
+        when(objectMapper.readValue(anyString(),  any(TypeReference.class))).thenReturn(List.of(CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()));
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
@@ -356,16 +384,19 @@ class SimulationInfoServiceTest {
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
                 .findFirst();
         assertResource("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", role1);
+        assertResourceCostPerhour("Role_1", 10,  role1);
 
         Optional<Resource> role2 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
                 .findFirst();
         assertResource("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", role2);
+        assertResourceCostPerhour("Role_2", 20,  role2);
 
         Optional<Resource> role3 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
                 .findFirst();
         assertResource("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", role3);
+        assertResourceCostPerhour("Role_3", 30,  role3);
     }
 
     private void assertResource(
@@ -378,6 +409,15 @@ class SimulationInfoServiceTest {
         assertEquals(expectedResourceCount, actualRole.get().getTotalAmount());
         assertEquals(expectedTimetableId, actualRole.get().getTimetableId());
     }
+
+    private void assertResourceCostPerhour(
+        final String expectedResourceName,
+        final double expectedResourceCost,
+        final Optional<Resource> actualRole) {
+        assertTrue(actualRole.isPresent());
+        assertEquals(expectedResourceName, actualRole.get().getName());
+        assertEquals(expectedResourceCost, actualRole.get().getCostPerHour());
+     }
 
     @Test
     void should_contain_default_resource_if_no_roles() {
@@ -483,6 +523,7 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getCaseCount()).thenReturn(100L);
         when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);

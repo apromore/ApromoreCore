@@ -21,6 +21,10 @@
 
 package org.apromore.processsimulation.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,9 +48,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
+import org.apromore.processsimulation.model.CostingData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -59,6 +65,8 @@ import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
+import org.apromore.service.UserMetadataService;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -84,11 +92,15 @@ public class SimulationInfoService {
 
     private final SimulationInfoConfig config;
     private final CalendarService calendarService;
+    private UserMetadataService userMetadataService;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,UserMetadataService userMetadataService,ObjectMapper objectMapper) {
         this.config = config;
         this.calendarService = calendarService;
+        this.userMetadataService = userMetadataService;
+        this.objectMapper = objectMapper;
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -274,6 +286,7 @@ public class SimulationInfoService {
 
         } else {
 
+            Map<String, Double> costingData = retrieveCostData(simulationData.getLogId());
             builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
                 .map(roleToResourceCount -> {
                     String resourceId;
@@ -293,7 +306,6 @@ public class SimulationInfoService {
                         resourceId = config.getDefaultResourceIdPrefix() + UUID.randomUUID();
                         resourceName = roleToResourceCount.getKey();
                     }
-
                     resouceNameToId.put(resourceName, resourceId);
 
                     return Resource.builder()
@@ -301,11 +313,38 @@ public class SimulationInfoService {
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
                         .timetableId(config.getCustomTimetableId())
+                        .costPerHour(costingData.get(resourceName)==null?0:costingData.get(resourceName))
                         .build();
                 }).collect(Collectors.toList()));
         }
 
         return resouceNameToId;
+    }
+
+
+    public Map<String, Double> retrieveCostData(int logId) {
+        Map<String, Double> costRateMap = new HashMap<>();
+        try {
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            List<Usermetadata> userMetadata =
+                new ArrayList<>(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.COST_TABLE));
+
+            if (userMetadata.isEmpty()) {
+                return costRateMap;
+            }
+            List<CostingData> costingDataList =
+                objectMapper.readValue(userMetadata.get(0).getContent(), new TypeReference<List<CostingData>>() {
+                });
+            if (costingDataList != null && !costingDataList.isEmpty() &&
+                costingDataList.get(0).getCostRates() != null) {
+                costRateMap = costingDataList.get(0).getCostRates();
+            }
+        } catch (JsonProcessingException ex) {
+            log.error("Error in json data parsing", ex);
+        } catch (Exception ex) {
+            log.error("Error in retrieving data", ex);
+        }
+        return costRateMap;
     }
 
     private void deriveGatewayProbabilities(
