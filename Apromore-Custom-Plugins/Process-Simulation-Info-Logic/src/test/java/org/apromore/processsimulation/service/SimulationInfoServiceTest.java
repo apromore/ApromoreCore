@@ -43,7 +43,6 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +121,8 @@ class SimulationInfoServiceTest {
             "Role_2", 20.0,
             "Role_3", 30.0);
 
-        when(objectMapper.readValue(anyString(),  any(TypeReference.class))).thenReturn(List.of(CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()));
+        when(objectMapper.readValue(anyString(), any(TypeReference.class))).thenReturn(
+            List.of(CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()));
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
