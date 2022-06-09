@@ -417,7 +417,7 @@ class SimulationInfoServiceTest {
         assertTrue(actualRole.isPresent());
         assertEquals(expectedResourceName, actualRole.get().getName());
         assertEquals(expectedResourceCost, actualRole.get().getCostPerHour());
-     }
+    }
 
     @Test
     void should_contain_default_resource_if_no_roles() {
