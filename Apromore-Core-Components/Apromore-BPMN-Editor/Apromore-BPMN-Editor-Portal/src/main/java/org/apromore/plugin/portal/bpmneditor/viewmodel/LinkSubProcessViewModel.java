@@ -167,9 +167,9 @@ public class LinkSubProcessViewModel {
                         Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
                             "Please select an existing process model to link"));
                     } else {
+                        processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(), currentUser.getUsername());
                         Notification.info(MessageFormat.format(Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
                             "Subprocess linked to {0}"), selectedProcess.getName()));
-                        processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(), currentUser.getUsername());
                         BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                         window.detach();
 
