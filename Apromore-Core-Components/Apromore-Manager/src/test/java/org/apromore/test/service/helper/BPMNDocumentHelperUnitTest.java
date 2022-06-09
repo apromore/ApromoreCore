@@ -140,23 +140,23 @@ class BPMNDocumentHelperUnitTest {
             String xmlBeforeReplace = BPMNDocumentHelper.getXMLString(document);
 
             //Check elements before replace
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task").size()).isEqualTo(0);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow").size()).isEqualTo(0);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).isEmpty();
 
             Node subProcessNode = BPMNDocumentHelper.getBPMNElements(document, "subProcess").get(0);
             BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2);
 
             //Check elements after replace
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent").size()).isEqualTo(0);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent").size()).isEqualTo(0);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow").size()).isEqualTo(2);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).hasSize(2);
 
             String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
             Document document3 = BPMNDocumentHelper.getDocument(xmlAfterReplace);
@@ -164,12 +164,12 @@ class BPMNDocumentHelperUnitTest {
             assertThat(xmlAfterReplace).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             assertThat(xmlAfterReplace).isNotEqualTo(xmlBeforeReplace);
             //Check that the xml created has the same elements as the original document
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "process").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "subProcess").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "startEvent").size()).isEqualTo(0);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "endEvent").size()).isEqualTo(0);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "task").size()).isEqualTo(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "sequenceFlow").size()).isEqualTo(2);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "startEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "endEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "task")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "sequenceFlow")).hasSize(2);
 
         } catch (ParserConfigurationException | IOException | SAXException | ExportFormatException |
                  TransformerException e) {

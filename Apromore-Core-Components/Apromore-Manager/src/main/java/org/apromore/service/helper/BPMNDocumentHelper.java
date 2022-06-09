@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,7 +41,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apromore.exception.ExportFormatException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -266,7 +266,7 @@ public final class BPMNDocumentHelper {
                         if (replaceAttribute != null) {
                             String oldId = replaceAttribute.getTextContent();
 
-                            idMap.putIfAbsent(oldId, RandomStringUtils.randomAlphabetic(32));
+                            idMap.putIfAbsent(oldId, getRandomId());
                             replaceAttribute.setTextContent(idMap.get(oldId));
                         }
                     }
@@ -274,13 +274,17 @@ public final class BPMNDocumentHelper {
                     || OUTGOING_TAGS.contains(importedNode.getNodeName())) {
                     String oldId = importedNode.getTextContent();
 
-                    idMap.putIfAbsent(oldId, RandomStringUtils.randomAlphabetic(32));
+                    idMap.putIfAbsent(oldId, getRandomId());
                     importedNode.setTextContent(idMap.get(oldId));
                 }
                 toNode.appendChild(importedNode);
             }
         }
         return idMap;
+    }
+
+    private static String getRandomId() {
+        return "element" + UUID.randomUUID().toString().replace("-", "");
     }
 
     private static List<Node> convertToList(NodeList nodeList) {

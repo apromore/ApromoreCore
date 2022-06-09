@@ -30,7 +30,6 @@ import lombok.Setter;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.User;
 import org.apromore.exception.CircularReferenceException;
-import org.apromore.exception.UpdateProcessException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.ItemHelpers;
