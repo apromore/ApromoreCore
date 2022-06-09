@@ -46,7 +46,7 @@ public class StringUtil {
 
         String normalized = name.trim().replaceAll(illegalRe, "")
             .replaceAll(controlRe, "")
-            .replaceAll("\\.", "_");
+            .replace("\\.", "_");
 
         if (normalized.endsWith("_")) {
             normalized = normalized.substring(0, normalized.length() - 1);
