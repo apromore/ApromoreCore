@@ -15,6 +15,7 @@
  * is obtained from Apromore Pty Ltd.
  * #L%
  */
+
 package org.apromore.util;
 
 public class StringUtil {
@@ -26,18 +27,37 @@ public class StringUtil {
     /**
      * Removes all illegal filename characters from a given String
      *
+     * Illegal Characters on Various Operating Systems
+     * / ? < > \ : * | "
+     * https://kb.acronis.com/content/39790
+     *
+     * Unicode Control codes
+     * C0 0x00-0x1f & C1 (0x80-0x9f)
+     * http://en.wikipedia.org/wiki/C0_and_C1_control_codes
+     *
+     * Reserved filenames on Unix-based systems (".", "..")
+     * Reserved filenames in Windows ("CON", "PRN", "AUX", "NUL", "COM1",
+     * "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+     * "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", and
+     * "LPT9") case-insesitively and with or without filename extensions.
+     *
      * @param name user input filename
      * @return normalized file name
      * @see "http://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words"
      */
     public static String normalizeFilename(String name) {
 
-        String normalized = name.trim();
+        String illegalRe = "[\\/|\\\\|\\*|\\:|\\||\"|\'|\\<|\\>|\\{|\\}|\\?|\\%|\\$|\\&|\\@|\\#|\\^|,]";
+        String controlRe = "/[\\x00-\\x1f\\x80-\\x9f]/g";
+        String reservedRe = "/^\\.+$/";
+        String windowsReservedRe = "/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\\..*)?$/i";
+        String windowsTrailingRe = "/[\\. ]+$/";
 
-        // remove illegal characters
-        normalized = normalized.replaceAll(
-                "[\\/|\\\\|\\*|\\:|\\||\"|\'|\\<|\\>|\\{|\\}|\\?|\\%|,]",
-                "");
+        String normalized = name.trim().replaceAll(illegalRe, "")
+            .replaceAll(controlRe, "")
+            .replaceAll(reservedRe, "")
+            .replaceAll(windowsReservedRe, "")
+            .replaceAll(windowsTrailingRe, "");
 
         // replace . dots with _ and remove the _ if at the end
         normalized = normalized.replaceAll("\\.", "_");
@@ -47,6 +67,7 @@ public class StringUtil {
 
         if (normalized.length() == 0) {
             normalized = "Untitled";
+        // Capped at 60 characters in length
         } else if (normalized.length() > 60) {
             normalized = normalized.substring(0, 59);
         }
