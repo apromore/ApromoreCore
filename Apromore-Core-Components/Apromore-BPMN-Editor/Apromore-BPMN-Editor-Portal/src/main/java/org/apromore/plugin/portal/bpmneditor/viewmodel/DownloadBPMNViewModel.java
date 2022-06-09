@@ -27,6 +27,7 @@ import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import lombok.Getter;
 import lombok.Setter;
+import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.portal.common.UserSessionManager;
@@ -40,10 +41,12 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Messagebox;
 
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
 public class DownloadBPMNViewModel {
@@ -75,12 +78,17 @@ public class DownloadBPMNViewModel {
             return;
         }
 
-        String bpmnXML = processService.getBPMNRepresentation(process.getName(), process.getId(), "MAIN",
-            new Version(version.getVersionNumber()), currentUser.getUsername(), includeLinkedSubprocesses);
-
-        InputStream is = new ByteArrayInputStream(bpmnXML.getBytes());
-        Filedownload.save(is, "text/xml", "diagram.bpmn");
-        window.detach();
+        try {
+            String bpmnXML = processService.getBPMNRepresentation(process.getName(), process.getId(), "MAIN",
+                new Version(version.getVersionNumber()), currentUser.getUsername(), includeLinkedSubprocesses);
+            InputStream is = new ByteArrayInputStream(bpmnXML.getBytes());
+            Filedownload.save(is, "text/xml", "diagram.bpmn");
+            window.detach();
+        } catch (CircularReferenceException e) {
+            Messagebox.show(Labels.getLabel("bpmnEditor_exportCircularReference_message",
+                "You cannot export this model. The linked models form a loop. Please review the linked subprocesses."),
+                Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
 }
