@@ -35,7 +35,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CostingData {
-    private static final Double defaultCost = 0.0D;
+    private static final Double DEFAULT_COST = 0.0D;
 
     @Getter
     private final String perspective;
@@ -49,7 +49,7 @@ public class CostingData {
     public static final CostingData EMPTY = CostingData.builder().currency("AUD").costRates(new HashMap<>()).build();
 
     public Double getCost(@NonNull String attributeId) {
-        return costRates.getOrDefault(attributeId, defaultCost);
+        return costRates.getOrDefault(attributeId, DEFAULT_COST);
     }
 
     public Map<String, Double> getCostRates() {
