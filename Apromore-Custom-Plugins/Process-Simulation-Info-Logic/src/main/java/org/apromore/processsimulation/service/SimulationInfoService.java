@@ -95,9 +95,6 @@ public class SimulationInfoService {
     private UserMetadataService userMetadataService;
     private ObjectMapper objectMapper;
 
-    private static TypeReference<List<CostingData>> typeReference = new TypeReference<List<CostingData>>() {
-    };
-
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
                                  UserMetadataService userMetadataService, ObjectMapper objectMapper) {
@@ -336,11 +333,11 @@ public class SimulationInfoService {
             if (userMetadata.isEmpty()) {
                 return costRateMap;
             }
-            List<CostingData> costingDataList =
-                objectMapper.readValue(userMetadata.get(0).getContent(), typeReference);
-            if (costingDataList != null && !costingDataList.isEmpty()
-                && costingDataList.get(0).getCostRates() != null) {
-                costRateMap = costingDataList.get(0).getCostRates();
+            CostingData[] costingDataList =
+                objectMapper.readValue(userMetadata.get(0).getContent(), CostingData[].class);
+            if (costingDataList != null && costingDataList.length > 0
+                && costingDataList[0].getCostRates() != null) {
+                costRateMap = costingDataList[0].getCostRates();
             }
         } catch (JsonProcessingException ex) {
             log.error("Error in json data parsing", ex);

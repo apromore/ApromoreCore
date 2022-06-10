@@ -121,8 +121,8 @@ class SimulationInfoServiceTest {
             "Role_2", 20.0,
             "Role_3", 30.0);
 
-        when(objectMapper.readValue(anyString(), any(TypeReference.class))).thenReturn(
-            List.of(CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()));
+        when(objectMapper.readValue(anyString(), eq(CostingData[].class))).thenReturn(
+            new CostingData[] {CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()});
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
@@ -358,7 +358,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_resource_info_no_cost_info() {
+    void should_successfully_derive_resource_with_no_cost_info() {
         // given
         SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
@@ -384,7 +384,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_resource_info_with_costing_but_unparsable() throws JsonProcessingException {
+    void should_successfully_derive_resource_info_with_costing_but_not_parsable() throws JsonProcessingException {
         // given
         SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
@@ -401,13 +401,8 @@ class SimulationInfoServiceTest {
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Set.of(usermetadata));
 
-        Map<String, Double> mockRoleToResourceCostPerHour = Map.of(
-            "Role_1", 10.0,
-            "Role_2", 20.0,
-            "Role_3", 30.0);
-
-        when(objectMapper.readValue(anyString(), any(TypeReference.class))).thenReturn(
-            List.of(CostingData.builder().costRates(null).build()));
+        when(objectMapper.readValue(anyString(), eq(CostingData[].class))).thenReturn(
+            new CostingData[] {CostingData.builder().costRates(null).build()});
 
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
