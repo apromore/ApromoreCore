@@ -43,6 +43,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +112,9 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
         when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
-        Usermetadata usermetadata = new Usermetadata();
-        usermetadata.setContent("dummy");
-        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
-            Set.of(usermetadata));
 
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Collections.emptySet());
         Map<String, Double> mockRoleToResourceCostPerHour = Map.of(
             "Role_1", 10.0,
             "Role_2", 20.0,
@@ -358,6 +357,32 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_successfully_derive_resource_info_empty_cost() {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Collections.emptySet());
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+
+    }
+
+    @Test
     void should_successfully_derive_resource_info() {
         // given
         SimulationData mockSimulationData = mockBasicSimulationData();
@@ -369,6 +394,11 @@ class SimulationInfoServiceTest {
             "Role_3", 15
         );
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("dummy");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
 
         // when
         ProcessSimulationInfo processSimulationInfo =
@@ -384,19 +414,19 @@ class SimulationInfoServiceTest {
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
                 .findFirst();
         assertResource("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", role1);
-        assertResourceCostPerhour("Role_1", 10,  role1);
+        assertResourceCostPerhour("Role_1", 10, role1);
 
         Optional<Resource> role2 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
                 .findFirst();
         assertResource("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", role2);
-        assertResourceCostPerhour("Role_2", 20,  role2);
+        assertResourceCostPerhour("Role_2", 20, role2);
 
         Optional<Resource> role3 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
                 .findFirst();
         assertResource("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", role3);
-        assertResourceCostPerhour("Role_3", 30,  role3);
+        assertResourceCostPerhour("Role_3", 30, role3);
     }
 
     private void assertResource(

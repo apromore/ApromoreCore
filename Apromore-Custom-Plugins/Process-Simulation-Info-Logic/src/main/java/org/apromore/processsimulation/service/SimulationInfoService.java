@@ -336,8 +336,7 @@ public class SimulationInfoService {
             List<CostingData> costingDataList =
                 objectMapper.readValue(userMetadata.get(0).getContent(), new TypeReference<List<CostingData>>() {
                 });
-            if (costingDataList != null && !costingDataList.isEmpty()
-                && costingDataList.get(0).getCostRates() != null) {
+            if (costingDataList != null) {
                 costRateMap = costingDataList.get(0).getCostRates();
             }
         } catch (JsonProcessingException ex) {
