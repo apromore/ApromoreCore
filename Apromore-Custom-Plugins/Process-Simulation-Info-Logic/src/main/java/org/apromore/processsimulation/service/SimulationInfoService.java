@@ -95,6 +95,9 @@ public class SimulationInfoService {
     private UserMetadataService userMetadataService;
     private ObjectMapper objectMapper;
 
+    private static TypeReference<List<CostingData>> typeReference = new TypeReference<List<CostingData>>() {
+    };
+
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
                                  UserMetadataService userMetadataService, ObjectMapper objectMapper) {
@@ -334,8 +337,7 @@ public class SimulationInfoService {
                 return costRateMap;
             }
             List<CostingData> costingDataList =
-                objectMapper.readValue(userMetadata.get(0).getContent(), new TypeReference<List<CostingData>>() {
-                });
+                objectMapper.readValue(userMetadata.get(0).getContent(), typeReference);
             if (costingDataList != null && !costingDataList.isEmpty()
                 && costingDataList.get(0).getCostRates() != null) {
                 costRateMap = costingDataList.get(0).getCostRates();
