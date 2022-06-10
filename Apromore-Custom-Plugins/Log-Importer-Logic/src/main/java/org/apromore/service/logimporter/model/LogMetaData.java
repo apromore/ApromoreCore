@@ -23,14 +23,27 @@
 
 package org.apromore.service.logimporter.model;
 
+import static org.apromore.dao.model.AttributeType.ACTIVITY;
+import static org.apromore.dao.model.AttributeType.CASE_ATTRIBUTE;
+import static org.apromore.dao.model.AttributeType.CASE_ID;
+import static org.apromore.dao.model.AttributeType.END_TIME;
+import static org.apromore.dao.model.AttributeType.EVENT_ATTRIBUTE;
+import static org.apromore.dao.model.AttributeType.IGNORED_ATTRIBUTE;
+import static org.apromore.dao.model.AttributeType.RESOURCE;
+import static org.apromore.dao.model.AttributeType.ROLE;
+import static org.apromore.dao.model.AttributeType.START_TIME;
+
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apromore.dao.model.AttributeType;
+import org.apromore.dao.model.DataType;
 import org.apromore.service.logimporter.exception.InvalidLogMetadataException;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -173,5 +186,34 @@ public class LogMetaData {
         }
 
         return result;
+    }
+
+    public Map<Integer, DataType> getColumnDataTypes() {
+        final Map<Integer, DataType> colPositionToDataType = new HashMap<>();
+        this.getDoubleAttributesPos().forEach(integer -> colPositionToDataType.put(integer, DataType.REAL));
+        this.getStringAttributesPos().forEach(integer -> colPositionToDataType.put(integer, DataType.STRING));
+        this.getIntegerAttributesPos().forEach(integer -> colPositionToDataType.put(integer, DataType.INTEGER));
+        this.getTimestampAttributesPos()
+            .forEach(integer -> colPositionToDataType.put(integer, DataType.TIMESTAMP));
+
+        return colPositionToDataType;
+    }
+
+    public Map<Integer, AttributeType> getColumnAttributeTypes() {
+        final Map<Integer, AttributeType> colPositionToAttributeType = new HashMap<>();
+
+        colPositionToAttributeType.put(this.getCaseIdPos(), CASE_ID);
+        colPositionToAttributeType.put(this.getActivityPos(), ACTIVITY);
+        colPositionToAttributeType.put(this.getStartTimestampPos(), START_TIME);
+        colPositionToAttributeType.put(this.getEndTimestampPos(), END_TIME);
+        colPositionToAttributeType.put(this.getResourcePos(), RESOURCE);
+        colPositionToAttributeType.put(this.getRolePos(), ROLE);
+        this.getEventAttributesPos()
+            .forEach(integer -> colPositionToAttributeType.put(integer, EVENT_ATTRIBUTE));
+        this.getCaseAttributesPos()
+            .forEach(integer -> colPositionToAttributeType.put(integer, CASE_ATTRIBUTE));
+        this.getIgnoredPos().forEach(integer -> colPositionToAttributeType.put(integer, IGNORED_ATTRIBUTE));
+
+        return colPositionToAttributeType;
     }
 }
