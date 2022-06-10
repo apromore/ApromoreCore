@@ -31,6 +31,7 @@ import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
+import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
@@ -184,7 +185,7 @@ public interface ProcessService {
      */
     String getBPMNRepresentation(final String name, final Integer processId, final String branch,
                                  final Version version, final String username, final boolean includeLinkedSubprocesses)
-        throws RepositoryException, ParserConfigurationException, ExportFormatException;
+        throws RepositoryException, ParserConfigurationException, ExportFormatException, CircularReferenceException;
 
 	boolean hasWritePermissionOnProcess(User userByName, List<Integer> processIds);
 
@@ -251,8 +252,10 @@ public interface ProcessService {
      * @param subprocessParentId the id of the process which contains the subprocess
      * @param subprocessId the element id of the subprocess
      * @param processId the id of an existing process to link the subprocess to
+     * @param username the username of the user creating the subprocess link.
      */
-    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId);
+    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String username)
+        throws CircularReferenceException, UserNotFoundException;
 
     /**
      * Unlink a subprocess from an existing process.

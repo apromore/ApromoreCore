@@ -76,6 +76,7 @@ import org.apromore.dao.model.Role;
 import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
+import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
@@ -1111,6 +1112,69 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         NativeType nativeType = createNativeType();
         Native nativeDoc = createNative(nativeType, TestData.XPDL);
 
+        String filename = "subProcess_model.bpmn";
+        Storage storage = createStorage();
+        storage.setKey(filename);
+
+        //Link different processes
+        Process process1 = createProcess(user, nativeType, folder);
+        process1.setId(1);
+        ProcessBranch branch1 = createBranch(process1);
+        ProcessModelVersion pmv1 = createPMV(branch1, nativeDoc, version, storage);
+
+        Process process2 = createProcess(user, nativeType, folder);
+        process2.setId(2);
+        ProcessBranch branch2 = createBranch(process2);
+        ProcessModelVersion pmv2 = createPMV(branch2, nativeDoc, version, storage);
+
+        SubprocessProcess subprocessProcess = createSubprocessProcess(process1, "sid-AC6D1FDA-70FC-4A1F-AACB-E1EF020C699C", process2);
+
+        // Parameter setup
+        StorageManagementFactory<StorageClient> storageManagementFactory;
+        storageManagementFactory = new StorageManagementFactoryImpl<StorageClient>();
+
+        URL url = getClass().getClassLoader().getResource("file_store_dir/model/" + filename);
+        File file = new File(url.getFile());
+        StorageClient client = storageManagementFactory.getStorageClient("FILE::" + file.getParent().substring(0,
+            file.getParent().length() - 5));
+
+        // Mock Recording
+        expect(processModelVersionRepo.getProcessModelVersion(process1.getId(), branch1.getBranchName(), pmv1.getVersionNumber()))
+            .andReturn(pmv1);
+        expect(processModelVersionRepo.getProcessModelVersion(process2.getId(), branch2.getBranchName(), pmv2.getVersionNumber()))
+            .andReturn(pmv2);
+        expect(storageFactory.getStorageClient(storage.getStoragePath())).andReturn(client).anyTimes();
+        expect(processRepo.findUniqueByID(process2.getId())).andReturn(process2);
+        expect(processModelVersionRepo.getLatestProcessModelVersion(process2.getId(), branch2.getBranchName())).andReturn(pmv2);
+
+        expect(subprocessProcessRepository.getLinkedSubProcesses(process1.getId())).andReturn(List.of(subprocessProcess));
+        expect(subprocessProcessRepository.getLinkedSubProcesses(process2.getId())).andReturn(Collections.emptyList()).anyTimes();
+        expect(usrSrv.findUserByLogin("userName1")).andReturn(user).anyTimes();
+        expect(authorizationService.getProcessAccessTypeByUser(process2.getId(), user)).andReturn(AccessType.VIEWER);
+        replayAll();
+
+        // Mock call
+        String bpmnResult =
+            processService.getBPMNRepresentation(process1.getName(), process1.getId(), branch1.getBranchName(), version, "userName1", true);
+
+        // Verify mock and result
+        verifyAll();
+        assertNotEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
+
+        assertEquals(3, bpmnResult.split("</subProcess>").length); //The subProcess tag appears twice
+    }
+
+    @Test
+    void testGetBPMNRepresentationWithCircularLinkedSubprocess() throws Exception {
+        // Test Data setup
+        Folder folder = createFolder();
+        Group group = createGroup(123, Group.Type.GROUP);
+        Role role = createRole(createSet(createPermission()));
+        User user = createUser("userName1", group, createSet(group), createSet(role));
+        Version version = createVersion("1.0.0");
+        NativeType nativeType = createNativeType();
+        Native nativeDoc = createNative(nativeType, TestData.XPDL);
+
         Process process = createProcess(user, nativeType, folder);
         ProcessBranch branch = createBranch(process);
         Storage storage = createStorage();
@@ -1134,26 +1198,19 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
 
         // Mock Recording
         expect(processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber))
-            .andReturn(pmv).anyTimes();
+            .andReturn(pmv);
         expect(storageFactory.getStorageClient(storage.getStoragePath()))
-            .andReturn(client).anyTimes();
-        expect(processRepo.findUniqueByID(processId)).andReturn(process);
-        expect(processModelVersionRepo.getLatestProcessModelVersion(processId, branchName)).andReturn(pmv);
+            .andReturn(client);
 
         expect(subprocessProcessRepository.getLinkedSubProcesses(processId)).andReturn(List.of(subprocessProcess));
-        expect(usrSrv.findUserByLogin("userName1")).andReturn(user);
+        expect(usrSrv.findUserByLogin("userName1")).andReturn(user).anyTimes();
         expect(authorizationService.getProcessAccessTypeByUser(processId, user)).andReturn(AccessType.VIEWER);
         replayAll();
 
         // Mock call
-        String bpmnResult =
-            processService.getBPMNRepresentation(processName, processId, branchName, version, "userName1", true);
-
+        assertThrows(CircularReferenceException.class, () -> processService.getBPMNRepresentation(processName, processId, branchName, version, "userName1", true));
         // Verify mock and result
         verifyAll();
-        assertNotEquals(StreamUtil.convertStreamToString(client.getInputStream("model", filename)), bpmnResult);
-
-        assertEquals(3, bpmnResult.split("</subProcess>").length); //The subProcess tag appears twice
     }
 
 

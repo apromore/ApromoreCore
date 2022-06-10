@@ -83,6 +83,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Storage;
 import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
+import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
@@ -735,7 +736,7 @@ public class ProcessServiceImpl implements ProcessService {
   public String getBPMNRepresentation(final String name, final Integer processId,
                                       final String branch, final Version version, final String username,
                                       final boolean includeLinkedSubprocesses)
-      throws RepositoryException, ParserConfigurationException, ExportFormatException {
+      throws RepositoryException, ParserConfigurationException, ExportFormatException, CircularReferenceException {
 
     String bpmnXML = getBPMNRepresentation(name, processId, branch, version);
 
@@ -755,10 +756,14 @@ public class ProcessServiceImpl implements ProcessService {
         if (subprocessLinks.containsKey(id)) {
           Integer linkedProcessId = subprocessLinks.get(id);
 
+          if (isProcessLinked(linkedProcessId, processId, username)) {
+            throw new CircularReferenceException("Unable to create bpmn with linked processes due to circular references.");
+          }
+
           Process linkedProcess = processRepo.findUniqueByID(linkedProcessId);
           ProcessModelVersion latestVersion = processModelVersionRepo.getLatestProcessModelVersion(linkedProcessId, branch);
           String linkedProcessBPMN = getBPMNRepresentation(linkedProcess.getName(),
-              linkedProcessId, branch, new Version(latestVersion.getVersionNumber()));
+              linkedProcessId, branch, new Version(latestVersion.getVersionNumber()), username, true);
           Document linkedProcessDocument = getDocument(linkedProcessBPMN);
 
           replaceSubprocessContents(subprocessNode, linkedProcessDocument);
@@ -1025,7 +1030,12 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
-  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId) {
+  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String username)
+      throws CircularReferenceException, UserNotFoundException {
+    if (isProcessLinked(processId, subprocessParentId, username)) {
+      throw new CircularReferenceException("Linking these 2 models will create a circular reference.");
+    }
+
     SubprocessProcess subprocessProcessLink = subprocessProcessRepository
         .getExistingLink(subprocessParentId, subprocessId);
     if (subprocessProcessLink == null) {
@@ -1092,4 +1102,25 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  /**
+   * Check if the processes are linked.
+   * @param linkedFromProcessId
+   * @param linkedToProcessId
+   * @return true if the linkedFromProcessId contains a link to linkedToProcessId.
+   */
+  private boolean isProcessLinked(int linkedFromProcessId, int linkedToProcessId, String username)
+      throws UserNotFoundException {
+
+    if (linkedToProcessId == linkedFromProcessId) {
+      return true;
+    }
+
+    for (int linkedProcessId : getLinkedProcesses(linkedFromProcessId, username).values()) {
+      if (isProcessLinked(linkedProcessId, linkedToProcessId, username)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

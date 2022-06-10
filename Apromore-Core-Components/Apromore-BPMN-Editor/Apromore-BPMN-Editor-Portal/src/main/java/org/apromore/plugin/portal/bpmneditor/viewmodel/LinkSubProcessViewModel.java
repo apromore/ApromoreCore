@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.User;
+import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.ItemHelpers;
@@ -152,34 +153,41 @@ public class LinkSubProcessViewModel {
 
     @Command
     public void linkSubProcess(@BindingParam(WINDOW_PARAM) final Component window) throws Exception {
-        switch (linkType) {
-            case LINK_TYPE_NEW:
-                ProcessSummaryType newProcess = mainController.openNewProcess();
-                processService.linkSubprocess(parentProcessId, elementId, newProcess.getId());
-                BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
-                window.detach();
-                Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','Untitled (v1.0)');");
-                break;
-            case LINK_TYPE_EXISTING:
-                if (selectedProcess == null) {
-                    Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
-                        "Please select an existing process model to link"));
-                } else {
-                    Notification.info(MessageFormat.format(Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
-                        "Subprocess linked to {0}"), selectedProcess.getName()));
-                    processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId());
+        try {
+            switch (linkType) {
+                case LINK_TYPE_NEW:
+                    ProcessSummaryType newProcess = mainController.openNewProcess();
+                    processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(), currentUser.getUsername());
                     BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
+                    Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','Untitled (v1.0)');");
+                    break;
+                case LINK_TYPE_EXISTING:
+                    if (selectedProcess == null) {
+                        Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
+                            "Please select an existing process model to link"));
+                    } else {
+                        processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(), currentUser.getUsername());
+                        Notification.info(MessageFormat.format(Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
+                            "Subprocess linked to {0}"), selectedProcess.getName()));
+                        BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
+                        window.detach();
 
-                    String linkedProcessName =
-                        selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
-                    Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','" + linkedProcessName + "');");
-                }
-                break;
-            default:
-                Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectLinkType_message",
-                    "Please select a link type"));
+                        String linkedProcessName =
+                            selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
+                        Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','" + linkedProcessName + "');");
+                    }
+                    break;
+                default:
+                    Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectLinkType_message",
+                        "Please select a link type"));
+            }
+        } catch (CircularReferenceException e) {
+            Messagebox.show(Labels.getLabel("bpmnEditor_linkSubprocessCircularReference_message",
+                    "You cannot perform this operation. This linkage will create a loop between the linked models."),
+                Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
         }
+
     }
 
     public List<SummaryType> getProcessList() throws UserNotFoundException {
