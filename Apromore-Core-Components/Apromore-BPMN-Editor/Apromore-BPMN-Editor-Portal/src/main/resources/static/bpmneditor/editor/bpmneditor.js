@@ -1,25 +1,4 @@
-/*
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
- (function webpackUniversalModuleDefinition(root, factory) {
+(function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
@@ -24974,7 +24953,8 @@ module.exports = isArray;
 
 var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
-    isDigit = __webpack_require__(20).isDigit;
+    isDigit = __webpack_require__(16).isDigit,
+    isValidNumber = __webpack_require__(16).isValidNumber;
 
 var ValidationErrorHelper = {};
 
@@ -25070,7 +25050,7 @@ ValidationErrorHelper.validateProcessInstances = function(bpmnFactory, elementRe
 
   if (!processInstances || processInstances.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(processInstances)) {
+  } else if (!isValidNumber(processInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (parseInt(processInstances).toString() !== processInstances) {
     message = translate('invalid.notInteger {element}', { element: label });
@@ -25093,7 +25073,7 @@ ValidationErrorHelper.validateTrimStartProcessInstances = function(bpmnFactory, 
       trimStartProcessInstances = options.trimStartProcessInstances,
       message;
 
-  if (trimStartProcessInstances !== undefined && !isDigit(trimStartProcessInstances)) {
+  if (trimStartProcessInstances !== undefined && !isValidNumber(trimStartProcessInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (trimStartProcessInstances < 0 || trimStartProcessInstances > 40) {
     message = translate('startExclude.invalid.message');
@@ -25112,7 +25092,7 @@ ValidationErrorHelper.validateTrimEndProcessInstances = function(bpmnFactory, el
       trimEndProcessInstances = options.trimEndProcessInstances,
       message;
 
-  if (trimEndProcessInstances !== undefined && !isDigit(trimEndProcessInstances)) {
+  if (trimEndProcessInstances !== undefined && !isValidNumber(trimEndProcessInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (trimEndProcessInstances < 0 || trimEndProcessInstances > 40) {
     message = translate('endExclude.invalid.message');
@@ -25133,11 +25113,11 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
       mean = options.mean,
       message;
 
-  if (!mean || mean.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(mean)) {
+  if (!isValidNumber(mean)) {
     message = translate('invalid.notDigit {element}', { element: label });
-  } else if (distribution.type === 'TRIANGULAR') {
+  } else if (!mean || mean.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
+  }  else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(mean) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     }
@@ -25162,10 +25142,10 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
       arg1 = options.arg1,
       message;
 
-  if (!arg1 || arg1.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(arg1)) {
+  if (!isValidNumber(arg1)) {
     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (!arg1 || arg1.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(arg1) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
@@ -25193,10 +25173,10 @@ ValidationErrorHelper.validateDistributionArg2 = function(bpmnFactory, elementRe
       arg2 = options.arg2,
       message;
 
-  if (!arg2 || arg2.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(arg2)) {
+  if (!isValidNumber(arg2)) {
     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (!arg2 || arg2.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'UNIFORM' && parseFloat(distribution.arg1) > parseFloat(arg2)) {
     message = translate('distribution.invalid.greaterMin {element}', { element: label });
   }
@@ -25286,7 +25266,7 @@ ValidationErrorHelper.validateResourceNumber = function(bpmnFactory, elementRegi
 
   if (!totalAmount || totalAmount.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(totalAmount)) {
+  } else if (!isValidNumber(totalAmount)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (parseInt(totalAmount).toString() !== totalAmount) {
     message = translate('invalid.notInteger {element}', { element: label });
@@ -25311,7 +25291,7 @@ ValidationErrorHelper.validateResourceCostPerHour = function(bpmnFactory, elemen
 
   var message;
 
-  if (costPerHour && !isDigit(costPerHour)) {
+  if (costPerHour && !isValidNumber(costPerHour)) {
     message = translate('invalid.notDigit {element}', { element: label });
 
     resource && this.createValidationError(bpmnFactory, elementRegistry, {
@@ -25335,7 +25315,7 @@ ValidationErrorHelper.validateGatewayProbabilities = function(bpmnFactory, eleme
 
   if (!probability || probability.trim() === '') {
     errorMessage = translate('invalid.empty {element}', { element: description });
-  } else if (!isDigit(probability)) {
+  } else if (!isValidNumber(probability)) {
     errorMessage = translate('invalid.notDigit {element}', { element: description });
   } else if (probability < 0) {
     errorMessage = translate('invalid.notInteger {element}', { element: description });
@@ -25699,8 +25679,8 @@ module.exports = root;
 
 var elementHelper = __webpack_require__(7),
     extensionElementsHelper = __webpack_require__(21),
-    createUUID = __webpack_require__(20).createUUID,
-    getRoot = __webpack_require__(20).getRoot;
+    createUUID = __webpack_require__(16).createUUID,
+    getRoot = __webpack_require__(16).getRoot;
 
 var ProcessSimulationHelper = {
   prevRoot: undefined
@@ -25872,6 +25852,77 @@ module.exports = isObject;
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var is = __webpack_require__(1).is;
+
+var createUUID = function() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
+var isDigit = function(value) {
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
+var isValidNumber = function(value) {
+  if (!value) { return false }
+  if (!value.length) { return false }
+  if (isNaN(value)) { return false }
+  if (value.charAt(value.length - 1) === '.') { return false }
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
+function getRoot(elementRegistry) {
+  return elementRegistry.filter(function(element) {
+    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
+  })[0].businessObject;
+}
+
+/**
+ * @param {String} value Value to be fixed
+ * @returns {String} Fixed value
+ */
+var fixNumber = function(value) {
+  var dot = value.indexOf('.');
+  return (isNaN(value) || value === '') ? value : (
+    dot >= 0 && dot < value.length - 1 ? (Math.floor(+(value + 'e+2')) / 100).toString() : value
+  );
+};
+
+/**
+ * @param {double} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var roundUp = function(value) {
+  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
+};
+
+/**
+ * @param {String | number} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var normalizeNumber = function(value) {
+  if (!isValidNumber(value)) {
+    return ''
+  }
+  return (+(Math.round(value + 'e+3') + 'e-3')).toString();
+};
+
+module.exports = {
+  createUUID: createUUID,
+  fixNumber: fixNumber,
+  isDigit: isDigit,
+  getRoot: getRoot,
+  roundUp: roundUp,
+  normalizeNumber: normalizeNumber,
+  isValidNumber: isValidNumber
+};
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -26009,7 +26060,7 @@ function escapeText(text) {
 }
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -26051,12 +26102,12 @@ function translate(template, replacements) {
 });
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayLikeKeys = __webpack_require__(153),
     baseKeys = __webpack_require__(86),
-    isArrayLike = __webpack_require__(19);
+    isArrayLike = __webpack_require__(20);
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -26094,7 +26145,7 @@ module.exports = keys;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(39),
@@ -26131,56 +26182,6 @@ function isArrayLike(value) {
 
 module.exports = isArrayLike;
 
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var is = __webpack_require__(1).is;
-
-var createUUID = function() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
-
-var isDigit = function(value) {
-  return /^\d+(\.\d+)?$/.test(value);
-};
-
-function getRoot(elementRegistry) {
-  return elementRegistry.filter(function(element) {
-    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
-  })[0].businessObject;
-}
-
-/**
- * @param {String} value Value to be fixed
- * @returns {String} Fixed value
- */
-var fixNumber = function(value) {
-  var dot = value.indexOf('.');
-  return (isNaN(value) || value === '') ? value : (
-    dot >= 0 && dot < value.length - 1 ? (Math.floor(+(value + 'e+2')) / 100).toString() : value
-  );
-};
-
-/**
- * @param {double} value Value to be rounded up
- * @returns {String} rounded up value
- */
-var roundUp = function(value) {
-  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
-};
-
-module.exports = {
-  createUUID: createUUID,
-  fixNumber: fixNumber,
-  isDigit: isDigit,
-  getRoot: getRoot,
-  roundUp: roundUp
-};
 
 /***/ }),
 /* 21 */
@@ -48774,7 +48775,7 @@ module.exports = getHolder;
 var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
     RuleHelper = __webpack_require__(129),
-    createUUID = __webpack_require__(20).createUUID;
+    createUUID = __webpack_require__(16).createUUID;
 
 var TimetableHelper = {};
 
@@ -48845,7 +48846,8 @@ var entryFactory = __webpack_require__(10);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(9);
-var roundUp = __webpack_require__(20).roundUp;
+var normalizeNumber = __webpack_require__(16).normalizeNumber;
+var isValidNumber = __webpack_require__(16).isValidNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -48918,6 +48920,28 @@ var createTimeUnitOptions = function(translate) {
   ];
 };
 
+const processDistNumber = (distribution, key, value) => {
+    if (!isValidNumber(value)) {
+      return value;
+    }
+    return (normalizeNumber(value) / timeUnits[distribution.timeUnit].unit).toString();
+}
+
+const preprocessDistNumber = (distribution, key) => {
+    const value = distribution[key]
+
+    // fix any old value
+    if (value === 'NaN') {
+      distribution[key] = '';
+      return { [key]: '' };
+    }
+    return { [key]: processDistNumber(distribution, key, value) };
+};
+
+const postprocessDistNumber = (distribution, values, key) => {
+    return processDistNumber(distribution, key, values[key])
+};
+
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var entries = [],
       id = options.id,
@@ -48934,28 +48958,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'mean',
 
       get: function(_element, _node) {
-
-        if (distribution.rawMean) {
-          return { mean: distribution.rawMean };
-        }
-
-        if (distribution.mean === 'NaN') {
-          return { mean: '' };
-        }
-
-        if (isNaN(distribution.mean) || distribution.mean === '') {
-          return { mean: distribution.mean };
-        }
-
-        return { mean: roundUp(distribution.mean / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'mean');
       },
 
       set: function(element, values, _node) {
-        var mean = roundUp(values.mean);
-        distribution.rawMean = mean;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
-            (mean * timeUnits[distribution.timeUnit].unit).toString()
+          mean: postprocessDistNumber(distribution, values, 'mean')
         });
       },
 
@@ -48968,8 +48976,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           elementId: elementId || label,
           distribution: distribution,
           timeUnits: timeUnits,
-          mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
-            (values.mean * timeUnits[distribution.timeUnit].unit).toString(),
+          mean: postprocessDistNumber(distribution, values, 'mean')
         });
 
         if (!error.message) {
@@ -48990,28 +48997,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg1',
 
       get: function(_element, _node) {
-
-        if (distribution.rawArg1) {
-          return { arg1: distribution.rawArg1 };
-        }
-
-        if (distribution.arg1 === 'NaN') {
-          return { arg1: '' };
-        }
-
-        if (isNaN(distribution.arg1) || distribution.arg1 === '') {
-          return { arg1: distribution.arg1 };
-        }
-
-        return { arg1: roundUp(distribution.arg1 / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'arg1')
       },
 
       set: function(element, values, _node) {
-        var arg1 = roundUp(values.arg1);
-        distribution.rawArg1 = arg1;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
-            (arg1 * timeUnits[distribution.timeUnit].unit).toString()
+          arg1: postprocessDistNumber(distribution, values, 'arg1')
         });
       },
 
@@ -49024,8 +49015,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           elementId: elementId || label,
           distribution: distribution,
           timeUnits: timeUnits,
-          arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
-            (values.arg1 * timeUnits[distribution.timeUnit].unit).toString(),
+          arg1: postprocessDistNumber(distribution, values, 'arg1')
         });
 
         if (!error.message) {
@@ -49046,28 +49036,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg2',
 
       get: function(_element, _node) {
-
-        if (distribution.rawArg2) {
-          return { arg2: distribution.rawArg2 };
-        }
-
-        if (distribution.arg2 === 'NaN') {
-          return { arg2: '' };
-        }
-
-        if (isNaN(distribution.arg2) || distribution.arg2 === '') {
-          return { arg2: distribution.arg2 };
-        }
-
-        return { arg2: roundUp(distribution.arg2 / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'arg2');
       },
 
       set: function(element, values, _node) {
-        var arg2 = roundUp(values.arg2);
-        distribution.rawArg2 = arg2;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
-            (arg2 * timeUnits[distribution.timeUnit].unit).toString()
+          arg2: postprocessDistNumber(distribution, values, 'arg2')
         });
       },
 
@@ -49079,8 +49053,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           label: arg2Label,
           elementId: elementId || label,
           distribution: distribution,
-          arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
-            (values.arg2 * timeUnits[distribution.timeUnit].unit).toString(),
+          arg2: postprocessDistNumber(distribution, values, 'arg2')
         });
 
         if (!error.message) {
@@ -49094,7 +49067,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   function getValidModelValue(value) {
     if (isNaN(value) || value === '') {
-      value = 'NaN';
+      value = '';
     }
 
     return value;
@@ -50199,7 +50172,7 @@ module.exports = Color;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFor = __webpack_require__(151),
-    keys = __webpack_require__(18);
+    keys = __webpack_require__(19);
 
 /**
  * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -51304,7 +51277,7 @@ var escapeHTML = __webpack_require__(6).escapeHTML;
 var domify = __webpack_require__(2).domify,
     domQuery = __webpack_require__(2).query;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 
 var textField = function(translate, options, defaultParameters) {
@@ -51399,7 +51372,7 @@ var domify = __webpack_require__(2).domify,
 
 var forEach = __webpack_require__(14);
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 
 var isList = function(list) {
@@ -51544,9 +51517,9 @@ module.exports = selectbox;
 var assignValue = __webpack_require__(115),
     copyObject = __webpack_require__(264),
     createAssigner = __webpack_require__(265),
-    isArrayLike = __webpack_require__(19),
+    isArrayLike = __webpack_require__(20),
     isPrototype = __webpack_require__(57),
-    keys = __webpack_require__(18);
+    keys = __webpack_require__(19);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -52145,7 +52118,7 @@ module.exports = setWrapToString;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(7),
-    createUUID = __webpack_require__(20).createUUID;
+    createUUID = __webpack_require__(16).createUUID;
 
 var RuleHelper = {};
 
@@ -52185,7 +52158,7 @@ module.exports = RuleHelper;
 
 var elementHelper = __webpack_require__(7),
     ProcessSimulationHelper = __webpack_require__(13),
-    createUUID = __webpack_require__(20).createUUID;
+    createUUID = __webpack_require__(16).createUUID;
 
 var ResourceHelper = {};
 
@@ -57864,7 +57837,7 @@ module.exports = __webpack_require__(358);
 module.exports = {
   __depends__: [
     __webpack_require__(150),
-    __webpack_require__(17).default
+    __webpack_require__(18).default
   ],
   __init__: [ 'propertiesPanel' ],
   propertiesPanel: [ 'type', __webpack_require__(226) ]
@@ -58285,7 +58258,7 @@ module.exports = nativeKeys;
 /* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(19);
+var isArrayLike = __webpack_require__(20);
 
 /**
  * Creates a `baseEach` or `baseEachRight` function.
@@ -58348,7 +58321,7 @@ module.exports = castFunction;
 
 var reduce = __webpack_require__(165),
     is = __webpack_require__(1).is,
-    keys = __webpack_require__(18),
+    keys = __webpack_require__(19),
     forEach = __webpack_require__(14);
 
 /**
@@ -59757,7 +59730,7 @@ module.exports = equalObjects;
 
 var baseGetAllKeys = __webpack_require__(203),
     getSymbols = __webpack_require__(204),
-    keys = __webpack_require__(18);
+    keys = __webpack_require__(19);
 
 /**
  * Creates an array of own enumerable property names and symbols of `object`.
@@ -59895,7 +59868,7 @@ module.exports = Promise;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isStrictComparable = __webpack_require__(96),
-    keys = __webpack_require__(18);
+    keys = __webpack_require__(19);
 
 /**
  * Gets the property names, values, and compare flags of `object`.
@@ -60790,7 +60763,7 @@ var domify = __webpack_require__(2).domify,
 var forEach = __webpack_require__(14),
     filter = __webpack_require__(101),
     get = __webpack_require__(98),
-    keys = __webpack_require__(18),
+    keys = __webpack_require__(19),
     isEmpty = __webpack_require__(228),
     isArray = __webpack_require__(8),
     isFunction = __webpack_require__(39),
@@ -62191,7 +62164,7 @@ var baseKeys = __webpack_require__(86),
     getTag = __webpack_require__(93),
     isArguments = __webpack_require__(35),
     isArray = __webpack_require__(8),
-    isArrayLike = __webpack_require__(19),
+    isArrayLike = __webpack_require__(20),
     isBuffer = __webpack_require__(36),
     isPrototype = __webpack_require__(57),
     isTypedArray = __webpack_require__(38);
@@ -62723,7 +62696,7 @@ module.exports = createSet;
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(19),
+var isArrayLike = __webpack_require__(20),
     isObjectLike = __webpack_require__(25);
 
 /**
@@ -63255,7 +63228,7 @@ module.exports = map;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseEach = __webpack_require__(29),
-    isArrayLike = __webpack_require__(19);
+    isArrayLike = __webpack_require__(20);
 
 /**
  * The base implementation of `_.map` without support for iteratee shorthands.
@@ -63759,7 +63732,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     escapeHTML = __webpack_require__(6).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 
 var checkbox = function(translate, options, defaultParameters) {
@@ -63848,7 +63821,7 @@ var domify = __webpack_require__(2).domify,
 var escapeHTML = __webpack_require__(6).escapeHTML;
 
 var selectEntryFactory = __webpack_require__(113),
-    entryFieldDescription = __webpack_require__(16);
+    entryFieldDescription = __webpack_require__(17);
 
 
 /**
@@ -64058,7 +64031,7 @@ module.exports = createAssigner;
 /***/ (function(module, exports, __webpack_require__) {
 
 var eq = __webpack_require__(43),
-    isArrayLike = __webpack_require__(19),
+    isArrayLike = __webpack_require__(20),
     isIndex = __webpack_require__(37),
     isObject = __webpack_require__(15);
 
@@ -64094,8 +64067,8 @@ module.exports = isIterateeCall;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIteratee = __webpack_require__(26),
-    isArrayLike = __webpack_require__(19),
-    keys = __webpack_require__(18);
+    isArrayLike = __webpack_require__(20),
+    keys = __webpack_require__(19);
 
 /**
  * Creates a `_.find` or `_.findLast` function.
@@ -64240,7 +64213,7 @@ var domify = __webpack_require__(2).domify;
 
 var escapeHTML = __webpack_require__(6).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 
 var textBox = function(translate, options, defaultParameters) {
@@ -64360,11 +64333,11 @@ var domQuery = __webpack_require__(2).query,
 
 var filter = __webpack_require__(101),
     forEach = __webpack_require__(14),
-    keys = __webpack_require__(18);
+    keys = __webpack_require__(19);
 
 var domify = __webpack_require__(2).domify;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 var updateSelection = __webpack_require__(110);
 
@@ -64748,7 +64721,7 @@ var domify = __webpack_require__(2).domify;
 
 var escapeHTML = __webpack_require__(6).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 var bind = __webpack_require__(275);
 
@@ -65686,7 +65659,7 @@ var assign = __webpack_require__(0).assign,
 
 var escapeHTML = __webpack_require__(6).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 var CLASS_ACTIVE = 'active';
 
@@ -66120,7 +66093,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     cmdHelper = __webpack_require__(4),
     escapeHTML = __webpack_require__(6).escapeHTML;
 
-var entryFieldDescription = __webpack_require__(16);
+var entryFieldDescription = __webpack_require__(17);
 
 var domify = __webpack_require__(2).domify;
 
@@ -67859,7 +67832,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     SequenceFlowHelper = __webpack_require__(111);
 
 var validationErrorHelper = __webpack_require__(9);
-var fixNumber = __webpack_require__(20).fixNumber;
+var fixNumber = __webpack_require__(16).fixNumber;
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
@@ -88183,7 +88156,7 @@ function format(str, obj) {
 });
 
 // EXTERNAL MODULE: ./node_modules/diagram-js/lib/i18n/translate/index.js + 1 modules
-var i18n_translate = __webpack_require__(17);
+var i18n_translate = __webpack_require__(18);
 
 // CONCATENATED MODULE: ./node_modules/bpmn-js/lib/util/LabelUtil.js
 
