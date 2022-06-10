@@ -25,15 +25,25 @@ package org.apromore.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.apromore.builder.UserManagementBuilder;
+import org.apromore.dao.GroupRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.SubprocessProcessRepository;
+import org.apromore.dao.UserRepository;
+import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.User;
+import org.apromore.exception.CircularReferenceException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.ProcessService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class SubprocessLinkUnitTest extends BaseTest {
     String subprocessId = "Test";
+
+    UserManagementBuilder builder;
 
     @Autowired
     SubprocessProcessRepository subprocessProcessRepository;
@@ -44,35 +54,63 @@ class SubprocessLinkUnitTest extends BaseTest {
     @Autowired
     ProcessService processService;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    GroupRepository groupRepository;
+
+    @BeforeEach
+    void oneTimeSetup() {
+        builder = new UserManagementBuilder();
+    }
+
     @Test
-    void testReLinkSameSubprocess() {
+    void testReLinkSameSubprocess() throws UserNotFoundException, CircularReferenceException {
+        String username = "subProcessLinkUnitTestReLinkSameSubprocess";
+        Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
+        User user = builder.withGroup(group).withMembership("subProcessLinkUnitTestReLinkSameSubprocess@t.com").withUser(username, "first",
+            "last", "org").buildUser();
+        userRepository.saveAndFlush(user);
+
         Process process1 = new Process();
+        process1.setUser(user);
         processRepository.saveAndFlush(process1);
 
         Process process2 = new Process();
+        process2.setUser(user);
         processRepository.saveAndFlush(process2);
 
         Process process3 = new Process();
+        process3.setUser(user);
         processRepository.saveAndFlush(process3);
 
-        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId());
+        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId(), username);
         assertEquals(process2.getId(),
             subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
 
-        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId());
+        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId(), username);
         assertEquals(process3.getId(),
             subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
     }
 
     @Test
-    void testUnLinkSubprocess() {
+    void testUnLinkSubprocess() throws UserNotFoundException, CircularReferenceException {
+        String username = "subProcessLinkUnitTestUnLinkSubprocess";
+        Group group = groupRepository.saveAndFlush(builder.withGroup("testGroup1", "USER").buildGroup());
+        User user = builder.withGroup(group).withMembership("subProcessLinkUnitTestUnLinkSubprocess@t.com").withUser(username, "first",
+            "last", "org").buildUser();
+        userRepository.saveAndFlush(user);
+
         Process process1 = new Process();
+        process1.setUser(user);
         processRepository.saveAndFlush(process1);
 
         Process process2 = new Process();
+        process2.setUser(user);
         processRepository.saveAndFlush(process2);
 
-        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId());
+        processService.linkSubprocess(process1.getId(), subprocessId, process2.getId(), username);
         assertEquals(process2.getId(),
             subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
 

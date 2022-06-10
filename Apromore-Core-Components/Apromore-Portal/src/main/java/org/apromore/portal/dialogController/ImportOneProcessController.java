@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
+import org.apromore.exception.CircularReferenceException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.Utils;
@@ -220,11 +222,11 @@ public class ImportOneProcessController extends BaseController {
     return importResult.getProcessSummary();
   }
 
-  private void linkSubProcesses(final SubProcessItem item) {
+  private void linkSubProcesses(final SubProcessItem item) throws UserNotFoundException, CircularReferenceException {
     for (SubProcessItem subItem : item.getChildren()) {
       mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
           subItem.getSubProcessNode().getId().toString(),
-          subItem.getProcessSummaryType().getId());
+          subItem.getProcessSummaryType().getId(), username);
       linkSubProcesses(subItem);
     }
   }

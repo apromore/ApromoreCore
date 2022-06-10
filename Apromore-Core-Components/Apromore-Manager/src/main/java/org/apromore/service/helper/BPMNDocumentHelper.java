@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -264,24 +265,26 @@ public final class BPMNDocumentHelper {
                     for (Node replaceAttribute : replaceAttributes) {
                         if (replaceAttribute != null) {
                             String oldId = replaceAttribute.getTextContent();
-                            String newId = parentId + "_" + oldId;
 
-                            idMap.putIfAbsent(oldId, newId);
+                            idMap.putIfAbsent(oldId, getRandomId());
                             replaceAttribute.setTextContent(idMap.get(oldId));
                         }
                     }
                 } else if (INCOMING_TAGS.contains(importedNode.getNodeName())
                     || OUTGOING_TAGS.contains(importedNode.getNodeName())) {
                     String oldId = importedNode.getTextContent();
-                    String newId = parentId + "_" + oldId;
 
-                    idMap.putIfAbsent(oldId, newId);
+                    idMap.putIfAbsent(oldId, getRandomId());
                     importedNode.setTextContent(idMap.get(oldId));
                 }
                 toNode.appendChild(importedNode);
             }
         }
         return idMap;
+    }
+
+    private static String getRandomId() {
+        return "element" + UUID.randomUUID().toString().replace("-", "");
     }
 
     private static List<Node> convertToList(NodeList nodeList) {
