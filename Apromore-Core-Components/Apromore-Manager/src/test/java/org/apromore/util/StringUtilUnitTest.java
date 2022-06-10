@@ -31,6 +31,7 @@ class StringUtilUnitTest {
         String fileName_3 = "?";
         String fileName_4 = "購買プロセス_2.";
         String fileName_5 = "_تحياتي";
+        String fileName_6 = "@#$%^&*";
 
         assertEquals("abcd_=", StringUtil.normalizeFilename(fileName_1));
         assertEquals("abcabcdzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz_______________",
@@ -38,5 +39,6 @@ class StringUtilUnitTest {
         assertEquals("Untitled", StringUtil.normalizeFilename(fileName_3));
         assertEquals("購買プロセス_2", StringUtil.normalizeFilename(fileName_4));
         assertEquals("_تحياتي", StringUtil.normalizeFilename(fileName_5));
+        assertEquals("Untitled", StringUtil.normalizeFilename(fileName_6));
     }
 }
