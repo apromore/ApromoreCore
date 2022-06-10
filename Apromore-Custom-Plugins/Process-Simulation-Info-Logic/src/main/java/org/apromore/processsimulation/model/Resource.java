@@ -44,4 +44,6 @@ public class Resource {
     private String timetableId;
     @XmlAttribute
     private long totalAmount;
+    @XmlAttribute
+    private double costPerHour;
 }

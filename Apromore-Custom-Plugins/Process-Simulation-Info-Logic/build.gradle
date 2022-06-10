@@ -19,6 +19,7 @@ dependencies {
 	implementation project(':Apromore-Custom-Plugins:Log-Logic')
 	implementation project(':Apromore-Custom-Plugins:Process-Discoverer-Logic')
 	implementation project(':Apromore-Extras:OpenXES')
+	implementation project(':Apromore-Core-Components:Apromore-Manager')
 
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

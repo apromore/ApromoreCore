@@ -599,6 +599,7 @@ class PDAnalystTest extends TestDataSetup {
         assertEquals(5, data.getResourceCount());
         assertEquals(1, data.getResourceCountsByRole().size());
         assertEquals(5, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals(0, data.getLogId());
         assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
         assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
         assertEquals("DEFAULT_ROLE", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
@@ -630,6 +631,7 @@ class PDAnalystTest extends TestDataSetup {
             userOptions);
         assertEquals(1, data2.getCaseCount());
         assertEquals(4, data2.getResourceCount()); // changed
+        assertEquals(0, data2.getLogId());
         assertEquals(DateTime.parse("2010-10-27T21:59:19.308+10:00").getMillis(), data2.getStartTime());
         assertEquals(DateTime.parse("2010-10-27T22:45:19.308+10:00").getMillis(), data2.getEndTime()); // changed
         assertEquals(60000, data2.getDiagramNodeDuration(getNodeId("b", bpmnAbstraction2.getDiagram())), 0.0);
@@ -675,6 +677,7 @@ class PDAnalystTest extends TestDataSetup {
         assertEquals(1, data.getResourceCountsByRole().get("role_3").intValue());
         assertEquals(1, data.getResourceCountsByRole().get("role_4").intValue());
         assertEquals(4, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals(0, data.getLogId());
         assertEquals("role_1", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
         assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
         assertEquals("role_3", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
@@ -715,6 +718,7 @@ class PDAnalystTest extends TestDataSetup {
         assertEquals(1, data.getResourceCountsByRole().get("role_3").intValue());
         assertEquals(1, data.getResourceCountsByRole().get("role_4").intValue());
         assertEquals(4, data.getResourceCountsByRole().get("DEFAULT_ROLE").intValue());
+        assertEquals(0, data.getLogId());
         assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("a", bpmnAbstraction.getDiagram())));
         assertEquals("role_2", data.getRoleNameByNodeId(getNodeId("b", bpmnAbstraction.getDiagram())));
         assertEquals("role_3", data.getRoleNameByNodeId(getNodeId("c", bpmnAbstraction.getDiagram())));
