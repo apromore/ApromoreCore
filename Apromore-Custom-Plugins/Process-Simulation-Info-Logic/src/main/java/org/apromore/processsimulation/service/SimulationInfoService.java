@@ -323,7 +323,7 @@ public class SimulationInfoService {
     }
 
 
-    public Map<String, Double> retrieveCostData(int logId) {
+    private Map<String, Double> retrieveCostData(int logId) {
         Map<String, Double> costRateMap = new HashMap<>();
         try {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -336,7 +336,8 @@ public class SimulationInfoService {
             List<CostingData> costingDataList =
                 objectMapper.readValue(userMetadata.get(0).getContent(), new TypeReference<List<CostingData>>() {
                 });
-            if (costingDataList != null && !costingDataList.isEmpty()) {
+            if (costingDataList != null && !costingDataList.isEmpty()
+                && costingDataList.get(0).getCostRates() != null) {
                 costRateMap = costingDataList.get(0).getCostRates();
             }
         } catch (JsonProcessingException ex) {

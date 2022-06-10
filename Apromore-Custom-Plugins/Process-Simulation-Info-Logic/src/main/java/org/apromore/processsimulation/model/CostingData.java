@@ -23,7 +23,6 @@
 package org.apromore.processsimulation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AccessLevel;
@@ -54,6 +53,6 @@ public class CostingData {
     }
 
     public Map<String, Double> getCostRates() {
-        return Collections.unmodifiableMap(costRates);
+        return costRates;
     }
 }

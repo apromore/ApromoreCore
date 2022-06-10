@@ -34,6 +34,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -357,7 +358,7 @@ class SimulationInfoServiceTest {
     }
 
     @Test
-    void should_successfully_derive_resource_info_empty_cost() {
+    void should_successfully_derive_resource_info_no_cost_info() {
         // given
         SimulationData mockSimulationData = mockBasicSimulationData();
         when(mockSimulationData.getResourceCount()).thenReturn(27L);
@@ -370,6 +371,43 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Collections.emptySet());
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+
+    }
+
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_unparsable() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("dummy");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        Map<String, Double> mockRoleToResourceCostPerHour = Map.of(
+            "Role_1", 10.0,
+            "Role_2", 20.0,
+            "Role_3", 30.0);
+
+        when(objectMapper.readValue(anyString(), any(TypeReference.class))).thenReturn(
+            List.of(CostingData.builder().costRates(null).build()));
 
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
