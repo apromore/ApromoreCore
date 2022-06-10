@@ -76,4 +76,7 @@ public class LogicalLogAttribute extends BaseEntity {
 
     @Column(name = "attribute_index", nullable = false)
     private int index;
+
+    @Column(name = "is_perspective", nullable = false)
+    private boolean isPerspective;
 }
