@@ -17,7 +17,7 @@
     "path-parse": "^1.0.7",
     "url-parse": "^1.5.9",
     "lodash.template": "^4.5.0",
-    "jquery": "3.5.1"
+    "eventsource": "1.1.1"
   },
   "author": "brucenguyen",
   "license": "ApromoreCore",
@@ -33,10 +33,10 @@
     "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.9.0",
-    "jquery": "^1.11.0",
+    "jquery": "3.5.1",
     "jquery-ui-bundle": "^1.11.4",
     "jquery-ui-slider-pips-npm": "^1.11.4",
-    "jspdf": "1.4.1",
+    "jspdf": "^1.5.3",
     "konva": "^7.0.3",
     "minisearch": "^2.4.0",
     "moment": "^2.29.2",
