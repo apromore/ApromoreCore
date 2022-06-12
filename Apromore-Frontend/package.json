@@ -15,7 +15,7 @@
     "path-parse": "^1.0.7",
     "url-parse": "^1.5.7",
     "lodash.template": "^4.5.0",
-    "jquery": "3.5.1"
+    "eventsource": "1.1.1"
   },
   "author": "brucenguyen",
   "license": "ApromoreCore",
@@ -23,7 +23,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "@svgdotjs/svg.js": "^3.0.16",
-    "jquery": "^1.11.0",
+    "jquery": "3.5.1",
     "jquery-ui-bundle": "^1.11.4",
     "jquery-ui-slider-pips-npm": "^1.11.4",
     "dagre": "^0.8.2",
@@ -34,7 +34,7 @@
     "cytoscape-popper": "^1.0.4",
     "cytoscape-undo-redo": "^1.3.2",
     "cytoscape-edge-bend-editing": "^1.6.1",
-    "jspdf": "1.4.1",
+    "jspdf": "^1.5.3",
     "minisearch": "^2.4.0",
     "file-saver": "^2.0.5",
     "ramda": "^0.27.1",
