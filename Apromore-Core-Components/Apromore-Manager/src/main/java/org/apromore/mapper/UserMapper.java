@@ -140,7 +140,7 @@ public class UserMapper {
      * @return the User dao model populated.
      */
     public static User convertFromUserType(UserType userType, SecurityService securityService) {
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         if (userType.getLastActivityDate() != null && !userType.getLastActivityDate().equals("")) {
             try {
