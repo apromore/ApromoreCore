@@ -327,6 +327,9 @@ div.ap-window-footer-actions {
 .ap-folder-tree .z-treecol-content, .z-treecell-content, .z-treefooter-content {
     line-height: 18px !important;
 }
+.ap-folder-tree .z-hlayout-inner > .z-label {
+    line-height: 18px !important;
+}
 
 /* List header aux actions */
 .ap-listheader-selectall {
