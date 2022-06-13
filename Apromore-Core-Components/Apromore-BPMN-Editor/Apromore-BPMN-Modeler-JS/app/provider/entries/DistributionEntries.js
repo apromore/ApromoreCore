@@ -2,7 +2,8 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory');
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
 var validationHelper = require('../../helper/ValidationErrorHelper');
-var roundUp = require('../../utils/Utils').roundUp;
+var normalizeNumber = require('../../utils/Utils').normalizeNumber;
+var isValidNumber = require('../../utils/Utils').isValidNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -75,6 +76,28 @@ var createTimeUnitOptions = function(translate) {
   ];
 };
 
+const processDistNumber = (distribution, key, value) => {
+    if (!isValidNumber(value)) {
+      return value;
+    }
+    return (normalizeNumber(value) / timeUnits[distribution.timeUnit].unit).toString();
+}
+
+const preprocessDistNumber = (distribution, key) => {
+    const value = distribution[key]
+
+    // fix any old value
+    if (value === 'NaN') {
+      distribution[key] = '';
+      return { [key]: '' };
+    }
+    return { [key]: processDistNumber(distribution, key, value) };
+};
+
+const postprocessDistNumber = (distribution, values, key) => {
+    return processDistNumber(distribution, key, values[key])
+};
+
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   var entries = [],
       id = options.id,
@@ -91,28 +114,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'mean',
 
       get: function(_element, _node) {
-
-        if (distribution.rawMean) {
-          return { mean: distribution.rawMean };
-        }
-
-        if (distribution.mean === 'NaN') {
-          return { mean: '' };
-        }
-
-        if (isNaN(distribution.mean) || distribution.mean === '') {
-          return { mean: distribution.mean };
-        }
-
-        return { mean: roundUp(distribution.mean / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'mean');
       },
 
       set: function(element, values, _node) {
-        var mean = roundUp(values.mean);
-        distribution.rawMean = mean;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
-            (mean * timeUnits[distribution.timeUnit].unit).toString()
+          mean: postprocessDistNumber(distribution, values, 'mean')
         });
       },
 
@@ -125,8 +132,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           elementId: elementId || label,
           distribution: distribution,
           timeUnits: timeUnits,
-          mean: (isNaN(values.mean) || values.mean === '') ? values.mean :
-            (values.mean * timeUnits[distribution.timeUnit].unit).toString(),
+          mean: postprocessDistNumber(distribution, values, 'mean')
         });
 
         if (!error.message) {
@@ -147,28 +153,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg1',
 
       get: function(_element, _node) {
-
-        if (distribution.rawArg1) {
-          return { arg1: distribution.rawArg1 };
-        }
-
-        if (distribution.arg1 === 'NaN') {
-          return { arg1: '' };
-        }
-
-        if (isNaN(distribution.arg1) || distribution.arg1 === '') {
-          return { arg1: distribution.arg1 };
-        }
-
-        return { arg1: roundUp(distribution.arg1 / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'arg1')
       },
 
       set: function(element, values, _node) {
-        var arg1 = roundUp(values.arg1);
-        distribution.rawArg1 = arg1;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
-            (arg1 * timeUnits[distribution.timeUnit].unit).toString()
+          arg1: postprocessDistNumber(distribution, values, 'arg1')
         });
       },
 
@@ -181,8 +171,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           elementId: elementId || label,
           distribution: distribution,
           timeUnits: timeUnits,
-          arg1: (isNaN(values.arg1) || values.arg1 === '') ? values.arg1 :
-            (values.arg1 * timeUnits[distribution.timeUnit].unit).toString(),
+          arg1: postprocessDistNumber(distribution, values, 'arg1')
         });
 
         if (!error.message) {
@@ -203,28 +192,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg2',
 
       get: function(_element, _node) {
-
-        if (distribution.rawArg2) {
-          return { arg2: distribution.rawArg2 };
-        }
-
-        if (distribution.arg2 === 'NaN') {
-          return { arg2: '' };
-        }
-
-        if (isNaN(distribution.arg2) || distribution.arg2 === '') {
-          return { arg2: distribution.arg2 };
-        }
-
-        return { arg2: roundUp(distribution.arg2 / timeUnits[distribution.timeUnit].unit) };
+        return preprocessDistNumber(distribution, 'arg2');
       },
 
       set: function(element, values, _node) {
-        var arg2 = roundUp(values.arg2);
-        distribution.rawArg2 = arg2;
         return cmdHelper.updateBusinessObject(element, distribution, {
-          arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
-            (arg2 * timeUnits[distribution.timeUnit].unit).toString()
+          arg2: postprocessDistNumber(distribution, values, 'arg2')
         });
       },
 
@@ -236,8 +209,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
           label: arg2Label,
           elementId: elementId || label,
           distribution: distribution,
-          arg2: (isNaN(values.arg2) || values.arg2 === '') ? values.arg2 :
-            (values.arg2 * timeUnits[distribution.timeUnit].unit).toString(),
+          arg2: postprocessDistNumber(distribution, values, 'arg2')
         });
 
         if (!error.message) {
@@ -251,7 +223,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   function getValidModelValue(value) {
     if (isNaN(value) || value === '') {
-      value = 'NaN';
+      value = '';
     }
 
     return value;
