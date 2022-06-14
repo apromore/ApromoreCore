@@ -387,6 +387,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-font-size {
+    background-image: url('font-size.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-globe-americas {
     background-image: url('globe-americas.svg') !important;
     width: 26px !important;
@@ -569,6 +574,26 @@
 
 .ap-icon-play {
     background-image: url('play.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-predictor-add-top {
+    background-image: url('predictor-add-top.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-predictor-add {
+    background-image: url('predictor-add.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-predictor-manage {
+    background-image: url('predictor-manage.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-predictor {
+    background-image: url('predictor.svg') !important;
     width: 26px !important;
 }
 

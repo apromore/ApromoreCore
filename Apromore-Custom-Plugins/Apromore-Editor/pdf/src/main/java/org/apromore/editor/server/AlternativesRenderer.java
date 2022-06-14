@@ -62,7 +62,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +76,14 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.fop.svg.PDFTranscoder;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
 
 public class AlternativesRenderer extends HttpServlet {
 
@@ -83,27 +95,87 @@ public class AlternativesRenderer extends HttpServlet {
 
         try {
             String svgContent = req.getParameter("data");
-            byte[] pdfByteArray = convertSVGtoPDF(svgContent);
-
+            List<List<String>> hyperlinks = parseHyperlinks(req.getParameter("hyperlinks"));
+            byte[] pdfByteArray = convertSvgToPdfWithHyperlinks(svgContent, hyperlinks);
             OutputStream os = res.getOutputStream();
             os.write(pdfByteArray);
             os.close();
-
-        } catch (TranscoderException | IOException e) {
-            throw new ServletException("Unable to convert SVG to PDF", e);
+        } catch (Exception e) {
+            // pass
         }
     }
 
-    private static byte[] convertSVGtoPDF(String svgContent) throws TranscoderException {
+    private static List<List<String>> parseHyperlinks(String encodedHyperlinks) {
+        List<List<String>> hyperlinks = new ArrayList<>();
+        if (encodedHyperlinks == null || encodedHyperlinks.length() == 0) {
+            return hyperlinks;
+        }
+        try {
+            String decodedHyperlinks = URLDecoder.decode(encodedHyperlinks, StandardCharsets.UTF_8.toString());
+            List<String> linkList = Arrays.asList(decodedHyperlinks.split(","));
+            int linkCount = linkList.size() / 5;
+            for (int i = 0; i < linkCount; i++) {
+                List<String> linkSet = new ArrayList<>();
+                for (int j = 0; j < 5; j++) {
+                    linkSet.add(linkList.get(i * 5 + j));
+                }
+                hyperlinks.add(linkSet);
+            }
+        } catch (Exception e) {
+            return hyperlinks;
+        }
+        return hyperlinks;
+    }
+
+    private static byte[] convertSvgToPdfWithHyperlinks(
+        String svgContent,
+        List<List<String>> hyperlinks
+    ) throws TranscoderException, IOException {
+
         TranscoderInput transcoderInput = new TranscoderInput(new ByteArrayInputStream(svgContent.getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
-
         PDFTranscoder transcoder = new PDFTranscoder();
-        transcoder.transcode(transcoderInput, transcoderOutput);
-        return outputStream.toByteArray();
-    }
 
+        transcoder.transcode(transcoderInput, transcoderOutput);
+        byte[] pdfByteArray = outputStream.toByteArray();
+        PDDocument document = PDDocument.load(pdfByteArray);
+        PDPageTree allPages = document.getDocumentCatalog().getPages();
+        PDPage page = allPages.get(0);
+
+        for (List<String> linkSet: hyperlinks) {
+            // create a link annotation
+            double left = Double.parseDouble(linkSet.get(1));
+            double bottom = Double.parseDouble(linkSet.get(2)) - 2;
+            double right = Double.parseDouble(linkSet.get(3));
+            double top = Double.parseDouble(linkSet.get(4));
+
+            PDRectangle position = new PDRectangle();
+
+            position.setLowerLeftX(Math.round(left));
+            position.setLowerLeftY(Math.round(bottom));
+            position.setUpperRightX(Math.round(right));
+            position.setUpperRightY(Math.round(top));
+
+            PDAnnotationLink txtLink = new PDAnnotationLink();
+            txtLink.setRectangle(position);
+
+            PDBorderStyleDictionary linkBorder = new PDBorderStyleDictionary ();
+            linkBorder.setStyle(PDBorderStyleDictionary.STYLE_UNDERLINE);
+            linkBorder.setWidth(1);
+            txtLink.setBorderStyle(linkBorder);
+
+            PDActionURI action = new PDActionURI();
+            action.setURI(linkSet.get(0));
+            txtLink.setAction(action);
+            page.getAnnotations().add(txtLink);
+        }
+
+        ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
+        document.save(outputStream2);
+        return outputStream2.toByteArray();
+    }
+    
     protected static void makePDF(final File inFile, final File outFile) throws TranscoderException, IOException {
         try (InputStream in = new FileInputStream(inFile);
              OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile))) {

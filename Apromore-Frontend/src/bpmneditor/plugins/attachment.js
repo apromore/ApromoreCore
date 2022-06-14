@@ -43,8 +43,8 @@ export default class Attachment {
             'functionality': this.toggleAttachment.bind(this),
             'icon': this.getAttachmentIcon(),
             'description': this.getAttachmentDescription(),
-            'index': 4,
-            'groupOrder': 2
+            'index': 2,
+            'groupOrder': 3
         });
 
         this.facade.offer({
@@ -53,8 +53,8 @@ export default class Attachment {
             'functionality': this.toggleComment.bind(this),
             'icon': this.getCommentIcon(),
             'description': this.getCommentDescription(),
-            'index': 5,
-            'groupOrder': 2
+            'index': 3,
+            'groupOrder': 3
         });
 
     }

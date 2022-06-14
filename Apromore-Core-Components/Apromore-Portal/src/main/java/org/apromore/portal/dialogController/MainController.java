@@ -70,6 +70,7 @@ import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.UsernamesType;
 import org.apromore.portal.model.VersionSummaryType;
+import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.portal.util.CostTable;
 import org.apromore.portal.util.StreamUtil;
 import org.apromore.zk.ApromoreDesktopCleanup;
@@ -304,6 +305,21 @@ public class MainController extends BaseController implements MainControllerInte
                         case Constants.EVENT_QUEUE_REFRESH_SCREEN:
                             reloadSummaries();
                             break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + event.getName());
+                    }
+                }
+            });
+
+            // Updates from Access Controller
+            EventQueue<Event> eqAccessRight =
+                EventQueues.lookup(EventQueueTypes.UPDATE_USERMETADATA, EventQueues.APPLICATION, true);
+            eqAccessRight.subscribe((Event event) -> {
+                if ("update_usermetadata".equals(event.getName())) {
+                    String userName = UserSessionManager.getCurrentUser().getUsername();
+                    String evUserName = (String) event.getData();
+                    if (userName.equals(evUserName)) {
+                        reloadSummaries();
                     }
                 }
             });
@@ -358,7 +374,10 @@ public class MainController extends BaseController implements MainControllerInte
                     .costRates(costRates)
                     .build());
             });
-
+            // force/explicit page titling due to an issue with ZK stale page title
+            Executions.getCurrent().getDesktop().getFirstPage().setTitle(
+                Labels.getLabel("brand_shortName") + " - " + Labels.getLabel("portal_title_text")
+            );
         } catch (final Exception e) {
             LOGGER.error("Repository NOT available", e);
 
@@ -1192,7 +1211,6 @@ public class MainController extends BaseController implements MainControllerInte
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         onCreate(comp);
-
     }
 
     @Override

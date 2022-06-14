@@ -92,5 +92,13 @@ module.exports = {
   'details':	'詳細',
   'N/A':	'該当なし',
 
-  'properties': 'Properties'
+  'properties': 'プロパティ',
+  'metadata.properties': 'メタデータプロパティ',
+  'attachments': '添付ファイル',
+  'attachments.image.src': '画像ソースURL',
+  'attachments.image.upload': '画像アップロード',
+  'attachments.image.link': '画像用リンク',
+  'attachments.image.text': '画像用テキスト',
+  'attachments.icon.list': 'アイコン一覧',
+  'logtimetable.name': 'Log timetable'
 };

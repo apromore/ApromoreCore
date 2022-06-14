@@ -35,6 +35,7 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @KeycloakConfiguration
 @EnableWebSecurity
@@ -53,6 +54,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
 
   @Autowired
   private ManagerService manager;
+
+  @Value("${contentSecurityPolicy}")
+  String contentSecurityPolicy;
 
   /**
    * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -95,16 +99,27 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   @Override
   public void configure(WebSecurity web) throws Exception {
     super.configure(web);
-    web.ignoring().antMatchers("/**/css/*").antMatchers("/**/font/**").antMatchers("/**/img/**")
-        .antMatchers("/**/images/**").antMatchers("/**/themes/**").antMatchers("/**/libs/**")
-        .antMatchers("/**/js/*").antMatchers("/robots.txt");
+    web.ignoring()
+        .antMatchers("/**/css/*")
+        .antMatchers("/**/font/**")
+        .antMatchers("/**/img/**")
+        .antMatchers("/**/images/**")
+        .antMatchers("/**/themes/**")
+        .antMatchers("/**/libs/**")
+        .antMatchers("/**/js/*")
+        .antMatchers("/favicon.ico")
+        .antMatchers("/portalPluginResource/**")
+        .antMatchers("/robots.txt");
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
 
-    http.headers().frameOptions().sameOrigin();
+    http.headers()
+        .contentSecurityPolicy(contentSecurityPolicy).and()
+        .frameOptions().sameOrigin()
+        .referrerPolicy(ReferrerPolicy.NO_REFERRER);
     http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
             .ignoringAntMatchers(Constants.API_WHITELIST)

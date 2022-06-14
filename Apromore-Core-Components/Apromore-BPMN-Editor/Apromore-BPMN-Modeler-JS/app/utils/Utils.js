@@ -11,6 +11,14 @@ var isDigit = function(value) {
   return /^\d+(\.\d+)?$/.test(value);
 };
 
+var isValidNumber = function(value) {
+  if (!value) { return false }
+  if (!value.length) { return false }
+  if (isNaN(value)) { return false }
+  if (value.charAt(value.length - 1) === '.') { return false }
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
 function getRoot(elementRegistry) {
   return elementRegistry.filter(function(element) {
     return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
@@ -36,10 +44,23 @@ var roundUp = function(value) {
   return (+(Math.round(value + 'e+2') + 'e-2')).toString();
 };
 
+/**
+ * @param {String | number} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var normalizeNumber = function(value) {
+  if (!isValidNumber(value)) {
+    return ''
+  }
+  return (+(Math.round(value + 'e+3') + 'e-3')).toString();
+};
+
 module.exports = {
   createUUID: createUUID,
   fixNumber: fixNumber,
   isDigit: isDigit,
   getRoot: getRoot,
-  roundUp: roundUp
+  roundUp: roundUp,
+  normalizeNumber: normalizeNumber,
+  isValidNumber: isValidNumber
 };

@@ -78,9 +78,16 @@
       </label>
     </div>
     <div height="42px" hflex="1" sclass="ap-window-footer-actions">
-      <button label="${arg.viewOnly ? labels.common_close_text: labels.common_cancel_text}" forward="onClick=costTableWindow.onClose" />
-      <button visible="${!arg.viewOnly}" id="applyCost" label="${arg.pdLabels.costApply_text}"
-              forward="onClick=costTableWindow.onApplyCost" />
+      <button iconSclass="z-icon-check-circle"
+              visible="${!arg.viewOnly}"
+              id="applyCost"
+              label="${arg.pdLabels.costApply_text}"
+              forward="onClick=costTableWindow.onApplyCost"
+      />
+      <button iconSclass="z-icon-times-circle"
+              label="${arg.viewOnly ? labels.common_close_text: labels.common_cancel_text}"
+              forward="onClick=costTableWindow.onClose"
+      />
     </div>
   </vbox>
 </window>

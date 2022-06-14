@@ -31,6 +31,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,10 +44,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -63,7 +68,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 )
 @Configurable("log")
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class Log implements Serializable {
 
     @Id
@@ -86,9 +93,6 @@ public class Log implements Serializable {
     @Column(name = "createdate")
     private String createDate;
 
-    @Column(name = "hive_table_name")
-    private String hiveTableName;
-
     @ManyToOne
     @JoinColumn(name = "owner")
     private User user;
@@ -106,6 +110,7 @@ public class Log implements Serializable {
     private CustomCalendar calendar;
 
     @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Set<GroupLog> groupLogs = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -113,6 +118,17 @@ public class Log implements Serializable {
         joinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"))
     private Set<Usermetadata> usermetadataSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<LogicalLogAttribute> logAttributes;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "log_physical_log",
+        joinColumns =
+            { @JoinColumn(name = "log_id", referencedColumnName = "id") },
+        inverseJoinColumns =
+            { @JoinColumn(name = "physical_log_id", referencedColumnName = "id") })
+    private PhysicalLog physicalLog;
 
     public Log(Integer logId) {
         id = logId;
@@ -135,4 +151,20 @@ public class Log implements Serializable {
         return newLog;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Log log = (Log) o;
+        return id != null && Objects.equals(id, log.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
