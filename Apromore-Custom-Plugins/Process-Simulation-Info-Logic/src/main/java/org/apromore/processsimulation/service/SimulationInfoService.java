@@ -324,6 +324,9 @@ public class SimulationInfoService {
 
     private Map<String, Double> retrieveCostData(int logId) {
         Map<String, Double> roleToCostRateMap = new HashMap<>();
+        if (objectMapper == null) {
+            return roleToCostRateMap;
+        }
         try {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             List<Usermetadata> userMetadata =
