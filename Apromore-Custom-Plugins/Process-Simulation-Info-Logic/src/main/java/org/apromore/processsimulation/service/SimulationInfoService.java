@@ -324,9 +324,6 @@ public class SimulationInfoService {
 
     private Map<String, Double> retrieveCostData(int logId) {
         Map<String, Double> roleToCostRateMap = new HashMap<>();
-        if (objectMapper == null) {
-            return roleToCostRateMap;
-        }
         try {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             List<Usermetadata> userMetadata =
@@ -342,8 +339,8 @@ public class SimulationInfoService {
                 roleToCostRateMap = costingDataList[0].getCostRates();
             }
         } catch (JsonProcessingException ex) {
-            log.warn("Error in parsing cost table usermetadata for log {}", logId);
-        } catch (Exception ex) {
+            log.warn("Error in parsing cost usermetadata for log {}", logId);
+        } catch (RuntimeException ex) {
             log.warn("Error in retrieving cost data for log {}", logId);
         }
         return roleToCostRateMap;
