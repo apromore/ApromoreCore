@@ -96,11 +96,11 @@ public class SimulationInfoService {
 
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
-                                 UserMetadataService userMetadataService, ObjectMapper objectMapper) {
+                                 UserMetadataService userMetadataService) {
         this.config = config;
         this.calendarService = calendarService;
         this.userMetadataService = userMetadataService;
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -323,27 +323,27 @@ public class SimulationInfoService {
 
 
     private Map<String, Double> retrieveCostData(int logId) {
-        Map<String, Double> costRateMap = new HashMap<>();
+        Map<String, Double> roleToCostRateMap = new HashMap<>();
         try {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             List<Usermetadata> userMetadata =
                 new ArrayList<>(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.COST_TABLE));
 
             if (userMetadata.isEmpty()) {
-                return costRateMap;
+                return roleToCostRateMap;
             }
             CostingData[] costingDataList =
                 objectMapper.readValue(userMetadata.get(0).getContent(), CostingData[].class);
             if (costingDataList != null && costingDataList.length > 0
                 && costingDataList[0].getCostRates() != null) {
-                costRateMap = costingDataList[0].getCostRates();
+                roleToCostRateMap = costingDataList[0].getCostRates();
             }
         } catch (JsonProcessingException ex) {
-            log.error("Error in json data parsing", ex);
+            log.warn("Error in parsing cost table usermetadata for log {}", logId);
         } catch (Exception ex) {
-            log.error("Error in retrieving data", ex);
+            log.warn("Error in retrieving cost data for log {}", logId);
         }
-        return costRateMap;
+        return roleToCostRateMap;
     }
 
     private void deriveGatewayProbabilities(

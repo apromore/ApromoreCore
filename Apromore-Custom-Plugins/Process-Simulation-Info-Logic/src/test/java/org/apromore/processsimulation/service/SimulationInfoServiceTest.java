@@ -34,7 +34,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,7 +57,6 @@ import org.apromore.dao.model.Usermetadata;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
-import org.apromore.processsimulation.model.CostingData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
@@ -90,14 +88,11 @@ class SimulationInfoServiceTest {
     @Mock
     private UserMetadataService userMetadataService;
 
-    @Mock
-    private ObjectMapper objectMapper;
-
     @BeforeEach
     void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService,objectMapper);
+        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -114,13 +109,6 @@ class SimulationInfoServiceTest {
 
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Collections.emptySet());
-        Map<String, Double> mockRoleToResourceCostPerHour = Map.of(
-            "Role_1", 10.0,
-            "Role_2", 20.0,
-            "Role_3", 30.0);
-
-        when(objectMapper.readValue(anyString(), eq(CostingData[].class))).thenReturn(
-            new CostingData[] {CostingData.builder().costRates(mockRoleToResourceCostPerHour).build()});
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
@@ -399,8 +387,33 @@ class SimulationInfoServiceTest {
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Set.of(usermetadata));
 
-        when(objectMapper.readValue(anyString(), eq(CostingData[].class))).thenReturn(
-            new CostingData[] {CostingData.builder().costRates(null).build()});
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+    }
+
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_no_cost_content() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("[{\"perspective\":\"role\",\"currency\":\"AUD\"}]");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
 
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
@@ -410,7 +423,34 @@ class SimulationInfoServiceTest {
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
                 .findFirst();
         assertResourceCostPerhour("Role_1", 0, role1);
+    }
 
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_null_data() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent(null);
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
     }
 
     @Test
@@ -427,7 +467,8 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
 
         Usermetadata usermetadata = new Usermetadata();
-        usermetadata.setContent("dummy");
+        usermetadata.setContent(
+            "[{\"perspective\":\"role\",\"currency\":\"AUD\",\"costRates\":{\"Role_1\":10.0,\"Role_2\":20.0,\"Role_3\":30.0}}]");
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Set.of(usermetadata));
 
