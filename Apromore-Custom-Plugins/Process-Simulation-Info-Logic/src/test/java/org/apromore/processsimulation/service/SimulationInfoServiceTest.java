@@ -468,8 +468,8 @@ class SimulationInfoServiceTest {
 
         Usermetadata usermetadata = new Usermetadata();
         usermetadata.setContent(
-            "[{\"perspective\":\"role\",\"currency\":\"AUD\"" +
-                ",\"costRates\":{\"Role_1\":10.0,\"Role_2\":20.0,\"Role_3\":30.0}}]");
+            "[{\"perspective\":\"role\",\"currency\":\"AUD\""
+                + ",\"costRates\":{\"Role_1\":10.0,\"Role_2\":20.0,\"Role_3\":30.0}}]");
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Set.of(usermetadata));
 
