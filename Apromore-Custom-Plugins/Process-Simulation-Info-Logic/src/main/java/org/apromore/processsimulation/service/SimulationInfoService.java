@@ -91,8 +91,8 @@ public class SimulationInfoService {
 
     private final SimulationInfoConfig config;
     private final CalendarService calendarService;
-    private UserMetadataService userMetadataService;
-    private ObjectMapper objectMapper;
+    private final UserMetadataService userMetadataService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
