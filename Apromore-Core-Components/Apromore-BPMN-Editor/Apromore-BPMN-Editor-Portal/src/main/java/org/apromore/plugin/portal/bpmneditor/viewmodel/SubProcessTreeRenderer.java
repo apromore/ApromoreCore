@@ -124,6 +124,7 @@ public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> 
         SummaryType summaryType = (SummaryType) ctn.getData();
         if(this.processSummaryType!=null && this.processSummaryType.getId().equals(summaryType.getId())){
             treeItem.setSelected(true);
+            treeItem.setFocus(true);
         }
         hideOrShowTreeItem(treeItem, summaryType.getId(), FolderTreeNodeTypes.Process);
         if (summaryType instanceof ProcessSummaryType) {
