@@ -893,9 +893,6 @@ public class LogImporterController extends SelectorComposer<Window> implements C
                     logMetaData.getEventAttributesPos().remove(Integer.valueOf(colPos));
                 }
                 logMetaData.getTimestampAttributesPos().add(colPos);
-                if (!IGNORE_LABEL.equals(attributeTypeSelected)) {
-                    timestampSelected(colPos, OTHER_TIMESTAMP_LABEL);
-                }
                 hideCheckbox(maskBtn);
                 break;
             default:
