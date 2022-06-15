@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
@@ -66,6 +67,8 @@ import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -106,6 +109,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   private static final boolean USE_BPMNIO_MODELER = true;
   private static final String BPMNIO_MODELER_JS = "bpmn-modeler.development.js";
   private static final String BPMNIO_VIEWER_JS = "bpmn-navigated-viewer.development.js";
+  private static final String BPMN_CURRENT_EDITOR_ID_LIST = "BPMN_CURRENT_EDITOR_ID_LIST";
 
   private static final Logger LOGGER = PortalLoggerFactory.getLogger(BPMNEditorController.class);
   public static final String BPMN_XML = "bpmnXML";
@@ -157,6 +161,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     vst = session.getVersion();
 
     Map<String, Object> param = new HashMap<>();
+    if (isEditorIdExistInCurrentSession(id)) {
+      isNewProcess = false;
+    }
 
     if (isNewProcess) {
       currentUserAccessType = AccessType.OWNER;
@@ -252,6 +259,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       Executions.getCurrent().pushArg(param);
 
       populateLinkedProcessesList();
+      cacheCurrentEditorId(id);
 
     } catch (Exception e) {
       LOGGER.error("", e);
@@ -507,6 +515,29 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
   }
 
+  private void cacheCurrentEditorId(String editorId) {
+    Session session = Executions.getCurrent().getSession();
+    if (session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
+      Set<String> currentBpmnEditorId = (Set<String>) session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
+      currentBpmnEditorId.add(editorId);
+      session.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorId);
+    } else {
+      session.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, new HashSet<String>() {{
+        add(editorId);
+      }});
+    }
+  }
+
+  private boolean isEditorIdExistInCurrentSession(String editorId) {
+    Session session = Executions.getCurrent().getSession();
+    if (session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
+      Set<String> currentBpmnEditorIds = (Set<String>) session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
+      return currentBpmnEditorIds != null && currentBpmnEditorIds.contains(editorId);
+    } else {
+      return false;
+    }
+  }
+
   private void saveCurrentModelVersion(Integer processId, String processName, String versionNumber,
                                        String nativeType, InputStream nativeStream, String userName) {
     try {
@@ -667,6 +698,12 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       args.put("parentProcessId", process.getId());
       args.put("elementId", elementId);
       String linkProcessWindowPath = "static/bpmneditor/linkSubProcess.zul";
+      for (Page page : Executions.getCurrent().getDesktop().getPages()) {
+        if (page.getFellowIfAny("winLinkSubprocess") != null) {
+          // DO Nothing
+          return;
+        }
+      }
       Window linkSubProcessModal =
           (Window) Executions.createComponents(getPageDefinition(linkProcessWindowPath), null, args);
       linkSubProcessModal.doModal();

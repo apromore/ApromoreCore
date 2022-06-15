@@ -70,7 +70,7 @@ public class ProcessFolderTree {
         root.add(homeNode);
 
         buildProcessTree(homeNode, this.mainController.getManagerService()
-            .getWorkspaceFolderTree(null), 0, new HashSet<>());
+            .getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId()), 0, new HashSet<>());
     }
 
     public FolderTreeNode getCurrentFolder() {
