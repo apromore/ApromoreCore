@@ -516,22 +516,22 @@ public class BPMNEditorController extends BaseController implements Composer<Com
   }
 
   private void cacheCurrentEditorId(String editorId) {
-    Session session = Executions.getCurrent().getSession();
-    if (session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
-      Set<String> currentBpmnEditorId = (Set<String>) session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
-      currentBpmnEditorId.add(editorId);
-      session.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorId);
+    Session currentSession = Executions.getCurrent().getSession();
+    if (currentSession.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
+      Set<String> currentBpmnEditorIds = (Set<String>) currentSession.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
+      currentBpmnEditorIds.add(editorId);
+      currentSession.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorIds);
     } else {
-      session.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, new HashSet<String>() {{
-        add(editorId);
-      }});
+      Set<String> currentBpmnEditorIds = new HashSet();
+      currentBpmnEditorIds.add(editorId);
+      currentSession.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorIds);
     }
   }
 
   private boolean isEditorIdExistInCurrentSession(String editorId) {
-    Session session = Executions.getCurrent().getSession();
-    if (session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
-      Set<String> currentBpmnEditorIds = (Set<String>) session.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
+    Session currentSession = Executions.getCurrent().getSession();
+    if (currentSession.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST) != null) {
+      Set<String> currentBpmnEditorIds = (Set<String>) currentSession.getAttribute(BPMN_CURRENT_EDITOR_ID_LIST);
       return currentBpmnEditorIds != null && currentBpmnEditorIds.contains(editorId);
     } else {
       return false;
