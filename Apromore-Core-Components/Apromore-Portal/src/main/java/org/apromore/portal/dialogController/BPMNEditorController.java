@@ -522,7 +522,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       currentBpmnEditorIds.add(editorId);
       currentSession.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorIds);
     } else {
-      Set<String> currentBpmnEditorIds = new HashSet();
+      Set<String> currentBpmnEditorIds = new HashSet<>();
       currentBpmnEditorIds.add(editorId);
       currentSession.setAttribute(BPMN_CURRENT_EDITOR_ID_LIST, currentBpmnEditorIds);
     }
