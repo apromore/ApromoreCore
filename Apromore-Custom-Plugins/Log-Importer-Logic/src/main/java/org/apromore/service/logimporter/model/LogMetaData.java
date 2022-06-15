@@ -117,7 +117,7 @@ public class LogMetaData {
 
         if (header.size() != count) {
             throw new InvalidLogMetadataException(
-                "Failed to construct valid log sample!  Only specified attribute type for " + count + " of "
+                "Failed to construct valid log sample!  Specified attribute type for " + count + " of "
                     + header.size() + " headers: " + header);
         }
 
