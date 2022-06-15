@@ -42,6 +42,7 @@ public class SimulationData {
     private long resourceCount;
     private long startTime;
     private long endTime;
+    private int logId;
 
     @NonNull
     private CalendarModel calendarModel;
