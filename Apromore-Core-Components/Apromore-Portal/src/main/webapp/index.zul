@@ -262,32 +262,32 @@
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0" style="margin-left: 10px;" >
-                            <button id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.portal_reload_hint}" />
+                            <button autodisable="self" id="refreshB" sclass="ap-icon ap-icon-sync" ca:data-t="reload" tooltiptext="${labels.portal_reload_hint}" />
                             <h:span class="ap-action-sep"></h:span>
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="~./img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.portal_upload_hint}"/>
-                            <button id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.portal_download_hint}"/>
+                            <button autodisable="self" id="btnUpload" sclass="ap-icon ap-icon-upload" ca:data-t="upload" tooltiptext="${labels.portal_upload_hint}"/>
+                            <button autodisable="self" id="btnDownload" sclass="ap-icon ap-icon-download" ca:data-t="download" tooltiptext="${labels.portal_download_hint}"/>
 
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnCreateDataPipeline" visible="false" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.portal_createDataPipeline_hint}"/>
-                            <button id="btnManageDataPipelines" visible="false" sclass="ap-icon ap-icon-etl-pipeline-manage" ca:data-t="manageDataPipelines" tooltiptext="${labels.portal_manageDataPipelines_hint}"/>
+                            <button autodisable="self" id="btnCreateDataPipeline" visible="false" sclass="ap-icon ap-icon-etl-pipeline" ca:data-t="createDataPipeline" tooltiptext="${labels.portal_createDataPipeline_hint}"/>
+                            <button autodisable="self" id="btnManageDataPipelines" visible="false" sclass="ap-icon ap-icon-etl-pipeline-manage" ca:data-t="manageDataPipelines" tooltiptext="${labels.portal_manageDataPipelines_hint}"/>
                             <span id="btnEtlSep" class="ap-action-sep" visible="false"></span>
-                            <button id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="${labels.common_selectAll_text}"/>
-                            <button id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="${labels.common_selectNone_text}"/>
+                            <button autodisable="self" id="btnSelectAll" visible="true" sclass="ap-icon ap-icon-select-all" ca:data-t="selectAll" tooltiptext="${labels.common_selectAll_text}"/>
+                            <button autodisable="self" id="btnSelectNone" visible="true" sclass="ap-icon ap-icon-select-none" ca:data-t="selectNone" tooltiptext="${labels.common_selectNone_text}"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnCut" visible="true" sclass="ap-icon ap-icon-cut" ca:data-t="cut" tooltiptext="${labels.common_cut_text}"/>
-                            <button id="btnCopy" visible="true" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="${labels.common_copy_text}"/>
-                            <button id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="${labels.common_paste_text}"/>
+                            <button autodisable="self" id="btnCut" visible="true" sclass="ap-icon ap-icon-cut" ca:data-t="cut" tooltiptext="${labels.common_cut_text}"/>
+                            <button autodisable="self" id="btnCopy" visible="true" sclass="ap-icon ap-icon-copy" ca:data-t="copy" tooltiptext="${labels.common_copy_text}"/>
+                            <button autodisable="self" id="btnPaste" visible="true" sclass="ap-icon ap-icon-paste" ca:data-t="paste" tooltiptext="${labels.common_paste_text}"/>
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.portal_addFolder_hint}"/>
-                            <button id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.portal_rename_hint}" visible="true"/>
-                            <button id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.portal_delete_hint}" visible="true" />
+                            <button autodisable="self" id="btnAddFolder" sclass="ap-icon ap-icon-folder-add" ca:data-t="addFolder" tooltiptext="${labels.portal_addFolder_hint}"/>
+                            <button autodisable="self" id="btnRenameFolder" sclass="ap-icon ap-icon-rename" ca:data-t="rename" tooltiptext="${labels.portal_rename_hint}" visible="true"/>
+                            <button autodisable="self" id="btnRemoveFolder" sclass="ap-icon ap-icon-trash" ca:data-t="delete" tooltiptext="${labels.portal_delete_hint}" visible="true" />
                             <h:span class="ap-action-sep"></h:span>
-                            <button id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="${labels.portal_tbarUsrMgt_hint}"/>
-                            <button id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.portal_tbarAccessCtrl_hint}"/>
-                            <button id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${labels.portal_tbarShare_hint}"/>
+                            <button autodisable="self" id="btnUserMgmt" visible="false" sclass="ap-icon ap-icon-users" ca:data-t="userMgmt" tooltiptext="${labels.portal_tbarUsrMgt_hint}"/>
+                            <button autodisable="self" id="btnSecurity" sclass="ap-icon ap-icon-user-lock" ca:data-t="security" tooltiptext="${labels.portal_tbarAccessCtrl_hint}"/>
+                            <button autodisable="self" id="btnShare" sclass="ap-icon ap-icon-share" ca:data-t="share" tooltiptext="${labels.portal_tbarShare_hint}"/>
                             <span id="btnCalendarSep" class="ap-action-sep"></span>
-                            <button id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="${labels.portal_tbarCalendar_hint}"/>
+                            <button autodisable="self" id="btnCalendar" sclass="ap-icon ap-icon-calendar" ca:data-t="calendar" tooltiptext="${labels.portal_tbarCalendar_hint}"/>
                         </hbox>
                         <div hflex="1">
                           <menupopup id="orderListItemPopup" />
