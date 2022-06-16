@@ -269,8 +269,8 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
 
         JSONObject jsonCustomAttributes = new JSONObject();
         if (getCustomAttributes().size() > 0) {
-            for (String key : getCustomAttributes().keySet()) {
-                jsonCustomAttributes.put(key, getCustomAttributes().get(key));
+            for (String s : getCustomAttributes().keySet()) {
+                jsonCustomAttributes.put(s, getCustomAttributes().get(s));
             }
         }
         jsonRuleValue.put("customAttributes", jsonCustomAttributes);

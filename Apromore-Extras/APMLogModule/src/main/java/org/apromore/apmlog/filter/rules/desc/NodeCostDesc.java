@@ -22,6 +22,7 @@
 
 package org.apromore.apmlog.filter.rules.desc;
 
+import lombok.experimental.UtilityClass;
 import org.apromore.apmlog.filter.rules.LogFilterRule;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.OperationType;
@@ -29,6 +30,7 @@ import org.apromore.apmlog.util.Util;
 
 import java.text.DecimalFormat;
 
+@UtilityClass
 public class NodeCostDesc {
     public static String getDescription(LogFilterRule logFilterRule) {
 
