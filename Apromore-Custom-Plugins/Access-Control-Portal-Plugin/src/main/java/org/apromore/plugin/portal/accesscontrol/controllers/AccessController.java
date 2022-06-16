@@ -384,7 +384,7 @@ public class AccessController extends SelectorComposer<Div> {
             Assignee assignee = (Assignee) o2;
             return assignee.getName().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
           }
-        }, 20));
+        }, 1000));
   }
 
   private void loadAssignments(Map<Group, AccessType> groupAccessTypeMap) {
