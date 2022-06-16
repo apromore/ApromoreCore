@@ -48,11 +48,9 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.util.TokenUtil;
 
 /**
- * Modify the OpenID Connect authentication flow to use a bookmarkable URL when it redirects to the Keycloak login
- * page.
+ * Selectively override {@link OAuthRequestAuthenticator} to explicitly set the OAuth redirect_url parameter.
  *
- * The URL is made bookmarkable by including <code>response_mode=fragment</code> and excluding <code>state</code> from
- * the query parameters.
+ * This is useful when the application is behind a proxy.
  */
 public class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
 
@@ -139,6 +137,11 @@ public class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticato
         return redirectUriBuilder.build().toString();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * This code is largely copied from {@link OAuthRequestAuthenticator#resolveCode} in Keycloak 14.
+     */
     @Override
     protected AuthChallenge resolveCode(String code) {
         // abort if not HTTPS
@@ -227,6 +230,11 @@ public class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticato
         return originalUri;
     }
 
+    /**
+     * Copied from {@link OAuthRequestAuthenticator#logToken} because it was private.
+     *
+     * When bumping Keycloak to a version beyond 14, this may need to be resychronized.
+     */
     private void logTokenCopy(String name, String token) {
         try {
             JWSInput jwsInput = new JWSInput(token);
