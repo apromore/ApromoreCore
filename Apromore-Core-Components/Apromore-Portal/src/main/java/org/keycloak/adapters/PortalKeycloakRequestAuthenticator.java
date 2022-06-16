@@ -20,21 +20,31 @@
  * #L%
  */
 
-package org.apromore.portal.config;
+package org.keycloak.adapters;  // Pretend to be part of Keycloak; we need protected access to RequestAuthenticator
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import org.jboss.logging.Logger;
 import org.keycloak.OAuth2Constants;
-import org.keycloak.adapters.KeycloakDeployment;
-import org.keycloak.adapters.OAuthRequestAuthenticator;
-import org.keycloak.adapters.RequestAuthenticator;
+//import org.keycloak.adapters.KeycloakDeployment;
+//import org.keycloak.adapters.OAuthRequestAuthenticator;
+//import org.keycloak.adapters.OIDCAuthenticationError;
+//import org.keycloak.adapters.RequestAuthenticator;
+//import org.keycloak.adapters.ServerRequest;
+import org.keycloak.adapters.rotation.AdapterTokenVerifier;
 import org.keycloak.adapters.spi.AdapterSessionStore;
+import org.keycloak.adapters.spi.AuthChallenge;
 import org.keycloak.adapters.spi.HttpFacade;
+import org.keycloak.common.VerificationException;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.common.util.UriUtils;
 import org.keycloak.constants.AdapterConstants;
+import org.keycloak.enums.TokenStore;
+import org.keycloak.jose.jws.JWSInput;
+import org.keycloak.jose.jws.JWSInputException;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.util.TokenUtil;
 
 /**
@@ -44,14 +54,20 @@ import org.keycloak.util.TokenUtil;
  * The URL is made bookmarkable by including <code>response_mode=fragment</code> and excluding <code>state</code> from
  * the query parameters.
  */
-class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
+public class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
 
     private static final Logger log = Logger.getLogger(PortalKeycloakRequestAuthenticator.class);
 
-    PortalKeycloakRequestAuthenticator(RequestAuthenticator requestAuthenticator, HttpFacade facade,
-        KeycloakDeployment deployment, int sslRedirectPort, AdapterSessionStore tokenStore) {
+    private String loginURL;
+
+    /**
+     * @param loginURL  is this is not <code>null</code>, it will be used as the redirect URL
+     */
+    public PortalKeycloakRequestAuthenticator(RequestAuthenticator requestAuthenticator, HttpFacade facade,
+        KeycloakDeployment deployment, int sslRedirectPort, AdapterSessionStore tokenStore, String loginURL) {
 
         super(requestAuthenticator, facade, deployment, sslRedirectPort, tokenStore);
+        this.loginURL = loginURL;
     }
 
     /**
@@ -61,7 +77,7 @@ class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
      */
     @Override
     protected String getRedirectUri(String state) {
-        String url = getRequestUrl();
+        String url = loginURL == null ? getRequestUrl() : loginURL;
         log.debugf("callback uri: %s", url);
 
         if (!facade.getRequest().isSecure() && deployment.getSslRequired().isRequired(facade.getRequest().getRemoteAddr())) {
@@ -123,6 +139,71 @@ class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
         return redirectUriBuilder.build().toString();
     }
 
+    @Override
+    protected AuthChallenge resolveCode(String code) {
+        // abort if not HTTPS
+        if (!isRequestSecure() && deployment.getSslRequired().isRequired(facade.getRequest().getRemoteAddr())) {
+            log.error("Adapter requires SSL. Request: " + facade.getRequest().getURI());
+            return challenge(403, OIDCAuthenticationError.Reason.SSL_REQUIRED, null);
+        }
+
+        log.debug("checking state cookie for after code");
+        AuthChallenge challenge = checkStateCookie();
+        if (challenge != null) return challenge;
+
+        AccessTokenResponse tokenResponse = null;
+        strippedOauthParametersRequestUri = loginURL == null
+            ? rewrittenRedirectUriCopy(stripOauthParametersFromRedirect())
+            : loginURL;
+
+        try {
+            // For COOKIE store we don't have httpSessionId and single sign-out won't be available
+            String httpSessionId = deployment.getTokenStore() == TokenStore.SESSION ? reqAuthenticator.changeHttpSessionId(true) : null;
+            tokenResponse = ServerRequest.invokeAccessCodeToToken(deployment, code, strippedOauthParametersRequestUri, httpSessionId);
+        } catch (ServerRequest.HttpFailure failure) {
+            log.error("failed to turn code into token");
+            log.error("status from server: " + failure.getStatus());
+            if (failure.getError() != null && !failure.getError().trim().isEmpty()) {
+                log.error("   " + failure.getError());
+            }
+            return challenge(403, OIDCAuthenticationError.Reason.CODE_TO_TOKEN_FAILURE, null);
+
+        } catch (IOException e) {
+            log.error("failed to turn code into token", e);
+            return challenge(403, OIDCAuthenticationError.Reason.CODE_TO_TOKEN_FAILURE, null);
+        }
+
+        tokenString = tokenResponse.getToken();
+        refreshToken = tokenResponse.getRefreshToken();
+        idTokenString = tokenResponse.getIdToken();
+
+        log.debug("Verifying tokens");
+        if (log.isTraceEnabled()) {
+            logTokenCopy("\taccess_token", tokenString);
+            logTokenCopy("\tid_token", idTokenString);
+            logTokenCopy("\trefresh_token", refreshToken);
+        }
+
+        try {
+            AdapterTokenVerifier.VerifiedTokens tokens = AdapterTokenVerifier.verifyTokens(tokenString, idTokenString, deployment);
+            token = tokens.getAccessToken();
+            idToken = tokens.getIdToken();
+            log.debug("Token Verification succeeded!");
+        } catch (VerificationException e) {
+            log.error("failed verification of token: " + e.getMessage());
+            return challenge(403, OIDCAuthenticationError.Reason.INVALID_TOKEN, null);
+        }
+        if (tokenResponse.getNotBeforePolicy() > deployment.getNotBefore()) {
+            deployment.updateNotBefore(tokenResponse.getNotBeforePolicy());
+        }
+        if (token.getIssuedAt() < deployment.getNotBefore()) {
+            log.error("Stale token");
+            return challenge(403, OIDCAuthenticationError.Reason.STALE_TOKEN, null);
+        }
+        log.debug("successful authenticated");
+        return null;
+    }
+
     /**
      * Copied from {@link OAuthRequestAuthenticator#rewrittenRedirectUri} because it was private.
      *
@@ -144,5 +225,15 @@ class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticator {
             }
         }
         return originalUri;
+    }
+
+    private void logTokenCopy(String name, String token) {
+        try {
+            JWSInput jwsInput = new JWSInput(token);
+            String wireString = jwsInput.getWireString();
+            log.tracef("\t%s: %s", name, wireString.substring(0, wireString.lastIndexOf(".")) + ".signature");
+        } catch (JWSInputException e) {
+            log.errorf(e, "Failed to parse %s: %s", name, token);
+        }
     }
 }

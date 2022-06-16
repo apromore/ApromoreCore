@@ -44,13 +44,10 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
 
   /**
-   * Whether to override the generation of the login page URL.
-   *
-   * The default behavior of the Keycloak Spring Boot plugin is to redirect to the login page using a
-   * URL that contains a session identifier.  Because of this, it doesn't work if used as a bookmark.
+   * If this property is set, use it as the redirection URL for the login.
    */
-  @Value("${enableKeycloakLoginPageBookmarking:true}")
-  private boolean enableKeycloakLoginPageBookmarking;
+  @Value("${portal.login-url:#{null}}")
+  private String loginURL;
 
   @Autowired
   private ManagerService manager;
@@ -80,8 +77,8 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   protected KeycloakAuthenticationProcessingFilter keycloakAuthenticationProcessingFilter() throws Exception {
     KeycloakAuthenticationProcessingFilter filter = super.keycloakAuthenticationProcessingFilter();
     filter.setAuthenticationSuccessHandler(new ApromoreKeycloakAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler()));
-    if (enableKeycloakLoginPageBookmarking) {
-      filter.setRequestAuthenticatorFactory(new PortalKeycloakRequestAuthenticatorFactory());
+    if (loginURL != null) {
+      filter.setRequestAuthenticatorFactory(new PortalKeycloakRequestAuthenticatorFactory(loginURL));
     }
     return filter;
   }

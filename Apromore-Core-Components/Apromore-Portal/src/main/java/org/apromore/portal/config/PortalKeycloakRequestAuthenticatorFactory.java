@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.keycloak.adapters.AdapterTokenStore;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.OAuthRequestAuthenticator;
+import org.keycloak.adapters.PortalKeycloakRequestAuthenticator;
 import org.keycloak.adapters.RequestAuthenticator;
 import org.keycloak.adapters.spi.HttpFacade;
 import org.keycloak.adapters.springsecurity.authentication.RequestAuthenticatorFactory;
@@ -40,6 +41,16 @@ import org.keycloak.adapters.springsecurity.authentication.SpringSecurityRequest
  */
 class PortalKeycloakRequestAuthenticatorFactory implements RequestAuthenticatorFactory {
 
+    private final String loginURL;
+
+    /**
+     * @param loginURL  if non-null, the redirection URL to the front-end proxy,
+     *     e.g. <code>"https://example.com/sso/login"</code>
+     */
+    PortalKeycloakRequestAuthenticatorFactory(final String loginURL) {
+        this.loginURL = loginURL;
+    }
+
     @Override
     public RequestAuthenticator createRequestAuthenticator(HttpFacade facade, HttpServletRequest request,
             KeycloakDeployment deployment, AdapterTokenStore tokenStore, int sslRedirectPort) {
@@ -48,7 +59,7 @@ class PortalKeycloakRequestAuthenticatorFactory implements RequestAuthenticatorF
 
             @Override
             protected OAuthRequestAuthenticator createOAuthAuthenticator() {
-                return new PortalKeycloakRequestAuthenticator(this, facade, deployment, sslRedirectPort, tokenStore);
+                return new PortalKeycloakRequestAuthenticator(this, facade, deployment, sslRedirectPort, tokenStore, loginURL);
             }
         };
     }
