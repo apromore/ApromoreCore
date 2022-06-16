@@ -201,4 +201,29 @@ public class Util {
 
         return decimalFormat;
     }
+
+    public static String getCurrencySymbol(String currency) {
+        switch (currency.toLowerCase()) {
+            case "eur":
+            case "euro":
+                return "\u20ac";
+            case "gbp":
+                return "\u00a3";
+            case "jpy":
+                return "\u00A5";
+            default:
+                return "$";
+        }
+    }
+
+    public static String getDisplayAttributeKey(String attributeKey) {
+        switch (attributeKey) {
+            case AttributeCodes.CONCEPT_NAME: return "Activity";
+            case AttributeCodes.ORG_RESOURCE: return "Resource";
+            case AttributeCodes.ORG_GROUP: return "Resource group";
+            case AttributeCodes.ORG_ROLE: return "Role";
+            case AttributeCodes.LIFECYCLE_TRANSITION: return "Status";
+            default: return attributeKey;
+        }
+    }
 }

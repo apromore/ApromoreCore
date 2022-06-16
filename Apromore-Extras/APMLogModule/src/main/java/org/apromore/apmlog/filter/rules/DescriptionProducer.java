@@ -23,6 +23,7 @@ package org.apromore.apmlog.filter.rules;
 
 import org.apromore.apmlog.filter.rules.desc.AttributeArcDurationDesc;
 import org.apromore.apmlog.filter.rules.desc.BetweenDesc;
+import org.apromore.apmlog.filter.rules.desc.CaseCostDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseIDDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseLengthDesc;
 import org.apromore.apmlog.filter.rules.desc.CaseSectionCaseAttributeDesc;
@@ -35,6 +36,7 @@ import org.apromore.apmlog.filter.rules.desc.DurationDesc;
 import org.apromore.apmlog.filter.rules.desc.EventAttributeDurationDesc;
 import org.apromore.apmlog.filter.rules.desc.EventSectionAttributeDesc;
 import org.apromore.apmlog.filter.rules.desc.EventTimeDesc;
+import org.apromore.apmlog.filter.rules.desc.NodeCostDesc;
 import org.apromore.apmlog.filter.rules.desc.PathDesc;
 import org.apromore.apmlog.filter.rules.desc.ReworkDesc;
 
@@ -83,6 +85,10 @@ public class DescriptionProducer {
                 return CaseLengthDesc.getDescription(logFilterRule);
             case BETWEEN:
                 return BetweenDesc.getDescription(logFilterRule);
+            case CASE_COST:
+                return CaseCostDesc.getDescription(logFilterRule);
+            case NODE_COST:
+                return NodeCostDesc.getDescription(logFilterRule);
             default:
                 break;
         }

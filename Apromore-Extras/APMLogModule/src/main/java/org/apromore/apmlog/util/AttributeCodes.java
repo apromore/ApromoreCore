@@ -21,10 +21,14 @@
  */
 package org.apromore.apmlog.util;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class AttributeCodes {
     public static final String CONCEPT_NAME = "concept:name";
     public static final String ORG_RESOURCE = "org:resource";
     public static final String ORG_GROUP = "org:group";
+    public static final String ORG_ROLE = "org:role";
     public static final String LIFECYCLE_TRANSITION = "lifecycle:transition";
     public static final String TIMESTAMP = "time:timestamp";
 }

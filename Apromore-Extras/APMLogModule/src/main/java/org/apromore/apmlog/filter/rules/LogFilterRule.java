@@ -24,14 +24,18 @@ package org.apromore.apmlog.filter.rules;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
+import org.zkoss.json.JSONObject;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Chii Chang
  * modified: 2022-05-30 by Chii Chang
+ * modified: 2022-06-16 by Chii Chang
  */
 public interface LogFilterRule {
 
@@ -49,6 +53,16 @@ public interface LogFilterRule {
     void setRuleLevel(RuleLevel ruleLevel);
     RuleLevel getRuleLevel();
     void setKey(String key);
+
+    void setCostPerspective(String costPerspective);
+    String getCostPerspective();
+    void setCurrency(String currency);
+    String getCurrency();
+    void setCostRates(Map<String, Double> costRates);
+    Map<String, Double> getCostRates();
+
+    JSONObject toJSON();
+    Number getPrimaryNumericValueByOperationType(OperationType operationType);
 
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
