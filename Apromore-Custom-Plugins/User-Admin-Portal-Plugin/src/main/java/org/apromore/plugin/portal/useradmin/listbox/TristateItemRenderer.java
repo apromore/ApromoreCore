@@ -22,6 +22,8 @@
 
 package org.apromore.plugin.portal.useradmin.listbox;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -40,7 +42,8 @@ public class TristateItemRenderer implements ListitemRenderer {
     public TristateListbox list;
     public boolean forceTwoState = false;
     public boolean disabled = false;
-
+    private boolean multiSelected = false;
+    private final List<String> excludeSelectedItems = new ArrayList<>();
     private Listbox listbox;
 
     public void setList(TristateListbox list) {
@@ -78,7 +81,7 @@ public class TristateItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Checkbox checkbox = (Checkbox) event.getTarget();
-                rotateState(checkbox);
+                rotateState(checkbox,true);
             }
         });
 
@@ -88,7 +91,7 @@ public class TristateItemRenderer implements ListitemRenderer {
                 public void onEvent(Event event) throws Exception {
                     Listitem listitem = (Listitem) event.getTarget();
                     Checkbox checkbox = (Checkbox) listitem.getChildren().get(0).getFirstChild();
-                    rotateState(checkbox);
+                    rotateState(checkbox,false);
                 }
             });
         }
@@ -110,9 +113,9 @@ public class TristateItemRenderer implements ListitemRenderer {
         }
     }
 
-    public void rotateState(Checkbox checkbox) {
+    public void rotateState(Checkbox checkbox,boolean eventFiredFromCheckbox) {
         TristateModel model = checkbox.getValue();
-        updateExistingSelection(checkbox);
+        updateExistingSelection(checkbox,eventFiredFromCheckbox);
         Listitem listitem = (Listitem) checkbox.getParent().getParent();
         int index = listitem.getIndex();
 
@@ -165,12 +168,20 @@ public class TristateItemRenderer implements ListitemRenderer {
      *
      * @param selectedCheckbox the checkbox of the selected list item.
      */
-    public void updateExistingSelection(Checkbox selectedCheckbox) {
+    public void updateExistingSelection(Checkbox selectedCheckbox,boolean eventFiredFromCheckbox) {
         TristateModel selectedModel = selectedCheckbox.getValue();
+        boolean isExclusionRuleApplyOnMultiple =
+            isCheckExclusionRuleApplyOnMultiple(selectedCheckbox, eventFiredFromCheckbox, selectedModel);
+        if (isExclusionRuleApplyOnMultiple) {
+            findExcludedItems(selectedCheckbox);
+        }
         if (!selectedModel.isCoSelectable()) {
             for (Listitem item : listbox.getItems()) {
                 Checkbox listItemCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
                 TristateModel listItemModel = listItemCheckbox.getValue();
+                if (isExclusionRuleApplyOnMultiple && excludeSelectedItems.contains(listItemCheckbox.getUuid())) {
+                    continue;
+                }
 
                 if (!listItemModel.isCoSelectable() && !selectedCheckbox.equals(listItemCheckbox)) {
                     listItemModel.setState(UNCHECKED);
@@ -179,5 +190,31 @@ public class TristateItemRenderer implements ListitemRenderer {
                 }
             }
         }
+    }
+
+    private boolean isCheckExclusionRuleApplyOnMultiple(Checkbox selectedCheckbox, boolean eventFiredFromCheckbox,
+                                                        TristateModel selectedModel) {
+        return multiSelected && ((eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.CHECKED)
+            && selectedModel.getState() == INDETERMINATE)
+            || (!eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.INDETERMINATE)
+            && selectedModel.getState() == INDETERMINATE));
+    }
+
+    private void findExcludedItems(Checkbox checkbox) {
+        excludeSelectedItems.clear();
+        if (listbox.getItems() != null) {
+            for (Listitem item : listbox.getItems()) {
+                Checkbox currentItemsCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
+                if (currentItemsCheckbox.getUuid() != null
+                    && !currentItemsCheckbox.getUuid().equals(checkbox.getUuid())
+                    && (currentItemsCheckbox.isChecked() || currentItemsCheckbox.isIndeterminate())) {
+                    excludeSelectedItems.add(currentItemsCheckbox.getUuid());
+                }
+            }
+        }
+    }
+
+    public void setMultiUserSelected(boolean multiSelected) {
+        this.multiSelected = multiSelected;
     }
 }
