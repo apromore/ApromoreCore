@@ -885,7 +885,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             } else {
                 assignedRoleItemRenderer.setForceTwoState(false);
                 assignedGroupItemRenderer.setForceTwoState(false);
-                if(users.size() > 1){
+                if (users.size() > 1) {
                     assignedRoleItemRenderer.setMultiUserSelected(true);
                     assignedGroupItemRenderer.setMultiUserSelected(true);
                 }

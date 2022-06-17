@@ -42,8 +42,8 @@ public class TristateItemRenderer implements ListitemRenderer {
     public TristateListbox list;
     public boolean forceTwoState = false;
     public boolean disabled = false;
-    private boolean multiSelected=false;
-    private final List<String> excludeSelectedItems=new ArrayList<>();
+    private boolean multiSelected = false;
+    private final List<String> excludeSelectedItems = new ArrayList<>();
     private Listbox listbox;
 
     public void setList(TristateListbox list) {
@@ -195,8 +195,7 @@ public class TristateItemRenderer implements ListitemRenderer {
     private boolean isCheckExclusionRuleApplyOnMultiple(Checkbox selectedCheckbox, boolean eventFiredFromCheckbox,
                                                         TristateModel selectedModel) {
         return multiSelected && ((eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.CHECKED)
-            && selectedModel.getState() == INDETERMINATE
-        )
+            && selectedModel.getState() == INDETERMINATE)
             || (!eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.INDETERMINATE)
             && selectedModel.getState() == INDETERMINATE));
     }
@@ -206,9 +205,9 @@ public class TristateItemRenderer implements ListitemRenderer {
         if (listbox.getItems() != null) {
             for (Listitem item : listbox.getItems()) {
                 Checkbox currentItemsCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
-                if (currentItemsCheckbox.getUuid() != null &&
-                    !currentItemsCheckbox.getUuid().equals(checkbox.getUuid()) &&
-                    (currentItemsCheckbox.isChecked() || currentItemsCheckbox.isIndeterminate())) {
+                if (currentItemsCheckbox.getUuid() != null
+                    && !currentItemsCheckbox.getUuid().equals(checkbox.getUuid())
+                    && (currentItemsCheckbox.isChecked() || currentItemsCheckbox.isIndeterminate())) {
                     excludeSelectedItems.add(currentItemsCheckbox.getUuid());
                 }
             }
@@ -216,6 +215,6 @@ public class TristateItemRenderer implements ListitemRenderer {
     }
 
     public void setMultiUserSelected(boolean multiSelected) {
-        this.multiSelected=multiSelected;
+        this.multiSelected = multiSelected;
     }
 }
