@@ -21,6 +21,10 @@
  */
 package org.apromore.apmlog.filter.types;
 
+/**
+ * @author Chii Chang
+ * modified: 2022-06-16 by Chii Chang
+ */
 public enum FilterType {
 
     // =====================================================================
@@ -56,6 +60,8 @@ public enum FilterType {
     EVENT_ATTRIBUTE_DURATION("EVENT_ATTRIBUTE_DURATION"),
     ATTRIBUTE_ARC_DURATION("ATTRIBUTE_ARC_DURATION"),
     CASE_LENGTH("CASE_LENGTH"),
+    CASE_COST("CASE_COST"),
+    NODE_COST("NODE_COST"),
 
     // path
     DIRECT_FOLLOW("DIRECT_FOLLOW"),
@@ -101,8 +107,20 @@ public enum FilterType {
             case BETWEEN: return "Between";
             case DIRECT_FOLLOW: return "Directly-follows";
             case EVENTUAL_FOLLOW: return "Eventually-follows";
+            case CASE_COST: return "Case cost";
+            case NODE_COST: return "Node cost";
             default: return this.stringValue;
         }
     }
 
+    public static boolean isCaseFilter(FilterType filterType) {
+        switch (filterType) {
+            case EVENT_EVENT_ATTRIBUTE:
+            case EVENT_TIME:
+            case BETWEEN:
+                return false;
+            default:
+                return true;
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class TristateItemRenderer implements ListitemRenderer {
     public TristateListbox list;
     public boolean forceTwoState = false;
     public boolean disabled = false;
-
+    private boolean multiSelected = false;
     private Listbox listbox;
 
     public void setList(TristateListbox list) {
@@ -167,10 +167,16 @@ public class TristateItemRenderer implements ListitemRenderer {
      */
     public void updateExistingSelection(Checkbox selectedCheckbox) {
         TristateModel selectedModel = selectedCheckbox.getValue();
+
+        boolean isExclusionRuleApplyOnMultiple = multiSelected && selectedModel.getState() == INDETERMINATE;
+
         if (!selectedModel.isCoSelectable()) {
             for (Listitem item : listbox.getItems()) {
                 Checkbox listItemCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
                 TristateModel listItemModel = listItemCheckbox.getValue();
+                if (isExclusionRuleApplyOnMultiple && !listItemCheckbox.getUuid().equals(selectedCheckbox.getUuid())) {
+                    continue;
+                }
 
                 if (!listItemModel.isCoSelectable() && !selectedCheckbox.equals(listItemCheckbox)) {
                     listItemModel.setState(UNCHECKED);
@@ -179,5 +185,9 @@ public class TristateItemRenderer implements ListitemRenderer {
                 }
             }
         }
+    }
+
+    public void setMultiUserSelected(boolean multiSelected) {
+        this.multiSelected = multiSelected;
     }
 }
