@@ -81,7 +81,7 @@ public class TristateItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Checkbox checkbox = (Checkbox) event.getTarget();
-                rotateState(checkbox,true);
+                rotateState(checkbox);
             }
         });
 
@@ -91,7 +91,7 @@ public class TristateItemRenderer implements ListitemRenderer {
                 public void onEvent(Event event) throws Exception {
                     Listitem listitem = (Listitem) event.getTarget();
                     Checkbox checkbox = (Checkbox) listitem.getChildren().get(0).getFirstChild();
-                    rotateState(checkbox,false);
+                    rotateState(checkbox);
                 }
             });
         }
@@ -113,9 +113,9 @@ public class TristateItemRenderer implements ListitemRenderer {
         }
     }
 
-    public void rotateState(Checkbox checkbox,boolean eventFiredFromCheckbox) {
+    public void rotateState(Checkbox checkbox) {
         TristateModel model = checkbox.getValue();
-        updateExistingSelection(checkbox,eventFiredFromCheckbox);
+        updateExistingSelection(checkbox);
         Listitem listitem = (Listitem) checkbox.getParent().getParent();
         int index = listitem.getIndex();
 
@@ -168,18 +168,16 @@ public class TristateItemRenderer implements ListitemRenderer {
      *
      * @param selectedCheckbox the checkbox of the selected list item.
      */
-    public void updateExistingSelection(Checkbox selectedCheckbox,boolean eventFiredFromCheckbox) {
+    public void updateExistingSelection(Checkbox selectedCheckbox) {
         TristateModel selectedModel = selectedCheckbox.getValue();
-        boolean isExclusionRuleApplyOnMultiple =
-            isCheckExclusionRuleApplyOnMultiple(selectedCheckbox, eventFiredFromCheckbox, selectedModel);
-        if (isExclusionRuleApplyOnMultiple) {
-            findExcludedItems(selectedCheckbox);
-        }
+
+        boolean isExclusionRuleApplyOnMultiple = multiSelected && selectedModel.getState() == INDETERMINATE;
+
         if (!selectedModel.isCoSelectable()) {
             for (Listitem item : listbox.getItems()) {
                 Checkbox listItemCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
                 TristateModel listItemModel = listItemCheckbox.getValue();
-                if (isExclusionRuleApplyOnMultiple && excludeSelectedItems.contains(listItemCheckbox.getUuid())) {
+                if (isExclusionRuleApplyOnMultiple && !listItemCheckbox.getUuid().equals(selectedCheckbox.getUuid())) {
                     continue;
                 }
 
@@ -187,28 +185,6 @@ public class TristateItemRenderer implements ListitemRenderer {
                     listItemModel.setState(UNCHECKED);
                     listItemCheckbox.setIndeterminate(false);
                     listItemCheckbox.setChecked(false);
-                }
-            }
-        }
-    }
-
-    private boolean isCheckExclusionRuleApplyOnMultiple(Checkbox selectedCheckbox, boolean eventFiredFromCheckbox,
-                                                        TristateModel selectedModel) {
-        return multiSelected && ((eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.CHECKED)
-            && selectedModel.getState() == INDETERMINATE)
-            || (!eventFiredFromCheckbox && selectedCheckbox.getState().equals(Checkbox.State.INDETERMINATE)
-            && selectedModel.getState() == INDETERMINATE));
-    }
-
-    private void findExcludedItems(Checkbox checkbox) {
-        excludeSelectedItems.clear();
-        if (listbox.getItems() != null) {
-            for (Listitem item : listbox.getItems()) {
-                Checkbox currentItemsCheckbox = (Checkbox) item.getChildren().get(0).getFirstChild();
-                if (currentItemsCheckbox.getUuid() != null
-                    && !currentItemsCheckbox.getUuid().equals(checkbox.getUuid())
-                    && (currentItemsCheckbox.isChecked() || currentItemsCheckbox.isIndeterminate())) {
-                    excludeSelectedItems.add(currentItemsCheckbox.getUuid());
                 }
             }
         }
