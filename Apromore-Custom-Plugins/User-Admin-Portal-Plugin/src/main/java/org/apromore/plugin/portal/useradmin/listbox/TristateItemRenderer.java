@@ -22,8 +22,6 @@
 
 package org.apromore.plugin.portal.useradmin.listbox;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -43,7 +41,6 @@ public class TristateItemRenderer implements ListitemRenderer {
     public boolean forceTwoState = false;
     public boolean disabled = false;
     private boolean multiSelected = false;
-    private final List<String> excludeSelectedItems = new ArrayList<>();
     private Listbox listbox;
 
     public void setList(TristateListbox list) {
