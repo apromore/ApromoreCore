@@ -104,14 +104,13 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
     }
 
     private static String getDisplayNameWithRole(String displayName, UserType userType) {
-        String roleName = "";
+        StringBuilder roleName = new StringBuilder();
         if (userType.getRoles() != null) {
             for (RoleType role : userType.getRoles()) {
-                roleName += DefaultRoles.getInstance().getRoleDisplayByName(role.getName()) + ", ";
+                roleName.append(DefaultRoles.getInstance().getRoleDisplayByName(role.getName()) + ", ");
             }
-            if (!roleName.isEmpty()) {
-                roleName = roleName.substring(0, roleName.length() - 2);
-                displayName = displayName + " - " + roleName.toUpperCase();
+            if (roleName.length() > 0) {
+                displayName = displayName + " - " + (roleName.substring(0, roleName.length() - 2)).toUpperCase();
             }
         }
         return displayName;

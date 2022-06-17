@@ -34,21 +34,18 @@ public class DefaultRoles implements LabelSupplier {
     private final Map<String, String> roleMap;
 
     private DefaultRoles() {
-        roleMap = new HashMap<>() {
-            {
-                put("ROLE_ADMIN", getLabel("role_admin_text", "Administrator"));
-                put("ROLE_SUPERUSER", getLabel("role_super_admin_text", "Superuser"));
-                put("ROLE_MANAGER", getLabel("role_manager_text", "Manager"));
-                put("ROLE_ANALYST", getLabel("role_analyst_text", "Analyst"));
-                put("ROLE_VIEWER", getLabel("role_viewer_text", "Viewer"));
-                put("ROLE_DESIGNER", getLabel("role_designer_text", "Designer"));
-                put("ROLE_DATA_ENGINEER", getLabel("role_data_engineer_text", "Data Engineer"));
-                put("ROLE_DATA_SCIENTIST", getLabel("role_data_scientist_text", "Data Scientist"));
-                put("ROLE_OPERATIONS", getLabel("role_operations_text", "Operations"));
-                put("ROLE_INTEGRATOR", getLabel("role_integrator_text", "Integrator"));
-                put("ROLE_VIEWER_MODELS", getLabel("role_viewer_models_text", "Viewer (models)"));
-            }
-        };
+        roleMap = new HashMap<>();
+        roleMap.put("ROLE_ADMIN", getLabel("role_admin_text", "Administrator"));
+        roleMap.put("ROLE_SUPERUSER", getLabel("role_super_admin_text", "Superuser"));
+        roleMap.put("ROLE_MANAGER", getLabel("role_manager_text", "Manager"));
+        roleMap.put("ROLE_ANALYST", getLabel("role_analyst_text", "Analyst"));
+        roleMap.put("ROLE_VIEWER", getLabel("role_viewer_text", "Viewer"));
+        roleMap.put("ROLE_DESIGNER", getLabel("role_designer_text", "Designer"));
+        roleMap.put("ROLE_DATA_ENGINEER", getLabel("role_data_engineer_text", "Data Engineer"));
+        roleMap.put("ROLE_DATA_SCIENTIST", getLabel("role_data_scientist_text", "Data Scientist"));
+        roleMap.put("ROLE_OPERATIONS", getLabel("role_operations_text", "Operations"));
+        roleMap.put("ROLE_INTEGRATOR", getLabel("role_integrator_text", "Integrator"));
+        roleMap.put("ROLE_VIEWER_MODELS", getLabel("role_viewer_models_text", "Viewer (models)"));
     }
 
     public static DefaultRoles getInstance() {
