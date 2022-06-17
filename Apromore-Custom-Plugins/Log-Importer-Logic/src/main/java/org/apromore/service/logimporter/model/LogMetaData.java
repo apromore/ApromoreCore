@@ -131,7 +131,7 @@ public class LogMetaData {
         if (header.size() != count) {
             throw new InvalidLogMetadataException(
                 "Failed to construct valid log sample!  Only specified attribute type for " + count + " of "
-                    + header.size() + " headers: " + header);
+                + header.size() + " headers: " + header);
         }
 
         List<Integer> indexList = new ArrayList<>();
@@ -141,7 +141,7 @@ public class LogMetaData {
         indexList.addAll(timestampAttributesPos);
 
         int dateTypeCount = stringAttributesPos.size() + integerAttributesPos.size() + doubleAttributesPos.size()
-            + timestampAttributesPos.size();
+                            + timestampAttributesPos.size();
 
         if (dateTypeCount != count) {
             List<Integer> missingIndexList = findMissingIndex(indexList, dateTypeCount);
@@ -180,7 +180,7 @@ public class LogMetaData {
                     result.add(header.get(i));
                 } else {
                     throw new InvalidLogMetadataException("Found invalid Log Metadata that eventAttributesPos doesn't"
-                        + " match with perspectivePos");
+                                                          + " match with perspectivePos");
                 }
             }
         }
@@ -215,5 +215,23 @@ public class LogMetaData {
         this.getIgnoredPos().forEach(integer -> colPositionToAttributeType.put(integer, IGNORED_ATTRIBUTE));
 
         return colPositionToAttributeType;
+    }
+
+    public Map<Integer, String> getColumnTimestampFormats() {
+        Map<Integer, String> colPositionToTimestampFormat = new HashMap<>();
+
+        if (this.getStartTimestampPos() != HEADER_ABSENT) {
+            colPositionToTimestampFormat.put(getStartTimestampPos(), getStartTimestampFormat());
+        }
+
+        if (this.getEndTimestampPos() != HEADER_ABSENT) {
+            colPositionToTimestampFormat.put(getEndTimestampPos(), getEndTimestampFormat());
+        }
+
+        if (otherTimestamps != null && !otherTimestamps.isEmpty()) {
+            colPositionToTimestampFormat.putAll(otherTimestamps);
+        }
+
+        return colPositionToTimestampFormat;
     }
 }
