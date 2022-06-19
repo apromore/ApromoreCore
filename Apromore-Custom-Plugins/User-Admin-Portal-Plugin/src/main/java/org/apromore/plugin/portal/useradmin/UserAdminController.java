@@ -854,6 +854,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         confirmPasswordTextbox.setValue("");
         assignedRoleItemRenderer.setDisabled(false);
         assignedGroupItemRenderer.setDisabled(false);
+        assignedRoleItemRenderer.setMultiUserSelected(false);
+        assignedGroupItemRenderer.setMultiUserSelected(false);
         assignedRoleList.reset();
         assignedGroupList.reset();
         assignedRoleListbox.setDisabled(false);
@@ -883,7 +885,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             } else {
                 assignedRoleItemRenderer.setForceTwoState(false);
                 assignedGroupItemRenderer.setForceTwoState(false);
+                if (users.size() > 1) {
+                    assignedRoleItemRenderer.setMultiUserSelected(true);
+                    assignedGroupItemRenderer.setMultiUserSelected(true);
+                }
             }
+
         } else {
             selectedUser = users.iterator().next();
             selectedUsers = users;

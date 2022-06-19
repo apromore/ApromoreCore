@@ -1871,3 +1871,17 @@ databaseChangeLog:
            referencedColumnNames: id
            referencedTableName: physical_log
            validate: true
+
+ - changeSet:
+     id: 20220610090000
+     author: lahirumahanama
+     changes:
+       - addColumn:
+           tableName: logical_log_attribute
+           columns:
+             - column:
+                 name: is_perspective
+                 type: BOOLEAN
+                 constraints:
+                   nullable: false
+                 remarks: 'Indicator as to whether the attribute can be used as a perspective'

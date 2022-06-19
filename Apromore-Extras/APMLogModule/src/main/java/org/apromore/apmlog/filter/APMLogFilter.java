@@ -59,6 +59,8 @@ import org.apromore.apmlog.filter.typefilters.NodeDurationFilter;
 import org.apromore.apmlog.filter.typefilters.PathFilter;
 import org.apromore.apmlog.filter.typefilters.ReworkFilter;
 import org.apromore.apmlog.filter.typefilters.between.BetweenFilter;
+import org.apromore.apmlog.filter.typefilters.costfilters.CaseCostFilter;
+import org.apromore.apmlog.filter.typefilters.costfilters.NodeCostFilter;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
@@ -202,6 +204,12 @@ public class APMLogFilter {
                         break;
                     case BETWEEN:
                         traces = BetweenFilter.filter(traces, rule);
+                        break;
+                    case CASE_COST:
+                        traces = CaseCostFilter.filter(traces, rule);
+                        break;
+                    case NODE_COST:
+                        traces = NodeCostFilter.filter(traces, rule);
                         break;
                     default:
                         break;
