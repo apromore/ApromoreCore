@@ -40,6 +40,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1110,13 +1111,35 @@ public class ProcessServiceImpl implements ProcessService {
    */
   private boolean isProcessLinked(int linkedFromProcessId, int linkedToProcessId, String username)
       throws UserNotFoundException {
+    return isProcessLinked(linkedFromProcessId, linkedToProcessId, Collections.emptyList(), username);
+  }
+
+  /**
+   * Check if the processes are linked.
+   * @param linkedFromProcessId
+   * @param linkedToProcessId
+   * @param checkedIds ids of processes that have already been checked. Used to avoid endless loops.
+   * @return true if the linkedFromProcessId contains a link to linkedToProcessId.
+   */
+  private boolean isProcessLinked(int linkedFromProcessId, int linkedToProcessId, List<Integer> checkedIds, String username)
+      throws UserNotFoundException {
 
     if (linkedToProcessId == linkedFromProcessId) {
       return true;
     }
 
+    List<Integer> checkedIdsCopy = new ArrayList<>(checkedIds);
+    if (!checkedIdsCopy.contains(linkedFromProcessId)) {
+      checkedIdsCopy.add(linkedFromProcessId);
+    }
+
     for (int linkedProcessId : getLinkedProcesses(linkedFromProcessId, username).values()) {
-      if (isProcessLinked(linkedProcessId, linkedToProcessId, username)) {
+      if (checkedIdsCopy.contains(linkedProcessId)) {
+        //Skip if this id has already been checked
+        continue;
+      }
+
+      if (isProcessLinked(linkedProcessId, linkedToProcessId, checkedIdsCopy, username)) {
         return true;
       }
     }
