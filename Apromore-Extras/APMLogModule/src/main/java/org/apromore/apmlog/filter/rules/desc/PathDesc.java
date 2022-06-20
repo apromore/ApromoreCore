@@ -30,6 +30,7 @@ import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.util.TimeUtil;
+import org.apromore.apmlog.xes.XESAttributeCodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.Set;
 /**
  * @author Chii Chang
  * modified: 2022-05-30 by Chii Chang
+ * modified: 2022-06-03 by Chii Chang
  */
 public class PathDesc extends AttributeDesc{
 
@@ -183,22 +185,22 @@ public class PathDesc extends AttributeDesc{
 
         switch (operationType) {
             case EQUAL:
-                operationText = "and have same ";
+                operationText = getAttributeConstraintDesc(reqKey, "Equal to ");
                 break;
             case NOT_EQUAL:
-                operationText = "and have different ";
+                operationText = getAttributeConstraintDesc(reqKey, "Different than ");
                 break;
             case GREATER:
-                operationText = getAttributeConstraintDesc(reqKey, "greater than the ");
+                operationText = getAttributeConstraintDesc(reqKey, "Greater than ");
                 break;
             case GREATER_EQUAL:
-                operationText = getAttributeConstraintDesc(reqKey, "greater than equal to the ");
+                operationText = getAttributeConstraintDesc(reqKey, "Greater than or Equal to ");
                 break;
             case LESS:
-                operationText = getAttributeConstraintDesc(reqKey, "less than the ");
+                operationText = getAttributeConstraintDesc(reqKey, "Less than ");
                 break;
             case LESS_EQUAL:
-                operationText = getAttributeConstraintDesc(reqKey, "less than equal to the ");
+                operationText = getAttributeConstraintDesc(reqKey, "Less than or Equal to ");
                 break;
             default:
                 operationText = "";
@@ -209,14 +211,15 @@ public class PathDesc extends AttributeDesc{
     }
 
     private static String getAttributeConstraintDesc(String reqKey, String input) {
-        return "and the '" + reqKey + "' of source node is " + input + "'" + reqKey + "' of target node";
+        return "and the '" + reqKey + "' in the From node is " + input + "that in the To node";
     }
 
     public static AttributeConstraint getAttributeConstraint(Set<RuleValue> secondaryValues) {
         Set<OperationType> types = Set.of(OperationType.EQUAL, OperationType.NOT_EQUAL);
         return secondaryValues.stream()
                 .filter(x -> types.contains(x.getOperationType()))
-                .map(x -> new AttributeConstraint(x.getKey(), x.getOperationType()))
+                .map(x -> new AttributeConstraint(XESAttributeCodes.getDisplayLabelForSingle(x.getKey()),
+                        x.getOperationType()))
                 .findFirst()
                 .orElse(null);
     }

@@ -50,6 +50,7 @@ import org.apromore.plugin.portal.useradmin.listbox.TristateItemRenderer;
 import org.apromore.plugin.portal.useradmin.listbox.TristateListbox;
 import org.apromore.plugin.portal.useradmin.listbox.TristateModel;
 import org.apromore.plugin.portal.useradmin.listbox.UserListbox;
+import org.apromore.portal.common.security.DefaultRoles;
 import org.apromore.portal.common.zk.ComponentUtils;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.types.EventQueueEvents;
@@ -109,21 +110,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
     private static final String ROLE_PERMISSION_WINDOW = "zul/edit-role-permission.zul";
     private static final List<String> CO_SELECTABLE_ROLES = Collections.singletonList("ROLE_INTEGRATOR");
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(UserAdminController.class);
-    private Map<String, String> roleMap = new HashMap<>() {
-        {
-            put("ROLE_ADMIN", getLabel("role_admin_text", "Administrator"));
-            put("ROLE_SUPERUSER", getLabel("role_super_admin_text", "Superuser"));
-            put("ROLE_MANAGER", getLabel("role_manager_text", "Manager"));
-            put("ROLE_ANALYST", getLabel("role_analyst_text", "Analyst"));
-            put("ROLE_VIEWER", getLabel("role_viewer_text", "Viewer"));
-            put("ROLE_DESIGNER", getLabel("role_designer_text", "Designer"));
-            put("ROLE_DATA_ENGINEER", getLabel("role_data_engineer_text", "Data Engineer"));
-            put("ROLE_DATA_SCIENTIST", getLabel("role_data_scientist_text", "Data Scientist"));
-            put("ROLE_OPERATIONS", getLabel("role_operations_text", "Operations"));
-            put("ROLE_INTEGRATOR", getLabel("role_integrator_text", "Integrator"));
-            put("ROLE_VIEWER_MODELS", getLabel("role_viewer_models_text", "Viewer (models)"));
-        }
-    };
+    private final Map<String, String> roleMap = DefaultRoles.getInstance().getRoles();
 
     private Comparator userComparator = new Comparator() {
         @Override
@@ -854,6 +841,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         confirmPasswordTextbox.setValue("");
         assignedRoleItemRenderer.setDisabled(false);
         assignedGroupItemRenderer.setDisabled(false);
+        assignedRoleItemRenderer.setMultiUserSelected(false);
+        assignedGroupItemRenderer.setMultiUserSelected(false);
         assignedRoleList.reset();
         assignedGroupList.reset();
         assignedRoleListbox.setDisabled(false);
@@ -883,7 +872,12 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             } else {
                 assignedRoleItemRenderer.setForceTwoState(false);
                 assignedGroupItemRenderer.setForceTwoState(false);
+                if (users.size() > 1) {
+                    assignedRoleItemRenderer.setMultiUserSelected(true);
+                    assignedGroupItemRenderer.setMultiUserSelected(true);
+                }
             }
+
         } else {
             selectedUser = users.iterator().next();
             selectedUsers = users;

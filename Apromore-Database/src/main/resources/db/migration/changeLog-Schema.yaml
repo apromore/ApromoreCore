@@ -1569,3 +1569,319 @@ databaseChangeLog:
              - column:
                  name: hive_table_name
                  type: varchar(255)
+
+ - changeSet:
+     id: 20220523145001
+     author: lahirumahanama
+     changes:
+       - dropColumn:
+           tableName: log
+           columns:
+             - column:
+                name: hive_table_name
+
+ - changeSet:
+     id: 20220606090000
+     author: lahirumahanama
+     changes:
+       - createTable:
+           tableName: attribute_type
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_attribute_type_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: true
+                 name: type
+                 type: VARCHAR(40)
+                 remarks: 'attribute type name'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: created_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The creation timestamp of this record'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: updated_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The updated timestamp of this record'
+
+       - createTable:
+           tableName: data_type
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_data_type_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: true
+                 name: type
+                 type: VARCHAR(40)
+                 remarks: 'data type name'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: created_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The creation timestamp of this record'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: updated_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The updated timestamp of this record'
+
+       - createTable:
+           tableName: logical_log_attribute
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_logical_log_attribute_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: false
+                 name: event_log_id
+                 type: INT
+                 remarks: 'FK Log Id'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: attribute_index
+                 type: INT
+                 remarks: 'Index of an attribute in the log'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: logical_name
+                 type: VARCHAR(255)
+                 remarks: 'Logical name of an attribute'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: attribute_type_id
+                 type: BIGINT
+                 remarks: 'FK Attribute Type Id'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: data_type_id
+                 type: BIGINT
+                 remarks: 'FK Data Type Id'
+             - column:
+                 constraints:
+                   nullable: true
+                 name: date_format
+                 type: VARCHAR(64)
+                 remarks: 'Date format for date type attributes'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: is_masked
+                 type: BOOLEAN
+                 remarks: 'Data masked indicator'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: created_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The creation timestamp of this record'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: updated_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The updated timestamp of this record'
+       - addForeignKeyConstraint:
+           baseColumnNames: event_log_id
+           baseTableName: logical_log_attribute
+           constraintName: FK_logical_log_attribute_event_log_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: log
+           validate: true
+       - addForeignKeyConstraint:
+           baseColumnNames: attribute_type_id
+           baseTableName: logical_log_attribute
+           constraintName: FK_logical_log_attribute_attribute_type_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: attribute_type
+           validate: true
+       - addForeignKeyConstraint:
+           baseColumnNames: data_type_id
+           baseTableName: logical_log_attribute
+           constraintName: FK_logical_log_attribute_data_type_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: data_type
+           validate: true
+
+       - createTable:
+           tableName: physical_log_attribute
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_physical_log_attribute_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: false
+                 name: logical_attribute_id
+                 type: BIGINT
+                 remarks: 'FK logical attribute Id'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: physical_name
+                 type: VARCHAR(255)
+                 remarks: 'Physical name of an attribute in parquet'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: created_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The creation timestamp of this record'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: updated_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The updated timestamp of this record'
+       - addForeignKeyConstraint:
+           baseColumnNames: logical_attribute_id
+           baseTableName: physical_log_attribute
+           constraintName: FK_physical_log_attribute_logical_attribute_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: logical_log_attribute
+           validate: true
+
+       - createTable:
+           tableName: physical_log
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_physical_log_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: false
+                 name: catalogue_table_name
+                 type: VARCHAR(255)
+                 remarks: 'The table name stored in hive'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: file_location
+                 type: VARCHAR(255)
+                 remarks: 'Absolute path of the corresponding parquet files'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: created_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The creation timestamp of this record'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: updated_timestamp
+                 type: TIMESTAMP
+                 remarks: 'The updated timestamp of this record'
+
+       - createTable:
+           tableName: log_physical_log
+           columns:
+             - column:
+                 autoIncrement: true
+                 constraints:
+                   nullable: false
+                   primaryKey: true
+                   primaryKeyName: pk_log_physical_log_id
+                 name: id
+                 type: BIGINT
+             - column:
+                 constraints:
+                   nullable: false
+                 name: log_id
+                 type: INT
+                 remarks: 'FK Log Id'
+             - column:
+                 constraints:
+                   nullable: false
+                 name: physical_log_id
+                 type: BIGINT
+                 remarks: 'FK Physical Log Id'
+       - addForeignKeyConstraint:
+           baseColumnNames: log_id
+           baseTableName: log_physical_log
+           constraintName: FK_log_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: log
+           validate: true
+       - addForeignKeyConstraint:
+           baseColumnNames: physical_log_id
+           baseTableName: log_physical_log
+           constraintName: FK_physical_log_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           onUpdate: CASCADE
+           referencedColumnNames: id
+           referencedTableName: physical_log
+           validate: true
+
+ - changeSet:
+     id: 20220610090000
+     author: lahirumahanama
+     changes:
+       - addColumn:
+           tableName: logical_log_attribute
+           columns:
+             - column:
+                 name: is_perspective
+                 type: BOOLEAN
+                 constraints:
+                   nullable: false
+                 remarks: 'Indicator as to whether the attribute can be used as a perspective'

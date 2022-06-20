@@ -35,12 +35,14 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.portal.common.LabelConstants;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.common.security.DefaultRoles;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.menu.MenuConfig;
 import org.apromore.portal.menu.MenuConfigLoader;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.menu.MenuGroup;
 import org.apromore.portal.menu.MenuItem;
+import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
 import org.apromore.service.EventLogService;
 import org.slf4j.Logger;
@@ -89,13 +91,27 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         String firstName = userType.getFirstName();
         String lastName = userType.getLastName();
 
-        if (Strings.isNullOrEmpty(firstName)) {
-            displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
+        if (!Strings.isNullOrEmpty(firstName)) {
+            displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : firstName + " " + lastName;
         } else {
-            displayName = (Strings.isNullOrEmpty(lastName)) ? firstName : lastName + ", " + firstName;
+            displayName = (Strings.isNullOrEmpty(lastName)) ? userType.getUsername() : lastName;
         }
         if (LabelConstants.TRUE.equals(Labels.getLabel(LabelConstants.IS_DISPLAYNAME_CAPITALIZED))) {
             displayName = displayName.toUpperCase();
+        }
+        displayName = getDisplayNameWithRole(displayName, userType);
+        return displayName;
+    }
+
+    private static String getDisplayNameWithRole(String displayName, UserType userType) {
+        StringBuilder roleName = new StringBuilder();
+        if (userType.getRoles() != null) {
+            for (RoleType role : userType.getRoles()) {
+                roleName.append(DefaultRoles.getInstance().getRoleDisplayByName(role.getName()) + ", ");
+            }
+            if (roleName.length() > 0) {
+                displayName = displayName + " - " + (roleName.substring(0, roleName.length() - 2)).toUpperCase();
+            }
         }
         return displayName;
     }
@@ -229,6 +245,9 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
             String groupLabel = getGroupLabel(menuGroup);
             Menu menu = new Menu(groupLabel);
             menu.setClientDataAttribute(GROUP, menuGroup.getId());
+            if (menuGroup.getId().equals("ACCOUNT")) {
+                menu.setTooltiptext(groupLabel);
+            }
             Menupopup popup = new Menupopup();
             for (MenuItem menuItem : items) {
                 addMenuitem(popup, menuItem);

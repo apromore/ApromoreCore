@@ -139,29 +139,37 @@ class BPMNDocumentHelperUnitTest {
 
             String xmlBeforeReplace = BPMNDocumentHelper.getXMLString(document);
 
+            //Check elements before replace
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).isEmpty();
+
             Node subProcessNode = BPMNDocumentHelper.getBPMNElements(document, "subProcess").get(0);
             BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2);
 
-            String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
-            String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "<bpmn:definitions>"
-                + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
-                + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
-                + "<extensionElements/><incoming/><outgoing/>"
-                + "<task id=\"sp1_link_t1\"><incoming>sp1_edge1</incoming><outgoing>sp1_edge2</outgoing></task>"
-                + "<sequenceFlow id=\"sp1_edge1\"/>"
-                + "<sequenceFlow id=\"sp1_edge2\"/>"
-                + "</subProcess></process></bpmn>"
-                + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
-                + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
-                + "<bpmndi:BPMNShape bpmnElement=\"sp1_link_t1\"/>"
-                + "<bpmndi:BPMNEdge bpmnElement=\"sp1_edge1\"/>"
-                + "<bpmndi:BPMNEdge bpmnElement=\"sp1_edge2\"/>"
-                + "</bpmndi:BPMNPlane>"
-                + "</bpmndi:BPMNDiagram></bpmn:definitions>";
+            //Check elements after replace
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "startEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).hasSize(2);
 
-            assertThat(xmlAfterReplace).isEqualTo(expectedXML);
+            String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
+            Document document3 = BPMNDocumentHelper.getDocument(xmlAfterReplace);
+
+            assertThat(xmlAfterReplace).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             assertThat(xmlAfterReplace).isNotEqualTo(xmlBeforeReplace);
+            //Check that the xml created has the same elements as the original document
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "process")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "subProcess")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "startEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "endEvent")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "task")).hasSize(1);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "sequenceFlow")).hasSize(2);
 
         } catch (ParserConfigurationException | IOException | SAXException | ExportFormatException |
                  TransformerException e) {

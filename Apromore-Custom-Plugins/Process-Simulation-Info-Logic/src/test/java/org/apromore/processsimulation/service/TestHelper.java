@@ -102,7 +102,7 @@ public class TestHelper {
         if (includeTimetable) {
             builder.timetables(Arrays.asList(Timetable.builder()
                 .id("A_CUSTOM_TIMETABLE_ID")
-                .name("Generic 24/7")
+                .name("24/7")
                 .defaultTimetable(true)
                 .rules(Arrays.asList(Rule.builder()
                     .name("Default Timeslot")
@@ -148,7 +148,7 @@ public class TestHelper {
     public static SimulationData createMockSimulationData() {
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
-        mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
+        mockCalendarModel.setName("24/7");
 
         SimulationData simulationData = SimulationData.builder()
             .caseCount(100)

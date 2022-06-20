@@ -44,6 +44,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
@@ -92,9 +93,6 @@ public class Log implements Serializable {
     @Column(name = "createdate")
     private String createDate;
 
-    @Column(name = "hive_table_name")
-    private String hiveTableName;
-
     @ManyToOne
     @JoinColumn(name = "owner")
     private User user;
@@ -120,6 +118,17 @@ public class Log implements Serializable {
         joinColumns = @JoinColumn(name = "log_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "usermetadata_id", referencedColumnName = "id"))
     private Set<Usermetadata> usermetadataSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<LogicalLogAttribute> logAttributes;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "log_physical_log",
+        joinColumns =
+            { @JoinColumn(name = "log_id", referencedColumnName = "id") },
+        inverseJoinColumns =
+            { @JoinColumn(name = "physical_log_id", referencedColumnName = "id") })
+    private PhysicalLog physicalLog;
 
     public Log(Integer logId) {
         id = logId;

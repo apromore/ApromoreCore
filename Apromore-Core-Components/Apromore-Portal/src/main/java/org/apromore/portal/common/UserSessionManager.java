@@ -24,6 +24,8 @@
 
 package org.apromore.portal.common;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.naming.NamingEnumeration;
@@ -40,6 +42,7 @@ import org.apromore.portal.common.i18n.I18nSession;
 import org.apromore.portal.dialogController.UserAuthenticationHelper;
 import org.apromore.portal.dialogController.dto.ApromoreSession;
 import org.apromore.portal.model.UserType;
+import org.apromore.service.SecurityService;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -82,10 +85,35 @@ public abstract class UserSessionManager {
 	setAttribute(USER, user);
 	LOGGER.debug("Set user session current user attribute to {}", user == null ? null : user.getUsername());
 
+        // Update the user's "last active" field
+        if (user != null) {
+            try {
+                updateLastActivityDateForUser(user);
+
+            } catch (RuntimeException e) {
+                LOGGER.error("Unable to update last activity date for user \"{}\"", user.getUsername(), e);
+            }
+        }
+
 	// Broadcast that the user has changed for this ZK session, although not the
 	// changed value
 	EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, Sessions.getCurrent(), true)
 	        .publish(new Event(Constants.EVENT_QUEUE_SESSION_ATTRIBUTES, null, USER));
+    }
+
+    /**
+     * @param userType  also mutates the <var>lastActivityDate</var> property
+     */
+    private static void updateLastActivityDateForUser(UserType userType) {
+        Date now = new Date();
+
+        SecurityService securityService = (SecurityService) SpringUtil.getBean("securityService");
+        User user = securityService.getUserByName(userType.getUsername());
+        user.setLastActivityDate(now);
+        securityService.updateUser(user);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        userType.setLastActivityDate(format.format(now));
     }
 
     private static Object getAttribute(String attribute) {

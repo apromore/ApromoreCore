@@ -61,11 +61,6 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
       var selectedTimetableName = selectedTimetable && selectedTimetable.name || translate('N/A');
 
-      if (selectedTimetable.get('default') === 'true' && selectedTimetableName !== translate('arrivalTimetable.name')) {
-        var arrivalTimetableTag = ' [' + translate('arrivalTimetable.name') + ']';
-        selectedTimetableName = (selectedTimetable.name || translate('N/A')) + arrivalTimetableTag;
-      }
-
       option.text = selectedTimetableName;
     }
   });
