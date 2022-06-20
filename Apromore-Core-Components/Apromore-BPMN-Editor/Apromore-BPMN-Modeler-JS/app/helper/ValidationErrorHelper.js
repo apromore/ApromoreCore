@@ -1,6 +1,7 @@
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper'),
     ProcessSimulationHelper = require('./ProcessSimulationHelper'),
-    isDigit = require('../utils/Utils').isDigit;
+    isDigit = require('../utils/Utils').isDigit,
+    isValidNumber = require('../utils/Utils').isValidNumber;
 
 var ValidationErrorHelper = {};
 
@@ -96,7 +97,7 @@ ValidationErrorHelper.validateProcessInstances = function(bpmnFactory, elementRe
 
   if (!processInstances || processInstances.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(processInstances)) {
+  } else if (!isValidNumber(processInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (parseInt(processInstances).toString() !== processInstances) {
     message = translate('invalid.notInteger {element}', { element: label });
@@ -119,7 +120,7 @@ ValidationErrorHelper.validateTrimStartProcessInstances = function(bpmnFactory, 
       trimStartProcessInstances = options.trimStartProcessInstances,
       message;
 
-  if (trimStartProcessInstances !== undefined && !isDigit(trimStartProcessInstances)) {
+  if (trimStartProcessInstances !== undefined && !isValidNumber(trimStartProcessInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (trimStartProcessInstances < 0 || trimStartProcessInstances > 40) {
     message = translate('startExclude.invalid.message');
@@ -138,7 +139,7 @@ ValidationErrorHelper.validateTrimEndProcessInstances = function(bpmnFactory, el
       trimEndProcessInstances = options.trimEndProcessInstances,
       message;
 
-  if (trimEndProcessInstances !== undefined && !isDigit(trimEndProcessInstances)) {
+  if (trimEndProcessInstances !== undefined && !isValidNumber(trimEndProcessInstances)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (trimEndProcessInstances < 0 || trimEndProcessInstances > 40) {
     message = translate('endExclude.invalid.message');
@@ -159,11 +160,11 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
       mean = options.mean,
       message;
 
-  if (!mean || mean.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(mean)) {
+  if (!isValidNumber(mean)) {
     message = translate('invalid.notDigit {element}', { element: label });
-  } else if (distribution.type === 'TRIANGULAR') {
+  } else if (!mean || mean.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
+  }  else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(mean) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     }
@@ -188,10 +189,10 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
       arg1 = options.arg1,
       message;
 
-  if (!arg1 || arg1.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(arg1)) {
+  if (!isValidNumber(arg1)) {
     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (!arg1 || arg1.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(arg1) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
@@ -219,10 +220,10 @@ ValidationErrorHelper.validateDistributionArg2 = function(bpmnFactory, elementRe
       arg2 = options.arg2,
       message;
 
-  if (!arg2 || arg2.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(arg2)) {
+  if (!isValidNumber(arg2)) {
     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (!arg2 || arg2.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'UNIFORM' && parseFloat(distribution.arg1) > parseFloat(arg2)) {
     message = translate('distribution.invalid.greaterMin {element}', { element: label });
   }
@@ -312,7 +313,7 @@ ValidationErrorHelper.validateResourceNumber = function(bpmnFactory, elementRegi
 
   if (!totalAmount || totalAmount.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  } else if (!isDigit(totalAmount)) {
+  } else if (!isValidNumber(totalAmount)) {
     message = translate('invalid.notDigit {element}', { element: label });
   } else if (parseInt(totalAmount).toString() !== totalAmount) {
     message = translate('invalid.notInteger {element}', { element: label });
@@ -337,7 +338,7 @@ ValidationErrorHelper.validateResourceCostPerHour = function(bpmnFactory, elemen
 
   var message;
 
-  if (costPerHour && !isDigit(costPerHour)) {
+  if (costPerHour && !isValidNumber(costPerHour)) {
     message = translate('invalid.notDigit {element}', { element: label });
 
     resource && this.createValidationError(bpmnFactory, elementRegistry, {
@@ -361,7 +362,7 @@ ValidationErrorHelper.validateGatewayProbabilities = function(bpmnFactory, eleme
 
   if (!probability || probability.trim() === '') {
     errorMessage = translate('invalid.empty {element}', { element: description });
-  } else if (!isDigit(probability)) {
+  } else if (!isValidNumber(probability)) {
     errorMessage = translate('invalid.notDigit {element}', { element: description });
   } else if (probability < 0) {
     errorMessage = translate('invalid.notInteger {element}', { element: description });
