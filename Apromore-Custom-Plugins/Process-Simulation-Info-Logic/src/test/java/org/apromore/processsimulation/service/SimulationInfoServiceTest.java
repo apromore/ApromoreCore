@@ -126,7 +126,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
     }
 
     @Test
@@ -147,7 +147,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -170,7 +170,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -195,7 +195,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, false);
     }
@@ -211,13 +211,13 @@ class SimulationInfoServiceTest {
         processSimulationInfo.getTasks().forEach(element -> {
             switch (element.getElementId()) {
                 case "a":
-                    assertEquals("10.10", element.getDistributionDuration().getArg1());
+                    assertEquals(10.10, element.getDistributionDuration().getArg1());
                     break;
                 case "b":
-                    assertEquals("11.11", element.getDistributionDuration().getArg1());
+                    assertEquals(11.11, element.getDistributionDuration().getArg1());
                     break;
                 case "c":
-                    assertEquals("12.12", element.getDistributionDuration().getArg1());
+                    assertEquals(12.12, element.getDistributionDuration().getArg1());
                     break;
                 default:
                     fail("Unrecognised task identifier");
@@ -231,8 +231,8 @@ class SimulationInfoServiceTest {
                 assertTrue(element.getResourceIds().get(0)
                     .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
             }
-            assertNull(element.getDistributionDuration().getArg2());
-            assertNull(element.getDistributionDuration().getMean());
+            assertEquals(0.0, element.getDistributionDuration().getArg2());
+            assertEquals(0.0, element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
@@ -248,7 +248,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
@@ -287,7 +287,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("6624.00", processSimulationInfo);
+        assertGeneralSimulationInfo(6624.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(2, processSimulationInfo.getTimetables().size());
@@ -478,7 +478,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
         assertEquals(3, processSimulationInfo.getResources().size());
@@ -534,7 +534,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertEquals(1, processSimulationInfo.getResources().size());
         assertEquals("QBP_A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
@@ -585,7 +585,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e1", "e2", "e3", "e4", "e5"));
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e6", "e7", "e8"));
@@ -605,14 +605,14 @@ class SimulationInfoServiceTest {
                 .reduce(0.0D, Double::sum));
     }
 
-    private void assertGeneralSimulationInfo(String expectedArrivalRate,
+    private void assertGeneralSimulationInfo(Double expectedArrivalRate,
                                              final ProcessSimulationInfo actualProcessSimulationInfo) {
         assertNotNull(actualProcessSimulationInfo.getId());
         assertNotNull(actualProcessSimulationInfo.getErrors());
         assertEquals(100L, actualProcessSimulationInfo.getProcessInstances());
         assertEquals(expectedArrivalRate, actualProcessSimulationInfo.getArrivalRateDistribution().getArg1());
-        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
-        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, actualProcessSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, actualProcessSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
@@ -945,9 +945,9 @@ class SimulationInfoServiceTest {
 
         // then
         assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
-        String interArrivalTime = BigDecimal.valueOf(
+        Double interArrivalTime = BigDecimal.valueOf(
                 simulationInfoService.getInterArrivalTime(simulationData) / TimeUnit.SECONDS.getNumberOfMilliseconds())
-            .setScale(2, RoundingMode.HALF_UP).toString();
+            .setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         assertEquals(interArrivalTime, simulationInfo.getArrivalRateDistribution().getArg1());
     }
@@ -968,9 +968,9 @@ class SimulationInfoServiceTest {
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
-        assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
-        assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
+        assertEquals(26784.00, Double.parseDouble(arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue()));
+        assertNotNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
+        assertNotNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
             arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
 
@@ -1007,8 +1007,8 @@ class SimulationInfoServiceTest {
         assertEquals(elementId, elementNode.getAttributes().getNamedItem("elementId").getNodeValue());
         assertEquals(distributionType, elementNode.getFirstChild().getAttributes().getNamedItem("type").getNodeValue());
         assertEquals(arg1, elementNode.getFirstChild().getAttributes().getNamedItem("arg1").getNodeValue());
-        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
-        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
+        assertNotNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
+        assertNotNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
         assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
 
     }
