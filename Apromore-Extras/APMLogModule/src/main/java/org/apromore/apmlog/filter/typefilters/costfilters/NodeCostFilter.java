@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @UtilityClass
 public class NodeCostFilter {
@@ -68,21 +67,26 @@ public class NodeCostFilter {
         double minCost = logFilterRule.getPrimaryNumericValueByOperationType(OperationType.GREATER_EQUAL).doubleValue();
         double maxCost = logFilterRule.getPrimaryNumericValueByOperationType(OperationType.LESS_EQUAL).doubleValue();
 
-        Stream<ActivityInstance> acts = getValidActivityInstances(pTrace, attribute, attrVal, costPerspective);
+        List<ActivityInstance> acts = getValidActivityInstances(pTrace, attribute, attrVal, costPerspective);
+
+        if (acts.isEmpty()) {
+            return false;
+        }
 
         return inclusion == Inclusion.ALL_VALUES ?
-                acts.allMatch(a -> withinRange(a, costPerspective, costRates, minCost, maxCost)) :
-                acts.anyMatch(a -> withinRange(a, costPerspective, costRates, minCost, maxCost));
+                acts.stream().allMatch(a -> withinRange(a, costPerspective, costRates, minCost, maxCost)) :
+                acts.stream().anyMatch(a -> withinRange(a, costPerspective, costRates, minCost, maxCost));
     }
 
-    private static Stream<ActivityInstance> getValidActivityInstances(PTrace pTrace,
+    private static List<ActivityInstance> getValidActivityInstances(PTrace pTrace,
                                                                       String attribute,
                                                                       String attributeValue,
                                                                       String costPerspective) {
         return pTrace.getActivityInstances().stream()
                 .filter(a -> a.getAttributes().containsKey(attribute) &&
                         a.getAttributes().get(attribute).equals(attributeValue) &&
-                        a.getAttributes().containsKey(costPerspective));
+                        a.getAttributes().containsKey(costPerspective))
+                .collect(Collectors.toList());
     }
 
     private static boolean withinRange(ActivityInstance activityInstance,
