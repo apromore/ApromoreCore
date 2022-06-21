@@ -76,7 +76,7 @@ public class TestHelper {
             .arrivalRateDistribution(
                 Distribution.builder()
                     .type(DistributionType.EXPONENTIAL)
-                    .arg1("26784.00")
+                    .arg1(26784.00)
                     .timeUnit(TimeUnit.HOURS)
                     .build()
             );
@@ -85,15 +85,15 @@ public class TestHelper {
             List<Element> tasks = new ArrayList<>();
             tasks.add(Element.builder().elementId("node1").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
-                    .arg1("34.34")
+                    .arg1(34.34)
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node2").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
-                    .arg1("56.56")
+                    .arg1(56.56)
                     .timeUnit(TimeUnit.SECONDS).build()).build());
             tasks.add(Element.builder().elementId("node3").distributionDuration(
                 Distribution.builder().type(DistributionType.EXPONENTIAL)
-                    .arg1("89.89")
+                    .arg1(89.89)
                     .timeUnit(TimeUnit.MINUTES).build()).build());
 
             builder.tasks(tasks);
