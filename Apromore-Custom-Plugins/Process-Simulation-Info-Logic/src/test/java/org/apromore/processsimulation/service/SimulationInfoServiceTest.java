@@ -231,8 +231,8 @@ class SimulationInfoServiceTest {
                 assertTrue(element.getResourceIds().get(0)
                     .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
             }
-            assertNotNull(element.getDistributionDuration().getArg2());
-            assertNotNull(element.getDistributionDuration().getMean());
+            assertEquals(0.0, element.getDistributionDuration().getArg2());
+            assertEquals(0.0, element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
@@ -611,8 +611,8 @@ class SimulationInfoServiceTest {
         assertNotNull(actualProcessSimulationInfo.getErrors());
         assertEquals(100L, actualProcessSimulationInfo.getProcessInstances());
         assertEquals(expectedArrivalRate, actualProcessSimulationInfo.getArrivalRateDistribution().getArg1());
-        assertNotNull(actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
-        assertNotNull(actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, actualProcessSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, actualProcessSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
