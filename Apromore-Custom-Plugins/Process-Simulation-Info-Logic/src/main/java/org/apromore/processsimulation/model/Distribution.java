@@ -39,12 +39,12 @@ import lombok.NoArgsConstructor;
 public class Distribution {
     @XmlAttribute
     private DistributionType type;
-    @XmlAttribute
-    private String mean;
-    @XmlAttribute
-    private String arg1;
-    @XmlAttribute
-    private String arg2;
+    @XmlAttribute(required = true)
+    private double mean;
+    @XmlAttribute(required = true)
+    private double arg1;
+    @XmlAttribute(required = true)
+    private double arg2;
 
     @XmlElement(name = "qbp:timeUnit")
     private TimeUnit timeUnit;
