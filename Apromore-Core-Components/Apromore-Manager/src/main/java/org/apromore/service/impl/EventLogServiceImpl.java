@@ -479,9 +479,7 @@ public class EventLogServiceImpl implements EventLogService {
 	public boolean canUserReadLog(String username, Integer logId) throws UserNotFoundException {
 		User user = userSrv.findUserByLogin(username);
 		return groupLogRepo.findByLogAndUser(logId, user.getRowGuid()).stream()
-			.filter(gl -> gl.getAccessRights().isReadOnly() || gl.getAccessRights().isOwnerShip())
-			.findFirst()
-			.isPresent();
+			.anyMatch(gl -> gl.getAccessRights().isReadOnly() || gl.getAccessRights().isOwnerShip());
 	}
 
     @Override
