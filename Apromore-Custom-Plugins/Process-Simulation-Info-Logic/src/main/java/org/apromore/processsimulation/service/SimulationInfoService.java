@@ -164,7 +164,7 @@ public class SimulationInfoService {
                 Distribution.builder()
                     .timeUnit(timeUnit)
                     .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).toString())
+                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).doubleValue())
                     .build());
     }
 
@@ -200,7 +200,7 @@ public class SimulationInfoService {
                     .distributionDuration(Distribution.builder()
                         .type(DistributionType.valueOf(
                             config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .arg1(getDisplayTimeDuration(durationMillis).doubleValue())
                         .timeUnit(timeUnit)
                         .build())
                     .resourceIds(List.of(resourceNameToId.get(roleName)))
