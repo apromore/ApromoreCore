@@ -1891,14 +1891,14 @@ databaseChangeLog:
      author: frankm
      preConditions:
        - onFail: MARK_RAN
+       - dbms:
+           type: 'h2'
        - tableExists:
            tableName: storage
      changes:
-       - sql:
-          dbms: 'h2'
-          splitStatements: true
-          sql: DROP TABLE IF EXISTS storage;
-          stripComments: false
+       - dropTable:
+           cascadeConstraints:  true
+           tableName: storage
 
  - changeSet:
      id: 20220622100000
