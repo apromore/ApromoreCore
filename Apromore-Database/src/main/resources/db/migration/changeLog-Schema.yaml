@@ -1902,19 +1902,14 @@ databaseChangeLog:
  - changeSet:
      id: 20220622100000
      author: frankm
+     preConditions:
+            - onFail: MARK_RAN
+            - not:
+                - tableExists:
+                    tableName: storage
      changes:
        - sql:
            dbms: 'h2'
            splitStatements: true
-           sql: CREATE TABLE storage (id bigint NOT NULL AUTO_INCREMENT, storage_path varchar(200) NOT NULL, prefix varchar(100) NOT NULL, "key" varchar(200) DEFAULT NULL, created varchar(100) NOT NULL,updated varchar(100) NOT NULL,PRIMARY KEY (id));
+           sql: CREATE TABLE IF NOT EXISTS storage (id bigint NOT NULL AUTO_INCREMENT, storage_path varchar(200) NOT NULL, prefix varchar(100) NOT NULL, "key" varchar(200) DEFAULT NULL, created varchar(100) NOT NULL,updated varchar(100) NOT NULL,PRIMARY KEY (id));
            stripComments: false
-
-       - addForeignKeyConstraint:
-                  baseColumnNames: storage_id
-                  baseTableName: log
-                  constraintName: fk_log_storage
-                  deferrable: false
-                  initiallyDeferred: false
-                  referencedColumnNames: id
-                  referencedTableName: storage
-                  validate: true
