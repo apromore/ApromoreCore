@@ -188,9 +188,11 @@ public class ImportOneProcessController extends BaseController {
                                   int folderId) throws Exception {
     for (SubProcessItem subItem : item.getChildren()) {
       BPMNDiagram subProcessDiagram = subItem.getDiagram();
-      subItem.setProcessSummaryType(importOneSubProcess(subProcessDiagram, domain, owner,
-          subItem.getName(), folderId));
-      importSubProcesses(subItem, domain, owner, folderId);
+      if (!subProcessDiagram.getNodes().isEmpty()) {
+        subItem.setProcessSummaryType(importOneSubProcess(subProcessDiagram, domain, owner,
+            subItem.getName(), folderId));
+        importSubProcesses(subItem, domain, owner, folderId);
+      }
     }
   }
 
@@ -224,10 +226,12 @@ public class ImportOneProcessController extends BaseController {
 
   private void linkSubProcesses(final SubProcessItem item) throws UserNotFoundException, CircularReferenceException {
     for (SubProcessItem subItem : item.getChildren()) {
-      mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
-          subItem.getSubProcessNode().getId().toString(),
-          subItem.getProcessSummaryType().getId(), username);
-      linkSubProcesses(subItem);
+      if (subItem.getProcessSummaryType() != null) {
+        mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
+            subItem.getSubProcessNode().getId().toString(),
+            subItem.getProcessSummaryType().getId(), username);
+        linkSubProcesses(subItem);
+      }
     }
   }
 
