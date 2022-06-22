@@ -568,13 +568,20 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     for (Process process : processRepository.findByFolderIdIn(folderIds)) {
-      removeProcessPermissions(process.getId(), group.getRowGuid(),
-          AccessType.getAccessType(groupProcessRepository.findByGroupAndProcess(group, process).getAccessRights()));
+      GroupProcess groupProcess = groupProcessRepository.findByGroupAndProcess(group, process);
+      if (groupProcess != null) {
+        removeProcessPermissions(process.getId(), group.getRowGuid(),
+            AccessType.getAccessType(groupProcess.getAccessRights()));
+      }
+
     }
 
     for (Log log : logRepository.findByFolderIdIn(folderIds)) {
-      removeLogPermissions(log.getId(), group.getRowGuid(),
-          AccessType.getAccessType(groupLogRepository.findByGroupAndLog(group, log).getAccessRights()));
+      GroupLog groupLog = groupLogRepository.findByGroupAndLog(group, log);
+      if (groupLog != null) {
+        removeLogPermissions(log.getId(), group.getRowGuid(),
+            AccessType.getAccessType(groupLog.getAccessRights()));
+      }
     }
     return "";
 
