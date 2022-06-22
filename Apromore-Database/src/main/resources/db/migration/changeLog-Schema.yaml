@@ -1894,10 +1894,11 @@ databaseChangeLog:
        - tableExists:
            tableName: storage
      changes:
-       - dropTable:
-           context: H2
-           cascadeConstraints:  true
-           tableName: storage
+       - sql:
+          dbms: 'h2'
+          splitStatements: true
+          sql: DROP TABLE IF EXISTS storage;
+          stripComments: false
 
  - changeSet:
      id: 20220622100000
