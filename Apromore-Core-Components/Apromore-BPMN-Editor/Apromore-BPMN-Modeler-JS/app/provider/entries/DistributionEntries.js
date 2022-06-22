@@ -76,26 +76,31 @@ var createTimeUnitOptions = function(translate) {
   ];
 };
 
-const processDistNumber = (distribution, key, value) => {
-    if (!isValidNumber(value)) {
-      return value;
-    }
-    return (normalizeNumber(value) / timeUnits[distribution.timeUnit].unit).toString();
-}
+const preprocessDistNumber = (distribution, rawKey, key) => {
+    let rawValue = distribution[rawKey]
 
-const preprocessDistNumber = (distribution, key) => {
-    const value = distribution[key]
-
-    // fix any old value
-    if (value === 'NaN') {
-      distribution[key] = '';
-      return { [key]: '' };
+    if (!rawValue) {
+        rawValue = distribution[key]
     }
-    return { [key]: processDistNumber(distribution, key, value) };
+    // Fix any old NaN value
+    if (rawValue === 'NaN') {
+        rawValue = '';
+        distribution[rawKey] = rawValue;
+    }
+    // use key as identifier of the widget
+    return { [key]: rawValue };
 };
 
-const postprocessDistNumber = (distribution, values, key) => {
-    return processDistNumber(distribution, key, values[key])
+const postprocessDistNumber = (distribution, values, rawKey, key) => {
+    let rawValue = values[key]; // use key as identifier of the widget
+    if (isValidNumber(rawValue)) {
+      rawValue = normalizeNumber(rawValue); // clean up number
+    }
+    distribution[rawKey] = rawValue;
+    return {
+        [rawKey]: rawValue,
+        [key]: (rawValue / timeUnits[distribution.timeUnit].unit).toString()
+    }
 };
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -114,26 +119,32 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'mean',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'mean');
+        return preprocessDistNumber(distribution, 'rawMean', 'mean');
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          mean: postprocessDistNumber(distribution, values, 'mean')
-        });
+        return cmdHelper.updateBusinessObject(
+          element,
+          distribution,
+          postprocessDistNumber(distribution, values, 'rawMean','mean')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionMean(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: meanLabel,
-          elementId: elementId || label,
-          distribution: distribution,
-          timeUnits: timeUnits,
-          mean: postprocessDistNumber(distribution, values, 'mean')
-        });
+        var error = validationHelper.validateDistributionMean(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: meanLabel,
+              elementId: elementId || label,
+              distribution: distribution,
+              timeUnits: timeUnits
+            }, postprocessDistNumber(distribution, values, 'rawMean','mean'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
@@ -153,26 +164,32 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg1',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'arg1')
+        return preprocessDistNumber(distribution, 'rawArg1', 'arg1')
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          arg1: postprocessDistNumber(distribution, values, 'arg1')
-        });
+        return cmdHelper.updateBusinessObject(
+            element,
+            distribution,
+            postprocessDistNumber(distribution, values, 'rawArg1', 'arg1')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionArg1(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: arg1Label,
-          elementId: elementId || label,
-          distribution: distribution,
-          timeUnits: timeUnits,
-          arg1: postprocessDistNumber(distribution, values, 'arg1')
-        });
+        var error = validationHelper.validateDistributionArg1(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: arg1Label,
+              elementId: elementId || label,
+              distribution: distribution,
+              timeUnits: timeUnits
+            }, postprocessDistNumber(distribution, values, 'rawArg1', 'arg1'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
@@ -192,25 +209,31 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg2',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'arg2');
+        return preprocessDistNumber(distribution, 'rawArg2', 'arg2');
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          arg2: postprocessDistNumber(distribution, values, 'arg2')
-        });
+        return cmdHelper.updateBusinessObject(
+            element,
+            distribution,
+            postprocessDistNumber(distribution, values, 'rawArg2', 'arg2')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionArg2(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: arg2Label,
-          elementId: elementId || label,
-          distribution: distribution,
-          arg2: postprocessDistNumber(distribution, values, 'arg2')
-        });
+        var error = validationHelper.validateDistributionArg2(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: arg2Label,
+              elementId: elementId || label,
+              distribution: distribution
+            }, postprocessDistNumber(distribution, values, 'rawArg2', 'arg2'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });

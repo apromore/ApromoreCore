@@ -158,13 +158,14 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
       elementId = options.elementId,
       distribution = options.distribution,
       mean = options.mean,
+      rawMean = options.rawMean,
       message;
 
-  if (!isValidNumber(mean)) {
-    message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!mean || mean.trim() === '') {
+  if (!rawMean || rawMean.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  }  else if (distribution.type === 'TRIANGULAR') {
+  } else if (!isValidNumber(rawMean)) {
+     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(mean) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     }
@@ -186,13 +187,14 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
       label =options.label,
       elementId = options.elementId,
       distribution = options.distribution,
+      rawArg1 = options.rawArg1,
       arg1 = options.arg1,
       message;
 
-  if (!isValidNumber(arg1)) {
+  if (!rawArg1 || rawArg1.trim() === '') {
+      message = translate('invalid.empty {element}', { element: label });
+  } else if (!isValidNumber(rawArg1)) {
     message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!arg1 || arg1.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(arg1) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
@@ -217,13 +219,14 @@ ValidationErrorHelper.validateDistributionArg2 = function(bpmnFactory, elementRe
       label = options.label,
       elementId = options.elementId,
       distribution = options.distribution,
+      rawArg2 = options.rawArg2,
       arg2 = options.arg2,
       message;
 
-  if (!isValidNumber(arg2)) {
-    message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!arg2 || arg2.trim() === '') {
+  if (!rawArg2 || rawArg2.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
+  } else if (!isValidNumber(rawArg2)) {
+    message = translate('invalid.notDigit {element}', { element: label });
   } else if (distribution.type === 'UNIFORM' && parseFloat(distribution.arg1) > parseFloat(arg2)) {
     message = translate('distribution.invalid.greaterMin {element}', { element: label });
   }
