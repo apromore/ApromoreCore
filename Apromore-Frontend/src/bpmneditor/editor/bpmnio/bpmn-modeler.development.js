@@ -12994,13 +12994,14 @@ ValidationErrorHelper.validateDistributionMean = function(bpmnFactory, elementRe
       elementId = options.elementId,
       distribution = options.distribution,
       mean = options.mean,
+      rawMean = options.rawMean,
       message;
 
-  if (!isValidNumber(mean)) {
-    message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!mean || mean.trim() === '') {
+  if (!rawMean || rawMean.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
-  }  else if (distribution.type === 'TRIANGULAR') {
+  } else if (!isValidNumber(rawMean)) {
+     message = translate('invalid.notDigit {element}', { element: label });
+  } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(mean) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
     }
@@ -13022,13 +13023,14 @@ ValidationErrorHelper.validateDistributionArg1 = function(bpmnFactory, elementRe
       label =options.label,
       elementId = options.elementId,
       distribution = options.distribution,
+      rawArg1 = options.rawArg1,
       arg1 = options.arg1,
       message;
 
-  if (!isValidNumber(arg1)) {
+  if (!rawArg1 || rawArg1.trim() === '') {
+      message = translate('invalid.empty {element}', { element: label });
+  } else if (!isValidNumber(rawArg1)) {
     message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!arg1 || arg1.trim() === '') {
-    message = translate('invalid.empty {element}', { element: label });
   } else if (distribution.type === 'TRIANGULAR') {
     if (parseFloat(arg1) > parseFloat(distribution.arg2)) {
       message = translate('distribution.invalid.lessMax {element}', { element: label });
@@ -13053,13 +13055,14 @@ ValidationErrorHelper.validateDistributionArg2 = function(bpmnFactory, elementRe
       label = options.label,
       elementId = options.elementId,
       distribution = options.distribution,
+      rawArg2 = options.rawArg2,
       arg2 = options.arg2,
       message;
 
-  if (!isValidNumber(arg2)) {
-    message = translate('invalid.notDigit {element}', { element: label });
-  } else if (!arg2 || arg2.trim() === '') {
+  if (!rawArg2 || rawArg2.trim() === '') {
     message = translate('invalid.empty {element}', { element: label });
+  } else if (!isValidNumber(rawArg2)) {
+    message = translate('invalid.notDigit {element}', { element: label });
   } else if (distribution.type === 'UNIFORM' && parseFloat(distribution.arg1) > parseFloat(arg2)) {
     message = translate('distribution.invalid.greaterMin {element}', { element: label });
   }
@@ -13786,9 +13789,6 @@ var roundUp = function(value) {
  * @returns {String} rounded up value
  */
 var normalizeNumber = function(value) {
-  if (!isValidNumber(value)) {
-    return ''
-  }
   return (+(Math.round(value + 'e+3') + 'e-3')).toString();
 };
 
@@ -36803,26 +36803,31 @@ var createTimeUnitOptions = function(translate) {
   ];
 };
 
-const processDistNumber = (distribution, key, value) => {
-    if (!isValidNumber(value)) {
-      return value;
-    }
-    return (normalizeNumber(value) / timeUnits[distribution.timeUnit].unit).toString();
-}
+const preprocessDistNumber = (distribution, rawKey, key) => {
+    let rawValue = distribution[rawKey]
 
-const preprocessDistNumber = (distribution, key) => {
-    const value = distribution[key]
-
-    // fix any old value
-    if (value === 'NaN') {
-      distribution[key] = '';
-      return { [key]: '' };
+    if (!rawValue) {
+        rawValue = distribution[key]
     }
-    return { [key]: processDistNumber(distribution, key, value) };
+    // Fix any old NaN value
+    if (rawValue === 'NaN') {
+        rawValue = '';
+        distribution[rawKey] = rawValue;
+    }
+    // use key as identifier of the widget
+    return { [key]: rawValue };
 };
 
-const postprocessDistNumber = (distribution, values, key) => {
-    return processDistNumber(distribution, key, values[key])
+const postprocessDistNumber = (distribution, values, rawKey, key) => {
+    let rawValue = values[key]; // use key as identifier of the widget
+    if (isValidNumber(rawValue)) {
+      rawValue = normalizeNumber(rawValue); // clean up number
+    }
+    distribution[rawKey] = rawValue;
+    return {
+        [rawKey]: rawValue,
+        [key]: (rawValue / timeUnits[distribution.timeUnit].unit).toString()
+    }
 };
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
@@ -36841,26 +36846,32 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'mean',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'mean');
+        return preprocessDistNumber(distribution, 'rawMean', 'mean');
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          mean: postprocessDistNumber(distribution, values, 'mean')
-        });
+        return cmdHelper.updateBusinessObject(
+          element,
+          distribution,
+          postprocessDistNumber(distribution, values, 'rawMean','mean')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionMean(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: meanLabel,
-          elementId: elementId || label,
-          distribution: distribution,
-          timeUnits: timeUnits,
-          mean: postprocessDistNumber(distribution, values, 'mean')
-        });
+        var error = validationHelper.validateDistributionMean(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: meanLabel,
+              elementId: elementId || label,
+              distribution: distribution,
+              timeUnits: timeUnits
+            }, postprocessDistNumber(distribution, values, 'rawMean','mean'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
@@ -36880,26 +36891,32 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg1',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'arg1')
+        return preprocessDistNumber(distribution, 'rawArg1', 'arg1')
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          arg1: postprocessDistNumber(distribution, values, 'arg1')
-        });
+        return cmdHelper.updateBusinessObject(
+            element,
+            distribution,
+            postprocessDistNumber(distribution, values, 'rawArg1', 'arg1')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionArg1(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: arg1Label,
-          elementId: elementId || label,
-          distribution: distribution,
-          timeUnits: timeUnits,
-          arg1: postprocessDistNumber(distribution, values, 'arg1')
-        });
+        var error = validationHelper.validateDistributionArg1(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: arg1Label,
+              elementId: elementId || label,
+              distribution: distribution,
+              timeUnits: timeUnits
+            }, postprocessDistNumber(distribution, values, 'rawArg1', 'arg1'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
@@ -36919,25 +36936,31 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       modelProperty: 'arg2',
 
       get: function(_element, _node) {
-        return preprocessDistNumber(distribution, 'arg2');
+        return preprocessDistNumber(distribution, 'rawArg2', 'arg2');
       },
 
       set: function(element, values, _node) {
-        return cmdHelper.updateBusinessObject(element, distribution, {
-          arg2: postprocessDistNumber(distribution, values, 'arg2')
-        });
+        return cmdHelper.updateBusinessObject(
+            element,
+            distribution,
+            postprocessDistNumber(distribution, values, 'rawArg2', 'arg2')
+        );
       },
 
       validate: function(element, values, _node) {
         var validationId = this.id;
 
-        var error = validationHelper.validateDistributionArg2(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: arg2Label,
-          elementId: elementId || label,
-          distribution: distribution,
-          arg2: postprocessDistNumber(distribution, values, 'arg2')
-        });
+        var error = validationHelper.validateDistributionArg2(
+            bpmnFactory,
+            elementRegistry,
+            translate,
+            Object.assign({
+              id: validationId,
+              label: arg2Label,
+              elementId: elementId || label,
+              distribution: distribution
+            }, postprocessDistNumber(distribution, values, 'rawArg2', 'arg2'))
+        );
 
         if (!error.message) {
           validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
@@ -42485,7 +42508,7 @@ module.exports = JSON.parse("{\"name\":\"Camunda\",\"uri\":\"http://camunda.org/
 /* 140 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
+module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
 
 /***/ }),
 /* 141 */
