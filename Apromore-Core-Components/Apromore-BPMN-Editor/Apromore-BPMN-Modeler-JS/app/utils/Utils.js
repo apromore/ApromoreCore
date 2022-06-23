@@ -49,9 +49,6 @@ var roundUp = function(value) {
  * @returns {String} rounded up value
  */
 var normalizeNumber = function(value) {
-  if (!isValidNumber(value)) {
-    return ''
-  }
   return (+(Math.round(value + 'e+3') + 'e-3')).toString();
 };
 
