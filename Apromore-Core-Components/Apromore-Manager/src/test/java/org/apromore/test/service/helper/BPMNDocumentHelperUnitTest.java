@@ -91,42 +91,13 @@ class BPMNDocumentHelperUnitTest {
         }
     }
 
-    @Test
-    void replaceSubprocessContentsNoDefinitionsInOriginal() {
-        String originalXML = "<bpmn><process><subProcess/></process></bpmn>";
-        String linkedProcessXML = "<bpmn><bpmn:definitions/></bpmn>";
-        try {
-            Document document = BPMNDocumentHelper.getDocument(originalXML);
-            Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
-
-            Node subProcessNode = BPMNDocumentHelper.getBPMNElements(document, "subProcess").get(0);
-            assertThrows(ExportFormatException.class, () -> BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2));
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            fail();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void replaceSubprocessContentsNoDefinitionsInLinked() {
-        String originalXML = "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>";
-        String linkedProcessXML = "<bpmn/>";
-        try {
-            Document document = BPMNDocumentHelper.getDocument(originalXML);
-            Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
-
-            Node subProcessNode = BPMNDocumentHelper.getBPMNElements(document, "subProcess").get(0);
-            assertThrows(ExportFormatException.class, () -> BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2));
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            fail();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void replaceSubprocessContentsNoProcess() {
-        String originalXML = "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>";
-        String linkedProcessXML = "<bpmn><bpmn:definitions/></bpmn>";
+    @ParameterizedTest
+    @CsvSource({
+        "<bpmn><process><subProcess/></process></bpmn>, <bpmn><bpmn:definitions/></bpmn>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn/>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn><bpmn:definitions/></bpmn>"
+    })
+    void replaceSubprocessContentsInvalidDocument(String originalXML, String linkedProcessXML) {
         try {
             Document document = BPMNDocumentHelper.getDocument(originalXML);
             Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
