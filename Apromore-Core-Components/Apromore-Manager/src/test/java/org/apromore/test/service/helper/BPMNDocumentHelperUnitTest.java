@@ -33,6 +33,8 @@ import javax.xml.transform.TransformerException;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.service.helper.BPMNDocumentHelper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -91,10 +93,13 @@ class BPMNDocumentHelperUnitTest {
         }
     }
 
-    @Test
-    void replaceSubprocessContentsInvalidDocument() {
-        String originalXML = "<bpmn><process><subProcess/></process></bpmn>";
-        String linkedProcessXML = "<bpmn/>";
+    @ParameterizedTest
+    @CsvSource({
+        "<bpmn><process><subProcess/></process></bpmn>, <bpmn><bpmn:definitions/></bpmn>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn/>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn><bpmn:definitions/></bpmn>"
+    })
+    void replaceSubprocessContentsInvalidDocument(String originalXML, String linkedProcessXML) {
         try {
             Document document = BPMNDocumentHelper.getDocument(originalXML);
             Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
