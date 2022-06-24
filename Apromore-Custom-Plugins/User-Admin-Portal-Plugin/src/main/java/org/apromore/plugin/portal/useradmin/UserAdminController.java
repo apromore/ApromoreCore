@@ -848,6 +848,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         assignedRoleListbox.setDisabled(false);
         assignedGroupListbox.setDisabled(false);
         ComponentUtils.toggleSclass(userDetailContainer, true);
+        boolean multiSelected = false;
         if (users == null || users.size() == 0 || users.size() > 1) {
             selectedUser = null;
             selectedUsers = users;
@@ -875,6 +876,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
                 if (users.size() > 1) {
                     assignedRoleItemRenderer.setMultiUserSelected(true);
                     assignedGroupItemRenderer.setMultiUserSelected(true);
+                    multiSelected = true;
                 }
             }
 
@@ -891,9 +893,18 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             assignedRoleItemRenderer.setForceTwoState(true);
             assignedGroupItemRenderer.setForceTwoState(true);
         }
+        disabledForMultiUserSelected(multiSelected);
         updateAssignedRoleModel(users);
         updateAssignedGroupModel(users);
         isUserDetailDirty = false; // ensure dirty is not set by field's setValue
+    }
+
+    private void disabledForMultiUserSelected(boolean multiSelected) {
+        firstNameTextbox.setDisabled(!canEditUsers || multiSelected);
+        lastNameTextbox.setDisabled(!canEditUsers || multiSelected);
+        emailTextbox.setDisabled(!canEditUsers || multiSelected);
+        passwordTextbox.setDisabled(!canEditUsers || multiSelected);
+        confirmPasswordTextbox.setDisabled(!canEditUsers || multiSelected);
     }
 
     private void setGroupDetailReadOnly(boolean readOnly) {

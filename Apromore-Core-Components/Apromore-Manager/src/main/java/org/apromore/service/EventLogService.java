@@ -111,6 +111,15 @@ public interface EventLogService {
    */
   boolean canUserWriteLog(String username, Integer logId) throws UserNotFoundException;
 
+  /**
+   * @param username a username
+   * @param logId identifier for a log
+   * @return whether the <var>user</var> should be allowed to read the log identified by
+   *         <var>logId</var>
+   * @throws UserNotFoundException if the user can't be found
+   */
+  boolean canUserReadLog(String username, Integer logId) throws UserNotFoundException;
+
   ExportLogResultType exportLog(Integer logId) throws Exception;
 
   void cloneLog(String username, Integer folderId, String logName, Integer sourcelogId,
