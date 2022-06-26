@@ -61,7 +61,7 @@ public interface UserInterfaceHelper {
      * @param folderConditions the search conditions for folders
      * @return the list of process Summaries
      */
-    SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions);
+    SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions, boolean global);
 
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.

@@ -53,7 +53,7 @@ public interface LogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions);
+    List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions, boolean global);
 
     /**
      * Find one Log based on LogId
