@@ -134,6 +134,9 @@ public final class BPMNDocumentHelper {
      */
     public static void replaceSubprocessContents(Node subprocessNode, Document linkedProcessDocument)
         throws ExportFormatException {
+        //Update definitions
+        addMissingDocumentDefinitions(linkedProcessDocument, subprocessNode.getOwnerDocument());
+
         removeSubprocessContents(subprocessNode);
 
         Document bpmnDocument = subprocessNode.getOwnerDocument();
@@ -293,6 +296,29 @@ public final class BPMNDocumentHelper {
             nodes.add(nodeList.item(i));
         }
         return nodes;
+    }
+
+    private static void addMissingDocumentDefinitions(Document documentFrom, Document documentTo)
+        throws ExportFormatException {
+        List<Node> bpmnDefinitionsFrom = getBPMNElements(documentFrom, "definitions");
+        List<Node> bpmnDefinitionsTo = getBPMNElements(documentTo, "definitions");
+
+        if (CollectionUtils.isEmpty(bpmnDefinitionsFrom) || CollectionUtils.isEmpty(bpmnDefinitionsTo)) {
+            throw new ExportFormatException("Missing bpmn:definitions tag");
+        }
+
+        Node bpmnDefinitionFrom = bpmnDefinitionsFrom.get(0);
+        Node bpmnDefinitionTo = bpmnDefinitionsTo.get(0);
+
+        for (int i = 0; i < bpmnDefinitionFrom.getAttributes().getLength(); i++) {
+            Node attribute = bpmnDefinitionFrom.getAttributes().item(i);
+
+            if (bpmnDefinitionTo.getAttributes().getNamedItem(attribute.getNodeName()) == null) {
+                Node importedAttribute = documentTo.importNode(attribute, false);
+                bpmnDefinitionTo.getAttributes().setNamedItem(importedAttribute);
+            }
+
+        }
     }
 
 }

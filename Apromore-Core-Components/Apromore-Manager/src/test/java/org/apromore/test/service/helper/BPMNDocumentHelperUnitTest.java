@@ -33,6 +33,8 @@ import javax.xml.transform.TransformerException;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.service.helper.BPMNDocumentHelper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -91,10 +93,13 @@ class BPMNDocumentHelperUnitTest {
         }
     }
 
-    @Test
-    void replaceSubprocessContentsInvalidDocument() {
-        String originalXML = "<bpmn><process><subProcess/></process></bpmn>";
-        String linkedProcessXML = "<bpmn/>";
+    @ParameterizedTest
+    @CsvSource({
+        "<bpmn><process><subProcess/></process></bpmn>, <bpmn><bpmn:definitions/></bpmn>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn/>",
+        "<bpmn><bpmn:definitions><process><subProcess/></process></bpmn:definitions></bpmn>, <bpmn><bpmn:definitions/></bpmn>"
+    })
+    void replaceSubprocessContentsInvalidDocument(String originalXML, String linkedProcessXML) {
         try {
             Document document = BPMNDocumentHelper.getDocument(originalXML);
             Document document2 = BPMNDocumentHelper.getDocument(linkedProcessXML);
@@ -109,7 +114,7 @@ class BPMNDocumentHelperUnitTest {
 
     @Test
     void replaceSubprocessContents() {
-        String originalXML = "<bpmn:definitions>"
+        String originalXML = "<bpmn:definitions xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" id=\"Definitions_1\">"
             + "<bpmn><process id=\"p1\"><subProcess id=\"sp1\">"
             + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
             + "<extensionElements/><incoming/><outgoing/>"
@@ -121,7 +126,7 @@ class BPMNDocumentHelperUnitTest {
             + "<bpmndi:BPMNShape bpmnElement=\"end1\"/>"
             + "</bpmndi:BPMNPlane>"
             + "</bpmndi:BPMNDiagram></bpmn:definitions>";
-        String linkedProcessXML = "<bpmn:definitions>"
+        String linkedProcessXML = "<bpmn:definitions xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_2\">"
             + "<bpmn><process id=\"link_p1\"><extensionElements><test/></extensionElements>"
             + "<task id=\"link_t1\"><incoming>edge1</incoming><outgoing>edge2</outgoing></task>"
             + "<sequenceFlow id=\"edge1\"/>"
@@ -157,6 +162,13 @@ class BPMNDocumentHelperUnitTest {
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).isEmpty();
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).hasSize(1);
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).hasSize(2);
+
+            //Check definitions after replace
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "definitions")).hasSize(1);
+            Node bpmnDefinitions = BPMNDocumentHelper.getBPMNElements(document, "definitions").get(0);
+            assertThat(bpmnDefinitions.getAttributes().getNamedItem("id").getNodeValue()).isEqualTo("Definitions_1");
+            assertThat(bpmnDefinitions.getAttributes().getNamedItem("xmlns:bpmndi").getNodeValue()).isEqualTo("http://www.omg.org/spec/BPMN/20100524/DI");
+            assertThat(bpmnDefinitions.getAttributes().getNamedItem("xmlns:di").getNodeValue()).isEqualTo("http://www.omg.org/spec/DD/20100524/DI");
 
             String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
             Document document3 = BPMNDocumentHelper.getDocument(xmlAfterReplace);
