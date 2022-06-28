@@ -457,4 +457,27 @@ ValidationErrorHelper.validateToTime = function(bpmnFactory, elementRegistry, tr
   return { id: errorId, message: message };
 };
 
+
+ValidationErrorHelper.validateVariableName = function(bpmnFactory, elementRegistry, translate, options) {
+  var id = options.id,
+      name = options.name,
+      label = options.label,
+      resource = options.resource,
+      message;
+
+  if (!name || name.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
+  }
+
+  if (resource && message) {
+    this.createValidationError(bpmnFactory, elementRegistry, {
+      id: id,
+      elementId: resource.id,
+      message: message
+    });
+  }
+
+  return { message : message };
+};
+
 module.exports = ValidationErrorHelper;

@@ -283,6 +283,77 @@
       ]
     },
     {
+      "name": "Variable",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Variables",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Variable",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "properties": [
+        {
+          "name": "id",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "executionProbability",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "rawProbability",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "values",
+          "type": "Category",
+          "isMany": true
+        }
+      ]
+    },
+    {
       "name": "ProcessSimulationInfo",
       "superClass": [
         "Element"

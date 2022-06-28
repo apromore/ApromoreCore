@@ -19,15 +19,11 @@
  * #L%
  */
 
-
 package org.apromore.processsimulation.model;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,41 +34,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProcessSimulationInfo {
-
+public class Variable {
     @XmlAttribute
-    private String id;
+    private String name;
     @XmlAttribute
-    private long processInstances;
-    @XmlAttribute
-    private Currency currency;
-    @XmlAttribute
-    private String startDateTime;
-
-    @XmlElement(name = "qbp:errors")
-    private Errors errors;
-
-    @XmlElement(name = "qbp:arrivalRateDistribution")
-    private Distribution arrivalRateDistribution;
-
-    @XmlElementWrapper(name = "qbp:elements")
-    @XmlElement(name = "qbp:element")
-    private List<Element> tasks;
-
-    @XmlElementWrapper(name = "qbp:timetables")
-    @XmlElement(name = "qbp:timetable")
-    private List<Timetable> timetables;
-
-    @XmlElementWrapper(name = "qbp:resources")
-    @XmlElement(name = "qbp:resource")
-    private List<Resource> resources;
-
-    @XmlElementWrapper(name = "qbp:sequenceFlows")
-    @XmlElement(name = "qbp:sequenceFlow")
-    private List<SequenceFlow> sequenceFlows;
-
-    @XmlElementWrapper(name = "qbp:variables")
-    @XmlElement(name = "qbp:variable")
-    private List<Variable> variables;
+    private String executionProbability;
 
 }
