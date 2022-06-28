@@ -88,6 +88,9 @@ public class DownloadBPMNViewModel {
             Messagebox.show(Labels.getLabel("bpmnEditor_exportCircularReference_message",
                 "You cannot export this model. The linked models form a loop. Please review the linked subprocesses."),
                 Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
+        } catch (ExportFormatException e) {
+            Messagebox.show("Unable to export model with linked subprocesses. Reason: " + e.getMessage(),
+                Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
         }
     }
 
