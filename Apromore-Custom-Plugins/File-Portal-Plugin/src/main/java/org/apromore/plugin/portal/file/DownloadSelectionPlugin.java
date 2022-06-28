@@ -21,6 +21,8 @@
  */
 package org.apromore.plugin.portal.file;
 
+import static org.apromore.plugin.portal.PortalContexts.getPageDefinition;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -62,12 +64,14 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -91,6 +95,9 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   @Inject
   EventLogService eventLogService;
   @Inject
+  ProcessService processService;
+
+  @Inject
   private CSVExporterLogic csvExporterLogic;
 
   Listbox selectedEncoding;
@@ -104,6 +111,10 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   public void setEventLogService(EventLogService eventLogService) {
     this.eventLogService = eventLogService;
   }
+
+    public void setProcessService(ProcessService processService) {
+        this.processService = processService;
+    }
 
   public void setCsvExporterLogic(CSVExporterLogic csvExporterLogic) {
     this.csvExporterLogic = csvExporterLogic;
@@ -166,14 +177,24 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           (ProcessSummaryType) selectedProcessVersions.keySet().iterator().next();
       VersionSummaryType version = selectedProcessVersions.get(model).get(0);
       try {
-        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
-            model.getName(), version.getName(), version.getVersionNumber(),
-            model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
-        InputStream nativeStream = exportResult.getNative().getInputStream();
-        Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
-        LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
-            UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
-            version.getName(), version.getVersionNumber());
+          if (!processService.hasLinkedProcesses(model.getId(), UserSessionManager.getCurrentUser().getUsername())) {
+              ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
+                  model.getName(), version.getName(), version.getVersionNumber(),
+                  model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
+              InputStream nativeStream = exportResult.getNative().getInputStream();
+              Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
+              LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
+                  UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
+                  version.getName(), version.getVersionNumber());
+          } else {
+              Map<String, Object> args = new HashMap<>();
+              args.put("process", model);
+              args.put("version", version);
+
+              Window downloadBPMNPrompt = (Window) Executions.createComponents(
+                  getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+              downloadBPMNPrompt.doModal();
+          }
       } catch (Exception e) {
         LOGGER.error("Export process model failed", e);
         Messagebox.show(getLabel("unableDownloadModel"), "Error", Messagebox.OK,
@@ -295,7 +316,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                 } else {
                     exportFiles(mainController, format.getSelectedItem().getLabel(), "");
                 }
-             
+
               LOGGER.info("User {} downloaded  in format {}",
                   UserSessionManager.getCurrentUser().getUsername(), format.getSelectedItem().getLabel());
               window.invalidate();
@@ -350,7 +371,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           Messagebox.ERROR);
     }
   }
-  
+
    private Path getCSVFile(LogSummaryType summaryType) {
       APMLog apmLog = eventLogService.getAggregatedLog(summaryType.getId());
       return csvExporterLogic.generateCSV(apmLog);
@@ -364,7 +385,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
        writeToFile(tempPath,exportResult.getNative());
        return tempPath;
    }
-   
+
    private void writeToFile(Path tempPath, DataHandler data) throws Exception {
        try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(tempPath.toFile()));
                InputStream native_is = data.getInputStream()) {
