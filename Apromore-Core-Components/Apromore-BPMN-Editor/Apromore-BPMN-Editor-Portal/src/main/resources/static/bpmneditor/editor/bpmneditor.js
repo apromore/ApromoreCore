@@ -129040,6 +129040,7 @@ class EditorApp {
             return;
         }
         this.fullscreen = config.fullscreen !== false;
+        this.processName = config.processName;
         this.useSimulationPanel = config.useSimulationPanel || false;
         this.isPublished = config.isPublished || false;
         this.disabledButtons = config.disabledButtons; // undefined means all plugins are enabled
@@ -129401,6 +129402,10 @@ class EditorApp {
         return this.activatedPlugins;
     }
 
+    getProcessName() {
+        return this.processName || 'untitled';
+    }
+
     _getContainer() {
         return document.getElementById(this.id);
     }
@@ -129448,6 +129453,7 @@ class EditorApp {
             this._pluginFacade = (function () {
                 return {
                     offer: this.offer.bind(this),
+                    app: me,
                     getEastPanel: this.getEastPanel.bind(this),
                     useSimulationPanel: this.useSimulationPanel,
                     isPublished: this.isPublished,
@@ -130091,7 +130097,7 @@ class Export {
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(svg);
         hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.svg';
+        hiddenElement.download = this.facade.app.getProcessName() + '.svg';
         hiddenElement.click();
     }
 
@@ -130104,7 +130110,7 @@ class Export {
             var hiddenElement = document.createElement('a');
             hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
             hiddenElement.target = '_blank';
-            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.download = this.facade.app.getProcessName() + '.bpmn';
             hiddenElement.click();
         }
     }
@@ -130260,6 +130266,7 @@ class File {
     }
 
     async exportPDF() {
+        var me = this;
         var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
         myMask.show();
 
@@ -130342,7 +130349,7 @@ class File {
                     var hiddenElement = document.createElement('a');
                     hiddenElement.href = window.URL.createObjectURL(xhr.response);
                     hiddenElement.target = '_blank';
-                    hiddenElement.download = 'diagram.pdf';
+                    hiddenElement.download = me.facade.app.getProcessName() + '.pdf';
                     hiddenElement.click();
                     window.URL.revokeObjectURL(hiddenElement.href);
                 }

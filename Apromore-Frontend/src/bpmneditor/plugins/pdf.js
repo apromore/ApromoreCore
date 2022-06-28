@@ -62,6 +62,7 @@ export default class File {
     }
 
     async exportPDF() {
+        var me = this;
         var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
         myMask.show();
 
@@ -144,7 +145,7 @@ export default class File {
                     var hiddenElement = document.createElement('a');
                     hiddenElement.href = window.URL.createObjectURL(xhr.response);
                     hiddenElement.target = '_blank';
-                    hiddenElement.download = 'diagram.pdf';
+                    hiddenElement.download = me.facade.app.getProcessName() + '.pdf';
                     hiddenElement.click();
                     window.URL.revokeObjectURL(hiddenElement.href);
                 }
