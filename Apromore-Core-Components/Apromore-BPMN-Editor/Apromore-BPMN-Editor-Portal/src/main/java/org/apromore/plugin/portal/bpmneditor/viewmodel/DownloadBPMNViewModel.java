@@ -82,7 +82,7 @@ public class DownloadBPMNViewModel {
             String bpmnXML = processService.getBPMNRepresentation(process.getName(), process.getId(), "MAIN",
                 new Version(version.getVersionNumber()), currentUser.getUsername(), includeLinkedSubprocesses);
             InputStream is = new ByteArrayInputStream(bpmnXML.getBytes());
-            Filedownload.save(is, "text/xml", "diagram.bpmn");
+            Filedownload.save(is, "text/xml", process.getName() + ".bpmn");
             window.detach();
         } catch (CircularReferenceException e) {
             Messagebox.show(Labels.getLabel("bpmnEditor_exportCircularReference_message",
