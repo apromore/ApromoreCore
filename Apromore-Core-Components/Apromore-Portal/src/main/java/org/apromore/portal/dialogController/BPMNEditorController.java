@@ -33,8 +33,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
@@ -237,6 +238,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       if (mainC != null) {
         mainC.showPluginMessages(pluginMessages);
       }
+
       String langTag = mainC.getI18nSession().getPreferredLangTag();
       List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
       param.put("plugins", editorPlugins);
@@ -482,7 +484,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
       if (process == null || !processService.hasLinkedProcesses(process.getId(), currentUserType.getUsername())) {
         InputStream is = new ByteArrayInputStream(xml.getBytes());
-        Filedownload.save(is, "text/xml", "diagram.bpmn");
+        Filedownload.save(is, "text/xml", getProcessName() + ".bpmn");
       } else {
         Map<String, Object> args = new HashMap<>();
         args.put("process", process);
@@ -513,6 +515,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       popup.open(event.getTarget(),"at_pointer");
     });
 
+  }
+
+  private String getProcessName() {
+    return StringUtils.defaultIfEmpty(editSession.getProcessName(), "untitled");
   }
 
   private void cacheCurrentEditorId(String editorId) {
