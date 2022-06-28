@@ -178,7 +178,15 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           (ProcessSummaryType) selectedProcessVersions.keySet().iterator().next();
       VersionSummaryType version = selectedProcessVersions.get(model).get(0);
       try {
-          if (!processService.hasLinkedProcesses(model.getId(), UserSessionManager.getCurrentUser().getUsername())) {
+          if (processService.hasLinkedProcesses(model.getId(), UserSessionManager.getCurrentUser().getUsername())) {
+              Map<String, Object> args = new HashMap<>();
+              args.put("process", model);
+              args.put("version", version);
+
+              Window downloadBPMNPrompt = (Window) Executions.createComponents(
+                  getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+              downloadBPMNPrompt.doModal();
+          } else {
               ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
                   model.getName(), version.getName(), version.getVersionNumber(),
                   model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
@@ -187,14 +195,6 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
               LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
                   UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
                   version.getName(), version.getVersionNumber());
-          } else {
-              Map<String, Object> args = new HashMap<>();
-              args.put("process", model);
-              args.put("version", version);
-
-              Window downloadBPMNPrompt = (Window) Executions.createComponents(
-                  getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
-              downloadBPMNPrompt.doModal();
           }
       } catch (Exception e) {
         LOGGER.error("Export process model failed", e);
