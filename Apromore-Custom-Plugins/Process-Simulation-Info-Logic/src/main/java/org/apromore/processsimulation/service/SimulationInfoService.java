@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.WorkDayModel;
@@ -56,6 +57,7 @@ import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
 import org.apromore.processsimulation.model.Element;
+import org.apromore.processsimulation.model.EnumCategory;
 import org.apromore.processsimulation.model.Errors;
 import org.apromore.processsimulation.model.ExtensionElements;
 import org.apromore.processsimulation.model.ProcessSimulationInfo;
@@ -64,6 +66,7 @@ import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
+import org.apromore.processsimulation.model.Variable;
 import org.apromore.service.UserMetadataService;
 import org.apromore.util.UserMetadataTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,10 +146,24 @@ public class SimulationInfoService {
 
             deriveGatewayProbabilities(builder, simulationData);
 
+            initializeCaseAttribute(builder);
+
             processSimulationInfo = builder.build();
         }
 
         return processSimulationInfo;
+    }
+
+    private void initializeCaseAttribute(ProcessSimulationInfo.ProcessSimulationInfoBuilder builder) {
+        List<Variable> list = new ArrayList<>();
+        List<EnumCategory> enumCategoryArrayList = new ArrayList<>();
+        enumCategoryArrayList.add(
+            EnumCategory.builder().name("HIGH").assignmentProbability(1.0).rawProbability("").build());
+        list.add(Variable.builder()
+            .name("V1")
+            .type("ENUM")
+            .enumCategory(enumCategoryArrayList).build());
+        builder.variables(list);
     }
 
     private void deriveGeneralInfo(

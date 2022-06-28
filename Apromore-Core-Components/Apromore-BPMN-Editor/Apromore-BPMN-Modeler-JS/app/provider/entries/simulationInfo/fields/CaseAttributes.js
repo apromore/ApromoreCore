@@ -9,7 +9,7 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
 
   var variableEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'variables',
-    label: 'Variables',
+    label: 'Categorical case attributes',
     modelProperties: 'name',
     idGeneration: false,
 

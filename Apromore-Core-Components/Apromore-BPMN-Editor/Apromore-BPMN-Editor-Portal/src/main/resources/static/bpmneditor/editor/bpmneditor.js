@@ -26002,7 +26002,7 @@ function createProcessSimulationInfo(root, bpmnFactory) {
   processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
     { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
 
-  processSimulationInfo.variables = elementHelper.createElement('qbp:Variables',
+  processSimulationInfo.variables = elementHelper.createElement('qbp:variables',
   { values: [] }, processSimulationInfo, bpmnFactory);  
 
   return processSimulationInfo;
@@ -54900,7 +54900,7 @@ module.exports = JSON.parse("{\"name\":\"Camunda\",\"uri\":\"http://camunda.org/
 /* 140 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Variable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Variables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Variable\",\"isMany\":true}]},{\"name\":\"Category\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Categories\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Category\",\"isMany\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
+module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Variable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Enum\",\"isMany\":true}]},{\"name\":\"Variables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Variable\",\"isMany\":true}]},{\"name\":\"Enum\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"assignmentProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"},{\"name\":\"variables\",\"type\":\"Variables\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
 
 /***/ }),
 /* 141 */
@@ -66887,7 +66887,7 @@ var cmdHelper = __webpack_require__(4),
 
   var variableEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'variables',
-    label: 'Variables',
+    label: 'Categorical case attributes',
     modelProperties: 'name',
     idGeneration: false,
 
@@ -66966,10 +66966,11 @@ CaseAttributeHelper.getVariables = function(bpmnFactory, elementRegistry) {
 };
 
 CaseAttributeHelper.createVariable = function(bpmnFactory, translate) {
+  //translate('resource')
   return elementHelper.createElement('qbp:Variable', {
     id: 'qbp_var_' + createUUID(),
-    name: translate('resource'),
-    type: 'Categorical'
+    name: 'Categorical case attribute',
+    type: 'ENUM'
   }, null, bpmnFactory);
 };
 
@@ -67007,7 +67008,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedVariable = options.getSelectedVariable;
 
-  var label = '';
+  var label = 'Case attribute name';
 
   return entryFactory.textField(translate, {
     id: 'variable-name',
@@ -67076,7 +67077,6 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     createExtensionElement: function (element, extensionElements, _value) {
       var selectedVariable = getSelectedVariable(element,extensionElements);
       if(!selectedVariable){
-          console.log('No Variable has been selected for category');
           return;
       }
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry,
@@ -67084,36 +67084,48 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
    
       var category = CategoryHelper.createCategory(bpmnFactory, translate, { selectedVariable: selectedVariable });
 
-      return cmdHelper.addElementsTolist(element, categories, 'values', [category]);
+      return cmdHelper.addElementsTolist(element, selectedVariable, 'values', [category]);
     },
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
-      var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable });
-      var selectedVariable = variables.values[idx];
 
-      if (!variables || !selectedVariable) {
+      var selectedVariable = getSelectedVariable(element,_extensionElements);
+      if(!selectedVariable){
+           return;
+      }
+
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      var selectedCategory = !categories && categories.length > 0 && categories[idx];
+
+      if (!selectedCategory) {
         return {};
       }
 
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedVariable.id });
+      suppressValidationError(bpmnFactory, elementRegistry, { name: selectedCategory.name });
 
-      return cmdHelper.removeElementsFromList(element, variables, 'values',
-        null, [selectedVariable]);
+      return cmdHelper.removeElementsFromList(element, selectedVariable, 'values',
+        null, [selectedCategory]);
     },
 
-    getExtensionElements: function (_element) {
-      var selectedVariable = options.selectedVariable;
-        if (!selectedVariable) {
-          return [];
-        }
-      return CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable }).values || [];
+    getExtensionElements: function (_element,node) {
+      var selectedVariable = getSelectedVariable(_element,node);
+      if(!selectedVariable){
+           return [];
+      }
+      var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable });
-      var selectedVariable = variables.values[idx];
-
-      option.text = selectedVariable && selectedVariable.name || translate('N/A');
+      var selectedVariable = getSelectedVariable(element,_node);
+      if(selectedVariable){
+        var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+        var selectedVariable = categories && categories.length > 0 && categories[idx];
+        option.text = selectedVariable && selectedVariable.name ;
+      } else{
+        option.text = '';
+      }
+     
     }
   });
 
@@ -67122,9 +67134,12 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       idx: -1
     };
 
-    var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable }).values || [];
-
-    return variables[selection.idx];
+    var selectedVariable = getSelectedVariable(element,node);
+    if(selectedVariable){
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories[selection.idx];
+    }
+   
   }
   entries.push(variableEntry);
 
@@ -67139,63 +67154,40 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-    ProcessSimulationHelper = __webpack_require__(12),
-    createUUID = __webpack_require__(14).createUUID;
-
+ProcessSimulationHelper = __webpack_require__(12),
+createUUID = __webpack_require__(14).createUUID;
 var CategoryHelper = {};
 
 CategoryHelper.getCategories = function (bpmnFactory, elementRegistry, options) {
-  var selectedVariable = options.selectedVariable;
+  let enumCategory = [];
+  let selectedVariable = options.selectedVariable;
   console.log(selectedVariable);
   if (!selectedVariable) {
-    return [];
+    return enumCategory;
   }
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-  var variables = processSimulationInfo.variables;
-  console.log(variables);
+  let processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+  let variables = processSimulationInfo.variables;
+  let matchedVariable = variables && variables.values && variables.values.filter(v => v.name === selectedVariable.name);
 
-  if (!variables) {
-    variables = elementHelper.createElement('qbp:Categories',
-      { values: [] }, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.variables = variables;
+  if (!matchedVariable || matchedVariable.length == 0 || !(matchedVariable[0].values) ) {
+    return enumCategory;
   }
-
-  return variables;
+   
+  console.log(matchedVariable);
+  return matchedVariable[0].values ;
 };
 
-CategoryHelper.createCategory = function(bpmnFactory, translate,options) {
-  return elementHelper.createElement('qbp:Category', {
-    id: 'qbp_' + createUUID(),
-    name: translate('resource'),
-    type: 'Categorical'
+CategoryHelper.createCategory = function (bpmnFactory, translate, options) {
+  return elementHelper.createElement('qbp:Enum', {
+    name: 'EnumName' + createUUID(),
+    assignmentProbability: '0',
+    rawProbability : ''
   }, null, bpmnFactory);
 };
 
-CategoryHelper.addCategoryToCategories = function(categories, category) {
-  categories.values.push(category);
+CategoryHelper.addCategoryToCategories = function (enums, enumCategory) {
+  enums.values.push(enumCategory);
 };
-
-CategoryHelper.createDefaultVariable = function(bpmnFactory, elementRegistry, translate,options) {
-  var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry,options);
-
-  var defaultVariable = (categories.get('values').filter(function(r) {
-    return r.id === 'QBP_DEFAULT_VARIABLE';
-  }) || [])[0];
-
-  if (!defaultVariable) {
-    defaultVariable = elementHelper.createElement('qbp:Category',
-      {
-        id: 'QBP_DEFAULT_VARIABLE',
-        name: translate('defaultResource.name'),
-        type: 'Categorical'
-      }, categories, bpmnFactory
-    );
-
-    categories.values.push(defaultVariable);
-  }
-};
-
 
 module.exports = CategoryHelper;
 
@@ -67230,7 +67222,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedCategory = options.getSelectedCategory;
 
-  var label = '';
+  var label = 'Name';
 
   return entryFactory.textField(translate, {
     id: 'category-name',
@@ -67258,7 +67250,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       var selectedCategory = getSelectedCategory(element, node);
 
       if (selectedCategory) {
-        var validationId = selectedCategory.id + this.id;
+        var validationId = selectedCategory.name + this.id;
 
         var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
           id : validationId,
@@ -67289,18 +67281,18 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedCategory = options.getSelectedCategory;
 
-  var label = '';
+  var label = 'Probability';
 
   return entryFactory.textField(translate, {
-    id: 'category-value',
+    id: 'category-probability',
     label: label,
-    modelProperty: 'name',
+    modelProperty: 'assignmentProbability',
 
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);
 
-      return { name: selectedCategory && selectedCategory.name };
+      return { assignmentProbability: selectedCategory && selectedCategory.assignmentProbability };
     },
 
     set: function(element, values, node) {
@@ -67308,7 +67300,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       var selectedCategory = getSelectedCategory(element, node);
 
       return cmdHelper.updateBusinessObject(element, selectedCategory, {
-        name: values.name
+        assignmentProbability: values.assignmentProbability
       });
     },
 
@@ -68222,9 +68214,6 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   if (!ResourceHelper.getResources(bpmnFactory, elementRegistry).values.length) {
     ResourceHelper.createDefaultResource(bpmnFactory, elementRegistry, translate);
   }
-
-  console.log('Resource');
-  console.log(element);
 
   var resourceEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'simulationResources',

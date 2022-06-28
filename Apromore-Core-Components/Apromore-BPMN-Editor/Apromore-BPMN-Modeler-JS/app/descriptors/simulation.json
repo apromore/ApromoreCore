@@ -299,6 +299,11 @@
           "name": "type",
           "type": "String",
           "isAttr": true
+        },
+        {
+          "name": "values",
+          "type": "Enum",
+          "isMany": true
         }
       ]
     },
@@ -316,20 +321,18 @@
       ]
     },
     {
-      "name": "Category",
+      "name": "Enum",
+      "superClass": [
+        "Element"
+      ],
       "properties": [
-        {
-          "name": "id",
-          "type": "String",
-          "isAttr": true
-        },
         {
           "name": "name",
           "type": "String",
           "isAttr": true
         },
         {
-          "name": "executionProbability",
+          "name": "assignmentProbability",
           "type": "String",
           "isAttr": true
         },
@@ -337,19 +340,6 @@
           "name": "rawProbability",
           "type": "String",
           "isAttr": true
-        }
-      ]
-    },
-    {
-      "name": "Categories",
-      "superClass": [
-        "Element"
-      ],
-      "properties": [
-        {
-          "name": "values",
-          "type": "Category",
-          "isMany": true
         }
       ]
     },
@@ -406,6 +396,10 @@
         {
           "name": "sequenceFlows",
           "type": "SequenceFlows"
+        },
+        {
+          "name": "variables",
+          "type": "Variables"
         }
       ]
     },

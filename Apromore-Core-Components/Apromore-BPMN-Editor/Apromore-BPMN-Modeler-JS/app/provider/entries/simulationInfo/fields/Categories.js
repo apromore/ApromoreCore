@@ -17,7 +17,6 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     createExtensionElement: function (element, extensionElements, _value) {
       var selectedVariable = getSelectedVariable(element,extensionElements);
       if(!selectedVariable){
-          console.log('No Variable has been selected for category');
           return;
       }
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry,
@@ -25,36 +24,48 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
    
       var category = CategoryHelper.createCategory(bpmnFactory, translate, { selectedVariable: selectedVariable });
 
-      return cmdHelper.addElementsTolist(element, categories, 'values', [category]);
+      return cmdHelper.addElementsTolist(element, selectedVariable, 'values', [category]);
     },
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
-      var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable });
-      var selectedVariable = variables.values[idx];
 
-      if (!variables || !selectedVariable) {
+      var selectedVariable = getSelectedVariable(element,_extensionElements);
+      if(!selectedVariable){
+           return;
+      }
+
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      var selectedCategory = !categories && categories.length > 0 && categories[idx];
+
+      if (!selectedCategory) {
         return {};
       }
 
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedVariable.id });
+      suppressValidationError(bpmnFactory, elementRegistry, { name: selectedCategory.name });
 
-      return cmdHelper.removeElementsFromList(element, variables, 'values',
-        null, [selectedVariable]);
+      return cmdHelper.removeElementsFromList(element, selectedVariable, 'values',
+        null, [selectedCategory]);
     },
 
-    getExtensionElements: function (_element) {
-      var selectedVariable = options.selectedVariable;
-        if (!selectedVariable) {
-          return [];
-        }
-      return CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable }).values || [];
+    getExtensionElements: function (_element,node) {
+      var selectedVariable = getSelectedVariable(_element,node);
+      if(!selectedVariable){
+           return [];
+      }
+      var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable });
-      var selectedVariable = variables.values[idx];
-
-      option.text = selectedVariable && selectedVariable.name || translate('N/A');
+      var selectedVariable = getSelectedVariable(element,_node);
+      if(selectedVariable){
+        var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+        var selectedVariable = categories && categories.length > 0 && categories[idx];
+        option.text = selectedVariable && selectedVariable.name ;
+      } else{
+        option.text = '';
+      }
+     
     }
   });
 
@@ -63,9 +74,12 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       idx: -1
     };
 
-    var variables = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { getSelectedVariable: getSelectedVariable }).values || [];
-
-    return variables[selection.idx];
+    var selectedVariable = getSelectedVariable(element,node);
+    if(selectedVariable){
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories[selection.idx];
+    }
+   
   }
   entries.push(variableEntry);
 

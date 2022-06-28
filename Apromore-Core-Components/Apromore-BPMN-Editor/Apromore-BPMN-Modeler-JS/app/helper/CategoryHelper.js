@@ -5,39 +5,32 @@ var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper')
 var CategoryHelper = {};
 
 CategoryHelper.getCategories = function (bpmnFactory, elementRegistry, options) {
-  let categories = [];
+  let enumCategory = [];
   let selectedVariable = options.selectedVariable;
-  console.log(selectedVariable);
   if (!selectedVariable) {
-    return categories;
+    return enumCategory;
   }
   let processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
   let variables = processSimulationInfo.variables;
-  let matchedVariable = variables && variables.filter(v => v.id === selectedVariable.id);
+  let matchedVariable = variables && variables.values && variables.values.filter(v => v.name === selectedVariable.name);
 
-  if (!matchedVariable) {
-    return categories;
+  if (!matchedVariable || matchedVariable.length == 0 || !(matchedVariable[0].values)) {
+    return enumCategory;
   }
 
-  if (!matchedVariable.categories) {
-    categories = elementHelper.createElement('qbp:Categories',
-      { values: [] }, matchedVariable, bpmnFactory);
-
-    matchedVariable.categories = categories;
-  }
-  return categories;
+  return matchedVariable[0].values;
 };
 
 CategoryHelper.createCategory = function (bpmnFactory, translate, options) {
-  return elementHelper.createElement('qbp:Category', {
-    id: 'qbp_' + createUUID(),
-    name: translate('resource'),
-    type: 'ENUM'
+  return elementHelper.createElement('qbp:Enum', {
+    name: 'EnumName' + createUUID(),
+    assignmentProbability: '0',
+    rawProbability: ''
   }, null, bpmnFactory);
 };
 
-CategoryHelper.addCategoryToCategories = function (categories, category) {
-  categories.values.push(category);
+CategoryHelper.addCategoryToCategories = function (enums, enumCategory) {
+  enums.values.push(enumCategory);
 };
 
 module.exports = CategoryHelper;

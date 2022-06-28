@@ -6,7 +6,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedVariable = options.getSelectedVariable;
 
-  var label = '';
+  var label = 'Case attribute name';
 
   return entryFactory.textField(translate, {
     id: 'variable-name',

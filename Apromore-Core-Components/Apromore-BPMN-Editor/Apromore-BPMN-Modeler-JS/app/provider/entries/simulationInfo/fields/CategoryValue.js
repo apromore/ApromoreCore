@@ -6,18 +6,18 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedCategory = options.getSelectedCategory;
 
-  var label = '';
+  var label = 'Probability';
 
   return entryFactory.textField(translate, {
-    id: 'category-value',
+    id: 'category-probability',
     label: label,
-    modelProperty: 'name',
+    modelProperty: 'assignmentProbability',
 
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);
 
-      return { name: selectedCategory && selectedCategory.name };
+      return { assignmentProbability: selectedCategory && selectedCategory.assignmentProbability };
     },
 
     set: function(element, values, node) {
@@ -25,7 +25,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       var selectedCategory = getSelectedCategory(element, node);
 
       return cmdHelper.updateBusinessObject(element, selectedCategory, {
-        name: values.name
+        assignmentProbability: values.assignmentProbability
       });
     },
 

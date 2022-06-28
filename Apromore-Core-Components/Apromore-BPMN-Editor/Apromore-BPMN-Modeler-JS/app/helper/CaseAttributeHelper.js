@@ -20,10 +20,11 @@ CaseAttributeHelper.getVariables = function(bpmnFactory, elementRegistry) {
 };
 
 CaseAttributeHelper.createVariable = function(bpmnFactory, translate) {
+  //translate('resource')
   return elementHelper.createElement('qbp:Variable', {
     id: 'qbp_var_' + createUUID(),
-    name: translate('resource'),
-    type: 'Categorical'
+    name: 'Categorical case attribute',
+    type: 'ENUM'
   }, null, bpmnFactory);
 };
 

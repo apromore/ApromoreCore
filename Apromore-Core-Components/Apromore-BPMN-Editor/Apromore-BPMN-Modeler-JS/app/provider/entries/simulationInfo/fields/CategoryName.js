@@ -6,7 +6,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedCategory = options.getSelectedCategory;
 
-  var label = '';
+  var label = 'Name';
 
   return entryFactory.textField(translate, {
     id: 'category-name',
@@ -34,7 +34,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       var selectedCategory = getSelectedCategory(element, node);
 
       if (selectedCategory) {
-        var validationId = selectedCategory.id + this.id;
+        var validationId = selectedCategory.name + this.id;
 
         var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
           id : validationId,
