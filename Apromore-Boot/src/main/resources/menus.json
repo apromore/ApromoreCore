@@ -77,7 +77,7 @@
               "id": "org.apromore.plugin.portal.loganimation2.LogAnimationPlugin"
             },
             {
-              "id": "org.apromore.plugin.portal.loganimation_ee.LogAnimationPlugin"
+              "id": "org.apromore.ee.plugin.portal.loganimation.LogAnimationPlugin"
             },
             {
               "id": "org.apromore.plugin.portal.bpmndiff.BPMNDiffPlugin"
