@@ -106,7 +106,7 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
         when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
-        when(config.getDefaultMaxProcessInstances()).thenReturn(25000l);
+        when(config.getDefaultMaxProcessInstances()).thenReturn(25000L);
 
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Collections.emptySet());
