@@ -22,6 +22,8 @@
 
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyInt;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -48,6 +50,7 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.StorageRepository;
+import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.WorkspaceRepository;
@@ -63,6 +66,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
+import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Workspace;
 import org.apromore.service.EventLogFileService;
@@ -95,6 +99,7 @@ class WorkspaceServiceImplTest extends AbstractTest {
     private GroupLogRepository groupLogRepo;
     private GroupUsermetadataRepository groupUsermetadataRepo;
     private CustomCalendarRepository customCalendarRepository;
+    private SubprocessProcessRepository subprocessProcessRepo;
     
     private ProcessRepository processRepo;
     private ProcessModelVersionRepository pmvRepo;
@@ -114,6 +119,7 @@ class WorkspaceServiceImplTest extends AbstractTest {
         groupLogRepo = createMock(GroupLogRepository.class);
         groupUsermetadataRepo = createMock(GroupUsermetadataRepository.class);
         customCalendarRepository = createMock(CustomCalendarRepository.class);
+        subprocessProcessRepo = createMock(SubprocessProcessRepository.class);
 
         logRepo = createMock(LogRepository.class);
         usermetadataRepo = createMock(UsermetadataRepository.class);
@@ -143,6 +149,7 @@ class WorkspaceServiceImplTest extends AbstractTest {
                                                 groupLogRepo,
                                                 groupUsermetadataRepo,
                                                 customCalendarRepository,
+                                                subprocessProcessRepo,
                                                 logFileService,
                                                 folderServiceImpl,
                                                 storageFactory,
@@ -253,8 +260,10 @@ class WorkspaceServiceImplTest extends AbstractTest {
         expect(folderRepo.findUniqueByID(targetFolderId)).andReturn(targetFolder);
         expect(userRepo.findByUsername(userName)).andReturn(user);
         expect(processRepo.findUniqueByID(processId)).andReturn(process);
+        expect(subprocessProcessRepo.getLinkedSubProcesses(anyInt())).andReturn(Collections.emptyList());
         expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(null); //ignore return value
         expect(pmvRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(null).anyTimes(); //ignore return value
+        expect(subprocessProcessRepo.saveAll(anyObject(Iterable.class))).andReturn(null).anyTimes(); //ignore return value
         replayAll();
         
         // Mock call
@@ -303,6 +312,9 @@ class WorkspaceServiceImplTest extends AbstractTest {
         branch.getProcessModelVersions().addAll(Arrays.asList(new ProcessModelVersion[] {pmv1, pmv2, pmv3}));
         branch.setCurrentProcessModelVersion(pmv2);
         process.getProcessBranches().add(branch);
+
+        SubprocessProcess subprocessLink = createSubprocessLink(process, "test", process);
+        List<SubprocessProcess> subprocessLinks = Arrays.asList(subprocessLink);
         
         // Parameters
         Integer processId = process.getId();
@@ -314,8 +326,10 @@ class WorkspaceServiceImplTest extends AbstractTest {
         expect(processRepo.findUniqueByID(processId)).andReturn(process).anyTimes();
         expect(folderRepo.findUniqueByID(targetFolderId)).andReturn(targetFolder);
         expect(userRepo.findByUsername(userName)).andReturn(user);
+        expect(subprocessProcessRepo.getLinkedSubProcesses(anyInt())).andReturn(subprocessLinks);
         expect(processRepo.save((Process)EasyMock.anyObject())).andReturn(null); //ignore return value
         expect(pmvRepo.save((ProcessModelVersion)EasyMock.anyObject())).andReturn(null).anyTimes(); //ignore return value
+        expect(subprocessProcessRepo.saveAll(anyObject(Iterable.class))).andReturn(null).anyTimes(); //ignore return value
         replayAll();
         
         // Mock call
