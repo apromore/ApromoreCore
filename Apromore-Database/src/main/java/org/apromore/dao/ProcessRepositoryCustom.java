@@ -53,7 +53,8 @@ public interface ProcessRepositoryCustom  {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions);
+    List<Process> findAllProcessesByFolder(
+        final Integer folderId, final String userRowGuid, final String conditions, boolean global);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

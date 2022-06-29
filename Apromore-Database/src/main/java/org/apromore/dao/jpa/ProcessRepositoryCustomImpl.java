@@ -49,8 +49,8 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-
     private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g WHERE g.type = :public ";
+    private static final String GET_ALL_PROCESSES_CORE_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g, User u JOIN u.groups g2 WHERE (g = g2)";
     private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f, User u JOIN u.groups g2 WHERE (g = g2) AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
@@ -82,11 +82,19 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Process> findAllProcessesByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
+    public List<Process> findAllProcessesByFolder(
+        final Integer folderId,
+        final String userRowGuid,
+        final String conditions,
+        final boolean global
+    ) {
         StringBuilder strQry = new StringBuilder(0);
-        String userCondition="(u.rowGuid = :userRowGuid) AND (gp.accessRights.readOnly = TRUE)";
-        if (folderId == 0) {
-            strQry.append("SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g, User u JOIN u.groups g2 WHERE (g = g2) AND p.folder IS NULL");
+        String userCondition = "(u.rowGuid = :userRowGuid) AND (gp.accessRights.readOnly = TRUE)";
+        if (global) {
+            strQry.append(GET_ALL_PROCESSES_CORE_JPA);
+        } else if (folderId == 0) {
+            strQry.append(GET_ALL_PROCESSES_CORE_JPA);
+            strQry.append(" AND p.folder IS NULL");
         } else {
             strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
         }
