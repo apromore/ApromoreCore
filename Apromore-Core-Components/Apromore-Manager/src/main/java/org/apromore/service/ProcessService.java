@@ -89,6 +89,10 @@ public interface ProcessService {
             final String nativeType, final String username)
             throws ExportFormatException;
 
+    ExportFormatResultType exportProcess(final String name, final Integer processId, final String branch, final Version version,
+                                         final String nativeType, final String username, final boolean includeLinkedSubprocesses)
+        throws ExportFormatException;
+
     /**
      * Updates a processes meta data, this is the Name, Version, domain, rating and then updated the Native xml with these details.
      * @param processId the process id.
