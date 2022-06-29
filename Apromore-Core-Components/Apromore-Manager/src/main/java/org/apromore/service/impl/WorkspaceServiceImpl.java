@@ -38,6 +38,7 @@ import org.apromore.dao.LogRepository;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.StorageRepository;
+import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.UserRepository;
 import org.apromore.dao.UsermetadataRepository;
 import org.apromore.dao.WorkspaceRepository;
@@ -54,6 +55,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Storage;
+import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.Workspace;
@@ -119,6 +121,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   private GroupLogRepository groupLogRepo;
   private GroupUsermetadataRepository groupUsermetadataRepo;
   private CustomCalendarRepository customCalendarRepo;
+  private SubprocessProcessRepository subprocessProcessRepo;
   private EventLogFileService logFileService;
   private FolderService folderService;
   private StorageRepository storageRepository;
@@ -148,6 +151,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       final GroupLogRepository groupLogRepository,
       final GroupUsermetadataRepository groupUsermetadataRepository,
       final CustomCalendarRepository customCalendarRepository,
+      final SubprocessProcessRepository subprocessProcessRepository,
       final EventLogFileService eventLogFileService, final FolderService folderService,
       final StorageManagementFactory storageFactory, final EventLogService eventLogService,
       final StorageRepository storageRepository, final ConfigBean configBean) {
@@ -165,6 +169,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     groupLogRepo = groupLogRepository;
     groupUsermetadataRepo = groupUsermetadataRepository;
     customCalendarRepo = customCalendarRepository;
+    subprocessProcessRepo = subprocessProcessRepository;
     logFileService = eventLogFileService;
     this.folderService = folderService;
     this.storageFactory = storageFactory;
@@ -632,10 +637,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
     newProcess.setGroupProcesses(groupProcesses);
 
+    // Copy subprocess links
+    List<SubprocessProcess> newSubprocessLinks = createNewSubprocessLinks(process, newProcess);
+
     processRepo.save(newProcess);
     for (ProcessModelVersion pmv : newPMVList) {
       pmvRepo.save(pmv);
     }
+    subprocessProcessRepo.saveAll(newSubprocessLinks);
 
     return newProcess;
   }
@@ -706,6 +715,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
       }
     }
     return pmvs;
+  }
+
+  private List<SubprocessProcess> createNewSubprocessLinks(Process oldProcess, Process newProcess) {
+    List<SubprocessProcess> subprocessProcesses = new ArrayList<>();
+    for (SubprocessProcess oldSubprocessProcess : subprocessProcessRepo.getLinkedSubProcesses(oldProcess.getId())) {
+      SubprocessProcess newSubprocessProcess = new SubprocessProcess();
+      newSubprocessProcess.setSubprocessId(oldSubprocessProcess.getSubprocessId());
+      newSubprocessProcess.setLinkedProcess(oldSubprocessProcess.getLinkedProcess());
+      newSubprocessProcess.setSubprocessParent(newProcess);
+      subprocessProcesses.add(newSubprocessProcess);
+    }
+    return subprocessProcesses;
   }
 
   @Override
