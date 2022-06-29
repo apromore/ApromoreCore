@@ -43,6 +43,7 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.Role;
+import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.User;
 import org.apromore.dao.model.Usermetadata;
 import org.apromore.dao.model.UsermetadataType;
@@ -273,5 +274,13 @@ public class AbstractTest extends EasyMockSupport {
         customCalendar.setCreatedBy("test");
 
         return customCalendar;
+    }
+
+    public SubprocessProcess createSubprocessLink(Process parent, String subprocessId, Process linkedProcess) {
+        SubprocessProcess subprocessProcess = new SubprocessProcess();
+        subprocessProcess.setSubprocessParent(parent);
+        subprocessProcess.setSubprocessId(subprocessId);
+        subprocessProcess.setLinkedProcess(linkedProcess);
+        return subprocessProcess;
     }
 }
