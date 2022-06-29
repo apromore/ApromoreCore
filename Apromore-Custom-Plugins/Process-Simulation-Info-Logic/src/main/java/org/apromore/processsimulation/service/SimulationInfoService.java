@@ -156,7 +156,8 @@ public class SimulationInfoService {
         double interArrivalTimeMillis = getInterArrivalTime(simulationData);
         TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
-        builder.processInstances(simulationData.getCaseCount())
+        builder.processInstances(simulationData.getCaseCount() > config.getDefaultMaxProcessInstances()
+                ? config.getDefaultMaxProcessInstances() : simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(
                 Instant.ofEpochMilli(simulationData.getStartTime()).toString())
