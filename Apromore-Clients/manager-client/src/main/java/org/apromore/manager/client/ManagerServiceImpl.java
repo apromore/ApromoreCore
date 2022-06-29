@@ -562,6 +562,17 @@ public class ManagerServiceImpl implements ManagerService {
   }
 
   @Override
+  public ExportFormatResultType exportFormat(int processId, String processName, String branch,
+                                             String versionNumber, String nativeType, String owner,
+                                             boolean includeLinkedSubprocesses)
+      throws Exception {
+    LOGGER.debug("Export process model \"{}\" (id {}, branch {}, version {}, type {}, owner {})",
+        processName, processId, branch, versionNumber, nativeType, owner);
+    return procSrv.exportProcess(processName, processId, branch, new Version(versionNumber),
+        nativeType, owner, includeLinkedSubprocesses);
+  }
+
+  @Override
   public ExportLogResultType exportLog(int logId, String logName) throws Exception {
     LOGGER.info("Export log \"{}\" (id {})", logName, logId);
     return logSrv.exportLog(logId);
