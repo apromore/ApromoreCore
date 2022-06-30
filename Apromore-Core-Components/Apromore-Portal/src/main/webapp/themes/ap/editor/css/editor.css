@@ -504,3 +504,13 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.bpp-properties-group  input[type="checkbox"] {
+     position: absolute;
+     top: 20px;
+     right: 20px;
+}
+
+.hide {
+    display:none;
+}

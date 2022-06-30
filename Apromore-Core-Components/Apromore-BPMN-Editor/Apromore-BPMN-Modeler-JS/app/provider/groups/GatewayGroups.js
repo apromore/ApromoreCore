@@ -25,7 +25,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
       label: function(_element, _node) {
         return groupLabel;
       },
-      entries: createGatewayEntries(bpmnFactory, elementRegistry, translate, { gateway: gateway })
+      entries: createGatewayEntries(bpmnFactory, elementRegistry, translate, { gateway: gateway ,groupId:groupId},element)
     };
   }
 

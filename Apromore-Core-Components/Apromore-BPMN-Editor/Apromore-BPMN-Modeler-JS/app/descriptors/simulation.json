@@ -415,6 +415,10 @@
           "name": "executionProbability",
           "type": "String",
           "isAttr": true
+        },
+        {
+          "name": "values",
+          "type": "Expression"
         }
       ]
     },
@@ -429,6 +433,47 @@
           "type": "SequenceFlow",
           "isMany": true
         }
+      ]
+    },
+    {
+      "name": "Expression",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+       { 
+        "name": "operator",
+        "type": "String",
+        "isAttr": true
+       },
+        {
+          "name": "values",
+          "type": "Clause",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Clause",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+       { 
+        "name": "operator",
+        "type": "String",
+        "isAttr": true
+       },
+       { 
+        "name": "variableName",
+        "type": "String",
+        "isAttr": true
+       },
+       { 
+        "name": "enumName",
+        "type": "String",
+        "isAttr": true
+       }
       ]
     },
     {

@@ -80,7 +80,7 @@ function createProcessSimulationInfo(root, bpmnFactory) {
   processSimulationInfo.sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
     { values: [defaultSequenceFlow] }, processSimulationInfo, bpmnFactory);
 
-  processSimulationInfo.variables = elementHelper.createElement('qbp:variables',
+  processSimulationInfo.variables = elementHelper.createElement('qbp:Variables',
   { values: [] }, processSimulationInfo, bpmnFactory);  
 
   return processSimulationInfo;
