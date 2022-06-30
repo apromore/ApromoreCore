@@ -70,8 +70,7 @@ public class CaseDetailsController extends DataListController {
     rows = new ArrayList<>();
     for (CaseDetails c : caseDetails) {
       records.add(c);
-      rows.add(new String[] {c.getCaseId(), Integer.toString(c.getCaseEvents()), c.getDurationString(),
-          Integer.toString(c.getCaseVariantId())});
+      rows.add(new String[] {c.getCaseId(), Integer.toString(c.getCaseEvents()), c.getDurationString()});
     }
   }
 
@@ -82,7 +81,7 @@ public class CaseDetailsController extends DataListController {
 
   @Override
   public String[] getDataHeaders() {
-    return new String[] {"Case ID", "Events", "Duration", "Case Variant"};
+    return new String[] {"Case ID", "Events", "Duration"};
   }
 
   @Override
