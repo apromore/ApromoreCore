@@ -140,7 +140,7 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     }
 
     public int getIntValue() {
-        return numericVal.intValue();
+        return numericVal.longValue() > Integer.MAX_VALUE ? Integer.MAX_VALUE : numericVal.intValue();
     }
 
     private Set<String> getSingleValSet() {
