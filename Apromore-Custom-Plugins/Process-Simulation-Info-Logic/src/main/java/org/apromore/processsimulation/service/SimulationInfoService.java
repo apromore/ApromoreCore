@@ -74,6 +74,10 @@ import org.springframework.util.ObjectUtils;
 @Service
 public class SimulationInfoService {
 
+    /*
+     * Just a test comment to verify moving to closed source repo
+     */
+
     private static final String XML_START_TAG = "<?xml";
     private static final String XML_START_EXTENSION_ELEMENTS_TAG = "<extensionElements>";
     private static final String XML_END_PROCESS_TAG = "</process>";
