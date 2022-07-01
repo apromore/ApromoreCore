@@ -43,4 +43,5 @@ public class SimulationInfoConfig {
     private String defaultResourceId = "DEFAULT_RESOURCE";
     private String defaultResourceIdPrefix = "QBP_";
     private String defaultResourceName = "Default";
+    private long defaultMaxProcessInstances = 25000;
 }

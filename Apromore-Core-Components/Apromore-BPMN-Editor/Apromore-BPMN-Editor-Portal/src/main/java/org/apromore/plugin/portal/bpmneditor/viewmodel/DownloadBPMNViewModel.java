@@ -82,11 +82,14 @@ public class DownloadBPMNViewModel {
             String bpmnXML = processService.getBPMNRepresentation(process.getName(), process.getId(), "MAIN",
                 new Version(version.getVersionNumber()), currentUser.getUsername(), includeLinkedSubprocesses);
             InputStream is = new ByteArrayInputStream(bpmnXML.getBytes());
-            Filedownload.save(is, "text/xml", "diagram.bpmn");
+            Filedownload.save(is, "text/xml", process.getName() + ".bpmn");
             window.detach();
         } catch (CircularReferenceException e) {
             Messagebox.show(Labels.getLabel("bpmnEditor_exportCircularReference_message",
                 "You cannot export this model. The linked models form a loop. Please review the linked subprocesses."),
+                Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
+        } catch (ExportFormatException e) {
+            Messagebox.show("Unable to export model with linked subprocesses. Reason: " + e.getMessage(),
                 Labels.getLabel("common_unknown_title", "Error"), Messagebox.OK, Messagebox.ERROR);
         }
     }

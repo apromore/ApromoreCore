@@ -45,15 +45,26 @@ public class FolderRepositoryCustomImpl implements FolderRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
+
+    private static final String GET_ALL_FOLDERS_CORE_JPA = "SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (g = g2)";
    
-    public List<Folder> findSubfolders(final int parentFolderId, final String userId, final String conditions) {
+    public List<Folder> findSubfolders(
+        final int parentFolderId,
+        final String userId,
+        final String conditions,
+        final boolean global
+    ) {
         StringBuilder strQry = new StringBuilder(0);
-        String userCondition="(u.rowGuid = :userRowGuid)   AND (gf.accessRights.readOnly = TRUE)";
-        if (parentFolderId == 0) {
-            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g, User u JOIN u.groups g2 WHERE (g = g2) AND f.parentFolder IS NULL");
+        String userCondition = "(u.rowGuid = :userRowGuid)   AND (gf.accessRights.readOnly = TRUE)";
+        if (global) {
+            strQry.append(GET_ALL_FOLDERS_CORE_JPA);
+        } else if (parentFolderId == 0) {
+            strQry.append(GET_ALL_FOLDERS_CORE_JPA);
+            strQry.append(" AND f.parentFolder IS NULL");
         } else {
-            strQry.append("SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User" +
-                    " u JOIN u.groups g2 WHERE (g = g2) AND fp.id = ").append(parentFolderId);
+            strQry.append(
+                "SELECT f FROM GroupFolder gf JOIN gf.folder f JOIN gf.group g JOIN f.parentFolder fp, User"
+                    + " u JOIN u.groups g2 WHERE (g = g2) AND fp.id = ").append(parentFolderId);
         }
         if (userId != null && !userId.isEmpty()) {
             strQry.append(" AND ").append(userCondition);

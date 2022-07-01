@@ -544,6 +544,23 @@ public class ProcessServiceImpl implements ProcessService {
     }
   }
 
+  @Override
+  public ExportFormatResultType exportProcess(final String name, final Integer processId,
+                                              final String branch, final Version version, final String format,
+                                              final String username, final boolean includeLinkedSubprocesses)
+      throws ExportFormatException {
+    try {
+      ExportFormatResultType exportResult = new ExportFormatResultType();
+      String xmlProcess = getBPMNRepresentation(name, processId, branch, version, username, includeLinkedSubprocesses);
+      exportResult.setNative(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
+      return exportResult;
+    } catch (Exception e) {
+      LOGGER.error("Failed to export process model {} to format {}", name, format);
+      LOGGER.debug("Original exception was: ", e);
+      throw new ExportFormatException(e);
+    }
+  }
+
   /**
    * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
    *      Version, Version, String, boolean) {@inheritDoc}

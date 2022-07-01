@@ -21,6 +21,8 @@
  */
 package org.apromore.plugin.portal.file;
 
+import static org.apromore.plugin.portal.PortalContexts.getPageDefinition;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -45,6 +47,7 @@ import javax.activation.DataHandler;
 import javax.inject.Inject;
 
 import org.apromore.apmlog.APMLog;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalContexts;
@@ -62,12 +65,14 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.csvexporter.CSVExporterLogic;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -91,6 +96,9 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   @Inject
   EventLogService eventLogService;
   @Inject
+  ProcessService processService;
+
+  @Inject
   private CSVExporterLogic csvExporterLogic;
 
   Listbox selectedEncoding;
@@ -104,6 +112,10 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
   public void setEventLogService(EventLogService eventLogService) {
     this.eventLogService = eventLogService;
   }
+
+    public void setProcessService(ProcessService processService) {
+        this.processService = processService;
+    }
 
   public void setCsvExporterLogic(CSVExporterLogic csvExporterLogic) {
     this.csvExporterLogic = csvExporterLogic;
@@ -166,14 +178,24 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           (ProcessSummaryType) selectedProcessVersions.keySet().iterator().next();
       VersionSummaryType version = selectedProcessVersions.get(model).get(0);
       try {
-        ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
-            model.getName(), version.getName(), version.getVersionNumber(),
-            model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
-        InputStream nativeStream = exportResult.getNative().getInputStream();
-        Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
-        LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
-            UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
-            version.getName(), version.getVersionNumber());
+          if (processService.hasLinkedProcesses(model.getId(), UserSessionManager.getCurrentUser().getUsername())) {
+              Map<String, Object> args = new HashMap<>();
+              args.put("process", model);
+              args.put("version", version);
+
+              Window downloadBPMNPrompt = (Window) Executions.createComponents(
+                  getPageDefinition("static/bpmneditor/downloadBPMN.zul"), null, args);
+              downloadBPMNPrompt.doModal();
+          } else {
+              ExportFormatResultType exportResult = mainC.getManagerService().exportFormat(model.getId(),
+                  model.getName(), version.getName(), version.getVersionNumber(),
+                  model.getOriginalNativeType(), UserSessionManager.getCurrentUser().getUsername());
+              InputStream nativeStream = exportResult.getNative().getInputStream();
+              Filedownload.save(nativeStream, "text/xml", model.getName() + ".bpmn");
+              LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
+                  UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
+                  version.getName(), version.getVersionNumber());
+          }
       } catch (Exception e) {
         LOGGER.error("Export process model failed", e);
         Messagebox.show(getLabel("unableDownloadModel"), "Error", Messagebox.OK,
@@ -295,7 +317,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                 } else {
                     exportFiles(mainController, format.getSelectedItem().getLabel(), "");
                 }
-             
+
               LOGGER.info("User {} downloaded  in format {}",
                   UserSessionManager.getCurrentUser().getUsername(), format.getSelectedItem().getLabel());
               window.invalidate();
@@ -350,7 +372,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
           Messagebox.ERROR);
     }
   }
-  
+
    private Path getCSVFile(LogSummaryType summaryType) {
       APMLog apmLog = eventLogService.getAggregatedLog(summaryType.getId());
       return csvExporterLogic.generateCSV(apmLog);
@@ -364,7 +386,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
        writeToFile(tempPath,exportResult.getNative());
        return tempPath;
    }
-   
+
    private void writeToFile(Path tempPath, DataHandler data) throws Exception {
        try (GZIPOutputStream gos = new GZIPOutputStream(new FileOutputStream(tempPath.toFile()));
                InputStream native_is = data.getInputStream()) {
@@ -387,79 +409,111 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
         }
     }
 
-   private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController)
+   private Path getProcessModelFile(ProcessSummaryType model, VersionSummaryType version, MainController mainController,
+                                    boolean includeLinkedSubprocesses)
            throws Exception {
        ExportFormatResultType exportResult = mainController.getManagerService().exportFormat(model.getId(),
                model.getName(), version.getName(), version.getVersionNumber(), model.getOriginalNativeType(),
-               UserSessionManager.getCurrentUser().getUsername());
+               UserSessionManager.getCurrentUser().getUsername(), includeLinkedSubprocesses);
        Path tempPath = Files.createTempFile(null, ".bpmn");
        tempPath.toFile().deleteOnExit();
        writeToFileWithoutZip(tempPath, exportResult.getNative());
        return tempPath;
    }
-  
-   private void exportFiles(MainController mainController, String format, String encoding) {
-       Map<String, String> filesToBeDownloaded = new HashMap<String, String>();
-       mainController.getSelectedElements().stream().forEach(item -> {
-           try {
-               Path path = null;
-               String currentFileName = "";
-               if (item instanceof LogSummaryType) {
-                   LogSummaryType logSummaryType = (LogSummaryType) item;
-                   if ("CSV".equals(format)) {
-                       path = getCSVFile(logSummaryType);
-                       LOGGER.info("Export log {} as CSV using {} to {}", item.getName(), encoding, path);
-                   }  else {
-                       path = getXESFile(logSummaryType, mainController);
-                       LOGGER.info("Export log {} as XES using {} to {}", item.getName(), encoding, path);
-                   }
-                   currentFileName = logSummaryType.getName();
 
-               } else if (item instanceof ProcessSummaryType) {
-                   ProcessSummaryType model = (ProcessSummaryType) item;
-                   VersionSummaryType version = null;
-                   for (VersionSummaryType summaryType : model.getVersionSummaries()) {
-                       if (summaryType.getVersionNumber().compareTo(model.getLastVersion()) == 0) {
-                           version = summaryType;
-                           break;
-                       }
-                   }
-                   path = getProcessModelFile((ProcessSummaryType) item, version, mainController);
-                   LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
-                           UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
-                           version.getName(), version.getVersionNumber());
-                   currentFileName = model.getName();
-               }
-               if (filesToBeDownloaded.get(currentFileName) == null) {
-                   filesToBeDownloaded.put(currentFileName, path.toFile().getAbsolutePath());
-               } else {
-                   int i = 1;
-                   while (filesToBeDownloaded.get(currentFileName + "_" + i) != null) {
-                       i++;
-                   }
-                   filesToBeDownloaded.put(currentFileName + "_" + i, path.toFile().getAbsolutePath());
-               }
+    private void exportFiles(MainController mainController, String format, String encoding) {
+        // Prompt user to decide whether to include linked subprocesses if one or more of the
+        // selected items is a model with a linked subprocess
+        if (mainController.getSelectedElements().stream()
+            .anyMatch(summaryType -> {
+                try {
+                    return summaryType instanceof ProcessSummaryType
+                        && processService.hasLinkedProcesses(summaryType.getId(),
+                        UserSessionManager.getCurrentUser().getUsername());
+                } catch (UserNotFoundException e) {
+                    return false;
+                }
+            })
+        ) {
+            Messagebox.show("One or more selected models are linked to another process. Include linked subprocesses?", "Download BPMN Models",
+                Messagebox.YES | Messagebox.NO,
+                Messagebox.QUESTION,
+                (Event e) -> {
+                    if (Messagebox.ON_YES.equals(e.getName())) {
+                        exportFiles(mainController, format, encoding, true);
+                    } else if (Messagebox.ON_NO.equals(e.getName())) {
+                        exportFiles(mainController, format, encoding, false);
+                    }
+                });
+        } else {
+            exportFiles(mainController, format, encoding, false);
+        }
+    }
 
-           } catch (Exception e) {
-               cleanTempFiles(filesToBeDownloaded);
-               filesToBeDownloaded.clear();
-               LOGGER.error("Export process model/log failed", e);
-               Notification.error(getLabel("unableDownloadModel"));
-           }
-       });
+    //Exports files to zip
+    private void exportFiles(MainController mainController, String format, String encoding, boolean includeLinkedSubprocesses) {
+        Map<String, String> filesToBeDownloaded = new HashMap<>();
 
-       if (!filesToBeDownloaded.isEmpty()) {
-           try {
-               byte[] zipFiles = makeZipFile(filesToBeDownloaded);
-               Filedownload.save(zipFiles, "application/zip", "download.zip");
-           } catch (Exception e) {
-               cleanTempFiles(filesToBeDownloaded);
-               LOGGER.error("Export process model/log failed", e);
-               Notification.error(getLabel("unableDownloadModel"));
-           }
-       }
+        mainController.getSelectedElements().stream().forEach(item -> {
+            try {
+                Path path = null;
+                String currentFileName = "";
+                if (item instanceof LogSummaryType) {
+                    LogSummaryType logSummaryType = (LogSummaryType) item;
+                    if ("CSV".equals(format)) {
+                        path = getCSVFile(logSummaryType);
+                        LOGGER.info("Export log {} as CSV using {} to {}", item.getName(), encoding, path);
+                    }  else {
+                        path = getXESFile(logSummaryType, mainController);
+                        LOGGER.info("Export log {} as XES using {} to {}", item.getName(), encoding, path);
+                    }
+                    currentFileName = logSummaryType.getName();
 
-   }
+                } else if (item instanceof ProcessSummaryType) {
+                    ProcessSummaryType model = (ProcessSummaryType) item;
+                    VersionSummaryType version = null;
+                    for (VersionSummaryType summaryType : model.getVersionSummaries()) {
+                        if (summaryType.getVersionNumber().compareTo(model.getLastVersion()) == 0) {
+                            version = summaryType;
+                            break;
+                        }
+                    }
+                    path = getProcessModelFile((ProcessSummaryType) item, version, mainController, includeLinkedSubprocesses);
+                    LOGGER.info("User {} downloaded process model \"{}\" (id {}, version {}/{})",
+                        UserSessionManager.getCurrentUser().getUsername(), model.getName(), model.getId(),
+                        version.getName(), version.getVersionNumber());
+                    currentFileName = model.getName();
+                }
+                if (filesToBeDownloaded.get(currentFileName) == null) {
+                    filesToBeDownloaded.put(currentFileName, path.toFile().getAbsolutePath());
+                } else {
+                    int i = 1;
+                    while (filesToBeDownloaded.get(currentFileName + "_" + i) != null) {
+                        i++;
+                    }
+                    filesToBeDownloaded.put(currentFileName + "_" + i, path.toFile().getAbsolutePath());
+                }
+
+            } catch (Exception e) {
+                cleanTempFiles(filesToBeDownloaded);
+                filesToBeDownloaded.clear();
+                LOGGER.error("Export process model/log failed", e);
+                Notification.error(getLabel("unableDownloadModel"));
+            }
+        });
+
+        if (!filesToBeDownloaded.isEmpty()) {
+            try {
+                byte[] zipFiles = makeZipFile(filesToBeDownloaded);
+                Filedownload.save(zipFiles, "application/zip", "download.zip");
+            } catch (Exception e) {
+                cleanTempFiles(filesToBeDownloaded);
+                LOGGER.error("Export process model/log failed", e);
+                Notification.error(getLabel("unableDownloadModel"));
+            }
+        }
+
+    }
  
    private void cleanTempFiles(Map<String, String> filesToBeDownloaded) {
        for (String filePath : filesToBeDownloaded.values()) {

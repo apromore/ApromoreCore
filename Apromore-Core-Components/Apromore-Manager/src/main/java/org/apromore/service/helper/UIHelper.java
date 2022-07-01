@@ -158,19 +158,26 @@ public class UIHelper implements UserInterfaceHelper {
      * {@inheritDoc}
      */
     @Override
-    public SummariesType buildProcessSummaryList(Integer folderId, String userRowGuid, String conditions, String logConditions, String folderConditions) {
+    public SummariesType buildProcessSummaryList(
+        Integer folderId,
+        String userRowGuid,
+        String conditions,
+        String logConditions,
+        String folderConditions,
+        boolean global
+    ) {
         SummariesType summaries = new SummariesType();
 
         summaries.setTotalCount(pRepository.count());
 
         // Folders
-        List<Folder> folders = fRepository.findSubfolders(folderId, userRowGuid, folderConditions);
+        List<Folder> folders = fRepository.findSubfolders(folderId, userRowGuid, folderConditions, global);
         for (Folder folder : folders) {
             summaries.getSummary().add(buildFolderSummary(folder));
         }
 
         // Process models
-        List<Process> processes = pRepository.findAllProcessesByFolder(folderId, userRowGuid, conditions);
+        List<Process> processes = pRepository.findAllProcessesByFolder(folderId, userRowGuid, conditions, global);
         for (Process process : processes) {
             ProcessSummaryType processSummaryType = buildProcessList(null, null, process);
             if (processSummaryType != null) {
@@ -179,7 +186,7 @@ public class UIHelper implements UserInterfaceHelper {
         }
 
         // Logs
-        List<Log> logs = lRepository.findAllLogsByFolder(folderId, userRowGuid, logConditions);
+        List<Log> logs = lRepository.findAllLogsByFolder(folderId, userRowGuid, logConditions, global);
         for (Log log : logs) {
             summaries.getSummary().add(buildLogSummary(log));
         }

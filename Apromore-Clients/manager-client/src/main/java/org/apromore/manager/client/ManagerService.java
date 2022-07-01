@@ -230,6 +230,10 @@ public interface ManagerService {
             String owner)
             throws Exception;
 
+    ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
+                                        String owner, boolean includeLinkedSubprocesses)
+        throws Exception;
+
     ExportLogResultType exportLog(int logId, String logName) throws Exception;
 
     /**

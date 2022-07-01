@@ -55,7 +55,7 @@ export default class Export {
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(svg);
         hiddenElement.target = '_blank';
-        hiddenElement.download = 'diagram.svg';
+        hiddenElement.download = this.facade.app.getProcessName() + '.svg';
         hiddenElement.click();
     }
 
@@ -68,7 +68,7 @@ export default class Export {
             var hiddenElement = document.createElement('a');
             hiddenElement.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(xml);
             hiddenElement.target = '_blank';
-            hiddenElement.download = 'diagram.bpmn';
+            hiddenElement.download = this.facade.app.getProcessName() + '.bpmn';
             hiddenElement.click();
         }
     }

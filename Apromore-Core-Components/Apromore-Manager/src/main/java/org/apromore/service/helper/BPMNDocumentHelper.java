@@ -140,6 +140,13 @@ public final class BPMNDocumentHelper {
         removeSubprocessContents(subprocessNode);
 
         Document bpmnDocument = subprocessNode.getOwnerDocument();
+
+        List<Node> collaborationElements = getBPMNElements(linkedProcessDocument, "collaboration");
+
+        if (!CollectionUtils.isEmpty(collaborationElements)) {
+            throw new ExportFormatException("One or more linked subprocess models contain pools. Pools in subprocesses are not yet supported.");
+        }
+
         List<Node> processElements = getBPMNElements(linkedProcessDocument, "process");
         if (CollectionUtils.isEmpty(processElements)) {
             throw new ExportFormatException(MISSING_PROCESS_MSG);

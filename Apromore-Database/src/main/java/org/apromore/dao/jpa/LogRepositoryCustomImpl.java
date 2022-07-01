@@ -51,6 +51,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
     private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
+    private static final String GET_ALL_LOGS_CORE_JPA = "SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g, User u JOIN u.groups g2 WHERE (g = g2)";
     private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g JOIN l.folder f, User u JOIN u.groups g2 WHERE (g = g2) AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
@@ -84,11 +85,19 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Log> findAllLogsByFolder(final Integer folderId, final String userRowGuid, final String conditions) {
+    public List<Log> findAllLogsByFolder(
+        final Integer folderId,
+        final String userRowGuid,
+        final String conditions,
+        final boolean global
+    ) {
         StringBuilder strQry = new StringBuilder(0);
-        String userCondition="(u.rowGuid = :userRowGuid) AND (gl.accessRights.readOnly = TRUE)";
-        if (folderId == 0) {
-            strQry.append("SELECT l FROM GroupLog gl JOIN gl.log l JOIN gl.group g, User u JOIN u.groups g2 WHERE (g = g2) AND l.folder IS NULL");
+        String userCondition = "(u.rowGuid = :userRowGuid) AND (gl.accessRights.readOnly = TRUE)";
+        if (global) {
+            strQry.append(GET_ALL_LOGS_CORE_JPA);
+        } else if (folderId == 0) {
+            strQry.append(GET_ALL_LOGS_CORE_JPA);
+            strQry.append(" AND l.folder IS NULL");
         } else {
             strQry.append(GET_ALL_LOGS_FOLDER_JPA).append(folderId);
         }
