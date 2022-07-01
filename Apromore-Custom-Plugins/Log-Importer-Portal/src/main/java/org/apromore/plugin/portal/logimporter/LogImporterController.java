@@ -516,7 +516,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return null;
     }
 
-    protected LogMetaData getLogMetaData() {
+    public LogMetaData getLogMetaData() {
         return logMetaData;
     }
 
