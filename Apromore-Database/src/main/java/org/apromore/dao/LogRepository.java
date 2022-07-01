@@ -129,7 +129,7 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
      * @param userRowGuid user id
      * @return a list of logs the user has read permission or ownership in the folder
      */
-    @Query("SELECT l FROM Log l JOIN l.groupLogs gl JOIN gl.group g1 LEFT JOIN l.folder f, " +
+    @Query("SELECT DISTINCT l FROM Log l JOIN l.groupLogs gl JOIN gl.group g1 LEFT JOIN l.folder f, " +
         "User u JOIN u.groups g2 " +
         "WHERE ((?2 = 0 AND f is NULL) OR (f.id = ?2)) AND (l.name = ?1) AND (u.rowGuid = ?3) AND (g1 = g2) " +
             "AND ((gl.accessRights.ownerShip = 1) OR (gl.accessRights.readOnly = 1)) ORDER BY l.id")
