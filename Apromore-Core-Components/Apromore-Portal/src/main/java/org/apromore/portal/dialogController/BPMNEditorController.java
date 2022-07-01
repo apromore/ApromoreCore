@@ -232,9 +232,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
       param.put("nativeType", process.getOriginalNativeType());
 
-      this.setTitle(
-          editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
-
+      String title = editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")";
+      this.setTitle(title);
+      this.setClientAttribute("title", title);
       if (mainC != null) {
         mainC.showPluginMessages(pluginMessages);
       }
