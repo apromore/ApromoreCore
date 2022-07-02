@@ -3,7 +3,7 @@ var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject,
     var labelFactory = require('bpmn-js-properties-panel/lib/factory/LabelFactory')
 var OperatorSelectBox = require('./OperatorSelectBox');
 var Clauses = require('./Clauses');
-var ClauseAttributeSelectBox = require('./ClauseAttributeSelectBox');
+var ClauseCaseAttributeSelectBox = require('./ClauseCaseAttributeSelectBox');
 var ClauseCategorySelectBox = require('./ClauseCategorySelectBox');
 var ClauseOperatorSelectBox = require('./ClauseOperatorSelectBox');
 
@@ -16,7 +16,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options,elem
 
     entries.push(Clauses(element, bpmnFactory, elementRegistry, translate,options).entries);
 
-    entries.push(ClauseAttributeSelectBox(bpmnFactory, elementRegistry, translate,options));
+    entries.push(ClauseCaseAttributeSelectBox(bpmnFactory, elementRegistry, translate,options));
 
     entries.push(ClauseCategorySelectBox(bpmnFactory, elementRegistry, translate, options));
 

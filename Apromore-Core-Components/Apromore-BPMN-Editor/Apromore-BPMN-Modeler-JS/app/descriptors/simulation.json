@@ -284,12 +284,10 @@
     },
     {
       "name": "Variable",
+      "superClass": [
+        "Element"
+      ],
       "properties": [
-        {
-          "name": "id",
-          "type": "String",
-          "isAttr": true
-        },
         {
           "name": "name",
           "type": "String",

@@ -14,21 +14,20 @@ var ProcessInstancesField = require('./fields/ProcessInstancesField'),
 module.exports = function(element,bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
-  var caseAttributesData = CaseAttributes(element,bpmnFactory,elementRegistry,translate);
-
-  var caseAttributeEntries = CaseAttributeEntries(bpmnFactory, elementRegistry, translate,
-    { getSelectedVariable: caseAttributesData.getSelectedVariable });
-
-  var categories = Categories(element,bpmnFactory, elementRegistry, translate,
-      { getSelectedVariable: caseAttributesData.getSelectedVariable });  
-
-  var categoryDetailEntries = CategoriesEntry(bpmnFactory, elementRegistry, translate,
-        { getSelectedCategory: categories.getSelectedCategory });    
+ 
 
   entries = entries.concat(DistributionFields(bpmnFactory, elementRegistry, translate));
 
   entries.push(ProcessInstancesField(bpmnFactory, elementRegistry, translate));
-    
+ 
+  let caseAttributesData = CaseAttributes(element,bpmnFactory,elementRegistry,translate);
+  let caseAttributeEntries = CaseAttributeEntries(bpmnFactory, elementRegistry, translate,
+    { getSelectedVariable: caseAttributesData.getSelectedVariable });
+  let categories = Categories(element,bpmnFactory, elementRegistry, translate,
+      { getSelectedVariable: caseAttributesData.getSelectedVariable });  
+  let categoryDetailEntries = CategoriesEntry(bpmnFactory, elementRegistry, translate,
+        { getSelectedCategory: categories.getSelectedCategory });    
+
   entries = entries.concat(caseAttributesData.entries);
   entries = entries.concat(caseAttributeEntries);  
   entries = entries.concat(categories.entries);  

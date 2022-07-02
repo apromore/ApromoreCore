@@ -6,9 +6,7 @@ var createUUID = require('../../../../utils/Utils').createUUID;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
-
-  let expression ;
-  
+  let sequenceFlow;
 
   return entryFactory.selectBox(translate, {
     id: 'operator_' + createUUID(),
@@ -17,22 +15,19 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     selectOptions: createOperatorOptions(),
 
     get: function (_element, _node) {
-      if(!expression){
-        expression = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
+      if (!sequenceFlow) {
+        sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
       }
-      console.log(expression);
+      let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
       return { operator: expression && expression.operator };
     },
 
     set: function (element, values, _node) {
-      expression = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      console.log(expression);
-      var result = cmdHelper.updateBusinessObject(element, expression, {
-        operator: values.operator
-      });
-      expression = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      console.log(result);
-      return result;
+      sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
+      let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+      if (expression) {
+        expression.operator = values.operator;
+      }
     }
   });
 };

@@ -76,10 +76,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options,eleme
 
     options.outgoingElementId = outgoingElement.id;    
     
-    entries = entries.concat(ClauseWrapper(bpmnFactory, elementRegistry, translate, options,element));
+   // entries = entries.concat(ClauseWrapper(bpmnFactory, elementRegistry, translate, options,element));
     
 
   });
-  entries.push(Toggle(bpmnFactory, elementRegistry, translate, options));
+  //entries.push(Toggle(bpmnFactory, elementRegistry, translate, options));
   return entries;
 };

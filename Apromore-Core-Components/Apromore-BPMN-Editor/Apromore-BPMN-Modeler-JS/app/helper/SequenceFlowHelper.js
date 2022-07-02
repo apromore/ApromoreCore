@@ -33,7 +33,8 @@ SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry,
         {
           elementId: id,
           executionProbability: '',
-          rawExecutionProbability: ''
+          rawExecutionProbability: '',
+          values: []
         }, sequenceFlows, bpmnFactory
       );
     } else {
@@ -41,6 +42,7 @@ SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry,
         'qbp:SequenceFlow',
         {
           elementId: id,
+          values: []
         }, sequenceFlows, bpmnFactory
       );
 
@@ -59,38 +61,41 @@ SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elemen
     return;
   }
 
-  let expression = sequenceFlow.expression;
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
   if (!expression) {
     expression = elementHelper.createElement(
       'qbp:Expression',
       {
         operator: '',
+        values: []
       }, sequenceFlow, bpmnFactory
     );
+
+    sequenceFlow.values.push(expression);
   }
-  return expression;
+  return sequenceFlow;
 };
 
 SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
   let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
 
-  if (!sequenceFlow || !sequenceFlow.expression || !conditional) {
+  if (!sequenceFlow || !sequenceFlow.values || !conditional) {
     return;
   }
 
-  let expression = sequenceFlow.expression;
-  if (expression) {
-    elementHelper.createElement(
-      'qbp:Clause',
-      {
-        operator: '',
-        variableName: '',
-        variableEnumValue: '',
-      }, expression, bpmnFactory
-    );
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    return;
   }
+  var clause = elementHelper.createElement(
+    'qbp:Clause',
+    {
+      operator: '',
+      variableName: '',
+      variableEnumValue: '',
+    }, expression, bpmnFactory
+  );
   expression.values.push(clause);
-
   return expression.values;
 };
 
