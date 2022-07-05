@@ -96,7 +96,8 @@ class SimulationInfoServiceTest {
     void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService, simulationAdditionalParam);
+        simulationInfoService =
+            new SimulationInfoService(config, calendarService, userMetadataService, simulationAdditionalParam);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
