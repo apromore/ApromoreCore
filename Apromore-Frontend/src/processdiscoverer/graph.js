@@ -153,6 +153,7 @@ let style = [
         style: {
             'curve-style': 'unbundled-bezier',
             'edge-distances': 'intersection',
+			'control-point-step-size': 75,
             'color': 'data(color)',
             'edge-text-rotation': 0,
             'font-size': 16,
