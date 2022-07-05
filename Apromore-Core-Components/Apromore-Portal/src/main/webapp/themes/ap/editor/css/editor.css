@@ -504,3 +504,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.ap-editor-cpicker-wrapper .sp-palette-row {
+    width: 180px;
+}
