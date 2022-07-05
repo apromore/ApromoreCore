@@ -457,7 +457,7 @@
         "Element"
       ],
       "properties": [
-       { 
+       {
         "name": "operator",
         "type": "String",
         "isAttr": true
@@ -468,7 +468,7 @@
         "isAttr": true
        },
        { 
-        "name": "enumName",
+        "name": "variableEnumValue",
         "type": "String",
         "isAttr": true
        }

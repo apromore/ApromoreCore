@@ -1,7 +1,9 @@
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper'),
-  ProcessSimulationHelper = require('./ProcessSimulationHelper');
+  ProcessSimulationHelper = require('./ProcessSimulationHelper'),
+  createUUID = require('../utils/Utils').createUUID;
 
 var SequenceFlowHelper = {};
+var probalityConditionMap = {};
 
 SequenceFlowHelper.getSequenceFlows = function (bpmnFactory, elementRegistry) {
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
@@ -54,6 +56,17 @@ SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry,
   return sequenceFlow;
 };
 
+SequenceFlowHelper.getSequenceFlowByElementId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
+  let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+
+  let sequenceFlow = sequenceFlows && (sequenceFlows.get('values').filter(function (el) {
+    return el.elementId === outgoingElementId;
+  }) || [])[0];
+
+  return sequenceFlow;
+};
+
+
 SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
   let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
 
@@ -70,14 +83,31 @@ SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elemen
         values: []
       }, sequenceFlow, bpmnFactory
     );
-
-    sequenceFlow.values.push(expression);
+    sequenceFlow.values = [expression];
   }
   return sequenceFlow;
 };
 
-SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
-  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
+SequenceFlowHelper.createExpression = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
+  if (!sequenceFlow || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    expression = elementHelper.createElement(
+      'qbp:Expression',
+      {
+        operator: '',
+        values: []
+      }, sequenceFlow, bpmnFactory
+    );
+    sequenceFlow.values = [expression];
+  }
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
 
   if (!sequenceFlow || !sequenceFlow.values || !conditional) {
     return;
@@ -87,7 +117,7 @@ SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, outgoi
   if (!expression) {
     return;
   }
-  var clause = elementHelper.createElement(
+  let clause = elementHelper.createElement(
     'qbp:Clause',
     {
       operator: '',
@@ -95,9 +125,19 @@ SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, outgoi
       variableEnumValue: '',
     }, expression, bpmnFactory
   );
-  expression.values.push(clause);
-  return expression.values;
+
+  return clause;
 };
 
+SequenceFlowHelper.storeProbalityByGroup = function (groupId, isProbability) {
+  probalityConditionMap[groupId] = isProbability && isProbability;
+}
 
+SequenceFlowHelper.getProbalityByGroup = function (groupId) {
+  if (!probalityConditionMap || !probalityConditionMap[groupId])
+    return false;
+  else {
+    return probalityConditionMap[groupId];
+  }
+}
 module.exports = SequenceFlowHelper;

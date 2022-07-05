@@ -4,65 +4,62 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper'),
   createUUID = require('../../../../utils/Utils').createUUID;
 
-module.exports = function (element, bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (element, bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
-
+  let clause;
   var variableEntry = extensionElementsEntry(element, bpmnFactory, {
-    id: 'clauses' + createUUID(),
+    id: 'clauses-' + createUUID(),
     label: 'Clause',
-    modelProperties: 'clause',
-    idGeneration: false,
+    idGeneration: true,
 
     createExtensionElement: function (element, extensionElements, _value) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      console.log(sequenceFlow);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var clause = SequenceFlowHelper.createClause(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!clause) {
-        return [];
-      }
-      return cmdHelper.addElementsTolist(element, expression, 'values', clause);
-    },
+        clause = SequenceFlowHelper.createClause(bpmnFactory, elementRegistry, sequenceFlow, true);
+        if(clause){
+          let expression = getExpression();
+          return cmdHelper.addElementsTolist(element, expression, 'values', [clause]);
+        }
+      },
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var selectedClause = expression.values[idx];
+      let expression = getExpression();
+      let selectedClause = expression.values[idx];
       if (!expression || !selectedClause) {
         return {};
       }
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedClause.id });
+      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedClause.ope });
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },
 
     getExtensionElements: function (_element) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      return expression.values || [];
+      let expression = getExpression();
+      return  expression && expression.values || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var selectedClause = expression.values[idx];
-      option.text = selectedClause && selectedClause.variableName;
+      let expression = getExpression();
+      let selectedClause = expression && expression.values && expression.values[idx];
+      option.text = (selectedClause && selectedClause.variableName ) || (clause &&  clause.variableName) ;
     }
   });
 
+  function getExpression() {
+    if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
+      return;
+    }
+    return sequenceFlow.values[0];
+  }
+
+  function getSelectedClause(element, node) {
+    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+      idx: -1
+    };
+    var expression = getExpression();
+    return expression && expression.values && expression.values[selection.idx];
+  }
+
   return {
-    entries: variableEntry
+    entries: variableEntry,
+    getSelectedClause: getSelectedClause
   };
 };

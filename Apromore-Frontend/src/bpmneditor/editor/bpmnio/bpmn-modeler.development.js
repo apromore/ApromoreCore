@@ -1838,8 +1838,8 @@ module.exports = EntryFactory;
 
 var elementHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13),
-    isDigit = __webpack_require__(12).isDigit,
-    isValidNumber = __webpack_require__(12).isValidNumber;
+    isDigit = __webpack_require__(10).isDigit,
+    isValidNumber = __webpack_require__(10).isValidNumber;
 
 var ValidationErrorHelper = {};
 
@@ -13569,6 +13569,74 @@ module.exports.createDropdown = createDropdown;
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var is = __webpack_require__(1).is;
+
+var createUUID = function() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
+var isDigit = function(value) {
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
+var isValidNumber = function(value) {
+  if (!value) { return false }
+  if (!value.length) { return false }
+  if (isNaN(value)) { return false }
+  if (value.charAt(value.length - 1) === '.') { return false }
+  return /^\d+(\.\d+)?$/.test(value);
+};
+
+function getRoot(elementRegistry) {
+  return elementRegistry.filter(function(element) {
+   return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
+  })[0].businessObject;
+}
+
+/**
+ * @param {String} value Value to be fixed
+ * @returns {String} Fixed value
+ */
+var fixNumber = function(value) {
+  var dot = value.indexOf('.');
+  return (isNaN(value) || value === '') ? value : (
+    dot >= 0 && dot < value.length - 1 ? (Math.floor(+(value + 'e+2')) / 100).toString() : value
+  );
+};
+
+/**
+ * @param {double} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var roundUp = function(value) {
+  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
+};
+
+/**
+ * @param {String | number} value Value to be rounded up
+ * @returns {String} rounded up value
+ */
+var normalizeNumber = function(value) {
+  return (+(Math.round(value + 'e+3') + 'e-3')).toString();
+};
+
+module.exports = {
+  createUUID: createUUID,
+  fixNumber: fixNumber,
+  isDigit: isDigit,
+  getRoot: getRoot,
+  roundUp: roundUp,
+  normalizeNumber: normalizeNumber,
+  isValidNumber: isValidNumber
+};
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports) {
 
 /**
@@ -13600,7 +13668,7 @@ module.exports = isArray;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13664,82 +13732,13 @@ function refreshOverlay(bpmnjs, element) {
 }
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var is = __webpack_require__(1).is;
-
-var createUUID = function() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
-
-var isDigit = function(value) {
-  return /^\d+(\.\d+)?$/.test(value);
-};
-
-var isValidNumber = function(value) {
-  if (!value) { return false }
-  if (!value.length) { return false }
-  if (isNaN(value)) { return false }
-  if (value.charAt(value.length - 1) === '.') { return false }
-  return /^\d+(\.\d+)?$/.test(value);
-};
-
-function getRoot(elementRegistry) {
-  return elementRegistry.filter(function(element) {
-    console.log(element);
-    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
-  })[0].businessObject;
-}
-
-/**
- * @param {String} value Value to be fixed
- * @returns {String} Fixed value
- */
-var fixNumber = function(value) {
-  var dot = value.indexOf('.');
-  return (isNaN(value) || value === '') ? value : (
-    dot >= 0 && dot < value.length - 1 ? (Math.floor(+(value + 'e+2')) / 100).toString() : value
-  );
-};
-
-/**
- * @param {double} value Value to be rounded up
- * @returns {String} rounded up value
- */
-var roundUp = function(value) {
-  return (+(Math.round(value + 'e+2') + 'e-2')).toString();
-};
-
-/**
- * @param {String | number} value Value to be rounded up
- * @returns {String} rounded up value
- */
-var normalizeNumber = function(value) {
-  return (+(Math.round(value + 'e+3') + 'e-3')).toString();
-};
-
-module.exports = {
-  createUUID: createUUID,
-  fixNumber: fixNumber,
-  isDigit: isDigit,
-  getRoot: getRoot,
-  roundUp: roundUp,
-  normalizeNumber: normalizeNumber,
-  isValidNumber: isValidNumber
-};
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
     extensionElementsHelper = __webpack_require__(21),
-    createUUID = __webpack_require__(12).createUUID,
-    getRoot = __webpack_require__(12).getRoot;
+    createUUID = __webpack_require__(10).createUUID,
+    getRoot = __webpack_require__(10).getRoot;
 
 var ProcessSimulationHelper = {
   prevRoot: undefined
@@ -13845,10 +13844,10 @@ module.exports = root;
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(58),
+var arrayEach = __webpack_require__(57),
     baseEach = __webpack_require__(31),
     castFunction = __webpack_require__(165),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -14155,7 +14154,7 @@ module.exports = keys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(42),
-    isLength = __webpack_require__(59);
+    isLength = __webpack_require__(58);
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -31464,7 +31463,7 @@ module.exports.Collection = __webpack_require__(140);
   else {}
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56), __webpack_require__(57)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55), __webpack_require__(56)(module)))
 
 /***/ }),
 /* 24 */
@@ -34154,7 +34153,7 @@ module.exports = isObjectLike;
 var baseMatches = __webpack_require__(168),
     baseMatchesProperty = __webpack_require__(211),
     identity = __webpack_require__(34),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     property = __webpack_require__(220);
 
 /**
@@ -34385,80 +34384,148 @@ Ids.prototype.clear = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-    ProcessSimulationHelper = __webpack_require__(13),
-    ValidationErrorHelper = __webpack_require__(6),
-    is = __webpack_require__(1).is;
+  ProcessSimulationHelper = __webpack_require__(13),
+  createUUID = __webpack_require__(10).createUUID;
 
-var ElementHelper = {};
+var SequenceFlowHelper = {};
+var probalityConditionMap = {};
 
-ElementHelper.getElementById = function(bpmnFactory, elementRegistry, id) {
-  var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
+SequenceFlowHelper.getSequenceFlows = function (bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
-  var element = (elements.get('values').filter(function(el) {
+  var sequenceFlows = processSimulationInfo.sequenceFlows;
+
+  if (!sequenceFlows) {
+    sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
+      { values: [] }, processSimulationInfo, bpmnFactory
+    );
+
+    processSimulationInfo.sequenceFlows = sequenceFlows;
+  }
+
+  return sequenceFlows;
+};
+
+SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
+  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+
+  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
     return el.elementId === id;
   }) || [])[0];
 
-  if (!element) {
-    element = elementHelper.createElement('qbp:Element',
-      { elementId: id }, elements, bpmnFactory);
+  if (!sequenceFlow) {
+    if (!conditional) {
+      sequenceFlow = elementHelper.createElement(
+        'qbp:SequenceFlow',
+        {
+          elementId: id,
+          executionProbability: '',
+          rawExecutionProbability: '',
+          values: []
+        }, sequenceFlows, bpmnFactory
+      );
+    } else {
+      sequenceFlow = elementHelper.createElement(
+        'qbp:SequenceFlow',
+        {
+          elementId: id,
+          values: []
+        }, sequenceFlows, bpmnFactory
+      );
 
-    elements.values.push(element);
-  }
-
-  return element;
-};
-
-ElementHelper.getElements = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var elements = processSimulationInfo.elements;
-
-  function filterRemovedQBPElements() {
-    var elementRegistryEvents = elementRegistry.filter(function(el) {
-      return isQBPElement(el);
-    });
-
-    var elementRegistryEventIds = elementRegistryEvents.map(function(el) {
-      return el.id;
-    });
-
-    if (elementRegistryEventIds.length) {
-      elements.values = elements.values.filter(function(el) {
-        var isElementPresent = elementRegistryEventIds.indexOf(el.elementId) > -1;
-
-        if (!isElementPresent) {
-          ValidationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: el.elementId });
-        }
-
-        return isElementPresent;
-      });
     }
+
+    sequenceFlows.values.push(sequenceFlow);
   }
 
-  function createQBPElements() {
-    elements = elementHelper.createElement('qbp:Elements',
-      { values: [] }, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.elements = elements;
-  }
-
-  if (elements && elements.values) {
-    filterRemovedQBPElements();
-  } else {
-    createQBPElements();
-  }
-
-  return elements;
+  return sequenceFlow;
 };
 
-function isQBPElement(element) {
-  return is(element, 'bpmn:Task') ||
-    is(element, 'bpmn:IntermediateCatchEvent') ||
-    is(element, 'bpmn:BoundaryEvent');
+SequenceFlowHelper.getSequenceFlowByElementId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
+  let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+
+  let sequenceFlow = sequenceFlows && (sequenceFlows.get('values').filter(function (el) {
+    return el.elementId === outgoingElementId;
+  }) || [])[0];
+
+  return sequenceFlow;
+};
+
+
+SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
+  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
+
+  if (!sequenceFlow || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    expression = elementHelper.createElement(
+      'qbp:Expression',
+      {
+        operator: '',
+        values: []
+      }, sequenceFlow, bpmnFactory
+    );
+    sequenceFlow.values = [expression];
+  }
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.createExpression = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
+  if (!sequenceFlow || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    expression = elementHelper.createElement(
+      'qbp:Expression',
+      {
+        operator: '',
+        values: []
+      }, sequenceFlow, bpmnFactory
+    );
+    sequenceFlow.values = [expression];
+  }
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
+
+  if (!sequenceFlow || !sequenceFlow.values || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    return;
+  }
+  let clause = elementHelper.createElement(
+    'qbp:Clause',
+    {
+      operator: '',
+      variableName: '',
+      variableEnumValue: '',
+    }, expression, bpmnFactory
+  );
+
+  return clause;
+};
+
+SequenceFlowHelper.storeProbalityByGroup = function (groupId, isProbability) {
+  probalityConditionMap[groupId] = isProbability && isProbability;
 }
 
-
-module.exports = ElementHelper;
+SequenceFlowHelper.getProbalityByGroup = function (groupId) {
+  if (!probalityConditionMap || !probalityConditionMap[groupId])
+    return false;
+  else {
+    return probalityConditionMap[groupId];
+  }
+}
+module.exports = SequenceFlowHelper;
 
 /***/ }),
 /* 30 */
@@ -34801,108 +34868,80 @@ module.exports = identity;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-  ProcessSimulationHelper = __webpack_require__(13);
+    ProcessSimulationHelper = __webpack_require__(13),
+    ValidationErrorHelper = __webpack_require__(6),
+    is = __webpack_require__(1).is;
 
-var SequenceFlowHelper = {};
+var ElementHelper = {};
 
-SequenceFlowHelper.getSequenceFlows = function (bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+ElementHelper.getElementById = function(bpmnFactory, elementRegistry, id) {
+  var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
 
-  var sequenceFlows = processSimulationInfo.sequenceFlows;
-
-  if (!sequenceFlows) {
-    sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
-      { values: [] }, processSimulationInfo, bpmnFactory
-    );
-
-    processSimulationInfo.sequenceFlows = sequenceFlows;
-  }
-
-  return sequenceFlows;
-};
-
-SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
-  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
-
-  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
+  var element = (elements.get('values').filter(function(el) {
     return el.elementId === id;
   }) || [])[0];
 
-  if (!sequenceFlow) {
-    if (!conditional) {
-      sequenceFlow = elementHelper.createElement(
-        'qbp:SequenceFlow',
-        {
-          elementId: id,
-          executionProbability: '',
-          rawExecutionProbability: '',
-          values: []
-        }, sequenceFlows, bpmnFactory
-      );
-    } else {
-      sequenceFlow = elementHelper.createElement(
-        'qbp:SequenceFlow',
-        {
-          elementId: id,
-          values: []
-        }, sequenceFlows, bpmnFactory
-      );
+  if (!element) {
+    element = elementHelper.createElement('qbp:Element',
+      { elementId: id }, elements, bpmnFactory);
 
+    elements.values.push(element);
+  }
+
+  return element;
+};
+
+ElementHelper.getElements = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var elements = processSimulationInfo.elements;
+
+  function filterRemovedQBPElements() {
+    var elementRegistryEvents = elementRegistry.filter(function(el) {
+      return isQBPElement(el);
+    });
+
+    var elementRegistryEventIds = elementRegistryEvents.map(function(el) {
+      return el.id;
+    });
+
+    if (elementRegistryEventIds.length) {
+      elements.values = elements.values.filter(function(el) {
+        var isElementPresent = elementRegistryEventIds.indexOf(el.elementId) > -1;
+
+        if (!isElementPresent) {
+          ValidationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: el.elementId });
+        }
+
+        return isElementPresent;
+      });
     }
-
-    sequenceFlows.values.push(sequenceFlow);
   }
 
-  return sequenceFlow;
+  function createQBPElements() {
+    elements = elementHelper.createElement('qbp:Elements',
+      { values: [] }, processSimulationInfo, bpmnFactory);
+
+    processSimulationInfo.elements = elements;
+  }
+
+  if (elements && elements.values) {
+    filterRemovedQBPElements();
+  } else {
+    createQBPElements();
+  }
+
+  return elements;
 };
 
-SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
-  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
-
-  if (!sequenceFlow || !conditional) {
-    return;
-  }
-
-  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-  if (!expression) {
-    expression = elementHelper.createElement(
-      'qbp:Expression',
-      {
-        operator: '',
-        values: []
-      }, sequenceFlow, bpmnFactory
-    );
-
-    sequenceFlow.values.push(expression);
-  }
-  return sequenceFlow;
-};
-
-SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
-  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
-
-  if (!sequenceFlow || !sequenceFlow.values || !conditional) {
-    return;
-  }
-
-  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-  if (!expression) {
-    return;
-  }
-  var clause = elementHelper.createElement(
-    'qbp:Clause',
-    {
-      operator: '',
-      variableName: '',
-      variableEnumValue: '',
-    }, expression, bpmnFactory
-  );
-  expression.values.push(clause);
-  return expression.values;
-};
+function isQBPElement(element) {
+  return is(element, 'bpmn:Task') ||
+    is(element, 'bpmn:IntermediateCatchEvent') ||
+    is(element, 'bpmn:BoundaryEvent');
+}
 
 
-module.exports = SequenceFlowHelper;
+module.exports = ElementHelper;
 
 /***/ }),
 /* 36 */
@@ -35009,7 +35048,7 @@ module.exports = SequenceFlowHelper;
 
 }));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
 
 /***/ }),
 /* 37 */
@@ -35153,7 +35192,7 @@ var isBuffer = nativeIsBuffer || stubFalse;
 
 module.exports = isBuffer;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(57)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)(module)))
 
 /***/ }),
 /* 40 */
@@ -35660,80 +35699,6 @@ module.exports = function(options) {
 
 /***/ }),
 /* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(8),
-    ProcessSimulationHelper = __webpack_require__(13),
-    createUUID = __webpack_require__(12).createUUID;
-
-var ResourceHelper = {};
-
-ResourceHelper.getResources = function(bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var resources = processSimulationInfo.resources;
-
-  if (!resources) {
-    resources = elementHelper.createElement('qbp:Resources',
-      { values: [] }, processSimulationInfo, bpmnFactory);
-
-    processSimulationInfo.resources = resources;
-  }
-
-  return resources;
-};
-
-ResourceHelper.createResource = function(bpmnFactory, translate) {
-  return elementHelper.createElement('qbp:Resource', {
-    id: 'qbp_' + createUUID(),
-    name: translate('resource'),
-    timetableId: 'DEFAULT_TIMETABLE',
-    totalAmount: '',
-  }, null, bpmnFactory);
-};
-
-ResourceHelper.addResourceToResources = function(resource, resources) {
-  resources.values.push(resources);
-};
-
-ResourceHelper.createDefaultResource = function(bpmnFactory, elementRegistry, translate) {
-  var resources = ResourceHelper.getResources(bpmnFactory, elementRegistry);
-
-  var defaultResource = (resources.get('values').filter(function(r) {
-    return r.id === 'QBP_DEFAULT_RESOURCE';
-  }) || [])[0];
-
-  if (!defaultResource) {
-    defaultResource = elementHelper.createElement('qbp:Resource',
-      {
-        id: 'QBP_DEFAULT_RESOURCE',
-        name: translate('defaultResource.name'),
-        totalAmount: '1',
-        timetableId: 'DEFAULT_TIMETABLE'
-      }, resources, bpmnFactory
-    );
-
-    resources.values.push(defaultResource);
-  }
-};
-
-ResourceHelper.getResourceIds = function(bpmnFactory, element) {
-  var resourceIds = element.get('resourceIds');
-
-  if (!resourceIds) {
-    resourceIds = elementHelper.createElement('qbp:ResourceIds',
-      { resourceId: 'QBP_DEFAULT_RESOURCE' }, element, bpmnFactory);
-
-    element.resourceIds = resourceIds;
-  }
-
-  return resourceIds;
-};
-
-module.exports = ResourceHelper;
-
-/***/ }),
-/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36667,7 +36632,7 @@ module.exports = findPathIntersections;
 
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports) {
 
 var g;
@@ -36693,7 +36658,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -36721,7 +36686,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports) {
 
 /**
@@ -36749,7 +36714,7 @@ module.exports = arrayEach;
 
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -36790,7 +36755,7 @@ module.exports = isLength;
 
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -36814,7 +36779,7 @@ module.exports = isPrototype;
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -36827,7 +36792,7 @@ module.exports = Map;
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var mapCacheClear = __webpack_require__(184),
@@ -36865,10 +36830,10 @@ module.exports = MapCache;
 
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MapCache = __webpack_require__(62),
+var MapCache = __webpack_require__(61),
     setCacheAdd = __webpack_require__(197),
     setCacheHas = __webpack_require__(198);
 
@@ -36898,7 +36863,7 @@ module.exports = SetCache;
 
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports) {
 
 /**
@@ -36917,7 +36882,7 @@ module.exports = cacheHas;
 
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports) {
 
 /**
@@ -36941,7 +36906,7 @@ module.exports = setToArray;
 
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports) {
 
 /**
@@ -36972,10 +36937,10 @@ module.exports = arrayFilter;
 
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(10),
+var isArray = __webpack_require__(11),
     isSymbol = __webpack_require__(49);
 
 /** Used to match property names within property paths. */
@@ -37007,7 +36972,7 @@ module.exports = isKey;
 
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports) {
 
 /**
@@ -37034,7 +36999,7 @@ module.exports = arrayMap;
 
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var identity = __webpack_require__(34),
@@ -37057,7 +37022,7 @@ module.exports = baseRest;
 
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports) {
 
 /**
@@ -37084,7 +37049,7 @@ module.exports = apply;
 
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIndexOf = __webpack_require__(237);
@@ -37107,7 +37072,7 @@ module.exports = arrayIncludes;
 
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var defineProperty = __webpack_require__(105);
@@ -37138,11 +37103,11 @@ module.exports = baseAssignValue;
 
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseCreate = __webpack_require__(43),
-    baseLodash = __webpack_require__(74);
+    baseLodash = __webpack_require__(73);
 
 /** Used as references for the maximum length and index of an array. */
 var MAX_ARRAY_LENGTH = 4294967295;
@@ -37172,7 +37137,7 @@ module.exports = LazyWrapper;
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports) {
 
 /**
@@ -37188,7 +37153,7 @@ module.exports = baseLodash;
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports) {
 
 /**
@@ -37207,13 +37172,13 @@ module.exports = getHolder;
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13),
     RuleHelper = __webpack_require__(131),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(10).createUUID;
 
 var TimetableHelper = {};
 
@@ -37277,15 +37242,15 @@ TimetableHelper.createDefaultTimetable = function(bpmnFactory, elementRegistry, 
 module.exports = TimetableHelper;
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(6);
-var normalizeNumber = __webpack_require__(12).normalizeNumber;
-var isValidNumber = __webpack_require__(12).isValidNumber;
+var normalizeNumber = __webpack_require__(10).normalizeNumber;
+var isValidNumber = __webpack_require__(10).isValidNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -37643,7 +37608,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
@@ -37698,6 +37663,45 @@ DistributionHelper.getArrivalRateDistribution = function(bpmnFactory, elementReg
 };
 
 module.exports = DistributionHelper;
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var elementHelper = __webpack_require__(8),
+    ProcessSimulationHelper = __webpack_require__(13),
+    createUUID = __webpack_require__(10).createUUID;
+
+var CaseAttributeHelper = {};
+
+CaseAttributeHelper.getVariables = function(bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var variables = processSimulationInfo.variables;
+
+  if (!variables) {
+    variables = elementHelper.createElement('qbp:Variables',
+      { values: [] }, processSimulationInfo, bpmnFactory);
+
+    processSimulationInfo.variables = variables;
+  }
+
+  return variables;
+};
+
+CaseAttributeHelper.createVariable = function(bpmnFactory, translate) {
+  return elementHelper.createElement('qbp:Variable', {
+  //  id: 'qbp_var_' + createUUID(),
+    name: 'Categorical case attribute',
+    type: 'ENUM'
+  }, null, bpmnFactory);
+};
+
+CaseAttributeHelper.addVariableToVariables = function(variable, variables) {
+  variables.values.push(variable);
+};
+
+module.exports = CaseAttributeHelper;
 
 /***/ }),
 /* 79 */
@@ -38416,7 +38420,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 module.exports = freeGlobal;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
 
 /***/ }),
 /* 87 */
@@ -38442,7 +38446,7 @@ module.exports = baseUnary;
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isPrototype = __webpack_require__(60),
+var isPrototype = __webpack_require__(59),
     nativeKeys = __webpack_require__(163);
 
 /** Used for built-in method references. */
@@ -38598,9 +38602,9 @@ module.exports = baseIsEqual;
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var SetCache = __webpack_require__(63),
+var SetCache = __webpack_require__(62),
     arraySome = __webpack_require__(199),
-    cacheHas = __webpack_require__(64);
+    cacheHas = __webpack_require__(63);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -38715,7 +38719,7 @@ module.exports = arrayPush;
 /***/ (function(module, exports, __webpack_require__) {
 
 var DataView = __webpack_require__(208),
-    Map = __webpack_require__(61),
+    Map = __webpack_require__(60),
     Promise = __webpack_require__(209),
     Set = __webpack_require__(96),
     WeakMap = __webpack_require__(97),
@@ -38920,8 +38924,8 @@ module.exports = baseGet;
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(10),
-    isKey = __webpack_require__(67),
+var isArray = __webpack_require__(11),
+    isKey = __webpack_require__(66),
     stringToPath = __webpack_require__(212),
     toString = __webpack_require__(215);
 
@@ -38947,10 +38951,10 @@ module.exports = castPath;
 /* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayFilter = __webpack_require__(66),
+var arrayFilter = __webpack_require__(65),
     baseFilter = __webpack_require__(229),
     baseIteratee = __webpack_require__(26),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * Iterates over elements of `collection`, returning an array of all elements
@@ -39686,7 +39690,7 @@ var assignValue = __webpack_require__(116),
     copyObject = __webpack_require__(266),
     createAssigner = __webpack_require__(267),
     isArrayLike = __webpack_require__(20),
-    isPrototype = __webpack_require__(60),
+    isPrototype = __webpack_require__(59),
     keys = __webpack_require__(19);
 
 /** Used for built-in method references. */
@@ -39746,7 +39750,7 @@ module.exports = assign;
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseAssignValue = __webpack_require__(72),
+var baseAssignValue = __webpack_require__(71),
     eq = __webpack_require__(46);
 
 /** Used for built-in method references. */
@@ -39955,7 +39959,7 @@ var composeArgs = __webpack_require__(123),
     countHolders = __webpack_require__(280),
     createCtor = __webpack_require__(51),
     createRecurry = __webpack_require__(125),
-    getHolder = __webpack_require__(75),
+    getHolder = __webpack_require__(74),
     reorder = __webpack_require__(289),
     replaceHolders = __webpack_require__(52),
     root = __webpack_require__(14);
@@ -40224,7 +40228,7 @@ module.exports = getData;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseCreate = __webpack_require__(43),
-    baseLodash = __webpack_require__(74);
+    baseLodash = __webpack_require__(73);
 
 /**
  * The base constructor for creating `lodash` wrapper objects.
@@ -40331,7 +40335,7 @@ module.exports = setWrapToString;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(10).createUUID;
 
 var RuleHelper = {};
 
@@ -40371,38 +40375,73 @@ module.exports = RuleHelper;
 
 var elementHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(10).createUUID;
 
-var CaseAttributeHelper = {};
+var ResourceHelper = {};
 
-CaseAttributeHelper.getVariables = function(bpmnFactory, elementRegistry) {
+ResourceHelper.getResources = function(bpmnFactory, elementRegistry) {
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
-  var variables = processSimulationInfo.variables;
+  var resources = processSimulationInfo.resources;
 
-  if (!variables) {
-    variables = elementHelper.createElement('qbp:Variables',
+  if (!resources) {
+    resources = elementHelper.createElement('qbp:Resources',
       { values: [] }, processSimulationInfo, bpmnFactory);
 
-    processSimulationInfo.variables = variables;
+    processSimulationInfo.resources = resources;
   }
 
-  return variables;
+  return resources;
 };
 
-CaseAttributeHelper.createVariable = function(bpmnFactory, translate) {
-  return elementHelper.createElement('qbp:Variable', {
-  //  id: 'qbp_var_' + createUUID(),
-    name: 'Categorical case attribute',
-    type: 'ENUM'
+ResourceHelper.createResource = function(bpmnFactory, translate) {
+  return elementHelper.createElement('qbp:Resource', {
+    id: 'qbp_' + createUUID(),
+    name: translate('resource'),
+    timetableId: 'DEFAULT_TIMETABLE',
+    totalAmount: '',
   }, null, bpmnFactory);
 };
 
-CaseAttributeHelper.addVariableToVariables = function(variable, variables) {
-  variables.values.push(variable);
+ResourceHelper.addResourceToResources = function(resource, resources) {
+  resources.values.push(resources);
 };
 
-module.exports = CaseAttributeHelper;
+ResourceHelper.createDefaultResource = function(bpmnFactory, elementRegistry, translate) {
+  var resources = ResourceHelper.getResources(bpmnFactory, elementRegistry);
+
+  var defaultResource = (resources.get('values').filter(function(r) {
+    return r.id === 'QBP_DEFAULT_RESOURCE';
+  }) || [])[0];
+
+  if (!defaultResource) {
+    defaultResource = elementHelper.createElement('qbp:Resource',
+      {
+        id: 'QBP_DEFAULT_RESOURCE',
+        name: translate('defaultResource.name'),
+        totalAmount: '1',
+        timetableId: 'DEFAULT_TIMETABLE'
+      }, resources, bpmnFactory
+    );
+
+    resources.values.push(defaultResource);
+  }
+};
+
+ResourceHelper.getResourceIds = function(bpmnFactory, element) {
+  var resourceIds = element.get('resourceIds');
+
+  if (!resourceIds) {
+    resourceIds = elementHelper.createElement('qbp:ResourceIds',
+      { resourceId: 'QBP_DEFAULT_RESOURCE' }, element, bpmnFactory);
+
+    element.resourceIds = resourceIds;
+  }
+
+  return resourceIds;
+};
+
+module.exports = ResourceHelper;
 
 /***/ }),
 /* 133 */
@@ -42790,7 +42829,7 @@ module.exports = JSON.parse("{\"name\":\"Camunda\",\"uri\":\"http://camunda.org/
 /* 142 */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Variable\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Enum\",\"isMany\":true}]},{\"name\":\"Variables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Variable\",\"isMany\":true}]},{\"name\":\"Enum\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"assignmentProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"},{\"name\":\"variables\",\"type\":\"Variables\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Expression\"}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Expression\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"operator\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Clause\",\"isMany\":true}]},{\"name\":\"Clause\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"operator\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"variableName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"enumName\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
+module.exports = JSON.parse("{\"name\":\"Simulation\",\"uri\":\"http://www.qbp-simulator.com/Schema201212\",\"prefix\":\"qbp\",\"xml\":{\"tagAlias\":\"lowerCase\"},\"associations\":[],\"types\":[{\"name\":\"Timetable\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"default\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rules\",\"type\":\"Rules\"}]},{\"name\":\"Rules\",\"properties\":[{\"name\":\"values\",\"type\":\"Rule\",\"isMany\":true}]},{\"name\":\"Rule\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"fromWeekDay\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"toWeekDay\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Timetables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Timetable\",\"isMany\":true}]},{\"name\":\"ResourceIds\",\"properties\":[{\"name\":\"resourceId\",\"type\":\"String\",\"default\":\"\"}]},{\"name\":\"Element\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"durationDistribution\",\"type\":\"DurationDistribution\"},{\"name\":\"resourceIds\",\"type\":\"ResourceIds\"}]},{\"name\":\"Elements\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Element\",\"isMany\":true}]},{\"name\":\"DurationDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ArrivalRateDistribution\",\"properties\":[{\"name\":\"timeUnit\",\"type\":\"String\"},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"mean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arg2\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawMean\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg1\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawArg2\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resource\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"totalAmount\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"costPerHour\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"timetableId\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Resources\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Resource\",\"isMany\":true}]},{\"name\":\"StatsOptions\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"trimStartProcessInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"trimEndProcessInstances\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Variable\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"type\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Enum\",\"isMany\":true}]},{\"name\":\"Variables\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"Variable\",\"isMany\":true}]},{\"name\":\"Enum\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"name\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"assignmentProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"rawProbability\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"ProcessSimulationInfo\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"validationErrors\",\"type\":\"Errors\"},{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"arrivalRateDistribution\",\"type\":\"ArrivalRateDistribution\"},{\"name\":\"processInstances\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"currency\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"startDateTime\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"statsOptions\",\"type\":\"StatsOptions\"},{\"name\":\"timetables\",\"type\":\"Timetables\"},{\"name\":\"resources\",\"type\":\"Resources\"},{\"name\":\"elements\",\"type\":\"Elements\"},{\"name\":\"sequenceFlows\",\"type\":\"SequenceFlows\"},{\"name\":\"variables\",\"type\":\"Variables\"}]},{\"name\":\"SequenceFlow\",\"properties\":[{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"executionProbability\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Expression\"}]},{\"name\":\"SequenceFlows\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"values\",\"type\":\"SequenceFlow\",\"isMany\":true}]},{\"name\":\"Expression\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"operator\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"values\",\"type\":\"Clause\",\"isMany\":true}]},{\"name\":\"Clause\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"operator\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"variableName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"variableEnumValue\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Error\",\"properties\":[{\"name\":\"id\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementId\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"elementName\",\"type\":\"String\",\"isAttr\":true},{\"name\":\"message\",\"type\":\"String\",\"isAttr\":true}]},{\"name\":\"Errors\",\"superClass\":[\"Element\"],\"properties\":[{\"name\":\"errors\",\"type\":\"Error\",\"isMany\":true}]}]}");
 
 /***/ }),
 /* 143 */
@@ -46124,7 +46163,7 @@ module.exports = createBaseFor;
 
 var baseTimes = __webpack_require__(156),
     isArguments = __webpack_require__(38),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isBuffer = __webpack_require__(39),
     isIndex = __webpack_require__(40),
     isTypedArray = __webpack_require__(41);
@@ -46332,7 +46371,7 @@ module.exports = stubFalse;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(32),
-    isLength = __webpack_require__(59),
+    isLength = __webpack_require__(58),
     isObjectLike = __webpack_require__(25);
 
 /** `Object#toString` result references. */
@@ -46428,7 +46467,7 @@ var nodeUtil = (function() {
 
 module.exports = nodeUtil;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(57)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(56)(module)))
 
 /***/ }),
 /* 163 */
@@ -46642,12 +46681,12 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 /* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(58),
+var arrayEach = __webpack_require__(57),
     baseCreate = __webpack_require__(43),
     baseForOwn = __webpack_require__(85),
     baseIteratee = __webpack_require__(26),
     getPrototype = __webpack_require__(223),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isBuffer = __webpack_require__(39),
     isFunction = __webpack_require__(42),
     isObject = __webpack_require__(16),
@@ -47034,8 +47073,8 @@ module.exports = stackHas;
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(44),
-    Map = __webpack_require__(61),
-    MapCache = __webpack_require__(62);
+    Map = __webpack_require__(60),
+    MapCache = __webpack_require__(61);
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -47185,7 +47224,7 @@ module.exports = getValue;
 
 var Hash = __webpack_require__(185),
     ListCache = __webpack_require__(44),
-    Map = __webpack_require__(61);
+    Map = __webpack_require__(60);
 
 /**
  * Removes all key-value entries from the map.
@@ -47508,7 +47547,7 @@ var Stack = __webpack_require__(90),
     equalByTag = __webpack_require__(200),
     equalObjects = __webpack_require__(203),
     getTag = __webpack_require__(95),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isBuffer = __webpack_require__(39),
     isTypedArray = __webpack_require__(41);
 
@@ -47671,7 +47710,7 @@ var Symbol = __webpack_require__(33),
     eq = __webpack_require__(46),
     equalArrays = __webpack_require__(93),
     mapToArray = __webpack_require__(202),
-    setToArray = __webpack_require__(65);
+    setToArray = __webpack_require__(64);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -47939,7 +47978,7 @@ module.exports = getAllKeys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(94),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -47964,7 +48003,7 @@ module.exports = baseGetAllKeys;
 /* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayFilter = __webpack_require__(66),
+var arrayFilter = __webpack_require__(65),
     stubArray = __webpack_require__(207);
 
 /** Used for built-in method references. */
@@ -48088,7 +48127,7 @@ module.exports = getMatchData;
 var baseIsEqual = __webpack_require__(92),
     get = __webpack_require__(100),
     hasIn = __webpack_require__(217),
-    isKey = __webpack_require__(67),
+    isKey = __webpack_require__(66),
     isStrictComparable = __webpack_require__(98),
     matchesStrictComparable = __webpack_require__(99),
     toKey = __webpack_require__(50);
@@ -48189,7 +48228,7 @@ module.exports = memoizeCapped;
 /* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MapCache = __webpack_require__(62);
+var MapCache = __webpack_require__(61);
 
 /** Error message constants. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -48303,8 +48342,8 @@ module.exports = toString;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(33),
-    arrayMap = __webpack_require__(68),
-    isArray = __webpack_require__(10),
+    arrayMap = __webpack_require__(67),
+    isArray = __webpack_require__(11),
     isSymbol = __webpack_require__(49);
 
 /** Used as references for various `Number` constants. */
@@ -48406,9 +48445,9 @@ module.exports = baseHasIn;
 
 var castPath = __webpack_require__(102),
     isArguments = __webpack_require__(38),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isIndex = __webpack_require__(40),
-    isLength = __webpack_require__(59),
+    isLength = __webpack_require__(58),
     toKey = __webpack_require__(50);
 
 /**
@@ -48451,7 +48490,7 @@ module.exports = hasPath;
 
 var baseProperty = __webpack_require__(221),
     basePropertyDeep = __webpack_require__(222),
-    isKey = __webpack_require__(67),
+    isKey = __webpack_require__(66),
     toKey = __webpack_require__(50);
 
 /**
@@ -48953,7 +48992,7 @@ var forEach = __webpack_require__(15),
     get = __webpack_require__(100),
     keys = __webpack_require__(19),
     isEmpty = __webpack_require__(230),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isFunction = __webpack_require__(42),
     isObject = __webpack_require__(16),
     xor = __webpack_require__(231),
@@ -50351,10 +50390,10 @@ module.exports = baseFilter;
 var baseKeys = __webpack_require__(88),
     getTag = __webpack_require__(95),
     isArguments = __webpack_require__(38),
-    isArray = __webpack_require__(10),
+    isArray = __webpack_require__(11),
     isArrayLike = __webpack_require__(20),
     isBuffer = __webpack_require__(39),
-    isPrototype = __webpack_require__(60),
+    isPrototype = __webpack_require__(59),
     isTypedArray = __webpack_require__(41);
 
 /** `Object#toString` result references. */
@@ -50431,8 +50470,8 @@ module.exports = isEmpty;
 /* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayFilter = __webpack_require__(66),
-    baseRest = __webpack_require__(69),
+var arrayFilter = __webpack_require__(65),
+    baseRest = __webpack_require__(68),
     baseXor = __webpack_require__(235),
     isArrayLikeObject = __webpack_require__(243);
 
@@ -50465,7 +50504,7 @@ module.exports = xor;
 /* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(70);
+var apply = __webpack_require__(69);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -50609,12 +50648,12 @@ module.exports = baseXor;
 /* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var SetCache = __webpack_require__(63),
-    arrayIncludes = __webpack_require__(71),
+var SetCache = __webpack_require__(62),
+    arrayIncludes = __webpack_require__(70),
     arrayIncludesWith = __webpack_require__(108),
-    arrayMap = __webpack_require__(68),
+    arrayMap = __webpack_require__(67),
     baseUnary = __webpack_require__(87),
-    cacheHas = __webpack_require__(64);
+    cacheHas = __webpack_require__(63);
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -50757,7 +50796,7 @@ module.exports = strictIndexOf;
 
 var Symbol = __webpack_require__(33),
     isArguments = __webpack_require__(38),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /** Built-in value references. */
 var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
@@ -50781,12 +50820,12 @@ module.exports = isFlattenable;
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var SetCache = __webpack_require__(63),
-    arrayIncludes = __webpack_require__(71),
+var SetCache = __webpack_require__(62),
+    arrayIncludes = __webpack_require__(70),
     arrayIncludesWith = __webpack_require__(108),
-    cacheHas = __webpack_require__(64),
+    cacheHas = __webpack_require__(63),
     createSet = __webpack_require__(242),
-    setToArray = __webpack_require__(65);
+    setToArray = __webpack_require__(64);
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -50861,7 +50900,7 @@ module.exports = baseUniq;
 
 var Set = __webpack_require__(96),
     noop = __webpack_require__(110),
-    setToArray = __webpack_require__(65);
+    setToArray = __webpack_require__(64);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -51230,7 +51269,7 @@ module.exports = flattenDeep;
 /* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseAssignValue = __webpack_require__(72),
+var baseAssignValue = __webpack_require__(71),
     createAggregator = __webpack_require__(250);
 
 /**
@@ -51275,7 +51314,7 @@ module.exports = keyBy;
 var arrayAggregator = __webpack_require__(251),
     baseAggregator = __webpack_require__(252),
     baseIteratee = __webpack_require__(26),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * Creates a function like `_.groupBy`.
@@ -51356,10 +51395,10 @@ module.exports = baseAggregator;
 /* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayMap = __webpack_require__(68),
+var arrayMap = __webpack_require__(67),
     baseIteratee = __webpack_require__(26),
     baseMap = __webpack_require__(254),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * Creates an array of values by running each element in `collection` thru
@@ -51447,7 +51486,7 @@ var arrayReduce = __webpack_require__(256),
     baseEach = __webpack_require__(31),
     baseIteratee = __webpack_require__(26),
     baseReduce = __webpack_require__(257),
-    isArray = __webpack_require__(10);
+    isArray = __webpack_require__(11);
 
 /**
  * Reduces `collection` to a value which is the accumulated result of running
@@ -51568,8 +51607,8 @@ var PropertiesActivator = __webpack_require__(259);
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
-var ElementHelper = __webpack_require__(29),
-    SequenceFlowHelper = __webpack_require__(35),
+var ElementHelper = __webpack_require__(35),
+    SequenceFlowHelper = __webpack_require__(29),
     suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 var createSimulationParametersTab = __webpack_require__(260),
@@ -52149,7 +52188,7 @@ module.exports = comboBox;
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(116),
-    baseAssignValue = __webpack_require__(72);
+    baseAssignValue = __webpack_require__(71);
 
 /**
  * Copies properties of `source` to `object`.
@@ -52194,7 +52233,7 @@ module.exports = copyObject;
 /* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseRest = __webpack_require__(69),
+var baseRest = __webpack_require__(68),
     isIterateeCall = __webpack_require__(268);
 
 /**
@@ -52972,9 +53011,9 @@ module.exports = link;
 /* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseRest = __webpack_require__(69),
+var baseRest = __webpack_require__(68),
     createWrap = __webpack_require__(277),
-    getHolder = __webpack_require__(75),
+    getHolder = __webpack_require__(74),
     replaceHolders = __webpack_require__(52);
 
 /** Used to compose bitmasks for function metadata. */
@@ -53181,11 +53220,11 @@ module.exports = createBind;
 /* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(70),
+var apply = __webpack_require__(69),
     createCtor = __webpack_require__(51),
     createHybrid = __webpack_require__(122),
     createRecurry = __webpack_require__(125),
-    getHolder = __webpack_require__(75),
+    getHolder = __webpack_require__(74),
     replaceHolders = __webpack_require__(52),
     root = __webpack_require__(14);
 
@@ -53260,7 +53299,7 @@ module.exports = countHolders;
 /* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LazyWrapper = __webpack_require__(73),
+var LazyWrapper = __webpack_require__(72),
     getData = __webpack_require__(126),
     getFuncName = __webpack_require__(282),
     lodash = __webpack_require__(284);
@@ -53341,10 +53380,10 @@ module.exports = realNames;
 /* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LazyWrapper = __webpack_require__(73),
+var LazyWrapper = __webpack_require__(72),
     LodashWrapper = __webpack_require__(127),
-    baseLodash = __webpack_require__(74),
-    isArray = __webpack_require__(10),
+    baseLodash = __webpack_require__(73),
+    isArray = __webpack_require__(11),
     isObjectLike = __webpack_require__(25),
     wrapperClone = __webpack_require__(285);
 
@@ -53494,7 +53533,7 @@ module.exports = lodash;
 /* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LazyWrapper = __webpack_require__(73),
+var LazyWrapper = __webpack_require__(72),
     LodashWrapper = __webpack_require__(127),
     copyArray = __webpack_require__(128);
 
@@ -53575,8 +53614,8 @@ module.exports = insertWrapDetails;
 /* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(58),
-    arrayIncludes = __webpack_require__(71);
+var arrayEach = __webpack_require__(57),
+    arrayIncludes = __webpack_require__(70);
 
 /** Used to compose bitmasks for function metadata. */
 var WRAP_BIND_FLAG = 1,
@@ -53662,7 +53701,7 @@ module.exports = reorder;
 /* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(70),
+var apply = __webpack_require__(69),
     createCtor = __webpack_require__(51),
     root = __webpack_require__(14);
 
@@ -54455,7 +54494,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
-  TimetableHelper = __webpack_require__(76);
+  TimetableHelper = __webpack_require__(75);
 
 module.exports = function (bpmnFactory, elementRegistry, translate) {
 
@@ -54644,9 +54683,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 /* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var distributionEntries = __webpack_require__(77),
+var distributionEntries = __webpack_require__(76),
     ProcessSimulationHelper = __webpack_require__(13),
-    DistributionHelper = __webpack_require__(78);
+    DistributionHelper = __webpack_require__(77);
 
 module.exports = function(bpmnFactory, elementRegistry, translate) {
 
@@ -54722,7 +54761,7 @@ function createCurrencyOptions() {
 
 var cmdHelper = __webpack_require__(4),
   extensionElementsEntry = __webpack_require__(30),
-  CaseAttributeHelper = __webpack_require__(132),
+  CaseAttributeHelper = __webpack_require__(78),
   suppressValidationError = __webpack_require__(6).suppressValidationError;
 
   module.exports = function (element, bpmnFactory, elementRegistry, translate) {
@@ -54916,6 +54955,8 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       if(!selectedVariable){
            return [];
       }
+      suppressValidationError(bpmnFactory, elementRegistry, { name: 'Test' });
+
       var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories || [];
     },
@@ -54959,7 +55000,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 
 var elementHelper = __webpack_require__(8),
   ProcessSimulationHelper = __webpack_require__(13),
-  createUUID = __webpack_require__(12).createUUID;
+  createUUID = __webpack_require__(10).createUUID;
 
 var CategoryHelper = {};
 
@@ -55216,8 +55257,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(5),
     cmdHelper = __webpack_require__(4),
-    ResourceHelper = __webpack_require__(54),
-    ElementHelper = __webpack_require__(29);
+    ResourceHelper = __webpack_require__(132),
+    ElementHelper = __webpack_require__(35);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -55265,9 +55306,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 /* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var distributionEntries = __webpack_require__(77),
-    ElementHelper = __webpack_require__(29),
-    DistributionHelper = __webpack_require__(78);
+var distributionEntries = __webpack_require__(76),
+    ElementHelper = __webpack_require__(35),
+    DistributionHelper = __webpack_require__(77);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -55374,7 +55415,7 @@ var cmdHelper = __webpack_require__(4),
 
 var suppressValidationError = __webpack_require__(6).suppressValidationError;
 
-var TimetableHelper = __webpack_require__(76);
+var TimetableHelper = __webpack_require__(75);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -56007,7 +56048,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
 var cmdHelper = __webpack_require__(4),
     extensionElementsEntry = __webpack_require__(30),
-    ResourceHelper = __webpack_require__(54),
+    ResourceHelper = __webpack_require__(132),
     suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -56110,7 +56151,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(5),
     cmdHelper = __webpack_require__(4),
-    TimetableHelper = __webpack_require__(76);
+    TimetableHelper = __webpack_require__(75);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -56404,22 +56445,25 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
-    entryFactory = __webpack_require__(5),
-    cmdHelper = __webpack_require__(4),
-    SequenceFlowHelper = __webpack_require__(35);
+  entryFactory = __webpack_require__(5),
+  cmdHelper = __webpack_require__(4),
+  SequenceFlowHelper = __webpack_require__(29);
 
 var validationErrorHelper = __webpack_require__(6);
-var fixNumber = __webpack_require__(12).fixNumber;
+var fixNumber = __webpack_require__(10).fixNumber;
 var Toggle= __webpack_require__(338);
 var ClauseWrapper = __webpack_require__(339);
 
 
-module.exports = function(bpmnFactory, elementRegistry, translate, options,element) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options, element) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
 
   var entries = [];
 
-  options.gateway && options.gateway.outgoing && options.gateway.outgoing.forEach(function(outgoingElement) {
+  let toggle = Toggle(bpmnFactory, elementRegistry, translate,  {groupId: options.groupId,gateway: (options.gateway && options.gateway.outgoing && options.gateway.outgoing)});
+  
+
+  options.gateway && options.gateway.outgoing && options.gateway.outgoing.forEach(function (outgoingElement) {
     var sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElement.id);
 
     var textFieldDefault = entryFactory.textField(translate, {
@@ -56432,18 +56476,18 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options,eleme
       description: translate('gateway.probability'),
       modelProperty: 'probability',
 
-      get: function(_element, _node) {
+      get: function (_element, _node) {
         if (sequenceFlow.rawExecutionProbability) {
-          return { probability : sequenceFlow.rawExecutionProbability };
+          return { probability: sequenceFlow.rawExecutionProbability };
         }
         if (isNaN(sequenceFlow.executionProbability) || sequenceFlow.executionProbability === '') {
-          return { probability : sequenceFlow.executionProbability };
+          return { probability: sequenceFlow.executionProbability };
         }
 
         return { probability: (+(Math.round(sequenceFlow.executionProbability + 'e+4') + 'e-2')).toString() };
       },
 
-      set: function(_element, properties, _node) {
+      set: function (_element, properties, _node) {
         var probability = fixNumber(properties.probability);
         sequenceFlow.rawExecutionProbability = probability;
         return cmdHelper.updateBusinessObject(_element, sequenceFlow, {
@@ -56452,7 +56496,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options,eleme
         });
       },
 
-      validate: function(_element, values, _node) {
+      validate: function (_element, values, _node) {
         var validationId = this.id;
 
         var error = validationErrorHelper.validateGatewayProbabilities(bpmnFactory, elementRegistry, translate, {
@@ -56472,20 +56516,24 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options,eleme
       }
     });
 
-    textFieldDefault.cssClasses.push(options.groupId);
-    entries.push(textFieldDefault);
+    if(!SequenceFlowHelper.getProbalityByGroup(options.groupId)){
+      textFieldDefault.cssClasses.push(options.groupId);
+      entries.push(textFieldDefault);
 
-    options.title = outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
-        getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
-          outgoingElement.targetRef.id;
-
-    options.outgoingElementId = outgoingElement.id;    
-    
-   // entries = entries.concat(ClauseWrapper(bpmnFactory, elementRegistry, translate, options,element));
-    
+   
+    }else{   
+      let title = outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
+      getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
+        outgoingElement.targetRef.id;
+        let cluaseWrapper = ClauseWrapper(bpmnFactory, elementRegistry, translate, {groupId: options.groupId , outgoingElementId:outgoingElement.id ,title:title ,getConditionChecked : toggle.getConditionChecked}, element);
+        if (cluaseWrapper) {
+          entries = entries.concat(cluaseWrapper);
+        }
+    }
 
   });
-  //entries.push(Toggle(bpmnFactory, elementRegistry, translate, options));
+
+  entries.push(toggle.checkboxEntry);
   return entries;
 };
 
@@ -56493,50 +56541,50 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options,eleme
 /* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var getBusinessObject = __webpack_require__(1).getBusinessObject;
+var SequenceFlowHelper = __webpack_require__(29);
+var entryFactory = __webpack_require__(5);
+var cmdHelper = __webpack_require__(4);
 
-var getBusinessObject = __webpack_require__(1).getBusinessObject,
-entryFactory = __webpack_require__(5),
-cmdHelper = __webpack_require__(4);
+module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
-
-module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-
-   return entryFactory.checkbox('Test',{
-        id: 'toggle_'+options.groupId,
-        label: ' ', 
-        modelProperty: 'isCondition'
-        ,
-        get: function(element, node) {
-          var bo = getBusinessObject(element);
-          return {
-              'isCondition' : bo.$attrs.isCondition || false
+  let ischecked = false;
+  let groupId = options.groupId;
+  let checkboxEntry = entryFactory.checkbox('Test', {
+    id: 'toggle_' + options.groupId,
+    label: ' ',
+    modelProperty: 'isCondition',
+    get: function (element, node) {
+      return SequenceFlowHelper.getProbalityByGroup(options.groupId);
+    }
+    ,
+    set: function (element, values, node) {
+      options.gateway && options.gateway.forEach(function (outgoingElement) {
+        let sequenceFlow = SequenceFlowHelper.getSequenceFlowByElementId(bpmnFactory, elementRegistry, outgoingElement.id, true);
+        if (sequenceFlow) {
+          if (!values) {
+            if (sequenceFlow.values)
+              delete sequenceFlow.values;
+          } else {
+            if (!sequenceFlow.values || !sequenceFlow.values[0]) {
+              sequenceFlow = SequenceFlowHelper.createExpression(bpmnFactory, elementRegistry, outgoingElement, true);
+            }
           }
         }
-        ,
-        set: function (element, values, node) {
-          let bo = getBusinessObject(element);
-          if(values && values.isCondition){
-            probablityEntry.forEach(text => {
-            //  text.cssClasses.push('hide');
-              if(text.cssClasses.indexOf('hide') === -1){
-                text.cssClasses.push('hide');
-                var result1 = cmdHelper.updateBusinessObject(element, bo, text);
-                console.log(result1);
-              }
-            });
-          }else{
-            probablityEntry.forEach(text => {
-             var arr = text.cssClasses.filter(item => item !== 'hide');
-             text.cssClasses = arr;
-            });
-          }
-          
-           var result =  cmdHelper.updateBusinessObject(element, bo, {'isCondition': values.isCondition});
-           return result;
-        
-        }
+
       });
+      SequenceFlowHelper.storeProbalityByGroup(options.groupId,values.isCondition);
 
+    }
+  });
+
+  function getConditionChecked() {
+   return SequenceFlowHelper.getProbalityByGroup(options.groupId);
+  }
+  return {
+    checkboxEntry: checkboxEntry,
+    getConditionChecked: getConditionChecked
+  }
 
 }
 
@@ -56546,29 +56594,37 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     entryFactory = __webpack_require__(5);
-    var labelFactory = __webpack_require__(119)
+var  SequenceFlowHelper = __webpack_require__(29);    
+var LabelFactory = __webpack_require__(119)
 var OperatorSelectBox = __webpack_require__(340);
+var createUUID = __webpack_require__(10).createUUID;
+
 var Clauses = __webpack_require__(341);
 var ClauseCaseAttributeSelectBox = __webpack_require__(342);
 var ClauseCategorySelectBox = __webpack_require__(343);
 var ClauseOperatorSelectBox = __webpack_require__(344);
 
-module.exports = function (bpmnFactory, elementRegistry, translate, options,element) {
 
-    var entries = [];
-    entries.push(labelFactory({labelText: options.title ,id:'condition_title'}));
+module.exports = function (bpmnFactory, elementRegistry, translate, options, element) {
+    let entries = [];
+  
+    let sequenceFlow = SequenceFlowHelper.getSequenceFlowByElementId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
 
-    entries.push(OperatorSelectBox(bpmnFactory, elementRegistry, translate, options));
+    entries.push(LabelFactory({ labelText: options.title, id: 'condition_title'+createUUID() }));
 
-    entries.push(Clauses(element, bpmnFactory, elementRegistry, translate,options).entries);
-
-    entries.push(ClauseCaseAttributeSelectBox(bpmnFactory, elementRegistry, translate,options));
-
-    entries.push(ClauseCategorySelectBox(bpmnFactory, elementRegistry, translate, options));
-
-    entries.push(ClauseOperatorSelectBox(bpmnFactory, elementRegistry, translate, options));
+    entries.push(OperatorSelectBox(bpmnFactory, elementRegistry, translate, options,sequenceFlow));
     
-        return entries;
+    let clauses = Clauses(element, bpmnFactory, elementRegistry, translate, options,sequenceFlow);
+    entries.push(clauses.entries);
+
+    let clauseCaseAttribute =  ClauseCaseAttributeSelectBox(bpmnFactory, elementRegistry, translate,{ getSelectedClause: clauses.getSelectedClause },sequenceFlow);
+    entries.push(clauseCaseAttribute.selectBox);
+
+    entries.push(ClauseOperatorSelectBox(bpmnFactory, elementRegistry, translate,{ getSelectedClause: clauses.getSelectedClause},sequenceFlow,));
+
+    entries.push(ClauseCategorySelectBox(bpmnFactory, elementRegistry, translate,{ getSelectedClause: clauses.getSelectedClause , getSelectedCaseAttribute:clauseCaseAttribute.getSelectedCaseAttribute },sequenceFlow));
+   
+    return entries;
 };
 
 /***/ }),
@@ -56576,36 +56632,39 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options,elem
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
-  cmdHelper = __webpack_require__(4),
-  SequenceFlowHelper = __webpack_require__(35);
+  SequenceFlowHelper = __webpack_require__(29),
+  cmdHelper = __webpack_require__(4);
 
-var createUUID = __webpack_require__(12).createUUID;
+var createUUID = __webpack_require__(10).createUUID;
 
-module.exports = function (bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
-  let sequenceFlow;
+  let getConditionChecked = options.getConditionChecked;
 
   return entryFactory.selectBox(translate, {
     id: 'operator_' + createUUID(),
     label: 'Operator',
     modelProperty: 'operator',
     selectOptions: createOperatorOptions(),
-
     get: function (_element, _node) {
-      if (!sequenceFlow) {
-        sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      }
       let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
       return { operator: expression && expression.operator };
     },
 
     set: function (element, values, _node) {
-      sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
       let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-      if (expression) {
-        expression.operator = values.operator;
+      if (!expression) {
+        SequenceFlowHelper.createExpression(bpmnFactory, elementRegistry, sequenceFlow, true);
+        expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
       }
+
+      var cmd = cmdHelper.updateBusinessObject(element, expression, {
+        operator: values.operator
+      });
+
+      return cmd;
     }
+
   });
 };
 
@@ -56629,69 +56688,66 @@ function createOperatorOptions() {
 var cmdHelper = __webpack_require__(4),
   extensionElementsEntry = __webpack_require__(30),
   suppressValidationError = __webpack_require__(6).suppressValidationError,
-  SequenceFlowHelper = __webpack_require__(35),
-  createUUID = __webpack_require__(12).createUUID;
+  SequenceFlowHelper = __webpack_require__(29),
+  createUUID = __webpack_require__(10).createUUID;
 
-module.exports = function (element, bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (element, bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
-
+  let clause;
   var variableEntry = extensionElementsEntry(element, bpmnFactory, {
-    id: 'clauses' + createUUID(),
+    id: 'clauses-' + createUUID(),
     label: 'Clause',
-    modelProperties: 'clause',
-    idGeneration: false,
+    idGeneration: true,
 
     createExtensionElement: function (element, extensionElements, _value) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      console.log(sequenceFlow);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var clause = SequenceFlowHelper.createClause(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!clause) {
-        return [];
-      }
-      return cmdHelper.addElementsTolist(element, expression, 'values', clause);
-    },
+        clause = SequenceFlowHelper.createClause(bpmnFactory, elementRegistry, sequenceFlow, true);
+        if(clause){
+          let expression = getExpression();
+          return cmdHelper.addElementsTolist(element, expression, 'values', [clause]);
+        }
+      },
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var selectedClause = expression.values[idx];
+      let expression = getExpression();
+      let selectedClause = expression.values[idx];
       if (!expression || !selectedClause) {
         return {};
       }
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedClause.id });
+      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedClause.ope });
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },
 
     getExtensionElements: function (_element) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      return expression.values || [];
+      let expression = getExpression();
+      return  expression && expression.values || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
-      var selectedClause = expression.values[idx];
-      option.text = selectedClause && selectedClause.variableName;
+      let expression = getExpression();
+      let selectedClause = expression && expression.values && expression.values[idx];
+      option.text = (selectedClause && selectedClause.variableName ) || (clause &&  clause.variableName) ;
     }
   });
 
+  function getExpression() {
+    if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
+      return;
+    }
+    return sequenceFlow.values[0];
+  }
+
+  function getSelectedClause(element, node) {
+    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+      idx: -1
+    };
+    var expression = getExpression();
+    return expression && expression.values && expression.values[selection.idx];
+  }
+
   return {
-    entries: variableEntry
+    entries: variableEntry,
+    getSelectedClause: getSelectedClause
   };
 };
 
@@ -56700,26 +56756,23 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
+  CaseAttributeHelper = __webpack_require__(78),
   cmdHelper = __webpack_require__(4),
-  ResourceHelper = __webpack_require__(54),
-  ElementHelper = __webpack_require__(29),
-  CaseAttributeHelper = __webpack_require__(132),
-  createUUID = __webpack_require__(12).createUUID,
-  SequenceFlowHelper = __webpack_require__(35);
+  createUUID = __webpack_require__(10).createUUID;
 
-
-module.exports = function (bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
   var selectBoxId = ['clause', createUUID(), 'case-attribute'].join('-');
+  var getSelectedClause = options.getSelectedClause;
 
   function createVariableOptions() {
     var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
 
-    var variableWithNotEmptyName = variables.values.filter(function (variable) {
+    var variableWithNotEmptyName = variables && variables.values && variables.values.filter(function (variable) {
       return variable.name;
     });
 
-    return variableWithNotEmptyName.map(function (variable) {
+    return  variableWithNotEmptyName && variableWithNotEmptyName.length >0 && variableWithNotEmptyName.map(function (variable) {
       return {
         name: variable.name,
         value: variable.name
@@ -56727,49 +56780,37 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     });
   }
 
-
-  let currentSelection;
-
-  return entryFactory.selectBox(translate, {
+  let selectedCaseAttribute;
+  var entrySelectbox = entryFactory.selectBox(translate, {
     id: selectBoxId,
     label: 'Case Attribute',
     modelProperty: 'variableName',
     selectOptions: createVariableOptions,
 
     get: function (_element, _node) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
 
-      if (!expression) {
-        return;
-      }
-      var selected = expression.values.filter(function (clause) {
-        return currentSelection && clause.variableName == currentSelection.variableName;
-      });
-      let variableName ='';
-      if(selected && selected.length >0 ){
-        variableName = selected[0].variableName ;
-      }
-
-      return { variableName: variableName };
+      let clause = getSelectedClause(_element, _node);
+      selectedCaseAttribute = clause && clause.variableName;
+      return { variableName:clause && clause.variableName };
     },
 
     set: function (element, values, _node) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-      let clause = expression && expression.values.length >0 && expression.values[0];
-      if (clause) {
-        clause.variableName = values.variableName;
-        currentSelection = clause;
-      }else{
-        currentSelection = null;
-      }
-     
+      let clause = getSelectedClause(element, _node);
+      return cmdHelper.updateBusinessObject(element, clause, {
+        variableName: values.variableName || undefined
+      })
+
     }
   });
+
+  function getSelectedCaseAttribute(){
+    return selectedCaseAttribute;
+  }
+  return {
+    selectBox:entrySelectbox,
+    getSelectedCaseAttribute:getSelectedCaseAttribute
+  }
+
 };
 
 /***/ }),
@@ -56777,48 +56818,57 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
-    cmdHelper = __webpack_require__(4),
-    ResourceHelper = __webpack_require__(54),
-    ElementHelper = __webpack_require__(29);
-    var createUUID = __webpack_require__(12).createUUID;
-module.exports = function(bpmnFactory, elementRegistry, translate, options) {
+  cmdHelper = __webpack_require__(4),
+  CaseAttributeHelper = __webpack_require__(78),
+  ElementHelper = __webpack_require__(35);
+var createUUID = __webpack_require__(10).createUUID;
+module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
-  var taskId = options.taskId;
-  
-  var selectBoxId = ['clause', taskId, 'category'].join('-');
+  var selectBoxId = ['clause', createUUID(), 'category'].join('-');
+  var getSelectedClause = options.getSelectedClause;
+  var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
 
-  function createResourceOptions() {
-    var resources = ResourceHelper.getResources(bpmnFactory, elementRegistry).values || [];
-
-    var resourcesWithNotEmptyName = resources.filter(function(resource) {
-      return resource.name;
+  function createVariableOptions() {
+    var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
+    let selectedCaseAttributeText = getSelectedCaseAttribute();
+    let selectedCaseAttribute =  variables && variables.values && variables.values.filter(function (variable) {
+      return variable.name === selectedCaseAttributeText;
     });
 
-    return resourcesWithNotEmptyName.map(function(resource) {
+    if(!selectedCaseAttributeText && (!selectedCaseAttribute || selectedCaseAttribute.length ==0) && variables && variables.values && variables.values.length > 0){
+      selectedCaseAttribute = variables.values[0];
+    }
+
+    if(!selectedCaseAttribute || !selectedCaseAttribute.values || selectedCaseAttribute.values.length ==0)
+    {
+      return [];
+    }
+    return selectedCaseAttribute.values.map(function (value) {
       return {
-        name: resource.name,
-        value: resource.id
+        name: value.name,
+        value: value.name
       };
     });
   }
 
-  var taskElement = ElementHelper.getElementById(bpmnFactory, elementRegistry, taskId),
-      resourceIds = ResourceHelper.getResourceIds(bpmnFactory, taskElement);
 
   return entryFactory.selectBox(translate, {
-    id: selectBoxId+ createUUID(),
-    label: translate('resource'),
-    modelProperty: 'resourceId',
-    selectOptions: createResourceOptions,
+    id: selectBoxId,
+    label: 'Category',
+    modelProperty: 'variableEnumValue',
+    selectOptions: createVariableOptions,
 
-    get: function(_element, _node) {
-      return { resourceId: resourceIds.resourceId };
+    get: function (_element, _node) {
+      let clause = getSelectedClause(_element, _node);
+      return { variableEnumValue: clause && clause.variableEnumValue };
     },
 
-    set: function(element, values, _node) {
-      return cmdHelper.updateBusinessObject(element, resourceIds, {
-        resourceId: values.resourceId
-      });
+    set: function (element, values, _node) {
+      let clause = getSelectedClause(element, _node);
+      return cmdHelper.updateBusinessObject(element, clause, {
+        variableEnumValue: values.variableEnumValue || undefined
+      })
+
     }
   });
 };
@@ -56829,44 +56879,46 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4);
-var  ProcessSimulationHelper = __webpack_require__(13);
-var createUUID = __webpack_require__(12).createUUID;
+var ProcessSimulationHelper = __webpack_require__(13);
+var createUUID = __webpack_require__(10).createUUID;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
-
-
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+  var selectBoxId = ['clause', createUUID(), 'operator'].join('-');
+  var getSelectedClause = options.getSelectedClause;
 
   return entryFactory.selectBox(translate, {
-    id: 'operator_'+ createUUID(),
-    label: translate('scenarioGroup.currency.label'),
+    id: selectBoxId,
+    label: 'Operator',
     modelProperty: 'operator',
-    selectOptions: createOperatorOptions(),
+    selectOptions: createOperatorOptions,
 
     get: function (_element, _node) {
-      return { operator: processSimulationInfo.operator };
+      let clause = getSelectedClause(_element, _node);
+      return { operator: clause && clause.operator };
     },
 
     set: function (element, values, _node) {
-      return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        operator: values.operator
-      });
+      let clause = getSelectedClause(element, _node);
+      return cmdHelper.updateBusinessObject(element, clause, {
+        operator: values.operator || undefined
+      })
+
     }
   });
 };
 
-function createOperatorOptions() {
-  return [
-    {
-      name: 'AND',
-      value: 'AND'
-    },
-    {
-      name: 'OR',
-      value: 'OR'
-    }
-  ];
-}
+  function createOperatorOptions() {
+    return [
+      {
+        name: 'EQ',
+        value: 'EQ'
+      },
+      {
+        name: 'NEQ',
+        value: 'NEQ'
+      }
+    ];
+  }
 
 /***/ }),
 /* 345 */
@@ -57346,7 +57398,7 @@ var extensionElementsHelper = __webpack_require__(21);
 var IconPickerField = __webpack_require__(354);
 var IconSetPickerField = __webpack_require__(355);
 var ImagePickerField = __webpack_require__(359);
-var { AUX_PROPS } = __webpack_require__(11);
+var { AUX_PROPS } = __webpack_require__(12);
 
 function getExtensionElements(element, bpmnFactory) {
   var extensionElements = element.extensionElements;
@@ -57644,7 +57696,7 @@ var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
 var { ensureNotNull, setDefaultParameters } = __webpack_require__(80);
-var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(11);
+var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(12);
 
 var ICONS = [
   [
@@ -58470,9 +58522,9 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 /* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ElementHelper = __webpack_require__(29),
-    DistributionHelper = __webpack_require__(78),
-    distributionEntries = __webpack_require__(77);
+var ElementHelper = __webpack_require__(35),
+    DistributionHelper = __webpack_require__(77),
+    distributionEntries = __webpack_require__(76);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
@@ -61824,7 +61876,7 @@ function getMidPoint(p, q) {
 }
 
 // EXTERNAL MODULE: ./node_modules/path-intersection/intersect.js
-var intersect = __webpack_require__(55);
+var intersect = __webpack_require__(54);
 var intersect_default = /*#__PURE__*/__webpack_require__.n(intersect);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/layout/LayoutUtil.js
@@ -114390,7 +114442,7 @@ var ExtensionElementsHelper = __webpack_require__(21);
 var ExtensionElementsHelper_default = /*#__PURE__*/__webpack_require__.n(ExtensionElementsHelper);
 
 // EXTERNAL MODULE: ./app/modules/attachment/common.js
-var common = __webpack_require__(11);
+var common = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./node_modules/interactjs/dist/interact.min.js
 var interact_min = __webpack_require__(148);

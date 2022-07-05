@@ -21,8 +21,7 @@ var isValidNumber = function(value) {
 
 function getRoot(elementRegistry) {
   return elementRegistry.filter(function(element) {
-    console.log(element);
-    return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
+   return is(element, 'bpmn:Collaboration') || is(element, 'bpmn:Process');
   })[0].businessObject;
 }
 

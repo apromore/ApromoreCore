@@ -52,6 +52,8 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       if(!selectedVariable){
            return [];
       }
+      suppressValidationError(bpmnFactory, elementRegistry, { name: 'Test' });
+
       var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories || [];
     },

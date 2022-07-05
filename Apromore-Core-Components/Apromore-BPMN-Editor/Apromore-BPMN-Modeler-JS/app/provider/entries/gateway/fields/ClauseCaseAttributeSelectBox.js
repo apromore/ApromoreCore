@@ -1,24 +1,21 @@
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
-  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
-  ResourceHelper = require('../../../../helper/ResourceHelper'),
-  ElementHelper = require('../../../../helper/ElementHelper'),
   CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
-  createUUID = require('../../../../utils/Utils').createUUID,
-  SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper');
+  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
+  createUUID = require('../../../../utils/Utils').createUUID;
 
-
-module.exports = function (bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
   var selectBoxId = ['clause', createUUID(), 'case-attribute'].join('-');
+  var getSelectedClause = options.getSelectedClause;
 
   function createVariableOptions() {
     var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
 
-    var variableWithNotEmptyName = variables.values.filter(function (variable) {
+    var variableWithNotEmptyName = variables && variables.values && variables.values.filter(function (variable) {
       return variable.name;
     });
 
-    return variableWithNotEmptyName.map(function (variable) {
+    return  variableWithNotEmptyName && variableWithNotEmptyName.length >0 && variableWithNotEmptyName.map(function (variable) {
       return {
         name: variable.name,
         value: variable.name
@@ -26,47 +23,35 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     });
   }
 
-
-  let currentSelection;
-
-  return entryFactory.selectBox(translate, {
+  let selectedCaseAttribute;
+  var entrySelectbox = entryFactory.selectBox(translate, {
     id: selectBoxId,
     label: 'Case Attribute',
     modelProperty: 'variableName',
     selectOptions: createVariableOptions,
 
     get: function (_element, _node) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
-        return;
-      }
-      let expression = sequenceFlow.values[0];
 
-      if (!expression) {
-        return;
-      }
-      var selected = expression.values.filter(function (clause) {
-        return currentSelection && clause.variableName == currentSelection.variableName;
-      });
-      let variableName ='';
-      if(selected && selected.length >0 ){
-        variableName = selected[0].variableName ;
-      }
-
-      return { variableName: variableName };
+      let clause = getSelectedClause(_element, _node);
+      selectedCaseAttribute = clause && clause.variableName;
+      return { variableName:clause && clause.variableName };
     },
 
     set: function (element, values, _node) {
-      let sequenceFlow = SequenceFlowHelper.getExpressionBySequenceFlowId(bpmnFactory, elementRegistry, options.outgoingElementId, true);
-      let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-      let clause = expression && expression.values.length >0 && expression.values[0];
-      if (clause) {
-        clause.variableName = values.variableName;
-        currentSelection = clause;
-      }else{
-        currentSelection = null;
-      }
-     
+      let clause = getSelectedClause(element, _node);
+      return cmdHelper.updateBusinessObject(element, clause, {
+        variableName: values.variableName || undefined
+      })
+
     }
   });
+
+  function getSelectedCaseAttribute(){
+    return selectedCaseAttribute;
+  }
+  return {
+    selectBox:entrySelectbox,
+    getSelectedCaseAttribute:getSelectedCaseAttribute
+  }
+
 };
