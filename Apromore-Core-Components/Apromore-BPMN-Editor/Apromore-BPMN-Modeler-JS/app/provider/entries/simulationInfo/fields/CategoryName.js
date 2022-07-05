@@ -12,7 +12,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     id: 'category-name',
     label: label,
     modelProperty: 'name',
-
+    hidden : function(element, node) {
+      return !getSelectedCategory(element, node);
+    },
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);

@@ -12,6 +12,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     id: 'variable-name',
     label: label,
     modelProperty: 'name',
+    hidden : function(element, node){
+      var selectedVariable = getSelectedVariable(element, node);
+      return !selectedVariable ;
+    },
     get: function(element, node) {
 
       var selectedVariable = getSelectedVariable(element, node);
@@ -29,12 +33,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     },
 
     validate: function(element, values, node) {
-
       var selectedVariable = getSelectedVariable(element, node);
-
       if (selectedVariable) {
         var validationId = selectedVariable.id + this.id;
-
         var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
           id : validationId,
           label: label,

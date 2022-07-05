@@ -14571,6 +14571,51 @@ ValidationErrorHelper.validateVariableName = function(bpmnFactory, elementRegist
   return { message : message };
 };
 
+
+ValidationErrorHelper.validateCategory = function(bpmnFactory, elementRegistry, translate, options) {
+      var id = options.id,
+      description = options.label,
+      resource = options.resource,
+      probability = resource && resource.assignmentProbability,
+      allCategories = options.allCategories,
+      errorMessage;
+
+      if (!probability || probability.trim() === '') {
+        errorMessage = translate('invalid.empty {element}', { element: description });
+      } else if (!isValidNumber(probability)) {
+        errorMessage = translate('invalid.notDigit {element}', { element: description });
+      } else if (probability < 0) {
+        errorMessage = translate('invalid.notInteger {element}', { element: description });
+      } else if (probability > 100) {
+        errorMessage = translate('invalid.exceed100% {element}', { element: description });
+      } else {
+           
+        if(!errorMessage){
+          let sum =0;
+          allCategories  && allCategories.map(category =>{
+            if (isValidNumber(category.assignmentProbability)){
+              sum += parseFloat(category.assignmentProbability);
+            }
+           
+          });
+          
+          if(sum != 1){
+            errorMessage = 'Total Sum is not equal to 100';
+          }
+      }
+    }
+
+  if (resource && errorMessage) {
+    this.createValidationError(bpmnFactory, elementRegistry, {
+      id: id,
+      elementId: resource.id,
+      message: errorMessage
+    });
+  }
+
+  return { message : errorMessage };
+};
+
 module.exports = ValidationErrorHelper;
 
 /***/ }),
@@ -64150,7 +64195,7 @@ module.exports = function(element,bpmnFactory, elementRegistry, translate) {
   let categories = Categories(element,bpmnFactory, elementRegistry, translate,
       { getSelectedVariable: caseAttributesData.getSelectedVariable });  
   let categoryDetailEntries = CategoriesEntry(bpmnFactory, elementRegistry, translate,
-        { getSelectedCategory: categories.getSelectedCategory });    
+        { getSelectedCategory: categories.getSelectedCategory,getAllCategories: categories.getAllCategories });    
 
   entries = entries.concat(caseAttributesData.entries);
   entries = entries.concat(caseAttributeEntries);  
@@ -67015,9 +67060,9 @@ function createCurrencyOptions() {
 var cmdHelper = __webpack_require__(4),
   extensionElementsEntry = __webpack_require__(30),
   CaseAttributeHelper = __webpack_require__(78),
-  suppressValidationError = __webpack_require__(6).suppressValidationError;
-
-  module.exports = function (element, bpmnFactory, elementRegistry, translate) {
+  suppressValidationError = __webpack_require__(6).suppressValidationError,
+  createValidationError = __webpack_require__(6).createValidationError;
+module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
 
@@ -67048,33 +67093,34 @@ var cmdHelper = __webpack_require__(4),
     },
 
     getExtensionElements: function (_element) {
+
       return CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
       var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
       var selectedVariable = variables.values[idx];
-
-      option.text = selectedVariable && selectedVariable.name ;
+      option.text = selectedVariable && selectedVariable.name;
     }
+
   });
 
-  function getSelectedVariable(element, node) {
-    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
-      idx: -1
-    };
-
-    var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
-    return variables[selection.idx];
-  }
-
-  entries.push(variableEntry);
-
-  return {
-    entries: entries,
-    getSelectedVariable: getSelectedVariable
+function getSelectedVariable(element, node) {
+  var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+    idx: -1
   };
+
+  var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
+  return variables[selection.idx];
+}
+
+entries.push(variableEntry);
+
+return {
+  entries: entries,
+  getSelectedVariable: getSelectedVariable
 };
+}
 
 /***/ }),
 /* 303 */
@@ -67110,6 +67156,10 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     id: 'variable-name',
     label: label,
     modelProperty: 'name',
+    hidden : function(element, node){
+      var selectedVariable = getSelectedVariable(element, node);
+      return !selectedVariable ;
+    },
     get: function(element, node) {
 
       var selectedVariable = getSelectedVariable(element, node);
@@ -67127,12 +67177,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     },
 
     validate: function(element, values, node) {
-
       var selectedVariable = getSelectedVariable(element, node);
-
       if (selectedVariable) {
         var validationId = selectedVariable.id + this.id;
-
         var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
           id : validationId,
           label: label,
@@ -67170,14 +67217,18 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     label: 'Categories',
     modelProperties: 'name',
     idGeneration: false,
+    hideExtensionElements: function (element, node) {
+      var selectedVariable = getSelectedVariable(element, node);
+      return !selectedVariable;
+    },
     createExtensionElement: function (element, extensionElements, _value) {
-      var selectedVariable = getSelectedVariable(element,extensionElements);
-      if(!selectedVariable){
-          return;
+      var selectedVariable = getSelectedVariable(element, extensionElements);
+      if (!selectedVariable) {
+        return;
       }
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry,
         { selectedVariable: selectedVariable });
-   
+
       var category = CategoryHelper.createCategory(bpmnFactory, translate, { selectedVariable: selectedVariable });
 
       return cmdHelper.addElementsTolist(element, selectedVariable, 'values', [category]);
@@ -67185,9 +67236,9 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
 
-      var selectedVariable = getSelectedVariable(element,_extensionElements);
-      if(!selectedVariable){
-           return;
+      var selectedVariable = getSelectedVariable(element, _extensionElements);
+      if (!selectedVariable) {
+        return;
       }
 
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
@@ -67203,27 +67254,27 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         null, [selectedCategory]);
     },
 
-    getExtensionElements: function (_element,node) {
-      var selectedVariable = getSelectedVariable(_element,node);
-      if(!selectedVariable){
-           return [];
+    getExtensionElements: function (_element, node) {
+      var selectedVariable = getSelectedVariable(_element, node);
+      if (!selectedVariable) {
+        return [];
       }
       suppressValidationError(bpmnFactory, elementRegistry, { name: 'Test' });
 
-      var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      var selectedVariable = getSelectedVariable(element,_node);
-      if(selectedVariable){
+      var selectedVariable = getSelectedVariable(element, _node);
+      if (selectedVariable) {
         var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
         var selectedVariable = categories && categories.length > 0 && categories[idx];
-        option.text = selectedVariable && selectedVariable.name ;
-      } else{
+        option.text = selectedVariable && selectedVariable.name;
+      } else {
         option.text = '';
       }
-     
+
     }
   });
 
@@ -67232,18 +67283,33 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       idx: -1
     };
 
-    var selectedVariable = getSelectedVariable(element,node);
-    if(selectedVariable){
+    var selectedVariable = getSelectedVariable(element, node);
+    if (selectedVariable) {
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories[selection.idx];
     }
-   
+
   }
+
+  function getAllCategories(element, node) {
+    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+      idx: -1
+    };
+
+    var selectedVariable = getSelectedVariable(element, node);
+    if (selectedVariable) {
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories;
+    }
+    return [];
+  }
+
   entries.push(variableEntry);
 
   return {
     entries: entries,
-    getSelectedCategory: getSelectedCategory
+    getSelectedCategory: getSelectedCategory,
+    getAllCategories: getAllCategories
   };
 };
 
@@ -67276,7 +67342,7 @@ CategoryHelper.getCategories = function (bpmnFactory, elementRegistry, options) 
 
 CategoryHelper.createCategory = function (bpmnFactory, translate, options) {
   return elementHelper.createElement('qbp:Enum', {
-    name: 'EnumName' + createUUID(),
+    name: 'Category' ,
     assignmentProbability: '0',
     rawProbability: ''
   }, null, bpmnFactory);
@@ -67296,13 +67362,14 @@ var CategoryNameField = __webpack_require__(308);
 const CategoryValueField = __webpack_require__(309);
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
-  var entries = [];
-  var getSelectedCategory = options.getSelectedCategory;
+  let entries = [];
+  let getSelectedCategory = options.getSelectedCategory;
+  let getAllCategories = options.getAllCategories;
 
   entries.push(CategoryNameField(bpmnFactory, elementRegistry, translate,
     { getSelectedCategory: getSelectedCategory }));
   entries.push(CategoryValueField(bpmnFactory, elementRegistry, translate,
-      { getSelectedCategory: getSelectedCategory }));  
+      { getSelectedCategory: getSelectedCategory, getAllCategories: getAllCategories }));  
 
   return entries;
 };
@@ -67325,7 +67392,9 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     id: 'category-name',
     label: label,
     modelProperty: 'name',
-
+    hidden : function(element, node) {
+      return !getSelectedCategory(element, node);
+    },
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);
@@ -67376,15 +67445,19 @@ var entryFactory = __webpack_require__(5),
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
-  var getSelectedCategory = options.getSelectedCategory;
+  let getSelectedCategory = options.getSelectedCategory;
+  let getAllCategories = options.getAllCategories;
 
-  var label = 'Probability';
+  let label = 'Probability';
 
   return entryFactory.textField(translate, {
     id: 'category-probability',
     label: label,
     modelProperty: 'assignmentProbability',
-
+    hidden : function(element, node) {
+      return !getSelectedCategory(element, node);
+    }
+    ,
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);
@@ -67407,12 +67480,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       if (selectedCategory) {
         var validationId = selectedCategory.id + this.id;
-
-        var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
+        let allCategories = getAllCategories(element, node);
+        var error = validationErrorHelper.validateCategory(bpmnFactory, elementRegistry, translate, {
           id : validationId,
           label: label,
           name: values.name,
           resource: selectedCategory,
+          allCategories: allCategories
         });
 
         if (!error.message) {

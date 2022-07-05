@@ -4,15 +4,19 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
 
 module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
-  var getSelectedCategory = options.getSelectedCategory;
+  let getSelectedCategory = options.getSelectedCategory;
+  let getAllCategories = options.getAllCategories;
 
-  var label = 'Probability';
+  let label = 'Probability';
 
   return entryFactory.textField(translate, {
     id: 'category-probability',
     label: label,
     modelProperty: 'assignmentProbability',
-
+    hidden : function(element, node) {
+      return !getSelectedCategory(element, node);
+    }
+    ,
     get: function(element, node) {
 
       var selectedCategory = getSelectedCategory(element, node);
@@ -35,12 +39,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
       if (selectedCategory) {
         var validationId = selectedCategory.id + this.id;
-
-        var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
+        let allCategories = getAllCategories(element, node);
+        var error = validationErrorHelper.validateCategory(bpmnFactory, elementRegistry, translate, {
           id : validationId,
           label: label,
           name: values.name,
           resource: selectedCategory,
+          allCategories: allCategories
         });
 
         if (!error.message) {

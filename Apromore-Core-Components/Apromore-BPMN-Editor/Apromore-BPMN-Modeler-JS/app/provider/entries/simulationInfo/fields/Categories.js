@@ -14,14 +14,18 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     label: 'Categories',
     modelProperties: 'name',
     idGeneration: false,
+    hideExtensionElements: function (element, node) {
+      var selectedVariable = getSelectedVariable(element, node);
+      return !selectedVariable;
+    },
     createExtensionElement: function (element, extensionElements, _value) {
-      var selectedVariable = getSelectedVariable(element,extensionElements);
-      if(!selectedVariable){
-          return;
+      var selectedVariable = getSelectedVariable(element, extensionElements);
+      if (!selectedVariable) {
+        return;
       }
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry,
         { selectedVariable: selectedVariable });
-   
+
       var category = CategoryHelper.createCategory(bpmnFactory, translate, { selectedVariable: selectedVariable });
 
       return cmdHelper.addElementsTolist(element, selectedVariable, 'values', [category]);
@@ -29,9 +33,9 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
 
-      var selectedVariable = getSelectedVariable(element,_extensionElements);
-      if(!selectedVariable){
-           return;
+      var selectedVariable = getSelectedVariable(element, _extensionElements);
+      if (!selectedVariable) {
+        return;
       }
 
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
@@ -47,27 +51,27 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         null, [selectedCategory]);
     },
 
-    getExtensionElements: function (_element,node) {
-      var selectedVariable = getSelectedVariable(_element,node);
-      if(!selectedVariable){
-           return [];
+    getExtensionElements: function (_element, node) {
+      var selectedVariable = getSelectedVariable(_element, node);
+      if (!selectedVariable) {
+        return [];
       }
       suppressValidationError(bpmnFactory, elementRegistry, { name: 'Test' });
 
-      var categories=CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories || [];
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      var selectedVariable = getSelectedVariable(element,_node);
-      if(selectedVariable){
+      var selectedVariable = getSelectedVariable(element, _node);
+      if (selectedVariable) {
         var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
         var selectedVariable = categories && categories.length > 0 && categories[idx];
-        option.text = selectedVariable && selectedVariable.name ;
-      } else{
+        option.text = selectedVariable && selectedVariable.name;
+      } else {
         option.text = '';
       }
-     
+
     }
   });
 
@@ -76,17 +80,32 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       idx: -1
     };
 
-    var selectedVariable = getSelectedVariable(element,node);
-    if(selectedVariable){
+    var selectedVariable = getSelectedVariable(element, node);
+    if (selectedVariable) {
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       return categories[selection.idx];
     }
-   
+
   }
+
+  function getAllCategories(element, node) {
+    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+      idx: -1
+    };
+
+    var selectedVariable = getSelectedVariable(element, node);
+    if (selectedVariable) {
+      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+      return categories;
+    }
+    return [];
+  }
+
   entries.push(variableEntry);
 
   return {
     entries: entries,
-    getSelectedCategory: getSelectedCategory
+    getSelectedCategory: getSelectedCategory,
+    getAllCategories: getAllCategories
   };
 };

@@ -480,4 +480,49 @@ ValidationErrorHelper.validateVariableName = function(bpmnFactory, elementRegist
   return { message : message };
 };
 
+
+ValidationErrorHelper.validateCategory = function(bpmnFactory, elementRegistry, translate, options) {
+      var id = options.id,
+      description = options.label,
+      resource = options.resource,
+      probability = resource && resource.assignmentProbability,
+      allCategories = options.allCategories,
+      errorMessage;
+
+      if (!probability || probability.trim() === '') {
+        errorMessage = translate('invalid.empty {element}', { element: description });
+      } else if (!isValidNumber(probability)) {
+        errorMessage = translate('invalid.notDigit {element}', { element: description });
+      } else if (probability < 0) {
+        errorMessage = translate('invalid.notInteger {element}', { element: description });
+      } else if (probability > 100) {
+        errorMessage = translate('invalid.exceed100% {element}', { element: description });
+      } else {
+           
+        if(!errorMessage){
+          let sum =0;
+          allCategories  && allCategories.map(category =>{
+            if (isValidNumber(category.assignmentProbability)){
+              sum += parseFloat(category.assignmentProbability);
+            }
+           
+          });
+          
+          if(sum != 1){
+            errorMessage = 'Total Sum is not equal to 100';
+          }
+      }
+    }
+
+  if (resource && errorMessage) {
+    this.createValidationError(bpmnFactory, elementRegistry, {
+      id: id,
+      elementId: resource.id,
+      message: errorMessage
+    });
+  }
+
+  return { message : errorMessage };
+};
+
 module.exports = ValidationErrorHelper;

@@ -1,9 +1,9 @@
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   extensionElementsEntry = require('bpmn-js-properties-panel/lib/provider/camunda/parts/implementation/ExtensionElements'),
   CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
-  suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError;
-
-  module.exports = function (element, bpmnFactory, elementRegistry, translate) {
+  suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError,
+  createValidationError = require('../../../../helper/ValidationErrorHelper').createValidationError;
+module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
 
@@ -40,24 +40,24 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
       var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
       var selectedVariable = variables.values[idx];
-
-      option.text = selectedVariable && selectedVariable.name ;
+      option.text = selectedVariable && selectedVariable.name;
     }
+
   });
 
-  function getSelectedVariable(element, node) {
-    var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
-      idx: -1
-    };
-
-    var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
-    return variables[selection.idx];
-  }
-
-  entries.push(variableEntry);
-
-  return {
-    entries: entries,
-    getSelectedVariable: getSelectedVariable
+function getSelectedVariable(element, node) {
+  var selection = (variableEntry && variableEntry.getSelected(element, node)) || {
+    idx: -1
   };
+
+  var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
+  return variables[selection.idx];
+}
+
+entries.push(variableEntry);
+
+return {
+  entries: entries,
+  getSelectedVariable: getSelectedVariable
 };
+}

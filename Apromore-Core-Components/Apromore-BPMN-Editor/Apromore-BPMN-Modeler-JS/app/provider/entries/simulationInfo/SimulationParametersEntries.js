@@ -26,7 +26,7 @@ module.exports = function(element,bpmnFactory, elementRegistry, translate) {
   let categories = Categories(element,bpmnFactory, elementRegistry, translate,
       { getSelectedVariable: caseAttributesData.getSelectedVariable });  
   let categoryDetailEntries = CategoriesEntry(bpmnFactory, elementRegistry, translate,
-        { getSelectedCategory: categories.getSelectedCategory });    
+        { getSelectedCategory: categories.getSelectedCategory,getAllCategories: categories.getAllCategories });    
 
   entries = entries.concat(caseAttributesData.entries);
   entries = entries.concat(caseAttributeEntries);  

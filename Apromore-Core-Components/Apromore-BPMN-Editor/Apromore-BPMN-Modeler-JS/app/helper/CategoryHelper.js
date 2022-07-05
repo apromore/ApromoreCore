@@ -23,7 +23,7 @@ CategoryHelper.getCategories = function (bpmnFactory, elementRegistry, options) 
 
 CategoryHelper.createCategory = function (bpmnFactory, translate, options) {
   return elementHelper.createElement('qbp:Enum', {
-    name: 'EnumName' + createUUID(),
+    name: 'Category' ,
     assignmentProbability: '0',
     rawProbability: ''
   }, null, bpmnFactory);
