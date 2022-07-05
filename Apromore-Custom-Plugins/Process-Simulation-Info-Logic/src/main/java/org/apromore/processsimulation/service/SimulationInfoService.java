@@ -48,6 +48,7 @@ import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.processsimulation.config.SimulationAdditionalParam;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -93,14 +94,17 @@ public class SimulationInfoService {
     private final CalendarService calendarService;
     private final UserMetadataService userMetadataService;
     private final ObjectMapper objectMapper;
+    private final SimulationAdditionalParam simulationAdditionalParam;
 
     @Autowired
     public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
-                                 UserMetadataService userMetadataService) {
+                                 UserMetadataService userMetadataService,
+                                 SimulationAdditionalParam simulationAdditionalParam) {
         this.config = config;
         this.calendarService = calendarService;
         this.userMetadataService = userMetadataService;
         this.objectMapper = new ObjectMapper();
+        this.simulationAdditionalParam = simulationAdditionalParam;
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -156,8 +160,8 @@ public class SimulationInfoService {
         double interArrivalTimeMillis = getInterArrivalTime(simulationData);
         TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
-        builder.processInstances(simulationData.getCaseCount() > config.getDefaultMaxProcessInstances()
-                ? config.getDefaultMaxProcessInstances() : simulationData.getCaseCount())
+        builder.processInstances(simulationData.getCaseCount() > simulationAdditionalParam.getMaxAllowedProcesses()
+                ? simulationAdditionalParam.getMaxAllowedProcesses() : simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(
                 Instant.ofEpochMilli(simulationData.getStartTime()).toString())
