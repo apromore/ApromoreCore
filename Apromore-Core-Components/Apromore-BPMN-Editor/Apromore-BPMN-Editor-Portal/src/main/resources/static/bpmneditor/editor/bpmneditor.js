@@ -54784,17 +54784,6 @@ module.exports = function(langTag) {
 
 
 
-const palette = [
-  '#000000',
-  '#84c7e3',
-  '#bb3a50',
-  '#34AD61',
-  '#E98C2D',
-  '#bf80ff',
-  '#6666ff',
-  '#ff80ff'
-];
-
 const darken = function (colorCode) {
   const color = color__WEBPACK_IMPORTED_MODULE_0___default()(colorCode);
   const start = color.lightness();
@@ -54808,6 +54797,21 @@ const lighten = function (colorCode) {
   const lightness = start + 0.8 * (100 - start);
   return color.lightness(lightness).hex();
 };
+
+let palette = [
+  '#000000',
+  '#84c7e3',
+  '#bb3a50',
+  '#34AD61',
+  '#E98C2D',
+  '#bf80ff',
+  '#6666ff',
+  '#ff80ff'
+];
+
+palette = palette
+    .concat(palette.map(lighten))
+    .concat(palette.map(darken))
 
 const getCurrentColor = function (element){
   if (!element) {
@@ -54834,12 +54838,12 @@ const colors = palette.map(
   (color) => (
       {
           stroke: 'black',
-          fill: lighten(color),
+          fill: color,
           key: color.toLowerCase()
       }
   )
 );
-const colorMap = colors.reduce((acc, color) => { acc[color.key.toLowerCase()] = color; return acc; }, {});
+const colorMap = colors.reduce((acc, color) => { acc[color.key] = color; return acc; }, {});
 
 let drawOverride = false;
 
@@ -54885,7 +54889,7 @@ class ColorContextPad {
           } else {
             color = {
               stroke: 'black',
-              fill: lighten(colorCode)
+              fill: colorCode
             }
           }
           if (
@@ -54895,8 +54899,8 @@ class ColorContextPad {
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:DataOutputAssociation') ||
             Object(bpmn_js_lib_util_ModelUtil__WEBPACK_IMPORTED_MODULE_1__["is"])(element, 'bpmn:MessageFlow')
           ) {
-            color.stroke = darken(colorCode);
-            color.fill = darken(colorCode);
+            color.stroke = colorCode;
+            color.fill = colorCode;
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');
@@ -54927,7 +54931,6 @@ ColorContextPad.$inject = [
   'canvas',
   'translate'
 ];
-
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
