@@ -54,6 +54,7 @@ import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
 import org.apromore.dao.model.Usermetadata;
+import org.apromore.processsimulation.config.SimulationAdditionalParam;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -88,11 +89,14 @@ class SimulationInfoServiceTest {
     @Mock
     private UserMetadataService userMetadataService;
 
+    @Mock
+    private SimulationAdditionalParam simulationAdditionalParam;
+
     @BeforeEach
     void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService);
+        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService, simulationAdditionalParam);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -106,7 +110,7 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
         when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
-        when(config.getDefaultMaxProcessInstances()).thenReturn(25000L);
+        when(simulationAdditionalParam.getMaxAllowedProcesses()).thenReturn(25000L);
 
         when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
             Collections.emptySet());
