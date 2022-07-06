@@ -75,7 +75,9 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
       entries.push(textFieldDefault);
 
    
-    }else{   
+    }
+    
+    else{   
       let title = outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
       getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
         outgoingElement.targetRef.id;
@@ -83,7 +85,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
         if (cluaseWrapper) {
           entries = entries.concat(cluaseWrapper);
         }
-    }
+    } 
 
   });
 

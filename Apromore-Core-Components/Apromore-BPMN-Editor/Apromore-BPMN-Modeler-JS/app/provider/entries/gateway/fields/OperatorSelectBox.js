@@ -15,7 +15,12 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
     selectOptions: createOperatorOptions(),
     get: function (_element, _node) {
       let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-      return { operator: expression && expression.operator };
+      if (!expression) {
+        sequenceFlow = SequenceFlowHelper.createExpression(bpmnFactory, elementRegistry, sequenceFlow, true);
+        expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+      }
+    
+      return { operator: expression && expression.operator || '' };
     },
 
     set: function (element, values, _node) {

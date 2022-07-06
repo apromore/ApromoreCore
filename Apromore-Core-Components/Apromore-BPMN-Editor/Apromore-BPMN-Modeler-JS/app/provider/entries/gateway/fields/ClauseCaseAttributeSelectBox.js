@@ -31,16 +31,15 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
     selectOptions: createVariableOptions,
 
     get: function (_element, _node) {
-
       let clause = getSelectedClause(_element, _node);
       selectedCaseAttribute = clause && clause.variableName;
-      return { variableName:clause && clause.variableName };
+      return { variableName:clause && clause.variableName || ''};
     },
 
     set: function (element, values, _node) {
       let clause = getSelectedClause(element, _node);
       return cmdHelper.updateBusinessObject(element, clause, {
-        variableName: values.variableName || undefined
+        variableName: values.variableName 
       })
 
     }

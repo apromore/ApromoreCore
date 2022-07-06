@@ -416,7 +416,8 @@
         },
         {
           "name": "values",
-          "type": "Expression"
+          "type": "Expression",
+          "isMany": true
         }
       ]
     },

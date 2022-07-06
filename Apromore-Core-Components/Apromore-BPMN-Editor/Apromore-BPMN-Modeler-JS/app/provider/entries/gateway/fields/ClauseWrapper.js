@@ -29,6 +29,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
     entries.push(ClauseOperatorSelectBox(bpmnFactory, elementRegistry, translate,{ getSelectedClause: clauses.getSelectedClause},sequenceFlow,));
 
     entries.push(ClauseCategorySelectBox(bpmnFactory, elementRegistry, translate,{ getSelectedClause: clauses.getSelectedClause , getSelectedCaseAttribute:clauseCaseAttribute.getSelectedCaseAttribute },sequenceFlow));
-   
+    
     return entries;
 };
