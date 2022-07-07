@@ -191,6 +191,8 @@ input {
 
 .z-messagebox-buttons {
     overflow: visible;
+    text-align: center;
+    margin-right: 0;
 }
 
 .z-combobutton:hover .z-combobutton-content {
