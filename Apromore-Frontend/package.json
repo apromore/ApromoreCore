@@ -36,7 +36,7 @@
     "jquery": "3.5.1",
     "jquery-ui-bundle": "^1.11.4",
     "jquery-ui-slider-pips-npm": "^1.11.4",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.5.1",
     "konva": "^7.0.3",
     "minisearch": "^2.4.0",
     "moment": "^2.29.2",

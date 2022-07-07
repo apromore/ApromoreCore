@@ -21,7 +21,7 @@ let edgeEditingOptions = {
 import GraphModelWrapper from "../processmap/graphModelWrapper";
 import LogAnimation from "../loganimation/logAnimation";
 import tippy from "tippy.js";
-import * as jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import { saveAs } from 'file-saver';
 
 const LAYOUT_MANUAL_BEZIER = 0;
@@ -577,10 +577,17 @@ PDp.exportPDF = function(filename) {
     let pd = this;
     this.rasterizeForPrint()
         .then(function (canvas) {
-            let pdf = new jsPDF('l', 'px', [canvas.width, canvas.height], false, true);
+            let pdf = new jsPDF({
+                orientation: 'l',
+                unit: 'mm',
+                format: [297, 297 * canvas.height/canvas.width],
+                putOnlyUsedFonts:false,
+                compress: true,
+                userUnit: 72
+            });
             pd.loadImage(canvas.toDataURL())
                 .then(function (raster) {
-                    pdf.addImage(raster, 'PNG', 0, 0, canvas.width, canvas.height, NaN, 'FAST');
+                    pdf.addImage(raster, 'PNG', 0, 0, 297, 297 * canvas.height/canvas.width, NaN, 'FAST');
                     pdf.save(filename + '.pdf', {returnPromise: true});
                 });
         });
