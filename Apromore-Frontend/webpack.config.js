@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const path = require('path');
-const LowerCaseNamePlugin = require('webpack-lowercase-name');
 
 module.exports = {
     entry: {
@@ -9,7 +8,18 @@ module.exports = {
         BPMNEditor: './src/bpmneditor/index.js'
     },
     output: {
-        filename: '[lc-name].js',
+        filename: (chunkData) => {
+            if (chunkData.chunk.name === 'ProcessDiscoverer') {
+                return 'processdiscoverer.js';
+            }
+            if (chunkData.chunk.name === 'LogAnimationBpmn') {
+                return 'loganimationbpmn.js';
+            }
+            if (chunkData.chunk.name === 'BPMNEditor') {
+                return 'bpmneditor.js';
+            }
+            return chunkData.chunk.name + '.js';
+        },
         path: path.resolve(__dirname, 'dist'),
         library: ['Apromore', '[name]'],   // Important
         libraryTarget: 'umd',   // Important
@@ -37,8 +47,7 @@ module.exports = {
             "$j":"jquery",
             "jQuery":"jquery",
             "window.jQuery":"jquery"
-        }),
-        new LowerCaseNamePlugin()
+        })
     ],
 
 };
