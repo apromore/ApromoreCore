@@ -9,6 +9,7 @@
  */
 package org.apromore.portal.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
 import org.apromore.portal.ApromoreKeycloakAuthenticationSuccessHandler;
@@ -41,7 +42,17 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ConditionalOnProperty(prefix = "keycloak", name = "enabled", havingValue = "true")
+@Slf4j
 public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter {
+
+  @Value("${portal.keycloakConnectionPoolingEnabled:true}")
+  private boolean isConnectionPoolingEnabled;
+
+  /**
+   * If this property is set, use it as the redirection URL for the login.
+   */
+  @Value("${portal.login-url:#{null}}")
+  private String loginURL;
 
   @Autowired
   private ManagerService manager;
@@ -71,6 +82,8 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   protected KeycloakAuthenticationProcessingFilter keycloakAuthenticationProcessingFilter() throws Exception {
     KeycloakAuthenticationProcessingFilter filter = super.keycloakAuthenticationProcessingFilter();
     filter.setAuthenticationSuccessHandler(new ApromoreKeycloakAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler()));
+    filter.setRequestAuthenticatorFactory(new PortalKeycloakRequestAuthenticatorFactory(loginURL, isConnectionPoolingEnabled));
+
     return filter;
   }
 
