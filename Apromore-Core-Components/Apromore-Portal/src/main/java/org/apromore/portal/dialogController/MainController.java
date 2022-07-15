@@ -740,52 +740,7 @@ public class MainController extends BaseController implements MainControllerInte
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
-
-            ExportFormatResultType exportResult = this.getManagerService().exportFormat(
-                    editSession.getProcessId(), editSession.getProcessName(),
-                    editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
-                    editSession.getNativeType(), editSession.getUsername());
-            String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-
-            // If no draft associated with specified model, version and user
-            if (this.getProcessService().getProcessModelVersionByUser(process.getId(),
-                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, version.getVersionNumber(),
-                    getSecurityService().getUserById(portalContext.getCurrentUser().getId()).getId()) == null) {
-                this.getManagerService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
-                        nativeType, new ByteArrayInputStream(bpmnXML.getBytes()),
-                        UserSessionManager.getCurrentUser().getUsername());
-            }
-            ExportFormatResultType exportResultDraft = this.getManagerService().exportFormat(
-                    editSession.getProcessId(), editSession.getProcessName(),
-                    org.apromore.common.Constants.DRAFT_BRANCH_NAME, editSession.getCurrentVersionNumber(),
-                    editSession.getNativeType(), editSession.getUsername());
-            String bpmnXmlDraft = StreamUtil.convertStreamToString(exportResultDraft.getNative().getInputStream());
-
-            if (!Objects.equals(bpmnXML, bpmnXmlDraft)) {
-                String finalInstruction = instruction;
-                Messagebox.show(
-                    MessageFormat.format(Labels.getLabel("portal_unsavedDraftExisted_message"), editSession.getCurrentVersionNumber()),
-                    Labels.getLabel("brand_name"),
-                    new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
-                    Messagebox.QUESTION, e -> {
-                        switch (e.getButton()) {
-                            case YES:
-                                Clients.evalJavaScript(finalInstruction);
-                                break;
-                            case NO: // Cancel is clicked
-                                this.getProcessService().updateDraft(editSession.getProcessId(),
-                                    editSession.getCurrentVersionNumber(), editSession.getNativeType(),
-                                    new ByteArrayInputStream(bpmnXML.getBytes()),
-                                    editSession.getUsername());
-                                Clients.evalJavaScript(finalInstruction);
-                                break;
-                            default: // if the Close button is clicked, e.getButton() returns null
-                        }
-                    });
-            } else {
-                Clients.evalJavaScript(instruction);
-            }
-
+            Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
                     e);
