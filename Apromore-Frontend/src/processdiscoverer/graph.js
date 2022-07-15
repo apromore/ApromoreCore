@@ -346,6 +346,8 @@ PDp.loadLog = function(json, layoutType, retain) {
     this.init();
 
     let cy = this._private.cy;
+    json = json.replaceAll('\\.', '\\\\.'); // Fix for Japanese label issue
+    json = json.replaceAll('\n', '\\n'); // escape
     let source = $.parseJSON(json);
     sourceJSON = source;
     cy.add(source);
@@ -371,6 +373,7 @@ PDp.loadTrace = function(json) {
     this.init();
 
     let cy = this._private.cy;
+    json = json.replaceAll('\\.', '\\\\.'); // Fix for Japanese label issue
     json = json.replaceAll('\n', '\\n'); // escape
     const source = $.parseJSON(json);
     cy.add(source);
@@ -548,14 +551,25 @@ const MARGIN = 100;
 
 PDp.rasterizeForPrint = function() {
     let cy = this._private.cy;
+    let scale = 1.0;
+    let png;
+
+    while (scale > 0.2) { // try 3x, 1.0, 0.5, 0.25
+        png = cy.png({
+            full: true,
+            output: 'blob',
+            scale: scale,
+            quality: 1.0,
+        });
+        if (png.size) {
+            break;
+        }
+        scale *= 0.5
+    }
+    var file = new Blob([png], { type: 'image/png' });
     return Promise.all([
         this.loadImage(SIGNATURE),
-        this.loadImage('data:image/png;base64,' + cy.png({
-            full: true,
-            output: 'base64',
-            scale: 1.0,
-            quality: 1.0,
-        }))
+        this.loadImage(URL.createObjectURL(file))
     ]).then(function ([sign, graph]) {
         let canvas = document.createElement('canvas');
         let context = canvas.getContext('2d');
@@ -570,6 +584,8 @@ PDp.rasterizeForPrint = function() {
         context.drawImage(sign, MARGIN, MARGIN, signWidth, signHeight);
         context.drawImage(graph, MARGIN, signHeight + MARGIN);
         return canvas;
+    }).catch(function(error) {
+        console.log(error);
     });
 }
 
