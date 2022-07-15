@@ -740,6 +740,21 @@ public class MainController extends BaseController implements MainControllerInte
                 url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
+            ExportFormatResultType exportResult = this.getManagerService().exportFormat(
+                editSession.getProcessId(), editSession.getProcessName(),
+                editSession.getOriginalBranchName(), editSession.getCurrentVersionNumber(),
+                editSession.getNativeType(), editSession.getUsername());
+            String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+
+            // If no draft associated with specified model, version and user
+            if (this.getProcessService().getProcessModelVersionByUser(process.getId(),
+                org.apromore.common.Constants.DRAFT_BRANCH_NAME, version.getVersionNumber(),
+                getSecurityService().getUserById(portalContext.getCurrentUser().getId()).getId()) == null) {
+                this.getManagerService().createDraft(process.getId(), process.getName(), version.getVersionNumber(),
+                    nativeType, new ByteArrayInputStream(bpmnXML.getBytes()),
+                    UserSessionManager.getCurrentUser().getUsername());
+            }
+
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             LOGGER.warn("Unable to edit process model " + process.getName() + " version " + version.getVersionNumber(),
