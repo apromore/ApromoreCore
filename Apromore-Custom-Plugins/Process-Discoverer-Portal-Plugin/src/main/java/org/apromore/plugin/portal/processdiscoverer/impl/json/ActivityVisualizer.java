@@ -54,11 +54,10 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
     	if (node_oriname.contains("\\n")) {
     		node_oriname =  node_oriname.substring(0, node_oriname.indexOf("\\n"));
     	}
-    	jsonData.put("oriname", visSettings.getStringFormatter().escapeChars(node_oriname));
+    	jsonData.put("oriname", node_oriname);
 
     	String node_displayname = node_oriname.trim();
     	int fontSize;
-		node_displayname = visSettings.getStringFormatter().escapeChars(node_displayname);
         node_displayname = visSettings.getStringFormatter().wrapName(node_displayname, 0);
 
 		if (node_displayname.length() > 25) {
