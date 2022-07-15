@@ -245,8 +245,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
   }
 
   function getValidModelValue(value) {
-    if (isNaN(value) || value === '') {
-      value = '';
+    if (value === '') {
+      value = '0';
     }
 
     return value;
