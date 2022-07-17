@@ -21,9 +21,26 @@
  */
 package org.apromore.plugin.portal.processpublisher;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+import java.util.Map;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessPublish;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.ProcessPublishService;
+import org.apromore.service.ProcessService;
+import org.apromore.util.AccessType;
 import org.apromore.zk.notification.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +50,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
@@ -43,31 +59,23 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 
-import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class ProcessPublisherViewModelUnitTest {
     @InjectMocks
     private ProcessPublisherViewModel processPublisherViewModel = new ProcessPublisherViewModel();
 
     @Mock private ProcessPublishService processPublishService;
+    @Mock private ProcessService processService;
     @Mock private Execution execution;
     @Mock private Session session;
     @Mock private Component component;
+    @Mock private UserType user;
 
     MockedStatic<Executions> executionsMockedStatic = mockStatic(Executions.class);
     MockedStatic<Sessions> sessionsMockedStatic = mockStatic(Sessions.class);
     MockedStatic<Notification> notificationMockedStatic = mockStatic(Notification.class);
     MockedStatic<Clients> clientsMockedStatic = mockStatic(Clients.class);
+    MockedStatic<UserSessionManager> userSessionManagerMockedStatic = mockStatic(UserSessionManager.class);
 
     @BeforeEach
     void setup() {
@@ -80,6 +88,7 @@ class ProcessPublisherViewModelUnitTest {
         sessionsMockedStatic.close();
         notificationMockedStatic.close();
         clientsMockedStatic.close();
+        userSessionManagerMockedStatic.close();
     }
 
     @Test
@@ -88,31 +97,71 @@ class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    void testInitNoPublishDetails() {
+    void testInitNoPublishDetailsHasLinkedProcesses() {
         int processId = 1;
 
         when(processPublishService.getPublishDetails(processId)).thenReturn(null);
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
+        when(user.getUsername()).thenReturn("test");
+        try {
+            when(processService.hasLinkedProcesses(processId, "test")).thenReturn(true);
+        } catch (UserNotFoundException e) {
+            fail();
+        }
 
         processPublisherViewModel.init(processId);
         assertEquals(processId, processPublisherViewModel.getProcessId());
         assertTrue(processPublisherViewModel.isNewPublishRecord());
         assertFalse(processPublisherViewModel.isPublish());
+        assertTrue(processPublisherViewModel.isHasLinkedSubprocesses());
         assertNotEquals("", processPublisherViewModel.getPublishId());
     }
 
     @Test
-    void testInitExistingPublishDetails() {
+    void testInitExistingPublishDetailsNoSessionUser() {
         int processId = 1;
         String publishId = "publishId";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
 
         when(processPublishService.getPublishDetails(processId)).thenReturn(processPublish);
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(null);
 
         processPublisherViewModel.init(processId);
         assertEquals(processId, processPublisherViewModel.getProcessId());
         assertFalse(processPublisherViewModel.isNewPublishRecord());
         assertTrue(processPublisherViewModel.isPublish());
+        assertFalse(processPublisherViewModel.isHasLinkedSubprocesses());
         assertEquals(publishId, processPublisherViewModel.getPublishId());
+    }
+
+    @Test
+    void testInitUserNoLinkedProcesses() {
+        int processId = 1;
+
+        when(processPublishService.getPublishDetails(processId)).thenReturn(null);
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
+        when(user.getUsername()).thenReturn("test");
+        try {
+            when(processService.hasLinkedProcesses(processId, "test")).thenReturn(false);
+        } catch (UserNotFoundException e) {
+            fail();
+        }
+
+        processPublisherViewModel.init(processId);
+        assertFalse(processPublisherViewModel.isHasLinkedSubprocesses());
+    }
+
+    @Test
+    void testInitUserNotFound() throws UserNotFoundException {
+        int processId = 1;
+
+        when(processPublishService.getPublishDetails(processId)).thenReturn(null);
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
+        when(user.getUsername()).thenReturn("test");
+        when(processService.hasLinkedProcesses(processId, "test")).thenThrow(new UserNotFoundException());
+
+        processPublisherViewModel.init(processId);
+        assertFalse(processPublisherViewModel.isHasLinkedSubprocesses());
     }
 
     @Test
@@ -141,13 +190,22 @@ class ProcessPublisherViewModelUnitTest {
     }
 
     @Test
-    void testUpdatePublishRecordExisting() {
+    void testUpdatePublishRecordExistingWithLinkedSubprocesses() throws UserNotFoundException {
         int processId = 50;
         String publishId = "test";
         ProcessPublish processPublish = createProcessPublish(processId, publishId, true);
 
         when(processPublishService.updatePublishStatus(publishId, true))
                 .thenReturn(processPublish);
+
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
+        when(user.getUsername()).thenReturn("test");
+        when(processService.getLinkedProcesses(50, "test", AccessType.OWNER)).thenReturn(Map.of("s1", 51));
+        when(processService.getLinkedProcesses(51, "test", AccessType.OWNER)).thenReturn(Map.of("s1", 52));
+        when(processService.getLinkedProcesses(52, "test", AccessType.OWNER)).thenReturn(Map.of("s1", 50));
+        when(processPublishService.getPublishDetails(51)).thenReturn(createProcessPublish(51, "test2", true));
+        when(processPublishService.getPublishDetails(52)).thenReturn(null);
+
         sessionsMockedStatic.when(() -> Sessions.getCurrent()).thenReturn(session);
         when(session.getAttribute(Attributes.PREFERRED_LOCALE)).thenReturn(Locale.ENGLISH);
         notificationMockedStatic.when(() -> Notification.info(anyString())).thenAnswer(invocation -> null);
@@ -158,6 +216,7 @@ class ProcessPublisherViewModelUnitTest {
         processPublisherViewModel.setPublish(true);
         processPublisherViewModel.setProcessId(processId);
         processPublisherViewModel.setPublishId(publishId);
+        processPublisherViewModel.setPublishLinkedSubprocesses(true);
 
         processPublisherViewModel.updatePublishRecord(component);
 

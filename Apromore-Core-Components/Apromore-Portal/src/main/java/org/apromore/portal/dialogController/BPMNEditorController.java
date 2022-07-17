@@ -641,6 +641,25 @@ public class BPMNEditorController extends BaseController implements Composer<Com
                 process.getName(), process.getId(), "MAIN", new Version(version), nativeType, currentUserType.getUsername());
         String bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
         pushViewModeParameters(bpmnXML);
+        populateLinkedProcessesList();
+
+        //Traverse in view mode
+        this.addEventListener("onClickSubprocessBtn", event -> {
+          String elementId =  (String) event.getData();
+          ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId,
+              currentUserType.getUsername());
+
+          ProcessPublish processPublishDetails = linkedProcess == null ? null
+              : processPublishService.getPublishDetails(linkedProcess.getId());
+          if (processPublishDetails == null || !processPublishDetails.isPublished()) {
+            Notification.error(Labels.getLabel("bpmnEditor_publishModeNoLink_message",
+                "No process is linked or the linked process is not published"));
+          } else {
+            String url = String.format("openModelInBPMNio.zul?view=true&publishId=%s",
+                processPublishDetails.getPublishId());
+            Clients.evalJavaScript("window.open('" + url + "');");
+          }
+        });
       } catch (Exception e) {
         LOGGER.error("", e);
         throw new AssertionError("Could not get bpmn xml");
@@ -717,13 +736,11 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     }
 
     ProcessService processService = (ProcessService) SpringUtil.getBean(PROCESS_SERVICE_BEAN);
-    ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId);
-    User user = mainC.getSecurityService().getUserById(currentUserType.getId());
-    boolean hasLinkedProcessAccess = (linkedProcess != null) &&
-        (mainC.getAuthorizationService().getProcessAccessTypeByUser(linkedProcess.getId(), user) != null);
+    ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), elementId,
+        currentUserType.getUsername());
 
-    if (!hasLinkedProcessAccess) {
-      Notification.error("No process is linked");
+    if (linkedProcess == null) {
+      Notification.error(Labels.getLabel("bpmnEditor_noLinkedModel_message", "No process is linked"));
       return;
     }
 

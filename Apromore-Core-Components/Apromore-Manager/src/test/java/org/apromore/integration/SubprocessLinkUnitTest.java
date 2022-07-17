@@ -22,6 +22,7 @@
 
 package org.apromore.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,6 +45,7 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.ProcessService;
+import org.apromore.util.AccessType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +174,12 @@ class SubprocessLinkUnitTest extends BaseTest {
         assertEquals(process3.getId(),
             processService.getLinkedProcesses(process2.getId(), username1).get(subprocessId));
         assertTrue(processService.getLinkedProcesses(process1.getId(), username2).isEmpty());
+
+        //check get processes with permission
+        assertThat(processService.getLinkedProcesses(process1.getId(), username1, AccessType.OWNER)).hasSize(1);
+        assertThat(processService.getLinkedProcesses(process1.getId(), username1, AccessType.EDITOR)).isEmpty();
+        assertThat(processService.getLinkedProcesses(process1.getId(), username1, AccessType.VIEWER)).isEmpty();
+        assertThat(processService.getLinkedProcesses(process1.getId(), username1, AccessType.RESTRICTED)).isEmpty();
 
         //If processes 1 -> 2 -> 3 are linked, 3 -> 1 cannot be linked by a user with access to all three processes.
         assertThrows(CircularReferenceException.class, () ->
