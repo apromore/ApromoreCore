@@ -875,7 +875,7 @@ img[src="img/icon/bpmn-22x22.png"] {
 .z-menupopup .z-menu-image,
 .z-menupopup .z-menuitem-image {
     height: 18px !important;
-    width: 22px !important;
+    width: auto !important;
     max-width: 22px !important;
     object-fit: contain;
     margin-right: 6px;
