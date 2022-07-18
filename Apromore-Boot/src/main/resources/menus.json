@@ -87,12 +87,6 @@
             },
             {
               "id": "dashboard.portal.DashboardPlugin"
-            },
-            {
-              "id": "org.apromore.ppm.portal.services.PredictorManagerPortalPlugin"
-            },
-            {
-              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
             }
           ]
         },
@@ -105,6 +99,18 @@
             },
             {
               "id": "org.apromore.plugin.similaritysearch.portal.SimilaritySearchPlugin"
+            }
+          ]
+        },
+        {
+          "id": "MONITOR",
+          "labelKey": "plugin_monitor_title_text",
+          "items": [
+            {
+              "id": "org.apromore.ppm.portal.services.PredictorManagerPortalPlugin"
+            },
+            {
+              "id": "org.apromore.ppm.portal.services.PredictionPortalPlugin"
             }
           ]
         }
