@@ -77,6 +77,7 @@ class ProcessPublishServiceImplTest extends EasyMockSupport {
         Process process = createProcess(processId);
 
         expect(processRepository.findUniqueByID(processId)).andReturn(process);
+        expect(processPublishRepository.findByProcessId(processId)).andReturn(null);
         expect(processPublishRepository.saveAndFlush(anyObject(ProcessPublish.class)))
                 .andReturn(createProcessPublish(process, publishId, true));
         replayAll();
@@ -89,7 +90,7 @@ class ProcessPublishServiceImplTest extends EasyMockSupport {
     }
 
     @Test
-    void testUpdatePublishDetails() {
+    void testUpdatePublishDetailsByPublishId() {
         String publishId = "publishId";
         ProcessPublish processPublish = createProcessPublish(createProcess(1), publishId, false);
 
@@ -100,6 +101,23 @@ class ProcessPublishServiceImplTest extends EasyMockSupport {
         assertFalse(processPublish.isPublished());
 
         ProcessPublish result = processPublishService.updatePublishStatus(publishId, true);
+        assertTrue(result.isPublished());
+        verifyAll();
+    }
+
+    @Test
+    void testUpdatePublishDetailsByProcessId() {
+        int processId = 1;
+        String publishId = "publishId";
+        ProcessPublish processPublish = createProcessPublish(createProcess(processId), publishId, false);
+
+        expect(processPublishRepository.findByProcessId(processId)).andReturn(processPublish);
+        expect(processPublishRepository.saveAndFlush(anyObject(ProcessPublish.class))).andReturn(processPublish);
+        replayAll();
+
+        assertFalse(processPublish.isPublished());
+
+        ProcessPublish result = processPublishService.updatePublishStatus(processId, true);
         assertTrue(result.isPublished());
         verifyAll();
     }

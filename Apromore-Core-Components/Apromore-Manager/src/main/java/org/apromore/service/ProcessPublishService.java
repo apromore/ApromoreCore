@@ -35,6 +35,8 @@ public interface ProcessPublishService {
 
     ProcessPublish updatePublishStatus(final String publishId, final boolean publishStatus);
 
+    ProcessPublish updatePublishStatus(final int processId, final boolean publishStatus);
+
     ProcessPublish getPublishDetails(final int processId);
 
     boolean isPublished(final String publishId);

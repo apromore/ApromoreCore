@@ -44,6 +44,7 @@ import org.apromore.service.model.ProcessData;
 
 import java.io.InputStream;
 import java.util.List;
+import org.apromore.util.AccessType;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -278,6 +279,16 @@ public interface ProcessService {
      */
     ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId);
 
+    /**
+     * Get the process linked to a subprocess.
+     *
+     * @param subprocessParentId the id of the process which contains the subprocess
+     * @param subprocessId the element id of the subprocess
+     * @param username the user requesting the linked model.
+     * @return the process linked to the subprocess if the user has access to it. Otherwise, return null.
+     */
+    ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String username)
+        throws UserNotFoundException;
 
     /**
      * Check if the process has linked processes for the given user.
@@ -291,4 +302,15 @@ public interface ProcessService {
     Map<String, Integer> getLinkedProcesses(Integer processId, String username) throws UserNotFoundException;
 
     Integer getProcessParentFolder(Integer processId);
+
+    /**
+     * Get a map of subprocess element ids to linked processes with the specified access type.
+     *
+     * @param processId the id of the process which contains the subprocesses.
+     * @param username the user requesting the linked process map.
+     * @param accessType specify the access type a user should have to the returned process models.
+     * @return a map of subprocess element ids to process ids.
+     */
+    Map<String, Integer> getLinkedProcesses(Integer processId, String username, AccessType accessType)
+        throws UserNotFoundException;
 }

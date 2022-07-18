@@ -60,13 +60,17 @@ public class ProcessPublishServiceImpl implements ProcessPublishService {
     public ProcessPublish savePublishDetails(int processId, String publishId, boolean publishStatus) {
         Process process = processRepo.findUniqueByID(processId);
         if (process == null) {
-            throw new IllegalArgumentException("No process could be found with the id " + publishId);
+            throw new IllegalArgumentException("No process could be found with the id " + processId);
         }
 
-        ProcessPublish processPublish = new ProcessPublish();
+        ProcessPublish processPublish = getPublishDetails(processId);
+        if (processPublish == null) {
+            processPublish = new ProcessPublish();
+            processPublish.setProcess(process);
+        }
+
         processPublish.setPublishId(publishId);
         processPublish.setPublished(publishStatus);
-        processPublish.setProcess(process);
 
         return processPublishRepo.saveAndFlush(processPublish);
     }
@@ -74,6 +78,14 @@ public class ProcessPublishServiceImpl implements ProcessPublishService {
     @Override
     public ProcessPublish updatePublishStatus(String publishId, boolean publishStatus) {
         ProcessPublish processPublish = processPublishRepo.findByPublishId(publishId);
+        processPublish.setPublished(publishStatus);
+
+        return processPublishRepo.saveAndFlush(processPublish);
+    }
+
+    @Override
+    public ProcessPublish updatePublishStatus(int processId, boolean publishStatus) {
+        ProcessPublish processPublish = processPublishRepo.findByProcessId(processId);
         processPublish.setPublished(publishStatus);
 
         return processPublishRepo.saveAndFlush(processPublish);

@@ -21,9 +21,18 @@
  */
 package org.apromore.plugin.portal.processpublisher;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import lombok.Data;
 import org.apromore.dao.model.ProcessPublish;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.UserType;
 import org.apromore.service.ProcessPublishService;
+import org.apromore.service.ProcessService;
+import org.apromore.util.AccessType;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
@@ -32,13 +41,13 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-
-import java.util.UUID;
+import org.zkoss.zul.Messagebox;
 
 @Data
 @VariableResolver(org.zkoss.zkplus.spring.DelegatingVariableResolver.class)
@@ -50,8 +59,13 @@ public class ProcessPublisherViewModel implements LabelSupplier {
     @WireVariable
     private ProcessPublishService processPublishService;
 
+    @WireVariable
+    private ProcessService processService;
+
     private String publishId = "";
     private boolean publish = false;
+    private boolean hasLinkedSubprocesses = false;
+    private boolean publishLinkedSubprocesses = false;
     private boolean newPublishRecord = true;
     private int processId;
 
@@ -63,6 +77,13 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         publish = !newPublishRecord && processPublishDetails.isPublished();
         publishId = newPublishRecord ?
                 UUID.randomUUID().toString() : processPublishDetails.getPublishId();
+
+        UserType user = UserSessionManager.getCurrentUser();
+        try {
+            hasLinkedSubprocesses = user != null && processService.hasLinkedProcesses(processId, user.getUsername());
+        } catch (UserNotFoundException e) {
+            hasLinkedSubprocesses = false;
+        }
     }
 
     @Command
@@ -75,6 +96,23 @@ public class ProcessPublisherViewModel implements LabelSupplier {
             processPublishService.updatePublishStatus(publishId, publish);
             publishNotificationKey = publish ? "publish_link_success_msg" : "unpublish_link_success_msg";
         }
+
+        try {
+            if (publish && publishLinkedSubprocesses) {
+                updateLinkedSubprocessesPublishStatus(processId, List.of(processId));
+            } else if (!publish && hasLinkedSubprocesses) {
+                Messagebox.show(getLabel("unpublish_linked_subprocess_models_msg"),
+                    Labels.getLabel("plugin_process_unpublish_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+                    event -> {
+                        if (Messagebox.ON_YES.equals(event.getName())) {
+                            updateLinkedSubprocessesPublishStatus(processId, List.of(processId));
+                        }
+                    });
+            }
+        } catch (UserNotFoundException e) {
+            LOGGER.error(e.getMessage());
+        }
+
         Notification.info(getLabel(publishNotificationKey));
         Clients.evalJavaScript(String.format("onUpdatePublishState(%s)", publish));
         window.detach();
@@ -94,5 +132,34 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         }
 
         return String.format(PUBLISH_LINK_FORMAT, scheme, serverName, publishId);
+    }
+
+    private List<Integer> updateLinkedSubprocessesPublishStatus(int pId, List<Integer> publishedProcesses)
+        throws UserNotFoundException {
+        List<Integer> skipList = new ArrayList<>(publishedProcesses);
+        UserType user = UserSessionManager.getCurrentUser();
+        if (user == null) {
+            throw new UserNotFoundException("Unable to get current user from the session");
+        }
+
+        Collection<Integer> linkedProcesses = processService
+            .getLinkedProcesses(pId, user.getUsername(), AccessType.OWNER)
+            .values();
+
+        for (int linkedProcessId : linkedProcesses) {
+            if (skipList.contains(linkedProcessId)) {
+                continue;
+            }
+
+            if (processPublishService.getPublishDetails(linkedProcessId) == null) {
+                processPublishService.savePublishDetails(linkedProcessId, UUID.randomUUID().toString(), publish);
+            } else {
+                processPublishService.updatePublishStatus(linkedProcessId, publish);
+            }
+
+            skipList.add(linkedProcessId);
+            skipList.addAll(updateLinkedSubprocessesPublishStatus(linkedProcessId, skipList));
+        }
+        return skipList;
     }
 }

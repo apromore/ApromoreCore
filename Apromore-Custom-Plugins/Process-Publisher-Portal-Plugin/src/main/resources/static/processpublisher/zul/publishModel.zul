@@ -58,6 +58,12 @@
                         tooltiptext="${vm_publishModel.labels.copy_link_hint}"
                         w:onClick="copyPublishLink();"/>
             </hlayout>
+            <hlayout hflex="1" style="line-height: 0px;padding-top: 4px;"
+                     visible="@load(vm_publishModel.publish and vm_publishModel.hasLinkedSubprocesses)">
+                <checkbox checked="@bind(vm_publishModel.publishLinkedSubprocesses)"
+                          label="${vm_publishModel.labels.publish_linked_subprocess_models_checkbox_label}"
+                          style="font-size: 12px;"/>
+            </hlayout>
         </vlayout>
         <div sclass="ap-window-footer-actions" height="42px">
             <button label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"
