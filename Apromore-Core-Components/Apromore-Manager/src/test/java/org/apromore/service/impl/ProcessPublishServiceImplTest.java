@@ -21,6 +21,7 @@
  */
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
@@ -143,33 +144,49 @@ class ProcessPublishServiceImplTest extends EasyMockSupport {
     @Test
     void testIsPublishedNullPublishRecord() {
         expect(processPublishRepository.findByPublishId(anyString())).andReturn(null);
+        expect(processPublishRepository.findByProcessId(anyInt())).andReturn(null);
         replayAll();
 
         assertFalse(processPublishService.isPublished("not a record"));
+        assertFalse(processPublishService.isPublished(1000));
         verifyAll();
     }
 
     @Test
     void testIsPublishedExistingPublishedRecord() {
+        int processId = 1;
+        String publishId = "publishId";
+
         ProcessPublish processPublish = new ProcessPublish();
         processPublish.setPublished(true);
+        processPublish.setProcess(createProcess(processId));
+        processPublish.setPublishId(publishId);
 
-        expect(processPublishRepository.findByPublishId(anyString())).andReturn(processPublish);
+        expect(processPublishRepository.findByPublishId(publishId)).andReturn(processPublish);
+        expect(processPublishRepository.findByProcessId(processId)).andReturn(processPublish);
         replayAll();
 
-        assertTrue(processPublishService.isPublished("publishId"));
+        assertTrue(processPublishService.isPublished(publishId));
+        assertTrue(processPublishService.isPublished(processId));
         verifyAll();
     }
 
     @Test
     void testIsPublishedExistingUnpublishedRecord() {
+        int processId = 1;
+        String publishId = "publishId";
+
         ProcessPublish processPublish = new ProcessPublish();
         processPublish.setPublished(false);
+        processPublish.setProcess(createProcess(processId));
+        processPublish.setPublishId(publishId);
 
-        expect(processPublishRepository.findByPublishId(anyString())).andReturn(processPublish);
+        expect(processPublishRepository.findByPublishId(publishId)).andReturn(processPublish);
+        expect(processPublishRepository.findByProcessId(processId)).andReturn(processPublish);
         replayAll();
 
-        assertFalse(processPublishService.isPublished("publishId"));
+        assertFalse(processPublishService.isPublished(publishId));
+        assertFalse(processPublishService.isPublished(processId));
         verifyAll();
     }
 

@@ -105,6 +105,9 @@ class ProcessPublisherViewModelUnitTest {
         when(user.getUsername()).thenReturn("test");
         try {
             when(processService.hasLinkedProcesses(processId, "test")).thenReturn(true);
+            when(processService.getLinkedProcesses(processId, "test", AccessType.OWNER))
+                .thenReturn(Map.of("test2", 2));
+            when(processPublishService.isPublished(2)).thenReturn(true);
         } catch (UserNotFoundException e) {
             fail();
         }
