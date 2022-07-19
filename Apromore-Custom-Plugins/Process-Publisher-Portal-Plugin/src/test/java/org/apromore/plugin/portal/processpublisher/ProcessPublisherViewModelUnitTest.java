@@ -117,6 +117,32 @@ class ProcessPublisherViewModelUnitTest {
         assertTrue(processPublisherViewModel.isNewPublishRecord());
         assertFalse(processPublisherViewModel.isPublish());
         assertTrue(processPublisherViewModel.isHasLinkedSubprocesses());
+        assertTrue(processPublisherViewModel.isPublishLinkedSubprocesses());
+        assertNotEquals("", processPublisherViewModel.getPublishId());
+    }
+
+    @Test
+    void testInitHasUnPublishedLinkedProcesses() {
+        int processId = 1;
+
+        when(processPublishService.getPublishDetails(processId)).thenReturn(null);
+        userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
+        when(user.getUsername()).thenReturn("test");
+        try {
+            when(processService.hasLinkedProcesses(processId, "test")).thenReturn(true);
+            when(processService.getLinkedProcesses(processId, "test", AccessType.OWNER))
+                .thenReturn(Map.of("test2", 2));
+            when(processPublishService.isPublished(2)).thenReturn(false);
+        } catch (UserNotFoundException e) {
+            fail();
+        }
+
+        processPublisherViewModel.init(processId);
+        assertEquals(processId, processPublisherViewModel.getProcessId());
+        assertTrue(processPublisherViewModel.isNewPublishRecord());
+        assertFalse(processPublisherViewModel.isPublish());
+        assertTrue(processPublisherViewModel.isHasLinkedSubprocesses());
+        assertFalse(processPublisherViewModel.isPublishLinkedSubprocesses());
         assertNotEquals("", processPublisherViewModel.getPublishId());
     }
 
