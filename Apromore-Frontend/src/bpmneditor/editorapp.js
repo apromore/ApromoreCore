@@ -101,6 +101,7 @@ export default class EditorApp {
             return;
         }
         this.fullscreen = config.fullscreen !== false;
+        this.processName = config.processName;
         this.useSimulationPanel = config.useSimulationPanel || false;
         this.isPublished = config.isPublished || false;
         this.disabledButtons = config.disabledButtons; // undefined means all plugins are enabled
@@ -462,6 +463,10 @@ export default class EditorApp {
         return this.activatedPlugins;
     }
 
+    getProcessName() {
+        return this.processName || 'untitled';
+    }
+
     _getContainer() {
         return document.getElementById(this.id);
     }
@@ -509,6 +514,7 @@ export default class EditorApp {
             this._pluginFacade = (function () {
                 return {
                     offer: this.offer.bind(this),
+                    app: me,
                     getEastPanel: this.getEastPanel.bind(this),
                     useSimulationPanel: this.useSimulationPanel,
                     isPublished: this.isPublished,
