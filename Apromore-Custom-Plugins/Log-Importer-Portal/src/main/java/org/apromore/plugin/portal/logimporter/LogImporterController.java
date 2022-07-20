@@ -309,9 +309,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         if (storedSchemaMapping != null) {
             tempLogMetaData.setCaseIdPos(storedSchemaMapping.getCaseIdPos());
             tempLogMetaData.setActivityPos(storedSchemaMapping.getActivityPos());
-            tempLogMetaData.setEndTimestampFormat(storedSchemaMapping.getEndTimestampFormat());
             tempLogMetaData.setEndTimestampPos(storedSchemaMapping.getEndTimestampPos());
-            tempLogMetaData.setStartTimestampFormat(storedSchemaMapping.getStartTimestampFormat());
             tempLogMetaData.setStartTimestampPos(storedSchemaMapping.getStartTimestampPos());
             tempLogMetaData.setResourcePos(storedSchemaMapping.getResourcePos());
             tempLogMetaData.setRolePos(storedSchemaMapping.getRolePos());
