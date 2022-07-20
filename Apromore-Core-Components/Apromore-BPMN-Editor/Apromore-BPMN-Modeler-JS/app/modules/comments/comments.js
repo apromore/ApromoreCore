@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
 
 import {
   getComments,
@@ -100,6 +102,33 @@ export default function Comments(config, eventBus, overlays, bpmnjs) {
     renderComments();
   }
 
+  function isInCollapsedSubprocess(element) {
+    let parent = element.parent;
+
+    if (!parent) {
+        return false;
+    } else if (is(parent, 'bpmn:SubProcess')) {
+        return !isExpanded(parent);
+    } else {
+        return isInCollapsedSubprocess(parent);
+    }
+  }
+
+  function updateCommentVisibility(element) {
+    var o = overlays.get({ element: element, type: 'comments' })[0];
+    var $overlay = o && o.htmlContainer;
+    var inCollapsedSubprocess = isInCollapsedSubprocess(element);
+
+    if ($overlay) {
+      var hidden = $overlay.classList.contains('hidden');
+      if (hidden && !inCollapsedSubprocess) {
+        $overlay.classList.remove('hidden');
+      } else if (!hidden && inCollapsedSubprocess) {
+        $overlay.classList.add('hidden');
+      }
+    }
+  }
+
   eventBus.on('shape.added', function(event) {
     var element = event.element;
 
@@ -111,8 +140,18 @@ export default function Comments(config, eventBus, overlays, bpmnjs) {
 
     defer(function() {
       createCommentBox(element);
+      updateCommentVisibility(element);
     });
 
+  });
+
+  eventBus.on('shape.changed', function(event) {
+    var element = event.element;
+    if (is(element, 'bpmn:SubProcess')) {
+      element.children.forEach((child) => {
+        updateCommentVisibility(child);
+      })
+    }
   });
 
   this.collapseAll = function() {

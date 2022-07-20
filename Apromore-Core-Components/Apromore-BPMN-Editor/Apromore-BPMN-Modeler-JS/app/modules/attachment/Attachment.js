@@ -6,6 +6,8 @@ import { AUX_PROPS } from './common';
 import { isNil } from 'min-dash';
 import interact from 'interactjs';
 import xss from 'xss';
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
 
 const TYPE = 'aux';
 const defer = function (fn) {
@@ -294,6 +296,33 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
       });
   }
 
+    function isInCollapsedSubprocess(element) {
+      let parent = element.parent;
+
+      if (!parent) {
+          return false;
+      } else if (is(parent, 'bpmn:SubProcess')) {
+          return !isExpanded(parent);
+      } else {
+          return isInCollapsedSubprocess(parent);
+      }
+    }
+
+    function updateAttachmentVisibility(element) {
+      var o = overlays.get({ element: element, type: TYPE })[0];
+      var $overlay = o && o.htmlContainer;
+      var inCollapsedSubprocess = isInCollapsedSubprocess(element);
+
+      if ($overlay) {
+        var hidden = $overlay.classList.contains('hidden');
+        if (hidden && !inCollapsedSubprocess) {
+          $overlay.classList.remove('hidden');
+        } else if (!hidden && inCollapsedSubprocess) {
+          $overlay.classList.add('hidden');
+        }
+      }
+    }
+
   eventBus.on('shape.added', function(event) {
     var element = event.element;
 
@@ -302,9 +331,18 @@ export default function Aux(eventBus, bpmnFactory, elementRegistry, overlays, bp
     }
     defer(function() {
       createAux(element);
+      updateAttachmentVisibility(element);
     });
   });
 
+    eventBus.on('shape.changed', function(event) {
+      var element = event.element;
+      if (is(element, 'bpmn:SubProcess')) {
+        element.children.forEach((child) => {
+          updateAttachmentVisibility(child);
+        })
+      }
+    });
 
   this.createAux = function (element) {
     createAux(element);
