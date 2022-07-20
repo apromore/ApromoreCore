@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apromore.exception.ExportFormatException;
@@ -128,7 +129,7 @@ class BPMNDocumentHelperUnitTest {
             + "</bpmndi:BPMNDiagram></bpmn:definitions>";
         String linkedProcessXML = "<bpmn:definitions xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" id=\"Definitions_2\">"
             + "<bpmn><process id=\"link_p1\"><extensionElements><test/></extensionElements>"
-            + "<task id=\"link_t1\"><incoming>edge1</incoming><outgoing>edge2</outgoing></task>"
+            + "<task id=\"link_t1\"><extensionElements/><incoming>edge1</incoming><outgoing>edge2</outgoing></task>"
             + "<sequenceFlow id=\"edge1\"/>"
             + "<sequenceFlow id=\"edge2\"/>"
             + "</process></bpmn>"
@@ -151,6 +152,7 @@ class BPMNDocumentHelperUnitTest {
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).hasSize(1);
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).isEmpty();
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).isEmpty();
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "extensionElements")).hasSize(1);
 
             Node subProcessNode = BPMNDocumentHelper.getBPMNElements(document, "subProcess").get(0);
             BPMNDocumentHelper.replaceSubprocessContents(subProcessNode, document2);
@@ -162,6 +164,7 @@ class BPMNDocumentHelperUnitTest {
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "endEvent")).isEmpty();
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "task")).hasSize(1);
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "sequenceFlow")).hasSize(2);
+            assertThat(BPMNDocumentHelper.getBPMNElements(document, "extensionElements")).hasSize(2);
 
             //Check definitions after replace
             assertThat(BPMNDocumentHelper.getBPMNElements(document, "definitions")).hasSize(1);
@@ -169,19 +172,6 @@ class BPMNDocumentHelperUnitTest {
             assertThat(bpmnDefinitions.getAttributes().getNamedItem("id").getNodeValue()).isEqualTo("Definitions_1");
             assertThat(bpmnDefinitions.getAttributes().getNamedItem("xmlns:bpmndi").getNodeValue()).isEqualTo("http://www.omg.org/spec/BPMN/20100524/DI");
             assertThat(bpmnDefinitions.getAttributes().getNamedItem("xmlns:di").getNodeValue()).isEqualTo("http://www.omg.org/spec/DD/20100524/DI");
-
-            String xmlAfterReplace = BPMNDocumentHelper.getXMLString(document);
-            Document document3 = BPMNDocumentHelper.getDocument(xmlAfterReplace);
-
-            assertThat(xmlAfterReplace).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            assertThat(xmlAfterReplace).isNotEqualTo(xmlBeforeReplace);
-            //Check that the xml created has the same elements as the original document
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "process")).hasSize(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "subProcess")).hasSize(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "startEvent")).isEmpty();
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "endEvent")).isEmpty();
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "task")).hasSize(1);
-            assertThat(BPMNDocumentHelper.getBPMNElements(document3, "sequenceFlow")).hasSize(2);
 
         } catch (ParserConfigurationException | IOException | SAXException | ExportFormatException |
                  TransformerException e) {
@@ -218,5 +208,150 @@ class BPMNDocumentHelperUnitTest {
         }
     }
 
+    @Test
+    void getSubprocessBpmnNoPlanes() {
+        String originalXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"p1\">"
+            + "<subProcess id=\"sp1\">"
+            + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
+            + "<extensionElements/><incoming/><outgoing/>"
+            + "<sequenceFlow id=\"flow1\" sourceRef=\"start1\" targetRef=\"end1\"/>"
+            + "<startEvent id=\"start1\"><outgoing>flow1</outgoing></startEvent>"
+            + "<endEvent id=\"end1\"><incoming>flow1</incoming></endEvent>"
+            + "</subProcess>"
+            + "<bpmn:subProcess id=\"sp2\">"
+            + "<task id=\"task1\"/>"
+            + "</bpmn:subProcess>"
+            + "</process></bpmn>"
+            + "<bpmndi:BPMNDiagram/></bpmn:definitions>";
+        try {
+            Document document = BPMNDocumentHelper.getDocument(originalXML);
+            assertThrows(ExportFormatException.class, () -> BPMNDocumentHelper.getSubprocessBpmnMap(document, true));
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            fail();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void getSubprocessBpmnIncludeEmptySubprocesses() {
+        String originalXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"p1\">"
+            + "<subProcess id=\"sp1\">"
+            + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
+            + "<extensionElements/><incoming/><outgoing/>"
+            + "<sequenceFlow id=\"flow1\" sourceRef=\"start1\" targetRef=\"end1\"/>"
+            + "<startEvent id=\"start1\"><outgoing>flow1</outgoing></startEvent>"
+            + "<endEvent id=\"end1\"><incoming>flow1</incoming></endEvent>"
+            + "</subProcess>"
+            + "<bpmn:subProcess id=\"sp2\">"
+            + "<task id=\"task1\"/>"
+            + "</bpmn:subProcess>"
+            + "<bpmn:subProcess id=\"sp3\"/>"
+            + "</process></bpmn>"
+            + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
+            + "<bpmndi:BPMNEdge bpmnElement=\"flow1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"start1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"end1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "<bpmndi:BPMNPlane bpmnElement=\"sp2\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"task1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></bpmn:definitions>";
+
+        String expectedSubprocess1XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\">"
+            + "<process id=\"Process_1\">"
+            + "<bpmn:documentation textFormat=\"text/x-comments\">admin:comment</bpmn:documentation>"
+            + "<sequenceFlow id=\"flow1\" sourceRef=\"start1\" targetRef=\"end1\"/>"
+            + "<startEvent id=\"start1\"><outgoing>flow1</outgoing></startEvent>"
+            + "<endEvent id=\"end1\"><incoming>flow1</incoming></endEvent>"
+            + "</process>"
+            + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane bpmnElement=\"Process_1\">"
+            + "<bpmndi:BPMNEdge bpmnElement=\"flow1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"start1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"end1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></definitions>";
+
+        String expectedSubprocess2XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\">"
+            + "<process id=\"Process_1\">"
+            + "<task id=\"task1\"/>"
+            + "</process>"
+            + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane bpmnElement=\"Process_1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"task1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></definitions>";
+
+        String expectedSubprocess3XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\">"
+            + "<process id=\"Process_1\"/>"
+            + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">"
+            + "<bpmndi:BPMNPlane bpmnElement=\"Process_1\"/>"
+            + "</bpmndi:BPMNDiagram></definitions>";
+
+        try {
+            Document doc = BPMNDocumentHelper.getDocument(originalXML);
+            Map<String, String> subprocessBpmnMap = BPMNDocumentHelper.getSubprocessBpmnMap(doc, true);
+
+            assertThat(subprocessBpmnMap).hasSize(3);
+            assertThat(subprocessBpmnMap).containsEntry("sp1", expectedSubprocess1XML);
+            assertThat(subprocessBpmnMap).containsEntry("sp2", expectedSubprocess2XML);
+            assertThat(subprocessBpmnMap).containsEntry("sp3", expectedSubprocess3XML);
+
+        } catch (ParserConfigurationException | IOException | SAXException
+                 | ExportFormatException | TransformerException e) {
+            fail();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void getSubprocessBpmnIgnoreEmptySubprocesses() {
+        String originalXML = "<bpmn:definitions>"
+            + "<bpmn><process id=\"p1\">"
+            + "<subProcess id=\"sp1\">"
+            + "<extensionElements/><incoming/><outgoing/>"
+            + "</subProcess>"
+            + "<bpmn:subProcess id=\"sp2\">"
+            + "<incoming/><outgoing/>"
+            + "<task id=\"task1\"/>"
+            + "</bpmn:subProcess>"
+            + "<bpmn:subProcess id=\"sp3\"/>"
+            + "</process></bpmn>"
+            + "<bpmndi:BPMNDiagram><bpmndi:BPMNPlane bpmnElement=\"p1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"sp1\"/>"
+            + "<bpmndi:BPMNShape bpmnElement=\"sp2\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "<bpmndi:BPMNPlane bpmnElement=\"sp2\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"task1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></bpmn:definitions>";
+
+        String expectedSubprocess2XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\">"
+            + "<process id=\"Process_1\">"
+            + "<task id=\"task1\"/>"
+            + "</process>"
+            + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane bpmnElement=\"Process_1\">"
+            + "<bpmndi:BPMNShape bpmnElement=\"task1\"/>"
+            + "</bpmndi:BPMNPlane>"
+            + "</bpmndi:BPMNDiagram></definitions>";
+
+        try {
+            Document doc = BPMNDocumentHelper.getDocument(originalXML);
+            Map<String, String> subprocessBpmnMap = BPMNDocumentHelper.getSubprocessBpmnMap(doc, false);
+
+            assertThat(subprocessBpmnMap).hasSize(1);
+            assertThat(subprocessBpmnMap).containsEntry("sp2", expectedSubprocess2XML);
+
+        } catch (ParserConfigurationException | IOException | SAXException
+                 | ExportFormatException | TransformerException e) {
+            fail();
+            throw new RuntimeException(e);
+        }
+    }
 
 }
