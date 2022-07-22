@@ -37,6 +37,7 @@ import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -81,6 +82,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         UserType user = UserSessionManager.getCurrentUser();
         try {
             hasLinkedSubprocesses = user != null && processService.hasLinkedProcesses(processId, user.getUsername());
+            publishLinkedSubprocesses = isLinkedProcessPublished(processId);
         } catch (UserNotFoundException e) {
             hasLinkedSubprocesses = false;
         }
@@ -100,7 +102,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         try {
             if (publish && publishLinkedSubprocesses) {
                 updateLinkedSubprocessesPublishStatus(processId, List.of(processId));
-            } else if (!publish && hasLinkedSubprocesses) {
+            } else if (!publish && hasLinkedSubprocesses && isLinkedProcessPublished(processId)) {
                 Messagebox.show(getLabel("unpublish_linked_subprocess_models_msg"),
                     Labels.getLabel("plugin_process_unpublish_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                     event -> {
@@ -161,5 +163,21 @@ public class ProcessPublisherViewModel implements LabelSupplier {
             skipList.addAll(updateLinkedSubprocessesPublishStatus(linkedProcessId, skipList));
         }
         return skipList;
+    }
+
+    private boolean isLinkedProcessPublished(int processId)
+        throws UserNotFoundException {
+        UserType user = UserSessionManager.getCurrentUser();
+        if (user == null) {
+            throw new UserNotFoundException("Unable to get current user from the session");
+        }
+
+        Collection<Integer> linkedProcesses = processService
+            .getLinkedProcesses(processId, user.getUsername(), AccessType.OWNER)
+            .values();
+
+        return CollectionUtils.isEmpty(linkedProcesses)
+            || linkedProcesses.stream().anyMatch(p -> processPublishService.isPublished(p));
+
     }
 }

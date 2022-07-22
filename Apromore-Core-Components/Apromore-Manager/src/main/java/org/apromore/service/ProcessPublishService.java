@@ -41,5 +41,7 @@ public interface ProcessPublishService {
 
     boolean isPublished(final String publishId);
 
+    boolean isPublished(final int processId);
+
     ProcessSummaryType getSimpleProcessSummary(final String publishId);
 }

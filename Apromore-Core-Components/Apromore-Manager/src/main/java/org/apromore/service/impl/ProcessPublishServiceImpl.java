@@ -103,6 +103,12 @@ public class ProcessPublishServiceImpl implements ProcessPublishService {
     }
 
     @Override
+    public boolean isPublished(int processId) {
+        ProcessPublish processPublish = processPublishRepo.findByProcessId(processId);
+        return processPublish != null && processPublish.isPublished();
+    }
+
+    @Override
     public ProcessSummaryType getSimpleProcessSummary(String publishId) {
         Process process = processPublishRepo.findProcessByPublishId(publishId);
         if (process == null) return null;
