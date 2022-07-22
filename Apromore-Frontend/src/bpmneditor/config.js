@@ -69,7 +69,8 @@ CONFIG.PANEL_RIGHT_WIDTH    =           200;
 CONFIG.APPNAME =                        'Signavio';
 CONFIG.WEB_URL =                        "explorer";
 
-CONFIG.PDF_EXPORT_URL = '/bpmneditor' + '/editor/pdf';
+CONFIG.PDF_EXPORT_URL = '/bpmneditor' + '/editor/svg2pdf';
+CONFIG.IMG2PDF_EXPORT_URL = '/bpmneditor' + '/editor/pdf';
 CONFIG.BIMP_URL = "http://bimp.cs.ut.ee/uploadsignavio";
 CONFIG.DIAGRAM_PRINTER_URL = "/printsvg";
 CONFIG.LICENSE_URL = "/LICENSE";

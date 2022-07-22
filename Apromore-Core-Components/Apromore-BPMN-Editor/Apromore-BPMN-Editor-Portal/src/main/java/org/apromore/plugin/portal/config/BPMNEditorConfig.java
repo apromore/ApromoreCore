@@ -19,9 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.config;
 
+import javax.servlet.MultipartConfigElement;
 import org.apromore.editor.server.AlternativesRenderer;
+import org.apromore.editor.server.ImageToPdfRenderer;
 import org.apromore.editor.server.TemporaryFileServlet;
 import org.apromore.plugin.portal.bpmneditor.PluginsHandlerServlet;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -30,29 +33,44 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BPMNEditorConfig {
-	
+
 	@Bean
 	public ServletRegistrationBean bpmnServletBean() {
 		ServletRegistrationBean bean = new ServletRegistrationBean(new PluginsHandlerServlet(),
-				"/bpmneditor/bpmneditor_plugins");
+			"/bpmneditor/bpmneditor_plugins");
 		bean.setLoadOnStartup(1);
 		return bean;
 	}
-	
+
+	@Bean
+	public ServletRegistrationBean imageToPdfServlet() {
+		ServletRegistrationBean bean = new ServletRegistrationBean(new ImageToPdfRenderer(),
+			"/bpmneditor/editor/pdf");
+		MultipartConfigElement config = new MultipartConfigElement(
+			"/tmp",
+			1024 * 1024 * 50L,
+			1024 * 1024 * 50L,
+			1024 * 1024 * 50
+		);
+		bean.setMultipartConfig(config);
+		bean.setLoadOnStartup(1);
+		return bean;
+	}
+
 	@Bean
 	public ServletRegistrationBean pdfServlet() {
 		ServletRegistrationBean bean = new ServletRegistrationBean(new AlternativesRenderer(),
-				"/bpmneditor/editor/pdf");
+			"/bpmneditor/editor/svg2pdf");
 		bean.setLoadOnStartup(1);
 		return bean;
 	}
-	
+
 	@Bean
 	public ServletRegistrationBean tmpFileServlet() {
 		ServletRegistrationBean bean = new ServletRegistrationBean(new TemporaryFileServlet(),
-				"/tmp/*");
+			"/tmp/*");
 		bean.setLoadOnStartup(1);
 		return bean;
 	}
-		
+
 }
