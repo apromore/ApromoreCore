@@ -35,3 +35,36 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
 .x-layout-collapsed.x-layout-collapsed-east svg {
     overflow: visible;
 }
+.bpp-table-add-row .action-button {
+    left: 300px !important;
+}
+
+.apromore-toggle-switch  .description__text,
+.apromore-toggle-switch > label
+{
+    display :none  !important;
+}
+
+.apromore-toggle-switch  {
+       position: absolute !important;
+       top: 8px !important;
+       right: 20px !important;
+       padding-bottom: 10px !important;
+}
+.apromore-toggle-switch > label {
+  display: none !important;
+}
+
+.apromore-toggle-switch .bpp-field-wrapper > .bpp-toggle-switch__label  , .apromore-toggle-switch  .bpp-field-description{
+  display :none  !important;
+}
+.apromore-toggle-switch .bpp-toggle-switch__switcher
+{
+    left: 30px !important;
+}
+
+.invalid-message {
+    margin-top: 5px  !important;
+    color: #ff3d3d !important;
+    font-size:12px !important;
+}

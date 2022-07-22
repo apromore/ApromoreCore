@@ -1,0 +1,43 @@
+var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
+  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
+const { default: translate } = require('diagram-js/lib/i18n/translate');
+
+module.exports = function (bpmnFactory, elementRegistry, translate, options) {
+  var getSelectedClause = options.getSelectedClause;
+
+  return entryFactory.selectBox(translate, {
+    id: 'clause-operator-' + options.outgoingElementId,
+    label: translate('gateway.clause.operator.label'),
+    modelProperty: 'operator',
+    selectOptions: createOperatorOptions, 
+    hidden: function(element, node){
+      return !getSelectedClause(element, node);
+    },
+    get: function (_element, _node) {
+      let clause = getSelectedClause(_element, _node);
+      return { operator: clause && clause.operator || 'EQ' };
+    },
+
+    set: function (element, values, _node) {
+      let clause = getSelectedClause(element, _node);
+      return cmdHelper.updateBusinessObject(element, clause, {
+        operator: values.operator || undefined
+      })
+
+    }
+  });
+};
+
+
+function createOperatorOptions() {
+  return [
+    {
+      name: 'Equal to (=)',
+      value: 'EQ'
+    },
+    {
+      name: 'Not equal to (≠)',
+      value: 'NEQ'
+    }
+  ];
+}
