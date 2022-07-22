@@ -5,7 +5,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, show
   var scenarioSpecificationGroup = {
     id: 'scenarioSpecificationGroup',
     label: translate('scenarioGroup.label'),
-    entries: simulationParametersEntries(bpmnFactory, elementRegistry, translate),
+    entries: simulationParametersEntries(element,bpmnFactory, elementRegistry, translate),
     enabled: function(element) {
       return shown(element);
     }

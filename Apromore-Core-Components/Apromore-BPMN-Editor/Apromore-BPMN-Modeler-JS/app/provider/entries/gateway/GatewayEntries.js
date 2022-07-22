@@ -1,20 +1,24 @@
 var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject,
-    entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
-    cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
-    SequenceFlowHelper = require('../../../helper/SequenceFlowHelper');
+  entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
+  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
+  SequenceFlowHelper = require('../../../helper/SequenceFlowHelper');
 
 var validationErrorHelper = require('../../../helper/ValidationErrorHelper');
 var fixNumber = require('../../../utils/Utils').fixNumber;
+var ClauseWrapper = require('./fields/ClauseWrapper');
+var ToggleSwitch = require('./fields/ToggleSwitch');
 
-module.exports = function(bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options, element) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
 
   var entries = [];
 
-  options.gateway && options.gateway.outgoing && options.gateway.outgoing.forEach(function(outgoingElement) {
-    var sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElement.id);
+  let toggle = ToggleSwitch(bpmnFactory, elementRegistry, translate, { groupId: options.groupId, gateway: (options.gateway && options.gateway.outgoing && options.gateway.outgoing) });
 
-    entries.push(entryFactory.textField(translate, {
+  options.gateway && options.gateway.outgoing && options.gateway.outgoing.forEach(function (outgoingElement) {
+    let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElement.id);
+
+    let textFieldDefault = entryFactory.textField(translate, {
       id: 'probability-field-' + outgoingElement.id,
 
       label: outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
@@ -24,27 +28,27 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
       description: translate('gateway.probability'),
       modelProperty: 'probability',
 
-      get: function(_element, _node) {
+      get: function (_element, _node) {
         if (sequenceFlow.rawExecutionProbability) {
-          return { probability : sequenceFlow.rawExecutionProbability };
+          return { probability: sequenceFlow.rawExecutionProbability };
         }
         if (isNaN(sequenceFlow.executionProbability) || sequenceFlow.executionProbability === '') {
-          return { probability : sequenceFlow.executionProbability };
+          return { probability: sequenceFlow.executionProbability };
         }
 
         return { probability: (+(Math.round(sequenceFlow.executionProbability + 'e+4') + 'e-2')).toString() };
       },
 
-      set: function(element, properties, _node) {
+      set: function (_element, properties, _node) {
         var probability = fixNumber(properties.probability);
         sequenceFlow.rawExecutionProbability = probability;
-        return cmdHelper.updateBusinessObject(element, sequenceFlow, {
+        return cmdHelper.updateBusinessObject(_element, sequenceFlow, {
           executionProbability: (isNaN(properties.probability) || properties.probability === '') ? properties.probability :
             (+(Math.round(probability + 'e+2') + 'e-4')).toString()
         });
       },
 
-      validate: function(element, values, _node) {
+      validate: function (_element, values, _node) {
         var validationId = this.id;
 
         var error = validationErrorHelper.validateGatewayProbabilities(bpmnFactory, elementRegistry, translate, {
@@ -62,8 +66,20 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
         return { probability: error.message };
       }
-    }));
+    });
+
+    if (!SequenceFlowHelper.getProbalityByGroup(options.groupId)) {
+      entries.push(textFieldDefault);
+    }
+    else {
+      let title = outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
+        getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
+          outgoingElement.targetRef.id;
+      entries = entries.concat(ClauseWrapper(bpmnFactory, elementRegistry, translate, { groupId: options.groupId, outgoingElementId: outgoingElement.id, title: title, getConditionChecked: toggle.getConditionChecked }, element));
+    }
+
   });
 
+  entries.push(toggle.toggleSwitch);
   return entries;
 };

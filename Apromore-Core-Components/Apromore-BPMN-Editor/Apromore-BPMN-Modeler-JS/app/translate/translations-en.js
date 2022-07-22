@@ -95,5 +95,27 @@ module.exports = {
   'properties': 'Properties',
   'metadata.properties': 'Metadata Properties',
   'attachments': 'Attachments',
-  'logtimetable.name': 'Log timetable'
+  'logtimetable.name': 'Log timetable',
+  'general.categorical.case.attribute.label': 'Categorical case attributes',
+  'general.categorical.case.attribute.entry' : 'Case attribute name',
+  'general.caseAttribute.category.name' :'Name',
+  'general.caseAttribute.category.probality':'Probability',
+  'general.categories' :'Categories',
+  'general.caseAttribute.details':'Categorical case attribute details',
+  'gateway.clause.case.attribute.label':'Case attribute',
+  'gateway.clause.category.label':'Category',
+  'gateway.clause.operator.label':'Operator',
+  'gateway.expression.clauses.label':'Clauses',
+  'gateway.expression.operator.label':'Operator',
+  'gateway.clause.detail':'Clause details',
+  'duplicate.category': 'Duplicate category found',
+  'general.category.sum.error': 'Sum of probabilities must be equal to 100%',
+  'gateway.caseAttribute.notfound.message':'There are no case attributes present for this model. Please define the case attributes in the General tab.',
+  'gateway.categories.notfound.message': 'There are no categories present for this model. Please define the categories in the General tab',
+  'invalid.totalcases {totalcase}':'The total number of cases cannot be greater than {totalcase}',
+  'invalid.probability {element}': '{element} must not be empty',
+  'invalid.empty.category': 'Category must not be empty',
+  'general.category.not.found' :'No category found',
+  'duplicate.variable' : 'Duplicate case attributes found'
+  
 };
