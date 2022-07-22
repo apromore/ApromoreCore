@@ -45,6 +45,25 @@ const logo = '<g transform="translate(${xx yy}) scale(0.2 0.2)">' +
   '<path fill="#FAA624" d="M64.5,21.3L64.5,21.3c0,1,0.8,1.8,1.8,1.9c13.5,0.6,25.8,7.9,32.9,19.5c0.5,0.8,1.6,1.1,2.5,0.7l0,0 c0.9-0.5,1.3-1.6,0.8-2.6c0,0,0-0.1-0.1-0.1C94.7,28,81.2,20.1,66.5,19.4C65.4,19.4,64.5,20.2,64.5,21.3 C64.5,21.2,64.5,21.3,64.5,21.3z"/>' +
 '</g>'
 
+const svg2canvas = (width, height, svgContent, callback) => {
+  const canvas = document.getElementById('ap-editor-img-canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const data = svgContent;
+  const win = window.URL || window.webkitURL || window;
+  const img = new Image();
+  const blob = new Blob([data], { type: 'image/svg+xml' });
+  const url = win.createObjectURL(blob);
+  img.onload = function () {
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    win.revokeObjectURL(url);
+    canvas.toBlob(function (canvasBlob) {
+        callback(canvasBlob);
+    },'image/png');
+  };
+  img.src = url;
+}
+
 export default class File {
 
     constructor(facade){
@@ -62,6 +81,117 @@ export default class File {
     }
 
     async exportPDF() {
+        const me = this;
+        const myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+        myMask.show();
+
+        const resource = location.href;
+
+        // Get the serialized svg image source
+        const result = await this.facade.getSVG2();
+        let svgClone = result.raw;
+        const hyperlinks = result.hyperlinks;
+
+        // Expand margin and insert a logo
+        let xy = null, width, height;
+        const ratio = 2;
+
+        // viewBox regex
+        const viewBoxRegex = /(.*<svg.+?viewBox=")(.+?)(".+)/m;
+        function viewBoxReplacer(match, p1, p2, p3) {
+          xy = p2.split(" ").map(function (x) { return parseInt(x); })
+          width = xy[2] + 40;
+          height = xy[3]  + 60;
+          return p1 + [xy[0] - 20, xy[1] - 40, width, height].join(' ') + p3;
+        }
+
+        // svg width and height regex
+        const whRegex = /(.*<svg.+?width=")(.+?)(".+?height=")(.+?)(".+)/m;
+        function whReplacer(match, p1, p2, p3, p4, p5) {
+          return p1 + (width  * ratio) + p3 + (height * ratio) + p5;
+        }
+
+        // Adjust viewBox, width/height and append logo
+        try {
+            svgClone = svgClone.replace(viewBoxRegex, viewBoxReplacer);
+            if (xy) {
+                svgClone = svgClone.replace(whRegex, whReplacer);
+                svgClone = svgClone.replace(
+                    '</svg>',
+                    logo.replace('${xx yy}', (xy[0]) + " " + (xy[1] - 20)) + '</svg>'
+                );
+            }
+            svgClone = svgClone.replaceAll('<image href=', '<image xlink:href=');
+        }
+        catch (e) {
+            throw new Error ('SVG to PDF error. Error message: ' + e.message);
+        }
+        const xoffset = xy[0] - 20;
+        const yoffset = xy[1] - 40;
+
+        let linkParams = '';
+        // left, bottom, right, top
+        hyperlinks.forEach((hyperlink, index) => {
+            const l = (hyperlink.left - xoffset) * ratio;
+            const b = (height - hyperlink.top + yoffset) * ratio;
+            const r = l + hyperlink.width * 7 * ratio;
+            const t = b + hyperlink.height * 7 * ratio;
+            linkParams = linkParams + (
+                encodeURIComponent(hyperlink.href) + ',' +
+                Math.round(l) + ',' + // left
+                Math.round(b) + ',' + // bottom
+                Math.round(r) + ',' + // right
+                Math.round(t) + // top
+                ((index + 1 === hyperlinks.length) ? '' : ',')
+             )
+        });
+
+        svg2canvas(width * 2, height * 2, svgClone, sendToServer);
+
+        function sendToServer (binaryPng) {
+            // Send the svg to the server.
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            formData.append('data', binaryPng);
+            formData.append('width', width * ratio);
+            formData.append('height', height * ratio);
+            formData.append('hyperlinks', linkParams);
+            xhr.open("POST", CONFIG.IMG2PDF_EXPORT_URL);
+            xhr.responseType = 'blob';
+
+            // Use manual Promise handling as this is an Ajax call with XMLHttpRequest object
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        console.log('test', xhr.response);
+                        // Download pdf from blob
+                        myMask.hide();
+                        var hiddenElement = document.createElement('a');
+                        hiddenElement.href = window.URL.createObjectURL(xhr.response);
+                        hiddenElement.target = '_blank';
+                        hiddenElement.download = 'diagram.pdf';
+                        hiddenElement.click();
+                        window.URL.revokeObjectURL(hiddenElement.href);
+                    }
+                    else {
+                        Log.error('The server responds with an error status code = ' + xhr.status);
+                        return Promise.reject(new Error('The server responds with an error status code = ' + xhr.status));
+                    }
+                }
+            };
+
+            xhr.onerror = function () {
+                Log.error('Request failed due to networking issues');
+                myMask.hide();
+                Ext.Msg.alert(window.Apromore.I18N.Apromore.title, window.Apromore.I18N.File.genPDFFailed);
+                return Promise.reject(new Error('There was no server response due to a networking issue'));
+            };
+
+            xhr.send(formData);
+        }
+    }
+
+    async exportSVG2PDF() {
         var me = this;
         var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
         myMask.show();
@@ -127,9 +257,13 @@ export default class File {
              )
         });
 
+
         // Send the svg to the server.
         var xhr = new XMLHttpRequest();
-        var params = "resource=" + resource + "&data=" + encodeURIComponent(svgClone) +
+        var params = "width=" + width +
+            "&height=" + height +
+            "&resource=" + resource +
+            "&data=" + encodeURIComponent(svgClone) +
             "&format=pdf" + "&hyperlinks=" + linkParams;
         xhr.open("POST", CONFIG.PDF_EXPORT_URL);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
