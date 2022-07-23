@@ -102,11 +102,15 @@ ValidationErrorHelper.validateProcessInstances = function (bpmnFactory, elementR
   } else if (parseInt(processInstances).toString() !== processInstances) {
     message = translate('invalid.notInteger {element}', { element: label });
   } else {
-    if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
-      let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
-      if (processInstances > qbpProcessMaxLimit) {
-        message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
-      }
+    try {
+        if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
+          let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
+          if (processInstances > qbpProcessMaxLimit) {
+            message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
+          }
+        }
+    } catch (e) {
+        // pass
     }
   }
 

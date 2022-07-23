@@ -121,7 +121,7 @@ describe('timetable-tab', function() {
 
       // then
       expect(getInputField('timetable-name').value).to.equal('T1');
-      expect(timetableFieldSelectBox.options[0].textContent).to.equal('T1 [Arrival timetable]');
+      expect(timetableFieldSelectBox.options[0].textContent).to.equal('T1');
       expect(getTimetableByName(bpmnFactory, elementRegistry, 'T1')).to.not.be.undefined;
     }));
 
