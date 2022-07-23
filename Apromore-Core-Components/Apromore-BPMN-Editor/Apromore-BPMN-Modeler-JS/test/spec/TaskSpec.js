@@ -144,7 +144,7 @@ describe('tasks-tab', function() {
       // then
       expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource').value).to.be.equal('qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8');
       expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource')[0].textContent).to.be.equal('R1');
-      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('456.98');
+      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('456.982');
       expect(getSelectBoxByTaskId(task.elementId, 'time-unit').value).to.be.equal('minutes');
     }));
 
@@ -155,7 +155,7 @@ describe('tasks-tab', function() {
       // then
       expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource').value).to.be.equal('qbp_180d89ca-9007-44ca-8058-e0aa5e99acc8');
       expect(getSelectBoxByTaskId('task-' + task.elementId, '-resource')[0].textContent).to.be.equal('R1');
-      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('8.55');
+      expect(getInputFieldByTaskId(task.elementId, 'EXPONENTIAL-arg1').value).to.be.equal('8.547');
       expect(getSelectBoxByTaskId(task.elementId, 'time-unit').value).to.be.equal('hours');
     }));
   });
