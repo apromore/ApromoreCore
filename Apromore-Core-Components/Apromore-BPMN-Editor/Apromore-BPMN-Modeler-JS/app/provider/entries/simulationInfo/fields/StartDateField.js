@@ -1,8 +1,9 @@
+var { format, utcToZonedTime, zonedTimeToUtc } = require("date-fns-tz");
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
     dateTimeField = require('../../DateTimeField'),
     ProcessSimulationHelper = require('../../../../helper/ProcessSimulationHelper');
 
-module.exports = function(bpmnFactory, elementRegistry, translate) {
+module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
@@ -13,9 +14,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
     modelProperty: 'startDate',
 
     get: function(_element, _node) {
-      var dateArr = new Date(processSimulationInfo.startDateTime).toLocaleDateString('en-GB').split('/');
+      const timeZone = config.zoneId || 'UTC';
+      const dateZoned = utcToZonedTime(processSimulationInfo.startDateTime, timeZone);
+      const startDate = format(dateZoned, "yyyy-MM-dd");
+
       return {
-        startDate: dateArr[2] + '-' + dateArr[1] + '-' + dateArr[0]
+        startDate
       };
     },
 
@@ -34,9 +38,12 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
       } else {
         modelStartDateTime = new Date();
       }
+      var startDateTime = modelStartDateTime.toISOString()
+
+      values.startTime
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: modelStartDateTime.toISOString()
+        startDateTime
       });
     }
   });

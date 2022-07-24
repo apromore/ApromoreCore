@@ -2,7 +2,7 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
     dateTimeField = require('../../DateTimeField'),
     ProcessSimulationHelper = require('../../../../helper/ProcessSimulationHelper');
 
-module.exports = function(bpmnFactory, elementRegistry, translate) {
+module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
