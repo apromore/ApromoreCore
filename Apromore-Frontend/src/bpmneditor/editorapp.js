@@ -593,6 +593,7 @@ export default class EditorApp {
           langTag: config.langTag,
           username: '',
           processName: '',
+          zoneId: '',
 		  textRenderer: {
 		    defaultStyle: {
 		      fontSize: 16
@@ -608,6 +609,7 @@ export default class EditorApp {
         }
         options.username = config.username || '';
         options.processName = config.processName || 'untitled';
+        options.zoneId = config.zoneId || 'UTC';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {
