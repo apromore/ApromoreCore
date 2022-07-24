@@ -8,9 +8,7 @@ var ProcessInstancesField = require('./fields/ProcessInstancesField'),
     CurrencySelectBox = require('./fields/CurrencySelectBox'),
     SimulationVariables = require('./fields/SimulationVariables');
 
-
-module.exports = function(element,bpmnFactory, elementRegistry, translate) {
-
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var entries = [];
  
 
@@ -20,8 +18,8 @@ module.exports = function(element,bpmnFactory, elementRegistry, translate) {
   entries = entries.concat(SimulationVariables(element,bpmnFactory, elementRegistry, translate));
 
   entries.push(
-    StartDateField(bpmnFactory, elementRegistry, translate),
-    StartTimeField(bpmnFactory, elementRegistry, translate),
+    StartDateField(bpmnFactory, elementRegistry, translate, config),
+    StartTimeField(bpmnFactory, elementRegistry, translate, config),
     TimeTableField(bpmnFactory, elementRegistry, translate),
     TrimStartField(bpmnFactory, elementRegistry, translate),
     TrimEndField(bpmnFactory, elementRegistry, translate),

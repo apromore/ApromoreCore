@@ -286,6 +286,16 @@ export default class Editor {
                             </text>
                         </a>`
                         yOffset += 18.5;
+                    } else {
+                        const text = caption.text();
+                        if (text && text.length) {
+                            auxContent += `
+                                <text x="0" y="${yOffset}" lineHeight="1.2" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: normal; fill: black;">
+                                    ${text}
+                                </text>
+                            `
+                            yOffset += 18.5;
+                        }
                     }
                 }
             }

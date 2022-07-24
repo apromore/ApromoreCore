@@ -47,7 +47,8 @@
     "sortablejs": "^1.13.0",
     "spectrum-colorpicker2": "^2.0.5",
     "tippy.js": "^4.0.1",
-    "yocto-queue": "^0.1.0"
+    "yocto-queue": "^0.1.0",
+    "terser": "4.8.1"
   },
   "devDependencies": {
     "css-loader": "^5.0.1",
