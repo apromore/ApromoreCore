@@ -1,7 +1,5 @@
 var getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
-
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
-
 var escapeHTML = require('bpmn-js-properties-panel/lib/Utils').escapeHTML;
 
 function ensureNotNull(prop) {

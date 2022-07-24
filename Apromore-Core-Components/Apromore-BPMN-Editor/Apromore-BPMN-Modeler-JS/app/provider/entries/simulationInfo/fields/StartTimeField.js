@@ -1,10 +1,12 @@
+var { format, utcToZonedTime, zonedTimeToUtc } = require("date-fns-tz");
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
     dateTimeField = require('../../DateTimeField'),
     ProcessSimulationHelper = require('../../../../helper/ProcessSimulationHelper');
 
-module.exports = function(bpmnFactory, elementRegistry, translate) {
+module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+  const timeZone = config.zoneId || 'UTC';
 
   return dateTimeField({
     id: 'startTime',
@@ -13,29 +15,31 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
     modelProperty: 'startTime',
 
     get: function(_element, _node) {
+      const dateZoned = utcToZonedTime(processSimulationInfo.startDateTime, timeZone);
+      const startTime = format(dateZoned, "HH:mm");
       return {
-        startTime: new Date(processSimulationInfo.startDateTime).toLocaleTimeString('en-GB').slice(0, 5)
+        startTime
       };
     },
 
     set: function(element, values) {
-      // Get the data model's date time
-      var modelStartDateTime = new Date(processSimulationInfo.startDateTime);
+      const dateZoned = utcToZonedTime(processSimulationInfo.startDateTime, timeZone);
+      const startDate = format(dateZoned, "yyyy-MM-dd");
+      const startTime = format(dateZoned, "HH:mm");
 
-      if (values.startTime && values.startTime !== '') {
+      let newStartDateTime;
 
-        // Get the local date from the data model's date time
-        var localDateArr = modelStartDateTime.toLocaleDateString('en-GB').split('/');
-
-        // Construct the utc date time based on the local date above, and the local time from the UI control
-        modelStartDateTime = new Date(localDateArr[2] + '-' + localDateArr[1] + '-' + localDateArr[0] + 'T' + values.startTime);
-
+      if (values.startTime !== '') {
+        newStartDateTime = startDate + ' ' + values.startTime
+      } else if (startDate !== '') {
+        newStartDateTime = startDate + ' ' + startTime
       } else {
-        modelStartDateTime = new Date();
+        newStartDateTime = format(new Date(), "yyyy-MM-dd HH:mm");
       }
+      let startDateTime = zonedTimeToUtc(newStartDateTime, timeZone).toISOString()
 
       return cmdHelper.updateBusinessObject(element, processSimulationInfo, {
-        startDateTime: modelStartDateTime.toISOString()
+        startDateTime
       });
     }
   });

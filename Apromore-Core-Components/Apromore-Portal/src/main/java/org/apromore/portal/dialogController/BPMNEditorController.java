@@ -29,12 +29,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Set;
+
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.ProcessPublish;
 import org.apromore.dao.model.User;
@@ -243,6 +244,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("langTag", langTag);
       param.put("username", currentUserType.getUsername());
       param.put("processName", editSession.getProcessName());
+      param.put("zoneId", ZoneId.systemDefault().toString());
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
