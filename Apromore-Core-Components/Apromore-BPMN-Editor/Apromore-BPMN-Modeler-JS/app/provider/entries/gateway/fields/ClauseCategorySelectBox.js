@@ -6,8 +6,9 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
 
   var getSelectedClause = options.getSelectedClause;
   var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
+  var isNumeric  = options.isNumeric;
 
-  function createVariableOptions() {
+  function getCategoryOptions() {
     var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
     let selectedCaseAttributeText = getSelectedCaseAttribute();
     let selectedCaseAttribute =  variables && variables.values && variables.values.filter(function (variable) {
@@ -52,9 +53,10 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
     id: 'clause-category-'+options.outgoingElementId,
     label: translate('gateway.clause.category.label'),
     modelProperty: 'variableEnumValue',
-    selectOptions: createVariableOptions,
+    selectOptions: getCategoryOptions,
     hidden: function(element, node){
-      return !getSelectedClause(element, node);
+      let numeric = isNumeric();
+      return numeric || !getSelectedClause(element, node);
     },
     get: function (_element, _node) {
       let clause = getSelectedClause(_element, _node);
@@ -70,7 +72,7 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
   });
 
   function isNotExistCategory(){
-    let filteredCaseAttribute = createVariableOptions();
+    let filteredCaseAttribute = getCategoryOptions();
     if( !filteredCaseAttribute || filteredCaseAttribute.length == 0){
       return translate('gateway.categories.notfound.message')
     } 

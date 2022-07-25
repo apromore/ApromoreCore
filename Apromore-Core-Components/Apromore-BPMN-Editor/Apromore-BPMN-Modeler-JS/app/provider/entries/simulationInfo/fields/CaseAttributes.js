@@ -3,11 +3,13 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
   suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError,
   createValidationError = require('../../../../helper/ValidationErrorHelper').createValidationError;
-var  validationHelper = require('../../../../helper/ValidationErrorHelper');
-
+var validationHelper = require('../../../../helper/ValidationErrorHelper');
+var NumericalDistributionHelper = require('../../../../helper/NumericalDistributionHelper');
 module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
+
+  let currentSelectedCaseAttribute;
 
   var variableEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'variables',
@@ -29,7 +31,9 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
         return {};
       }
 
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId: 'Case Attributes' });
+      suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedVariable.id });
+      currentSelectedCaseAttribute = undefined;
+      NumericalDistributionHelper.storeCurrentCaseAttribute(currentSelectedCaseAttribute);
 
       return cmdHelper.removeElementsFromList(element, variables, 'values',
         null, [selectedVariable]);
@@ -37,13 +41,25 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
     getExtensionElements: function (_element) {
       var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
+      doCaseValidation();
       return variables;
+    },
+
+    onSelectionChange: function (element, node, event, scope) {
+      currentSelectedCaseAttribute = getSelectedVariable(element, node);
+      NumericalDistributionHelper.storeCurrentCaseAttribute(currentSelectedCaseAttribute);
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
       let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
       let selectedVariable = variables.values[idx];
-      option.text = selectedVariable && selectedVariable.name;
+      let type = '';
+      if (selectedVariable && selectedVariable.type == 'ENUM') {
+        type = 'C';
+      } else if (selectedVariable && selectedVariable.type == 'NUMERIC') {
+        type = 'N';
+      }
+      option.text = type + ' - ' + (selectedVariable && selectedVariable.name);
     }
 
   });
@@ -52,17 +68,25 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
     let selection = (variableEntry && variableEntry.getSelected(element, node)) || {
       idx: -1
     };
-
     let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
-    return variables[selection.idx];
+    let selectedVariable = variables[selection.idx];
+    if (!selectedVariable) {
+      selectedVariable = NumericalDistributionHelper.getCurrentCaseAttribute();
+    }
+    return selectedVariable;
   }
-  function doValidation() {
+
+  function getCurrentSelectionCaseAttribute() {
+    return currentSelectedCaseAttribute;
+  }
+
+  function doCaseValidation() {
+
     let errorString = '';
     let validationId = 'Case Attributes';
     let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
-    validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
-    
-     
+    validationHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+
     let errorReturn = validationHelper.validateWithAllVariables(
       bpmnFactory,
       elementRegistry,
@@ -79,6 +103,20 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
     }
 
     return errorString;
+
+  }
+
+  function doValidation() {
+    let validationId = 'Case Attributes';
+    let errorString = validationHelper.getValidationErrorDetails(
+      bpmnFactory,
+      elementRegistry,
+      Object.assign({
+        id: validationId,
+        elementId: (currentSelectedCaseAttribute && currentSelectedCaseAttribute.name) || '',
+      })
+    );
+    return errorString;
   }
 
   entries.push(variableEntry);
@@ -86,6 +124,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
   return {
     entries: entries,
     getSelectedVariable: getSelectedVariable,
-    doValidation: doValidation
+    doValidation: doValidation,
+    getCurrentSelectionCaseAttribute: getCurrentSelectionCaseAttribute
   };
 }

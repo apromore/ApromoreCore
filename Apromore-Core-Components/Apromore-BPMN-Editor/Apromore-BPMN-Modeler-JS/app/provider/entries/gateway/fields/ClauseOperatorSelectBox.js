@@ -1,16 +1,19 @@
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
-  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
+  cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
+  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
 const { default: translate } = require('diagram-js/lib/i18n/translate');
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var getSelectedClause = options.getSelectedClause;
+  var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
+  var isNumeric = options.isNumeric;
 
-  return entryFactory.selectBox(translate, {
+  var clauseOperatorSelectBox = entryFactory.selectBox(translate, {
     id: 'clause-operator-' + options.outgoingElementId,
     label: translate('gateway.clause.operator.label'),
     modelProperty: 'operator',
-    selectOptions: createOperatorOptions, 
-    hidden: function(element, node){
+    selectOptions: getOperatorOptions,
+    hidden: function (element, node) {
       return !getSelectedClause(element, node);
     },
     get: function (_element, _node) {
@@ -26,18 +29,48 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
     }
   });
-};
 
+  function getOperatorOptions() {
+    let opetator = [
+      {
+        name: 'Equal to (=)',
+        value: 'EQ'
+      },
+      {
+        name: 'Not equal to (≠)',
+        value: 'NEQ'
+      }];
 
-function createOperatorOptions() {
-  return [
-    {
-      name: 'Equal to (=)',
-      value: 'EQ'
-    },
-    {
-      name: 'Not equal to (≠)',
-      value: 'NEQ'
+    if (isNumeric()) {
+      let opetatorNumeric = [
+        {
+          name: 'Greater than or equal to (≥)',
+          value: 'GTE'
+        },
+        {
+          name: 'Greater than (>)',
+          value: 'GT'
+        },
+        {
+          name: 'Less than or equal to (≤)',
+          value: 'LTE'
+        },
+        {
+          name: 'Less than (<)',
+          value: 'LT'
+        },
+        {
+          name: 'Between (|…|)',
+          value: 'BTW'
+        }
+      ];
+      opetator = opetator.concat(opetatorNumeric);
     }
-  ];
-}
+    return opetator;
+  }
+
+  return { 
+    clauseOperatorSelectBox: clauseOperatorSelectBox
+    }
+
+};
