@@ -1,7 +1,8 @@
 var elementHelper = require('bpmn-js-properties-panel/lib/helper/ElementHelper'),
   ProcessSimulationHelper = require('./ProcessSimulationHelper'),
   isDigit = require('../utils/Utils').isDigit,
-  isValidNumber = require('../utils/Utils').isValidNumber;
+  isValidNumber = require('../utils/Utils').isValidNumber,
+  CategoryHelper = require('./CategoryHelper');
 
 var ValidationErrorHelper = {};
 
@@ -495,6 +496,7 @@ ValidationErrorHelper.validateVariableName = function (bpmnFactory, elementRegis
 ValidationErrorHelper.validateCategory = function (bpmnFactory, elementRegistry, translate, options) {
   let id = options.id,
     resource = options.resource,
+    elementId = options.elementId,
     name = resource && resource.name,
     probability = resource && resource.assignmentProbability,
     errorMessage;
@@ -515,7 +517,7 @@ ValidationErrorHelper.validateCategory = function (bpmnFactory, elementRegistry,
   if (resource && errorMessage) {
     this.createValidationError(bpmnFactory, elementRegistry, {
       id: id,
-      elementId: id,
+      elementId: elementId,
       message: errorMessage
     });
   }
@@ -526,6 +528,7 @@ ValidationErrorHelper.validateCategory = function (bpmnFactory, elementRegistry,
 ValidationErrorHelper.validateWithAllCategory = function (bpmnFactory, elementRegistry, translate, options) {
   var id = options.id,
     allCategories = options.allCategories,
+    elementId = options.elementId,
     errorMessage;
   if (!allCategories || !allCategories.length) {
     return;
@@ -555,7 +558,7 @@ ValidationErrorHelper.validateWithAllCategory = function (bpmnFactory, elementRe
   if (errorMessage) {
     this.createValidationError(bpmnFactory, elementRegistry, {
       id: id,
-      elementId: id,
+      elementId: elementId,
       message: errorMessage
     });
   }
@@ -566,14 +569,17 @@ ValidationErrorHelper.validateWithAllCategory = function (bpmnFactory, elementRe
 ValidationErrorHelper.validateWithAllVariables = function (bpmnFactory, elementRegistry, translate, options) {
   var id = options.id,
     variables = options.variables,
-    errorMessage;
+    errorMessage,
+    returnMsg;
   if (!variables || !variables.length) {
     return;
   }
   var alreadySeen = {};
+  let duplicateVariable;
   variables.forEach(function (variable) {
     if (alreadySeen[variable.name.trim()]) {
       errorMessage = translate('duplicate.variable');
+      duplicateVariable = variable.name;
     }
     else {
       alreadySeen[variable.name.trim()] = true;
@@ -582,15 +588,100 @@ ValidationErrorHelper.validateWithAllVariables = function (bpmnFactory, elementR
 
 
   if (errorMessage) {
-    this.createValidationError(bpmnFactory, elementRegistry, {
+    ValidationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
       id: id,
-      elementId: id,
+      elementId: duplicateVariable,
       message: errorMessage
     });
+    returnMsg = errorMessage;
   }
-  return { message: errorMessage }
 
+  if (!returnMsg) {
+    variables.forEach(function (selectedVariable) {
+      errorMessage = undefined;
+      if (!(selectedVariable.type && selectedVariable.type === 'NUMERIC' && selectedVariable.numeric)
+        && !(selectedVariable.type && selectedVariable.type === 'ENUM' && selectedVariable.values && selectedVariable.values.length > 0)) {
+        errorMessage = translate('general.cases.not.valid.record {name}', { name: selectedVariable.name });
+        returnMsg = errorMessage;
+        ValidationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+          id: id,
+          elementId: selectedVariable.name,
+          message: errorMessage
+        });
+      } else if (selectedVariable.type && selectedVariable.type === 'ENUM' && selectedVariable.values && selectedVariable.values.length > 0) {
+        if (!returnMsg) {
+          var updatedCategories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
+          if (updatedCategories && !updatedCategories.length > 0) {
+            let errorReturn = ValidationErrorHelper.validateWithAllCategory(
+              bpmnFactory,
+              elementRegistry,
+              translate,
+              Object.assign({
+                id: 'Case Attributes',
+                label: 'Case Attribute',
+                elementId: selectedVariable.name,
+                allCategories: updatedCategories || []
+              })
+            );
+            if (errorReturn && errorReturn.message) {
+              returnMsg += errorReturn.message;
+            }
+          }
+        }
+
+      }
+
+    });
+  }
+  return { message: returnMsg }
 }
 
 
+ValidationErrorHelper.validateGatewayNumValue = function (bpmnFactory, elementRegistry, translate, options) {
+  var id = options.id,
+    label = options.label,
+    elementId = options.elementId,
+    clause = options.clause,
+    variableNumValue = options.variableNumValue,
+    message;
+
+  if (!variableNumValue || variableNumValue.trim() === '') {
+    message = translate('invalid.empty {element}', { element: label });
+  } else if (!isValidNumber(variableNumValue)) {
+    message = translate('invalid.notDigit {element}', { element: label });
+  }
+  if (message) {
+    this.createValidationError(bpmnFactory, elementRegistry, {
+      id: id,
+      elementId: elementId,
+      message: message
+    });
+  }
+
+  return { message: message };
+};
+
+ValidationErrorHelper.suppressValidationErrorWithOnlyId = function (bpmnFactory, elementRegistry, options) {
+  var id = options.id;
+  var validationErrors = ValidationErrorHelper.getErrors(bpmnFactory, elementRegistry);
+  validationErrors.errors = (validationErrors.errors || []).filter(function (error) {
+    var isId = error.id && id ? error.id !== id : true;
+    return isId;
+  });
+};
+
+ValidationErrorHelper.getValidationErrorDetails = function (bpmnFactory, elementRegistry, options) {
+  var id = options.id,
+    elementId = options.elementId;
+
+  var validationErrors = ValidationErrorHelper.getErrors(bpmnFactory, elementRegistry);
+
+  var errors = validationErrors.errors && validationErrors.errors.filter(function (error) {
+    return error.id == id && error.elementId == elementId;
+  });
+
+  if (errors && errors.length > 0) {
+    return errors[0].message;
+  }
+};
 module.exports = ValidationErrorHelper;
