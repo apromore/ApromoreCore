@@ -21,28 +21,46 @@
  */
 package org.apromore.apmlog.filter.rules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Chii Chang
+ * modified: 2022-05-30 by Chii Chang
+ * modified: 2022-06-16 by Chii Chang
+ */
+@Setter
+@Getter
 public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
-    private final Choice choice;
-    private final Inclusion inclusion;
-    private final Section section;
-    private final FilterType filterType;
-    private String key;
-    private Set<RuleValue> primaryValues;
-    private Set<RuleValue> secondaryValues;
-    private final Set<String> primaryStringValues;
-    private Set<String> secondaryStringValues;
+    protected final FilterType filterType;
+    protected final Choice choice;
+    protected Inclusion inclusion;
+    protected Section section;
+    protected String key;
+    protected Set<RuleValue> primaryValues;
+    protected Set<RuleValue> secondaryValues;
+    protected Set<RuleValue> thirdlyValues;
+    protected Set<String> primaryStringValues;
+    protected Set<String> secondaryStringValues;
     protected RuleLevel ruleLevel = RuleLevel.CONTENT;
+    protected String currency = "AUD";
+    protected String costPerspective;
+    protected Map<String, Double> costRates = new HashMap<>();
 
     public LogFilterRuleImpl(Choice choice, Inclusion inclusion, Section section, FilterType filterType,
                              String key,
@@ -69,44 +87,75 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         }
     }
 
-    public void setPrimaryValues(Set<RuleValue> primaryValues) {
-        this.primaryValues = primaryValues;
+    public static LogFilterRuleImpl init(FilterType filterType,
+                                         boolean retain,
+                                         Set<RuleValue> primaryValues) {
+        Choice choice = retain ? Choice.RETAIN : Choice.REMOVE;
+        Section section = FilterType.isCaseFilter(filterType) ? Section.CASE : Section.EVENT;
+        return new LogFilterRuleImpl(choice, Inclusion.ALL_VALUES, section, filterType,
+                "", primaryValues, null);
     }
 
-    public void setSecondaryValues(Set<RuleValue> secondaryValues) {
-        this.secondaryValues = secondaryValues;
+    public LogFilterRuleImpl withCostRates(String currency, String costPerspective, Map<String, Double> costRates) {
+        this.currency = currency;
+        this.costPerspective = costPerspective;
+        this.costRates.clear();
+        this.costRates.putAll(costRates);
+        return this;
     }
 
-    public Choice getChoice() {
-        return choice;
+    public LogFilterRuleImpl includeAll(boolean includeAll) {
+        this.inclusion = includeAll ? Inclusion.ALL_VALUES : Inclusion.ANY_VALUE;
+        return this;
     }
 
-
-    public Inclusion getInclusion() {
-        return inclusion;
-    }
-
-
-    public Section getSection() {
-        return section;
-    }
-
-
-    public FilterType getFilterType() {
-        return filterType;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    @Override
-    public void setKey(String key) {
+    public LogFilterRuleImpl withKey(String key) {
         this.key = key;
+        return this;
     }
 
-    public Set<RuleValue> getPrimaryValues() {
-        return primaryValues;
+    public LogFilterRuleImpl withInclusion(Inclusion inclusion) {
+        this.inclusion = inclusion;
+        return this;
+    }
+
+    public LogFilterRuleImpl withSection(Section section) {
+        this.section = section;
+        return this;
+    }
+
+    public LogFilterRuleImpl withPrimaryValues(Set<RuleValue> primaryValues) {
+        this.primaryValues = primaryValues;
+        updatePrimaryStringValues();
+        return this;
+    }
+
+    public LogFilterRuleImpl withSecondaryValues(Set<RuleValue> secondaryValues) {
+        this.secondaryValues = secondaryValues;
+        updateSecondaryStringValues();
+        return this;
+    }
+
+    private void updatePrimaryStringValues() {
+        primaryStringValues = new HashSet<>();
+
+        for (RuleValue ruleValue : primaryValues) {
+            primaryStringValues.add(ruleValue.getStringValue());
+        }
+    }
+
+    private void updateSecondaryStringValues() {
+        if (secondaryValues != null) {
+            secondaryStringValues = new HashSet<>();
+            for (RuleValue ruleValue : secondaryValues) {
+                secondaryStringValues.add(ruleValue.getStringValue());
+            }
+        }
+    }
+
+    public LogFilterRuleImpl withThirdlyValues(Set<RuleValue> thirdlyValues) {
+        this.thirdlyValues = thirdlyValues;
+        return this;
     }
 
     public Set<String> getPrimaryValuesInString() {
@@ -117,16 +166,17 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return secondaryStringValues;
     }
 
-    public Set<RuleValue> getSecondaryValues() {
-        return secondaryValues;
-    }
+    @Override
+    public Number getPrimaryNumericValueByOperationType(OperationType operationType) {
+        if (primaryValues == null) {
+            return 0;
+        }
 
-    public void setRuleLevel(RuleLevel ruleLevel) {
-        this.ruleLevel = ruleLevel;
-    }
-
-    public RuleLevel getRuleLevel() {
-        return ruleLevel;
+        return primaryValues.stream()
+                .filter(x -> x.getOperationType() == operationType)
+                .map(RuleValue::getDoubleValue)
+                .findFirst()
+                .orElse(0.0);
     }
 
     // ====================================================================================
@@ -151,10 +201,21 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
             }
         }
 
-        LogFilterRule lfr = new LogFilterRuleImpl(
-                choice, inclusion, section, filterType, key, priValCopy, secValCopy);
-        lfr.setRuleLevel(ruleLevel);
-        return lfr;
+        Set<RuleValue> thiValCopy = null;
+        if (thirdlyValues != null) {
+            thiValCopy = new HashSet<>();
+            for (RuleValue ruleValue : thirdlyValues) {
+                thiValCopy.add(ruleValue.clone());
+            }
+        }
+
+        return LogFilterRuleImpl.init(filterType, choice == Choice.RETAIN, priValCopy)
+                .withKey(key)
+                .withInclusion(inclusion)
+                .withSection(section)
+                .withSecondaryValues(secValCopy)
+                .withThirdlyValues(thiValCopy)
+                .withCostRates(currency, costPerspective, new HashMap<>(costRates));
     }
 
     @Override
@@ -166,5 +227,41 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
     public String getFilterRuleDesc() {
         return toString();
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject jsonCriterion = new JSONObject();
+
+        jsonCriterion.put("filtertype", filterType.toString());
+        jsonCriterion.put("choice", choice.toString());
+        jsonCriterion.put("inclusion", inclusion.toString());
+        jsonCriterion.put("section", section.toString());
+        jsonCriterion.put("key", key);
+
+        appendRuleValues(jsonCriterion, primaryValues, "primaryvalues");
+        appendRuleValues(jsonCriterion, secondaryValues, "secondaryvalues");
+        appendRuleValues(jsonCriterion, thirdlyValues, "thirdlyvalues");
+
+        if (costPerspective != null && !costPerspective.isEmpty()) {
+            jsonCriterion.put("costperspective", costPerspective);
+        }
+
+        // ================================================
+        // Cost rate-related values are runtime parameters.
+        // They will not be stored in the JSON.
+        // ================================================
+
+        return jsonCriterion;
+    }
+
+    private void appendRuleValues(JSONObject jsonCriterion, Set<RuleValue> ruleValueSet, String jsonKey) {
+        if (ruleValueSet != null && !ruleValueSet.isEmpty()) {
+            JSONArray jsonArray = new JSONArray();
+            for (RuleValue rv : ruleValueSet) {
+                jsonArray.add(rv.toJSON());
+            }
+            jsonCriterion.put(jsonKey, jsonArray);
+        }
     }
 }

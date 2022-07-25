@@ -52,24 +52,13 @@ public final class BPMNDocumentHelper {
     private static final String BPMN_ELEMENT_PREFIX = "bpmn:";
     private static final String DIAGRAM_ELEMENT_PREFIX = "bpmndi:";
     private static final String BPMN_PLANE_TAG = "BPMNPlane";
-    private static final String BPMN_PROCESS_TAG = "process";
     private static final String BPMN_ELEMENT_ATR = "bpmnElement";
     private static final String MISSING_PROCESS_MSG = "The document does not contain a process";
-    private static final List<String> PROCESS_TAGS = List.of("bpmn:process", BPMN_PROCESS_TAG);
     private static final List<String> INCOMING_TAGS = List.of("bpmn:incoming", "incoming");
     private static final List<String> OUTGOING_TAGS = List.of("bpmn:outgoing", "outgoing");
-    private static final List<String> FLOW_NODE_REF_TAGS = List.of("bpmn:flowNodeRef", "flowNodeRef");
     private static final List<String> EXT_ELEMENTS_TAGS = List.of("bpmn:extensionElements", "extensionElements");
     private static final List<String> DOC_ELEMENTS_TAGS = List.of("bpmn:documentation", "documentation");
 
-    private static final String BASE_SINGLE_PROCESS_BPMN_XML = "<definitions"
-        + " xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n"
-        + " xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\">"
-        + "<process id=\"Process_1\"/>"
-        + "<bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">"
-        + "<bpmndi:BPMNPlane bpmnElement=\"Process_1\"/>"
-        + "</bpmndi:BPMNDiagram>"
-        + "</definitions>";
 
     private BPMNDocumentHelper() {
         throw new IllegalStateException("Utility class");
@@ -138,111 +127,6 @@ public final class BPMNDocumentHelper {
     }
 
     /**
-     * Get the bpmn xml for each subprocess in the document.
-     * @param document a process diagram in document form.
-     * @param includeEmptySubprocesses true to include empty subprocess in the map.
-     * @return a map of subprocess element ids the bpmn xml of the subprocess contents as a diagram.
-     */
-    public static Map<String, String> getSubprocessBpmnMap(Document document, boolean includeEmptySubprocesses)
-        throws ParserConfigurationException, IOException, SAXException, ExportFormatException, TransformerException {
-        Map<String, String> subprocessIdToDiagramMap = new HashMap<>();
-        List<Node> subprocessNodes = getBPMNElements(document, "subProcess");
-
-        for (Node subprocessNode : subprocessNodes) {
-            Document subprocessDoc = getSubprocessDocument(subprocessNode);
-            Node processNode = getBPMNElements(subprocessDoc, BPMN_PROCESS_TAG).get(0);
-            if (!includeEmptySubprocesses && !processNode.hasChildNodes()) {
-                continue; //skip empty subprocesses if check is on
-            }
-
-            //Add subprocess entry to map
-            String subprocessId = subprocessNode.getAttributes().getNamedItem("id").getTextContent();
-            subprocessIdToDiagramMap.put(subprocessId, getXMLString(subprocessDoc));
-        }
-        return subprocessIdToDiagramMap;
-    }
-
-    /**
-     * Get the bpmn xml document a subprocess.
-     * @param subprocessNode a document node representation of the subprocess.
-     * @return A document with the subprocess contents extracted into a separate bpmn model.
-     */
-    private static Document getSubprocessDocument(Node subprocessNode)
-        throws ExportFormatException, ParserConfigurationException, IOException, SAXException {
-        Document originalDocument = subprocessNode.getOwnerDocument();
-        //Build subprocess document
-        Document subprocessDoc = getDocument(BASE_SINGLE_PROCESS_BPMN_XML);
-        addMissingDocumentDefinitions(originalDocument, subprocessDoc);
-
-        // Subprocesses should not have pools so the recreated subprocess bpmn model only
-        // has a single process (no collaborations)
-        Node processNode = getBPMNElements(subprocessDoc, BPMN_PROCESS_TAG).get(0);
-
-        // Add all children elements of the subprocess to the new process.
-        // Ignore the incoming and outgoing tags which connect the subprocess elements to its outer model.
-        NodeList subprocessChildren = subprocessNode.getChildNodes();
-        for (int i = 0; i < subprocessChildren.getLength(); i++) {
-            Node child = subprocessChildren.item(i);
-
-            if (!INCOMING_TAGS.contains(child.getNodeName())
-                && !OUTGOING_TAGS.contains(child.getNodeName())
-                && !EXT_ELEMENTS_TAGS.contains(child.getNodeName())
-            ) {
-                processNode.appendChild(subprocessDoc.importNode(child, true));
-            }
-        }
-
-        //Copy diagram elements for the subprocess into the subprocess document
-        List<String> elementIds = getChildIds(subprocessNode);
-        List<Node> oldDiagramPlanes = getDiagramElements(originalDocument, BPMN_PLANE_TAG);
-
-        if (oldDiagramPlanes.isEmpty()) {
-            throw new ExportFormatException("No BPMNPlane elements found in the original diagram");
-        }
-
-        Node newDiagramPlane = getDiagramElements(subprocessDoc, BPMN_PLANE_TAG).get(0);
-
-        for (Node oldDiagramPlane : oldDiagramPlanes) {
-            for (Node subprocessDiagramChild : convertToList(oldDiagramPlane.getChildNodes())) {
-                Node bpmnElement = subprocessDiagramChild.hasAttributes()
-                    ? subprocessDiagramChild.getAttributes().getNamedItem(BPMN_ELEMENT_ATR) : null;
-                if (bpmnElement != null &&  elementIds.contains(bpmnElement.getTextContent())) {
-                    Node importedNode = subprocessDoc.importNode(subprocessDiagramChild, true);
-                    newDiagramPlane.appendChild(importedNode);
-                }
-            }
-        }
-
-        return subprocessDoc;
-    }
-
-    /**
-     * Get the element ids of all children in the node.
-     * @param node a bpmn element.
-     * @return a list of element ids of children in the node.
-     */
-    private static List<String> getChildIds(Node node) {
-        List<String> ids = new ArrayList<>();
-        NodeList nodeChildren = node.getChildNodes();
-
-        for(int j = 0; j < nodeChildren.getLength(); j++) {
-            if (!EXT_ELEMENTS_TAGS.contains(nodeChildren.item(j).getNodeName())) {
-                Node nodeChild = nodeChildren.item(j);
-                ids.addAll(getChildIds(nodeChild));
-
-                //Add id to list
-                if (nodeChild.hasAttributes()) {
-                    Node id = nodeChild.getAttributes().getNamedItem("id");
-                    if (id != null && !ids.contains(id.getTextContent())) {
-                        ids.add(id.getTextContent());
-                    }
-                }
-            }
-        }
-        return ids;
-    }
-
-    /**
      * Replace the contents of a subprocess with elements in another model.
      * @param subprocessNode the subprocess to replace the contents of.
      * @param linkedProcessDocument the document containing elements to add to the subprocess.
@@ -263,14 +147,16 @@ public final class BPMNDocumentHelper {
             throw new ExportFormatException("One or more linked subprocess models contain pools. Pools in subprocesses are not yet supported.");
         }
 
-        List<Node> processElements = getBPMNElements(linkedProcessDocument, BPMN_PROCESS_TAG);
+        List<Node> processElements = getBPMNElements(linkedProcessDocument, "process");
         if (CollectionUtils.isEmpty(processElements)) {
             throw new ExportFormatException(MISSING_PROCESS_MSG);
         }
 
         Node linkedProcessNode = processElements.get(0);
+        String subprocessId = subprocessNode.hasAttributes()
+            ? subprocessNode.getAttributes().getNamedItem("id").getTextContent() : "";
         //Add bpmn elements
-        Map<String, String> idMap = addNodeChildren(linkedProcessNode, subprocessNode, null);
+        Map<String, String> idMap = addNodeChildren(linkedProcessNode, subprocessNode, subprocessId);
 
         //Replace diagram elements
         String processId = linkedProcessNode.hasAttributes()
@@ -364,49 +250,45 @@ public final class BPMNDocumentHelper {
      * Add the children from one node to another node.
      * @param fromNode the node to get the child nodes from.
      * @param toNode the node to add the child nodes to.
-     * @param elementIdMap a map of existing ids to new ids.
+     * @param parentId the id of the parent node. Used to update the ids of added nodes.
      * @return A map of updated ids with the original id as the key and the updated id as the value.
      */
-    private static Map<String, String> addNodeChildren(Node fromNode, Node toNode, Map<String, String> elementIdMap) {
+    private static Map<String, String> addNodeChildren(Node fromNode, Node toNode, String parentId) {
         Document bpmnDocument = toNode.getOwnerDocument();
         NodeList fromNodeChildren = fromNode.getChildNodes();
-        Map<String, String> idMap = elementIdMap == null ? new HashMap<>() : new HashMap<>(elementIdMap);
+        Map<String, String> idMap = new HashMap<>();
 
-        for (int j = 0; j < fromNodeChildren.getLength(); j++) {
-            Node fromNodeChild = fromNodeChildren.item(j);
-            if (PROCESS_TAGS.contains(fromNode.getNodeName())
-                && EXT_ELEMENTS_TAGS.contains(fromNodeChild.getNodeName())) {
-                continue;
-            }
+        for(int j = 0; j < fromNodeChildren.getLength(); j++) {
+            if (!EXT_ELEMENTS_TAGS.contains(fromNodeChildren.item(j).getNodeName())) {
+                Node fromNodeChild = fromNodeChildren.item(j);
+                Node importedNode = bpmnDocument.importNode(fromNodeChild, false);
+                idMap.putAll(addNodeChildren(fromNodeChild, importedNode, parentId));
 
-            Node importedNode = bpmnDocument.importNode(fromNodeChild, false);
-            idMap.putAll(addNodeChildren(fromNodeChild, importedNode, idMap));
+                //Deal with same ids
+                if (importedNode.hasAttributes()) {
+                    Node[] replaceAttributes = {
+                        importedNode.getAttributes().getNamedItem("id"),
+                        importedNode.getAttributes().getNamedItem("sourceRef"),
+                        importedNode.getAttributes().getNamedItem("targetRef")
+                    };
 
-            //Deal with same ids
-            if (importedNode.hasAttributes()) {
-                Node[] replaceAttributes = {
-                    importedNode.getAttributes().getNamedItem("id"),
-                    importedNode.getAttributes().getNamedItem("sourceRef"),
-                    importedNode.getAttributes().getNamedItem("targetRef")
-                };
+                    for (Node replaceAttribute : replaceAttributes) {
+                        if (replaceAttribute != null) {
+                            String oldId = replaceAttribute.getTextContent();
 
-                for (Node replaceAttribute : replaceAttributes) {
-                    if (replaceAttribute != null) {
-                        String oldId = replaceAttribute.getTextContent();
-
-                        idMap.putIfAbsent(oldId, getRandomId());
-                        replaceAttribute.setTextContent(idMap.get(oldId));
+                            idMap.putIfAbsent(oldId, getRandomId());
+                            replaceAttribute.setTextContent(idMap.get(oldId));
+                        }
                     }
-                }
-            } else if (INCOMING_TAGS.contains(importedNode.getNodeName())
-                || OUTGOING_TAGS.contains(importedNode.getNodeName())
-                || FLOW_NODE_REF_TAGS.contains(importedNode.getNodeName())) {
-                String oldId = importedNode.getTextContent();
+                } else if (INCOMING_TAGS.contains(importedNode.getNodeName())
+                    || OUTGOING_TAGS.contains(importedNode.getNodeName())) {
+                    String oldId = importedNode.getTextContent();
 
-                idMap.putIfAbsent(oldId, getRandomId());
-                importedNode.setTextContent(idMap.get(oldId));
+                    idMap.putIfAbsent(oldId, getRandomId());
+                    importedNode.setTextContent(idMap.get(oldId));
+                }
+                toNode.appendChild(importedNode);
             }
-            toNode.appendChild(importedNode);
         }
         return idMap;
     }

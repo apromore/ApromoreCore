@@ -372,6 +372,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     user.getMembership().setDateCreated(user.getDateCreated());
 
+
     Role assignedRole=null;
     if(assignViewerRole){
       assignedRole = roleRepo.findByName(ROLE_VIEWER);

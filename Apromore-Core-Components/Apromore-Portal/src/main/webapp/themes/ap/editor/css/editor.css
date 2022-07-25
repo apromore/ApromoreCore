@@ -71,7 +71,10 @@
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
-    width: calc(100% - 260px);
+    width: calc(100% - var(--ap-header-logo-width) - 400px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--ap-c-asset-title);
     z-index: var(--ap-z-editor-window);
 }
@@ -475,10 +478,6 @@
   padding: 4px;
 }
 
-.djs-overlay.hidden {
-    display: none;
-}
-
 .access-type-viewer .djs-overlay-aux {
   pointer-events: none;
 }
@@ -507,8 +506,4 @@
     color: blue;
     text-decoration: underline;
     cursor: pointer;
-}
-
-.ap-editor-cpicker-wrapper .sp-palette-row {
-    width: 180px;
 }

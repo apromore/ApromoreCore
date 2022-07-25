@@ -18,11 +18,6 @@
 package org.apromore.plugin.parquet.export.service;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apromore.apmlog.csv.StringValidation;
@@ -35,6 +30,12 @@ import org.apromore.plugin.parquet.export.core.data.LogExportItem;
 import org.apromore.plugin.parquet.export.util.Util;
 import org.zkoss.json.JSONArray;
 import org.zkoss.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractParquetProducer {
 
@@ -90,9 +91,6 @@ public abstract class AbstractParquetProducer {
 
 
         String display = code.replaceAll("[^A-Za-z0-9_]+", "");
-
-        if (display.toLowerCase().equals("group"))
-            display = "resource_group";
 
         if (display.isEmpty())
             display = Arrays.toString(key.getBytes()).replaceAll("[^A-Za-z0-9_]+", "");

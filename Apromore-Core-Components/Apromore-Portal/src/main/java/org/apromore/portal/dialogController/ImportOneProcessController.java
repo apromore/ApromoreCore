@@ -29,8 +29,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.UserNotFoundException;
@@ -46,7 +44,6 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.apromore.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.apromore.processmining.plugins.bpmn.plugins.BpmnLayoutPlugin;
-import org.apromore.service.helper.BPMNDocumentHelper;
 import org.apromore.util.StringUtil;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
@@ -158,7 +155,9 @@ public class ImportOneProcessController extends BaseController {
           domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
 
       //Import subprocesses as linked subprocesses
-      importAndLinkSubprocesses(importResult.getProcessSummary().getId(), bpmnText, domain, owner, folderId);
+      BPMNDiagram bpmnDiagram = BPMNDiagramFactory.newDiagramFromProcessText(bpmnText);
+      importLinkedSubProcesses(importResult.getProcessSummary(), bpmnDiagram, domain, owner,
+          this.processNameTb.getValue(), folderId);
 
       this.mainC.showPluginMessages(importResult.getMessage());
       this.importProcessesC.getImportedList().add(this);
@@ -173,53 +172,67 @@ public class ImportOneProcessController extends BaseController {
     }
   }
 
-  private void importAndLinkSubprocesses(final int processId, final String bpmnXml, final String domain,
-                                         final String owner, final int folderId) throws Exception {
-    Map<String, String> subprocessElementIdToBPMNMap = BPMNDocumentHelper
-        .getSubprocessBpmnMap(BPMNDocumentHelper.getDocument(bpmnXml), false);
-    Map<String, Integer> subprocessElementIdToProcessIdMap = new HashMap<>();
+  private void importLinkedSubProcesses(final ProcessSummaryType importedModel, final BPMNDiagram bpmnDiagram,
+                                        final String domain, final String owner, final String name, final int folderId)
+      throws Exception {
 
-    int count = 0;
-    for (Map.Entry<String, String> subprocessBPMNEntry : subprocessElementIdToBPMNMap.entrySet()) {
-      String subprocessElementId = subprocessBPMNEntry.getKey();
-      String subprocessBPMN = subprocessBPMNEntry.getValue();
-      String subprocessName = this.processNameTb.getValue() + "_subprocess" + ++count;
+    SubProcessItem topSubProcessItem = SubProcessItem.buildSubProcessTree(bpmnDiagram, name);
+    topSubProcessItem.setProcessSummaryType(importedModel);
 
-      ProcessSummaryType subprocessModel = importOneProcess(subprocessBPMN, domain,  owner, subprocessName, folderId);
-      subprocessElementIdToProcessIdMap.put(subprocessElementId, subprocessModel.getId());
+    importSubProcesses(topSubProcessItem, domain, owner, folderId);
 
-      //Link to original model
-      mainC.getProcessService().linkSubprocess(processId, subprocessElementId, subprocessModel.getId(), username);
-    }
+    linkSubProcesses(topSubProcessItem);
+  }
 
-    // Add Links in new subprocess models (must be done after all models are created)
-    for (Map.Entry<String, String> subprocessBPMNEntry : subprocessElementIdToBPMNMap.entrySet()) {
-      String subprocessElementId = subprocessBPMNEntry.getKey();
-      String subprocessBPMN = subprocessBPMNEntry.getValue();
-
-      for (String innerSubprocess : BPMNDocumentHelper.getSubprocessBpmnMap(
-          BPMNDocumentHelper.getDocument(subprocessBPMN), false).keySet()) {
-        mainC.getProcessService().linkSubprocess(
-            subprocessElementIdToProcessIdMap.get(subprocessElementId),
-            innerSubprocess,
-            subprocessElementIdToProcessIdMap.get(innerSubprocess),
-            username);
+  private void importSubProcesses(SubProcessItem item, String domain, String owner,
+                                  int folderId) throws Exception {
+    for (SubProcessItem subItem : item.getChildren()) {
+      BPMNDiagram subProcessDiagram = subItem.getDiagram();
+      if (!subProcessDiagram.getNodes().isEmpty()) {
+        subItem.setProcessSummaryType(importOneSubProcess(subProcessDiagram, domain, owner,
+            subItem.getName(), folderId));
+        importSubProcesses(subItem, domain, owner, folderId);
       }
     }
   }
 
-  private ProcessSummaryType importOneProcess(final String bpmnXml, final String domain, final String owner,
-                                              final String name, final int folderId) throws Exception {
+  private ProcessSummaryType importOneSubProcess(final BPMNDiagram bpmnDiagram, final String domain, final String owner,
+                                                 final String name, final int folderId)
+      throws Exception {
+    String emptyModelXML = "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<bpmn:definitions xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+        + "xmlns:bpmn='http://www.omg.org/spec/BPMN/20100524/MODEL' "
+        + "xmlns:bpmndi='http://www.omg.org/spec/BPMN/20100524/DI' "
+        + "xmlns:dc='http://www.omg.org/spec/DD/20100524/DC' "
+        + "targetNamespace='http://bpmn.io/schema/bpmn' " + "id='Definitions_1'>"
+        + "<bpmn:process id='Process_1' isExecutable='false'/>"
+        + "<bpmndi:BPMNDiagram id='BPMNDiagram_1'>"
+        + "<bpmndi:BPMNPlane id='BPMNPlane_1' bpmnElement='Process_1'/>"
+        + "</bpmndi:BPMNDiagram>"
+        + "</bpmn:definitions>";
+
+    String bpmnText = bpmnDiagram.getNodes().isEmpty() ? emptyModelXML : BpmnLayoutPlugin.addLayout(bpmnDiagram, "");
     ImportProcessResultType importResult = mainC.getManagerService().importProcess(owner,
         folderId, this.nativeType, name, "1.0",
-        new ByteArrayInputStream(bpmnXml.getBytes(StandardCharsets.UTF_8)),
+        new ByteArrayInputStream(bpmnText.getBytes(StandardCharsets.UTF_8)),
         domain, "", Utils.getDateTime(), Utils.getDateTime(), isPublic);
 
-    //Display process
+    //Display subprocess
     this.importProcessesC.getImportedList().add(this);
     this.mainC.displayNewProcess(importResult.getProcessSummary());
     this.importProcessesC.deleteFromToBeImported(this);
     return importResult.getProcessSummary();
+  }
+
+  private void linkSubProcesses(final SubProcessItem item) throws UserNotFoundException, CircularReferenceException {
+    for (SubProcessItem subItem : item.getChildren()) {
+      if (subItem.getProcessSummaryType() != null) {
+        mainC.getProcessService().linkSubprocess(item.getProcessSummaryType().getId(),
+            subItem.getSubProcessNode().getId().toString(),
+            subItem.getProcessSummaryType().getId(), username);
+        linkSubProcesses(subItem);
+      }
+    }
   }
 
   public Window getImportOneProcessWindow() {

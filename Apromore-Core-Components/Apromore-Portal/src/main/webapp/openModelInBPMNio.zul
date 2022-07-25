@@ -412,7 +412,6 @@
 
   <n:div id="editorcanvas"></n:div>
   <n:div id="js-properties-panel"></n:div>
-  <n:canvas id="ap-editor-img-canvas" style="display:none;"></n:canvas>
 
   <z:popup width="330px" id="popup">
     <z:hbox align="center" pack="center" hflex="1" spacing="5px">

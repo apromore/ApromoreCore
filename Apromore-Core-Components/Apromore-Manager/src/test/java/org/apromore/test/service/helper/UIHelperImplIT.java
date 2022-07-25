@@ -77,7 +77,7 @@ class UIHelperImplIT {
     void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
-        SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "testUserRowGuid", "", "", "");
+        SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "testUserRowGuid", "", "", "", false);
 
         assertThat(summariesType, notNullValue());
         assertThat(summariesType.getSummary().size(), greaterThan(0));

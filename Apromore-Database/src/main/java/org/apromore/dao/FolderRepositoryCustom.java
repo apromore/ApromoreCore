@@ -45,7 +45,7 @@ public interface FolderRepositoryCustom {
      * @param conditions  a fragment of JPAQL
      * @return the list folders in the given folder, visible to the given userId, satisfying the conditions
      */
-    List<Folder> findSubfolders(int parentFolderId, String userId, String conditions);
+    List<Folder> findSubfolders(int parentFolderId, String userId, String conditions, boolean global);
 
    
 }

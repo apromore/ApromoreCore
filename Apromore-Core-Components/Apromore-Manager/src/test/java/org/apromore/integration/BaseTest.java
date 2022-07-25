@@ -21,6 +21,13 @@
  */
 package org.apromore.integration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Storage;
+import org.apromore.dao.model.User;
 import org.apromore.integration.config.TestConfig;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,7 +37,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes  = { TestConfig.class})
 public abstract class BaseTest {
-    
-   
+
+    public Log createLog(User user, Folder folder, Storage storage) {
+        Log log = new Log();
+        log.setName("LogName");
+        log.setDomain("Domain");
+        log.setRanking("Ranking");
+        log.setFilePath("FileTimestamp");
+        log.setUser(user);
+        log.setFolder(folder);
+        log.setStorage(storage);
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String now = dateFormat.format(new Date());
+        log.setCreateDate(now);
+        return log;
+    }
 
 }

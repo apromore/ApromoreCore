@@ -309,7 +309,9 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         if (storedSchemaMapping != null) {
             tempLogMetaData.setCaseIdPos(storedSchemaMapping.getCaseIdPos());
             tempLogMetaData.setActivityPos(storedSchemaMapping.getActivityPos());
+            tempLogMetaData.setEndTimestampFormat(storedSchemaMapping.getEndTimestampFormat());
             tempLogMetaData.setEndTimestampPos(storedSchemaMapping.getEndTimestampPos());
+            tempLogMetaData.setStartTimestampFormat(storedSchemaMapping.getStartTimestampFormat());
             tempLogMetaData.setStartTimestampPos(storedSchemaMapping.getStartTimestampPos());
             tempLogMetaData.setResourcePos(storedSchemaMapping.getResourcePos());
             tempLogMetaData.setRolePos(storedSchemaMapping.getRolePos());
@@ -325,20 +327,10 @@ public class LogImporterController extends SelectorComposer<Window> implements C
             }
             tempLogMetaData.getOtherTimestamps().clear();
             tempLogMetaData.getOtherTimestamps().putAll(storedSchemaMapping.getOtherTimestamps());
-
-            // Overwrite data type position only when it exists
-            if (storedSchemaMapping.getIntegerAttributesPos() != null) {
-                tempLogMetaData.setIntegerAttributesPos(storedSchemaMapping.getIntegerAttributesPos());
-            }
-            if (storedSchemaMapping.getDoubleAttributesPos() != null) {
-                tempLogMetaData.setDoubleAttributesPos(storedSchemaMapping.getDoubleAttributesPos());
-            }
-            if (storedSchemaMapping.getStringAttributesPos() != null) {
-                tempLogMetaData.setStringAttributesPos(storedSchemaMapping.getStringAttributesPos());
-            }
-            if (storedSchemaMapping.getTimestampAttributesPos() != null) {
-                tempLogMetaData.setTimestampAttributesPos(storedSchemaMapping.getTimestampAttributesPos());
-            }
+            tempLogMetaData.setIntegerAttributesPos(storedSchemaMapping.getIntegerAttributesPos());
+            tempLogMetaData.setDoubleAttributesPos(storedSchemaMapping.getDoubleAttributesPos());
+            tempLogMetaData.setStringAttributesPos(storedSchemaMapping.getStringAttributesPos());
+            tempLogMetaData.setTimestampAttributesPos(storedSchemaMapping.getTimestampAttributesPos());
         }
     }
 
@@ -524,7 +516,7 @@ public class LogImporterController extends SelectorComposer<Window> implements C
         return null;
     }
 
-    protected LogMetaData getLogMetaData() {
+    public LogMetaData getLogMetaData() {
         return logMetaData;
     }
 

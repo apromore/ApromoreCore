@@ -165,6 +165,8 @@ public class SimpleSearchController {
         SecurityService securityService = (SecurityService) SpringUtil.getBean("securityService");
         UserService userService = (UserService) SpringUtil.getBean("userService");
         String query = previousSearchesCB.getValue();
+        boolean global = true;
+
         if (query == null || query.length() == 0) {
             clearSearches();
             mainController.reloadSummaries();
@@ -181,7 +183,7 @@ public class SimpleSearchController {
         int folderId = (folder == null) ? 0 : folder.getId();
         try {
             SummariesType summaries =
-                    readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query);
+                    readProcessSummaries(folderId, UserSessionManager.getCurrentUser().getId(), query, global);
             int nbAnswers = summaries.getSummary().size();
             mainController.displayMessage(
                     "Search returned " + nbAnswers + ((nbAnswers == 1) ? " result." : " results."));
@@ -196,11 +198,11 @@ public class SimpleSearchController {
         } catch (Exception e) {
             LOGGER.error("Failed search", e);
             // Not require to show error message here
-        }
+            }
     }
 
     private SummariesType readProcessSummaries(Integer folderId, String userRowGuid,
-                                               String searchCriteria) throws Exception {
+                                               String searchCriteria, boolean global) throws Exception {
         UserInterfaceHelper uiHelper = (UserInterfaceHelper) SpringUtil.getBean("uiHelper");
         if (uiHelper == null) {
             throw new Exception("User interface helper");
@@ -209,12 +211,17 @@ public class SimpleSearchController {
         SummariesType processSummaries = null;
 
         try {
-            processSummaries = uiHelper.buildProcessSummaryList(folderId, userRowGuid,
-                    SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "p", "processId",
-                            "process"), // processes
-                    SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "l", "logId", "log"), // logs
-                    SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "f", "folderId",
-                            "folder")); // folders
+            processSummaries = uiHelper.buildProcessSummaryList(
+                folderId,
+                userRowGuid,
+                SearchExpressionBuilder.buildSimpleSearchConditions(
+                    searchCriteria, "p", "processId", "process"), // processes
+                SearchExpressionBuilder.buildSimpleSearchConditions(
+                    searchCriteria, "l", "logId","log"), // logs
+                SearchExpressionBuilder.buildSimpleSearchConditions(
+                    searchCriteria, "f", "folderId","folder"), // folders
+                global
+            );
 
         } catch (UnsupportedEncodingException usee) {
             throw new Exception("Failed to get Process Summaries: " + usee.toString(), usee);

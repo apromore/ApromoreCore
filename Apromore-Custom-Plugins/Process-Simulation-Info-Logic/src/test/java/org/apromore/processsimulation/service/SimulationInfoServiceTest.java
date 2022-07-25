@@ -27,10 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,16 +41,19 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.apromore.calendar.builder.CalendarModelBuilder;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.service.CustomCalendarService;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
@@ -58,6 +64,8 @@ import org.apromore.processsimulation.model.ProcessSimulationInfo;
 import org.apromore.processsimulation.model.Resource;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
+import org.apromore.service.UserMetadataService;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -77,11 +85,14 @@ class SimulationInfoServiceTest {
     @Mock
     private CustomCalendarService calendarService;
 
+    @Mock
+    private UserMetadataService userMetadataService;
+
     @BeforeEach
-    void setup() {
+    void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
 
-        simulationInfoService = new SimulationInfoService(config, calendarService);
+        simulationInfoService = new SimulationInfoService(config, calendarService,userMetadataService);
 
         when(config.isEnable()).thenReturn(true);
         when(config.getDefaultCurrency()).thenReturn("EUR");
@@ -95,6 +106,10 @@ class SimulationInfoServiceTest {
         when(config.getDefaultResourceId()).thenReturn("A_DEFAULT_RESOURCE_ID");
         when(config.getDefaultResourceIdPrefix()).thenReturn("QBP_");
         when(config.getDefaultResourceName()).thenReturn("The default resource name");
+        when(config.getDefaultMaxProcessInstances()).thenReturn(25000L);
+
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Collections.emptySet());
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
@@ -112,7 +127,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
     }
 
     @Test
@@ -133,7 +148,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -156,7 +171,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, true);
     }
@@ -181,7 +196,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertTaskInfo(processSimulationInfo, false);
     }
@@ -197,13 +212,13 @@ class SimulationInfoServiceTest {
         processSimulationInfo.getTasks().forEach(element -> {
             switch (element.getElementId()) {
                 case "a":
-                    assertEquals("10.10", element.getDistributionDuration().getArg1());
+                    assertEquals(10.10, element.getDistributionDuration().getArg1());
                     break;
                 case "b":
-                    assertEquals("11.11", element.getDistributionDuration().getArg1());
+                    assertEquals(11.11, element.getDistributionDuration().getArg1());
                     break;
                 case "c":
-                    assertEquals("12.12", element.getDistributionDuration().getArg1());
+                    assertEquals(12.12, element.getDistributionDuration().getArg1());
                     break;
                 default:
                     fail("Unrecognised task identifier");
@@ -217,8 +232,8 @@ class SimulationInfoServiceTest {
                 assertTrue(element.getResourceIds().get(0)
                     .matches("QBP_[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"));
             }
-            assertNull(element.getDistributionDuration().getArg2());
-            assertNull(element.getDistributionDuration().getMean());
+            assertEquals(0.0, element.getDistributionDuration().getArg2());
+            assertEquals(0.0, element.getDistributionDuration().getMean());
             assertEquals(TimeUnit.SECONDS, element.getDistributionDuration().getTimeUnit());
             assertEquals(DistributionType.EXPONENTIAL, element.getDistributionDuration().getType());
         });
@@ -234,7 +249,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(1, processSimulationInfo.getTimetables().size());
@@ -273,7 +288,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("6624.00", processSimulationInfo);
+        assertGeneralSimulationInfo(6624.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getTimetables());
         assertEquals(2, processSimulationInfo.getTimetables().size());
@@ -330,6 +345,116 @@ class SimulationInfoServiceTest {
     }
 
     @Test
+    void should_successfully_derive_resource_with_no_cost_info() {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Collections.emptySet());
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+
+    }
+
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_not_parsable() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("dummy");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+    }
+
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_no_cost_content() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent("[{\"perspective\":\"role\",\"currency\":\"AUD\"}]");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+    }
+
+    @Test
+    void should_successfully_derive_resource_info_with_costing_but_null_data() throws JsonProcessingException {
+        // given
+        SimulationData mockSimulationData = mockBasicSimulationData();
+        when(mockSimulationData.getResourceCount()).thenReturn(27L);
+
+        Map<String, Integer> mockRoleToResourceCounts = Map.of(
+            "Role_1", 5,
+            "Role_2", 10,
+            "Role_3", 15
+        );
+        when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
+
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent(null);
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
+        ProcessSimulationInfo processSimulationInfo =
+            simulationInfoService.transformToSimulationInfo(mockSimulationData);
+        assertNotNull(processSimulationInfo.getResources());
+
+        Optional<Resource> role1 =
+            processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
+                .findFirst();
+        assertResourceCostPerhour("Role_1", 0, role1);
+    }
+
+    @Test
     void should_successfully_derive_resource_info() {
         // given
         SimulationData mockSimulationData = mockBasicSimulationData();
@@ -342,12 +467,19 @@ class SimulationInfoServiceTest {
         );
         when(mockSimulationData.getResourceCountsByRole()).thenReturn(mockRoleToResourceCounts);
 
+        Usermetadata usermetadata = new Usermetadata();
+        usermetadata.setContent(
+            "[{\"perspective\":\"role\",\"currency\":\"AUD\""
+                + ",\"costRates\":{\"Role_1\":10.0,\"Role_2\":20.0,\"Role_3\":30.0}}]");
+        when(userMetadataService.getUserMetadataByLog(anyInt(), eq(UserMetadataTypeEnum.COST_TABLE))).thenReturn(
+            Set.of(usermetadata));
+
         // when
         ProcessSimulationInfo processSimulationInfo =
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertNotNull(processSimulationInfo.getResources());
         assertEquals(3, processSimulationInfo.getResources().size());
@@ -356,16 +488,19 @@ class SimulationInfoServiceTest {
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_1"))
                 .findFirst();
         assertResource("Role_1", 5, "A_CUSTOM_TIMETABLE_ID", role1);
+        assertResourceCostPerhour("Role_1", 10, role1);
 
         Optional<Resource> role2 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_2"))
                 .findFirst();
         assertResource("Role_2", 10, "A_CUSTOM_TIMETABLE_ID", role2);
+        assertResourceCostPerhour("Role_2", 20, role2);
 
         Optional<Resource> role3 =
             processSimulationInfo.getResources().stream().filter(resource -> resource.getName().equals("Role_3"))
                 .findFirst();
         assertResource("Role_3", 15, "A_CUSTOM_TIMETABLE_ID", role3);
+        assertResourceCostPerhour("Role_3", 30, role3);
     }
 
     private void assertResource(
@@ -377,6 +512,15 @@ class SimulationInfoServiceTest {
         assertEquals(expectedResourceName, actualRole.get().getName());
         assertEquals(expectedResourceCount, actualRole.get().getTotalAmount());
         assertEquals(expectedTimetableId, actualRole.get().getTimetableId());
+    }
+
+    private void assertResourceCostPerhour(
+        final String expectedResourceName,
+        final double expectedResourceCost,
+        final Optional<Resource> actualRole) {
+        assertTrue(actualRole.isPresent());
+        assertEquals(expectedResourceName, actualRole.get().getName());
+        assertEquals(expectedResourceCost, actualRole.get().getCostPerHour());
     }
 
     @Test
@@ -391,7 +535,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertEquals(1, processSimulationInfo.getResources().size());
         assertEquals("QBP_A_DEFAULT_RESOURCE_ID", processSimulationInfo.getResources().get(0).getId());
@@ -442,7 +586,7 @@ class SimulationInfoServiceTest {
             simulationInfoService.transformToSimulationInfo(mockSimulationData);
 
         // then
-        assertGeneralSimulationInfo("26784.00", processSimulationInfo);
+        assertGeneralSimulationInfo(26784.00, processSimulationInfo);
 
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e1", "e2", "e3", "e4", "e5"));
         assertGatewayProbabilitiesAddTo100Percent(processSimulationInfo, List.of("e6", "e7", "e8"));
@@ -462,14 +606,14 @@ class SimulationInfoServiceTest {
                 .reduce(0.0D, Double::sum));
     }
 
-    private void assertGeneralSimulationInfo(String expectedArrivalRate,
+    private void assertGeneralSimulationInfo(Double expectedArrivalRate,
                                              final ProcessSimulationInfo actualProcessSimulationInfo) {
         assertNotNull(actualProcessSimulationInfo.getId());
         assertNotNull(actualProcessSimulationInfo.getErrors());
         assertEquals(100L, actualProcessSimulationInfo.getProcessInstances());
         assertEquals(expectedArrivalRate, actualProcessSimulationInfo.getArrivalRateDistribution().getArg1());
-        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
-        assertNull(actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getArg2());
+        assertEquals(0.0, actualProcessSimulationInfo.getArrivalRateDistribution().getMean());
         assertEquals(TimeUnit.HOURS, actualProcessSimulationInfo.getArrivalRateDistribution().getTimeUnit());
         assertEquals(DistributionType.EXPONENTIAL, actualProcessSimulationInfo.getArrivalRateDistribution().getType());
         assertEquals(Instant.ofEpochMilli(1577797200000L).toString(),
@@ -483,6 +627,7 @@ class SimulationInfoServiceTest {
         when(mockSimulationData.getCaseCount()).thenReturn(100L);
         when(mockSimulationData.getStartTime()).thenReturn(1577797200000L);
         when(mockSimulationData.getEndTime()).thenReturn(1580475600000L);
+
 
         CalendarModel mockCalendarModel = new CalendarModelBuilder().withAllDayAllTime().build();
         mockCalendarModel.setName(SimulationData.DEFAULT_CALENDAR_NAME);
@@ -801,9 +946,9 @@ class SimulationInfoServiceTest {
 
         // then
         assertEquals(expectedTimeUnit, simulationInfo.getArrivalRateDistribution().getTimeUnit());
-        String interArrivalTime = BigDecimal.valueOf(
+        Double interArrivalTime = BigDecimal.valueOf(
                 simulationInfoService.getInterArrivalTime(simulationData) / TimeUnit.SECONDS.getNumberOfMilliseconds())
-            .setScale(2, RoundingMode.HALF_UP).toString();
+            .setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         assertEquals(interArrivalTime, simulationInfo.getArrivalRateDistribution().getArg1());
     }
@@ -824,9 +969,9 @@ class SimulationInfoServiceTest {
         Node arrivalDistributionXmlNode = TestHelper.getProcessSimulationInfo(bpmnXmlString,
             "/definitions/process/extensionElements/processSimulationInfo/arrivalRateDistribution");
         NamedNodeMap arrivalRateDistributionAttrMap = arrivalDistributionXmlNode.getAttributes();
-        assertEquals("26784.00", arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue());
-        assertNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
-        assertNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
+        assertEquals(26784.00, Double.parseDouble(arrivalRateDistributionAttrMap.getNamedItem("arg1").getNodeValue()));
+        assertNotNull(arrivalRateDistributionAttrMap.getNamedItem("arg2"));
+        assertNotNull(arrivalRateDistributionAttrMap.getNamedItem("mean"));
         assertEquals(DistributionType.EXPONENTIAL.toString(),
             arrivalRateDistributionAttrMap.getNamedItem("type").getNodeValue());
 
@@ -863,8 +1008,8 @@ class SimulationInfoServiceTest {
         assertEquals(elementId, elementNode.getAttributes().getNamedItem("elementId").getNodeValue());
         assertEquals(distributionType, elementNode.getFirstChild().getAttributes().getNamedItem("type").getNodeValue());
         assertEquals(arg1, elementNode.getFirstChild().getAttributes().getNamedItem("arg1").getNodeValue());
-        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
-        assertNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
+        assertNotNull(elementNode.getFirstChild().getAttributes().getNamedItem("arg2"));
+        assertNotNull(elementNode.getFirstChild().getAttributes().getNamedItem("mean"));
         assertEquals(timeUnit, elementNode.getFirstChild().getFirstChild().getFirstChild().getNodeValue());
 
     }

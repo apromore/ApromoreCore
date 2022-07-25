@@ -21,6 +21,9 @@
 
 package org.apromore.processsimulation.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,9 +47,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apromore.calendar.model.CalendarModel;
 import org.apromore.calendar.model.WorkDayModel;
 import org.apromore.calendar.service.CalendarService;
+import org.apromore.dao.model.Usermetadata;
 import org.apromore.processsimulation.config.SimulationInfoConfig;
 import org.apromore.processsimulation.dto.EdgeFrequency;
 import org.apromore.processsimulation.dto.SimulationData;
+import org.apromore.processsimulation.model.CostingData;
 import org.apromore.processsimulation.model.Currency;
 import org.apromore.processsimulation.model.Distribution;
 import org.apromore.processsimulation.model.DistributionType;
@@ -59,6 +64,8 @@ import org.apromore.processsimulation.model.Rule;
 import org.apromore.processsimulation.model.SequenceFlow;
 import org.apromore.processsimulation.model.TimeUnit;
 import org.apromore.processsimulation.model.Timetable;
+import org.apromore.service.UserMetadataService;
+import org.apromore.util.UserMetadataTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -84,11 +91,16 @@ public class SimulationInfoService {
 
     private final SimulationInfoConfig config;
     private final CalendarService calendarService;
+    private final UserMetadataService userMetadataService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService) {
+    public SimulationInfoService(SimulationInfoConfig config, CalendarService calendarService,
+                                 UserMetadataService userMetadataService) {
         this.config = config;
         this.calendarService = calendarService;
+        this.userMetadataService = userMetadataService;
+        this.objectMapper = new ObjectMapper();
 
         try {
             jaxbContext = JAXBContext.newInstance(ExtensionElements.class);
@@ -144,7 +156,8 @@ public class SimulationInfoService {
         double interArrivalTimeMillis = getInterArrivalTime(simulationData);
         TimeUnit timeUnit = getDisplayTimeUnit(interArrivalTimeMillis);
 
-        builder.processInstances(simulationData.getCaseCount())
+        builder.processInstances(simulationData.getCaseCount() > config.getDefaultMaxProcessInstances()
+                ? config.getDefaultMaxProcessInstances() : simulationData.getCaseCount())
             .currency(Currency.valueOf(config.getDefaultCurrency().toUpperCase(DOCUMENT_LOCALE)))
             .startDateTime(
                 Instant.ofEpochMilli(simulationData.getStartTime()).toString())
@@ -152,7 +165,7 @@ public class SimulationInfoService {
                 Distribution.builder()
                     .timeUnit(timeUnit)
                     .type(DistributionType.valueOf(config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).toString())
+                    .arg1(getDisplayTimeDuration(interArrivalTimeMillis).doubleValue())
                     .build());
     }
 
@@ -188,7 +201,7 @@ public class SimulationInfoService {
                     .distributionDuration(Distribution.builder()
                         .type(DistributionType.valueOf(
                             config.getDefaultDistributionType().toUpperCase(DOCUMENT_LOCALE)))
-                        .arg1(getDisplayTimeDuration(durationMillis).toString())
+                        .arg1(getDisplayTimeDuration(durationMillis).doubleValue())
                         .timeUnit(timeUnit)
                         .build())
                     .resourceIds(List.of(resourceNameToId.get(roleName)))
@@ -274,6 +287,7 @@ public class SimulationInfoService {
 
         } else {
 
+            Map<String, Double> costingData = retrieveCostData(simulationData.getLogId());
             builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
                 .map(roleToResourceCount -> {
                     String resourceId;
@@ -293,7 +307,6 @@ public class SimulationInfoService {
                         resourceId = config.getDefaultResourceIdPrefix() + UUID.randomUUID();
                         resourceName = roleToResourceCount.getKey();
                     }
-
                     resouceNameToId.put(resourceName, resourceId);
 
                     return Resource.builder()
@@ -301,11 +314,37 @@ public class SimulationInfoService {
                         .name(resourceName)
                         .totalAmount(roleToResourceCount.getValue())
                         .timetableId(config.getCustomTimetableId())
+                        .costPerHour(costingData.get(resourceName) == null ? 0 : costingData.get(resourceName))
                         .build();
                 }).collect(Collectors.toList()));
         }
 
         return resouceNameToId;
+    }
+
+
+    private Map<String, Double> retrieveCostData(int logId) {
+        Map<String, Double> roleToCostRateMap = new HashMap<>();
+        try {
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            List<Usermetadata> userMetadata =
+                new ArrayList<>(userMetadataService.getUserMetadataByLog(logId, UserMetadataTypeEnum.COST_TABLE));
+
+            if (userMetadata.isEmpty()) {
+                return roleToCostRateMap;
+            }
+            CostingData[] costingDataList =
+                objectMapper.readValue(userMetadata.get(0).getContent(), CostingData[].class);
+            if (costingDataList != null && costingDataList.length > 0
+                && costingDataList[0].getCostRates() != null) {
+                roleToCostRateMap = costingDataList[0].getCostRates();
+            }
+        } catch (JsonProcessingException ex) {
+            log.warn("Error in parsing cost usermetadata for log {}", logId);
+        } catch (RuntimeException ex) {
+            log.warn("Error in retrieving cost data for log {}", logId);
+        }
+        return roleToCostRateMap;
     }
 
     private void deriveGatewayProbabilities(

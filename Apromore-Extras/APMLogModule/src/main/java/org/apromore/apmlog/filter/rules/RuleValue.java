@@ -21,10 +21,14 @@
  */
 package org.apromore.apmlog.filter.rules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.OperationType;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONObject;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -36,15 +40,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author Chii Chang
+ * modified: 2022-06-16 by Chii Chang
+ */
+@Getter
+@Setter
 public class RuleValue implements Comparable<RuleValue>, Serializable {
 
     private final FilterType filterType;
     private final OperationType operationType;
     private String key;
     private String stringVal = "";
-    private long longVal = 0;
-    private double doubleVal = 0;
-    private int intVal = 0;
+    private Number numericVal = 0;
     private Object objectVal;
     private BitSet bitSetValue;
     private final Set<String> stringSetValue = new UnifiedSet<>();
@@ -84,39 +92,20 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         this.stringVal = stringVal;
     }
 
-    public RuleValue(FilterType filterType, OperationType operationType, String key, long longVal) {
+    public RuleValue(FilterType filterType, OperationType operationType, String key, Number numericVal) {
+        if (numericVal == null) {
+            numericVal = 0;
+        }
         this.filterType = filterType;
         this.operationType = operationType;
         this.key = key;
-        this.longVal = longVal;
-        this.intVal = longVal <= Integer.MAX_VALUE ? (int) longVal : 0;
-        this.stringVal = longVal + "";
-    }
-
-    public RuleValue(FilterType filterType, OperationType operationType, String key, double doubleVal) {
-        this.filterType = filterType;
-        this.operationType = operationType;
-        this.key = key;
-        this.doubleVal = doubleVal;
-        this.stringVal = doubleVal + "";
-    }
-
-    public RuleValue(FilterType filterType, OperationType operationType, String key, int intVal) {
-        this.filterType = filterType;
-        this.operationType = operationType;
-        this.key = key;
-        this.intVal = intVal;
-        this.longVal = intVal;
-        this.stringVal = intVal + "";
+        this.numericVal = numericVal;
+        this.stringVal = numericVal + "";
     }
 
     private void setStringSetValue(Set<String> strings) {
         stringSetValue.clear();
         stringSetValue.addAll(strings);
-    }
-
-    public Map<String, String> getCustomAttributes() {
-        return customAttributes;
     }
 
     public void putCustomAttribute(String key, String value) {
@@ -130,50 +119,28 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         }
     }
 
-    public void setStringVal(String stringVal) {
-        this.stringVal = stringVal;
-    }
-
     public void setIntVal(int intVal) {
-        this.intVal = intVal;
+        this.numericVal = intVal;
     }
 
     public void setLongVal(long longVal) {
-        this.longVal = longVal;
+        this.numericVal = longVal;
     }
 
     public void setDoubleVal(double doubleVal) {
-        this.doubleVal = doubleVal;
-    }
-
-    public FilterType getFilterType() {
-        return filterType;
-    }
-
-    public OperationType getOperationType() {
-        return operationType;
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-
-    public String getStringValue() {
-        return this.stringVal;
+        this.numericVal = doubleVal;
     }
 
     public long getLongValue() {
-        if (longVal == 0 && doubleVal > 0) return Double.valueOf(doubleVal).longValue();
-        return longVal;
+        return numericVal.longValue();
     }
 
     public double getDoubleValue() {
-        if (doubleVal == 0 && longVal > 0) return longVal;
-        return doubleVal;
+        return numericVal.doubleValue();
     }
 
     public int getIntValue() {
-        return intVal;
+        return numericVal.longValue() > Integer.MAX_VALUE ? Integer.MAX_VALUE : numericVal.intValue();
     }
 
     private Set<String> getSingleValSet() {
@@ -203,8 +170,8 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
         return stringSetValue;
     }
 
-    public BitSet getBitSetValue() {
-        return bitSetValue;
+    public String getStringValue() {
+        return stringVal;
     }
 
     public void setObjectVal(Object obj) {
@@ -222,6 +189,10 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
     }
 
     public RuleValue clone() {
+        return deepClone();
+    }
+
+    public RuleValue deepClone() {
 
         Map<String, String> customAttrCopy = null;
 
@@ -232,36 +203,78 @@ public class RuleValue implements Comparable<RuleValue>, Serializable {
             }
         }
 
-        RuleValue rv = null;
+        RuleValue rv;
 
-        if (longVal != 0) rv = new RuleValue(filterType, operationType, key, longVal );
-        else if (doubleVal != 0) rv = new RuleValue(filterType, operationType, key, doubleVal );
-        else if (intVal != 0) rv = new RuleValue(filterType, operationType, key, intVal );
-        else if (!stringSetValue.isEmpty()) rv = new RuleValue(filterType, operationType, key, stringSetValue);
-        else if (bitSetValue != null) rv = new RuleValue(filterType, operationType, key, bitSetValue);
-        else if (objectVal != null) rv = new RuleValue(filterType, operationType, key, objectVal);
-        else rv = new  RuleValue(filterType, operationType, key, stringVal );
+        if (numericVal.doubleValue() != 0) {
+            rv = new RuleValue(filterType, operationType, key, numericVal);
+        } else if (!stringSetValue.isEmpty()) {
+            rv = new RuleValue(filterType, operationType, key, stringSetValue);
+        } else if (bitSetValue != null) {
+            rv = new RuleValue(filterType, operationType, key, bitSetValue);
+        } else if (objectVal != null) {
+            rv = new RuleValue(filterType, operationType, key, objectVal);
+        } else {
+            rv = new  RuleValue(filterType, operationType, key, stringVal);
+        }
 
         if (customAttrCopy != null) rv.setCustomAttributes(customAttrCopy);
 
         return rv;
     }
 
-
     @Override
     public int compareTo(@NotNull RuleValue ruleValue) {
-        if (this.intVal != 0 && ruleValue.getIntValue() != 0) {
-            return Integer.compare(this.intVal, ruleValue.getIntValue());
-        } else if (this.doubleVal != 0 && ruleValue.getDoubleValue() != 0) {
-            return Double.compare(this.doubleVal, ruleValue.getDoubleValue());
-        } else if (this.longVal != 0 && ruleValue.getLongValue() != 0) {
-            return Long.compare(this.longVal, ruleValue.getLongValue());
+        double d = getDoubleValue();
+        if (d != 0 && ruleValue.getDoubleValue() != 0) {
+            return Double.compare(d, ruleValue.getDoubleValue());
         } else {
             return this.stringVal.compareTo(ruleValue.getStringValue());
         }
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public JSONObject toJSON() {
+        JSONObject jsonRuleValue = new JSONObject();
+
+        jsonRuleValue.put("filtertype", getFilterType().toString());
+        jsonRuleValue.put("operationtype", getOperationType().toString());
+        jsonRuleValue.put("key", getKey());
+        jsonRuleValue.put("stringvalue", stringVal);
+        jsonRuleValue.put("longvalue", getLongValue() + "");
+        jsonRuleValue.put("doublevalue", getDoubleValue() + "");
+        jsonRuleValue.put("intvalue", getIntValue() + "");
+
+        // ================================================================
+        // Case ID-based ruleValues were stored in BitSet
+        // ================================================================
+        if (getObjectVal() instanceof BitSet) {
+            jsonRuleValue.put("objectvalue", getObjectVal().toString());
+        }
+
+        // ================================================================
+        // Attribute-based ruleValues were stored in Set<String>
+        // ================================================================
+        switch (getFilterType()) {
+            case CASE_EVENT_ATTRIBUTE:
+            case CASE_CASE_ATTRIBUTE:
+            case CASE_SECTION_ATTRIBUTE_COMBINATION:
+            case EVENT_EVENT_ATTRIBUTE:
+                Set<String> set = getStringSetValue();
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.addAll(set);
+                jsonRuleValue.put("objectvalue", jsonArray.toJSONString());
+                break;
+            default:
+                break;
+        }
+
+        JSONObject jsonCustomAttributes = new JSONObject();
+        if (getCustomAttributes().size() > 0) {
+            for (String s : getCustomAttributes().keySet()) {
+                jsonCustomAttributes.put(s, getCustomAttributes().get(s));
+            }
+        }
+        jsonRuleValue.put("customAttributes", jsonCustomAttributes);
+
+        return jsonRuleValue;
     }
 }

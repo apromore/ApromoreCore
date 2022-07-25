@@ -62,6 +62,8 @@ class PortalPluginResourceServletUnitTest {
     /**
      * Unit test the {@link PortalPluginResourceServlet#doGet} method with valid inputs.
      *
+     * This test applies to servlet patterns with a trailing *.
+     *
      * @param pathInfo  path to a test file in <code>src/test/resources/</code>
      * @param expectedContent  the content of the test file, always actually ASCII text
      * @param expectedContentType  the MIME type indicated by the test file's extension
@@ -79,6 +81,44 @@ class PortalPluginResourceServletUnitTest {
 
         // Record the expected interactions with the mock objects
         expect(request.getPathInfo()).andReturn(pathInfo);
+        expect(request.getPathInfo()).andReturn(pathInfo);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(expectedContentType);
+        expect(response.getOutputStream()).andReturn(servletOutputStream);
+        servletOutputStream.write(capture(responseContent), eq(0), eq(expectedContentLength + 1));
+        servletOutputStream.close();
+        replay(request, response, servletOutputStream);
+
+        // Perform the test
+        servlet.doGet(request, response);
+
+        // Validate the response
+        verify(response);
+        assert responseContent.hasCaptured();
+        assertEquals(expectedContent, new String(Arrays.copyOf(responseContent.getValue(), expectedContentLength), UTF_8));
+    }
+
+    /**
+     * Unit test the {@link PortalPluginResourceServlet#doGet} method with valid inputs.
+     *
+     * This test applies to servlet patterns without a trailing *.
+     *
+     * @param requestURI  path to a test file in <code>src/test/resources/</code>
+     * @param expectedContent  the content of the test file, always actually ASCII text
+     * @param expectedContentType  the MIME type indicated by the test file's extension
+     */
+    @ParameterizedTest
+    @CsvSource({"/test-favicon.ico, FAKE ICO CONTENT, image/x-icon"})
+    void testDoGet_ok2(final String requestURI,
+                       final String expectedContent,
+                       final String expectedContentType) throws Exception {
+
+        final int expectedContentLength = expectedContent.getBytes(UTF_8).length;
+        final Capture<byte[]> responseContent = newCapture();
+
+        // Record the expected interactions with the mock objects
+        expect(request.getPathInfo()).andReturn(null);
+        expect(request.getRequestURI()).andReturn(requestURI);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(expectedContentType);
         expect(response.getOutputStream()).andReturn(servletOutputStream);
@@ -111,6 +151,7 @@ class PortalPluginResourceServletUnitTest {
                              final String expectedErrorMessage) throws Exception {
 
         // Record the expected interactions with the mock objects
+        expect(request.getPathInfo()).andReturn(pathInfo);
         expect(request.getPathInfo()).andReturn(pathInfo);
         expect(request.getPathInfo()).andReturn(pathInfo);  // read 2nd time for use in error message
         response.sendError(HttpServletResponse.SC_FORBIDDEN, expectedErrorMessage);

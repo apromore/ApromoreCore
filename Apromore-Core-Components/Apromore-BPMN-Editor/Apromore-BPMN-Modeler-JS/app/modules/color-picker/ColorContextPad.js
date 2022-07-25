@@ -1,6 +1,17 @@
 import Color from 'color';
 import { is, getDi } from 'bpmn-js/lib/util/ModelUtil';
 
+const palette = [
+  '#000000',
+  '#84c7e3',
+  '#bb3a50',
+  '#34AD61',
+  '#E98C2D',
+  '#bf80ff',
+  '#6666ff',
+  '#ff80ff'
+];
+
 const darken = function (colorCode) {
   const color = Color(colorCode);
   const start = color.lightness();
@@ -14,21 +25,6 @@ const lighten = function (colorCode) {
   const lightness = start + 0.8 * (100 - start);
   return color.lightness(lightness).hex();
 };
-
-let palette = [
-  '#000000',
-  '#84c7e3',
-  '#bb3a50',
-  '#34AD61',
-  '#E98C2D',
-  '#bf80ff',
-  '#6666ff',
-  '#ff80ff'
-];
-
-palette = palette
-    .concat(palette.map(lighten))
-    .concat(palette.map(darken))
 
 const getCurrentColor = function (element){
   if (!element) {
@@ -55,12 +51,12 @@ const colors = palette.map(
   (color) => (
       {
           stroke: 'black',
-          fill: color,
+          fill: lighten(color),
           key: color.toLowerCase()
       }
   )
 );
-const colorMap = colors.reduce((acc, color) => { acc[color.key] = color; return acc; }, {});
+const colorMap = colors.reduce((acc, color) => { acc[color.key.toLowerCase()] = color; return acc; }, {});
 
 let drawOverride = false;
 
@@ -106,7 +102,7 @@ export default class ColorContextPad {
           } else {
             color = {
               stroke: 'black',
-              fill: colorCode
+              fill: lighten(colorCode)
             }
           }
           if (
@@ -116,8 +112,8 @@ export default class ColorContextPad {
             is(element, 'bpmn:DataOutputAssociation') ||
             is(element, 'bpmn:MessageFlow')
           ) {
-            color.stroke = colorCode;
-            color.fill = colorCode;
+            color.stroke = darken(colorCode);
+            color.fill = darken(colorCode);
           }
           _modeling.setColor(element, color);
           el.spectrum('hide');

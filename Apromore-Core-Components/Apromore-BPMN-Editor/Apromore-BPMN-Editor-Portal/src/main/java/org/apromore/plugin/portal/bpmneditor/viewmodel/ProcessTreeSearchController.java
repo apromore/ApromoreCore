@@ -207,7 +207,9 @@ public class ProcessTreeSearchController {
                     "process"), // processes
                 SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "l", "logId", "log"), // logs
                 SearchExpressionBuilder.buildSimpleSearchConditions(searchCriteria, "f", "folderId",
-                    "folder")); // folders
+                    "folder"),
+                false
+            ); // folders
 
         } catch (UnsupportedEncodingException usee) {
             LOGGER.error("Failed to get Process Summaries: " + usee.toString(), usee);

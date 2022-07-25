@@ -208,7 +208,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see ProcessService#importProcess(String, Integer, String, Version,
+   * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version,
    *      String, InputStream, String, String, String, String, boolean) {@inheritDoc}
    */
   @Override
@@ -525,7 +525,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see ProcessService#exportProcess(String, Integer, String, Version,
+   * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, Version,
    *      String, String) {@inheritDoc}
    */
   @Override
@@ -562,7 +562,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see ProcessService#updateProcessMetaData(Integer, String, String, String,
+   * @see org.apromore.service.ProcessService#updateProcessMetaData(Integer, String, String, String,
    *      Version, Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -703,7 +703,7 @@ public class ProcessServiceImpl implements ProcessService {
 
 
   /**
-   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, Integer) {@inheritDoc}
    */
   @Override
@@ -747,7 +747,7 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   /**
-   * @see ProcessService#getBPMNRepresentation(String, Integer, String,
+   * @see org.apromore.service.ProcessService#getBPMNRepresentation(String, Integer, String,
    *      Version, String, boolean) {@inheritDoc}
    */
   @Override
@@ -1087,19 +1087,6 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
-  public ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String username)
-      throws UserNotFoundException {
-    User user = userSrv.findUserByLogin(username);
-    Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId);
-
-    if (process == null || authorizationService.getProcessAccessTypeByUser(process.getId(), user) == null) {
-      return null;
-    }
-
-    return ui.buildProcessSummary(process);
-  }
-
-  @Override
   public boolean hasLinkedProcesses(Integer processId, String username) throws UserNotFoundException {
     return !getLinkedProcesses(processId, username).isEmpty();
   }
@@ -1114,22 +1101,6 @@ public class ProcessServiceImpl implements ProcessService {
       int linkedProcessId = subprocessProcess.getLinkedProcess().getId();
       //Check for user access to the linked process
       if (authorizationService.getProcessAccessTypeByUser(linkedProcessId, user) != null) {
-        linkedProcesses.put(subprocessProcess.getSubprocessId(), subprocessProcess.getLinkedProcess().getId());
-      }
-    }
-    return Collections.unmodifiableMap(linkedProcesses);
-  }
-
-  @Override
-  public Map<String, Integer> getLinkedProcesses(Integer processId, String username, AccessType accessType) throws UserNotFoundException {
-    Map<String, Integer> linkedProcesses = new HashMap<>();
-    List<SubprocessProcess> subprocessProcesses = subprocessProcessRepository.getLinkedSubProcesses(processId);
-    User user = userSrv.findUserByLogin(username);
-
-    for (SubprocessProcess subprocessProcess : subprocessProcesses) {
-      int linkedProcessId = subprocessProcess.getLinkedProcess().getId();
-      //Check for user access to the linked process
-      if (authorizationService.getProcessAccessTypeByUser(linkedProcessId, user) == accessType) {
         linkedProcesses.put(subprocessProcess.getSubprocessId(), subprocessProcess.getLinkedProcess().getId());
       }
     }

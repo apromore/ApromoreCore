@@ -825,6 +825,7 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         expect(processRepo.save((Process) EasyMock.anyObject())).andReturn(process);
         expect(processModelVersionRepo.save((ProcessModelVersion) EasyMock.anyObject())).andReturn(pmv);
         expect(processBranchRepo.save((ProcessBranch) EasyMock.anyObject())).andReturn(branch);
+        workspaceSrv.createPublicStatusForUsers(process);
         replayAll();
 
         // Mock Call
@@ -898,7 +899,6 @@ class ProcessServiceImplUnitTest extends EasyMockSupport {
         expect(processRepo.save((Process) EasyMock.anyObject())).andReturn(process);
         expect(processModelVersionRepo.save((ProcessModelVersion) EasyMock.anyObject())).andReturn(pmv);
         expect(processBranchRepo.save((ProcessBranch) EasyMock.anyObject())).andReturn(branch);
-        workspaceSrv.removePublicStatusForUsers(process);
 
         replayAll();
 
