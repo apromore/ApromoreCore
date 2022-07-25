@@ -1941,11 +1941,15 @@ ValidationErrorHelper.validateProcessInstances = function (bpmnFactory, elementR
   } else if (parseInt(processInstances).toString() !== processInstances) {
     message = translate('invalid.notInteger {element}', { element: label });
   } else {
-    if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
-      let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
-      if (processInstances > qbpProcessMaxLimit) {
-        message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
-      }
+    try {
+        if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
+          let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
+          if (processInstances > qbpProcessMaxLimit) {
+            message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
+          }
+        }
+    } catch (e) {
+        // pass
     }
   }
 
@@ -37680,28 +37684,42 @@ var createTimeUnitOptions = function(translate) {
 
 const preprocessDistNumber = (distribution, rawKey, key) => {
     let rawValue = distribution[rawKey]
+    let value = distribution[key]
 
-    if (!rawValue) {
-        rawValue = distribution[key]
+    // Fix any old NaN value and nil values
+    try {
+        if (rawValue === undefined || rawValue === null || rawValue === 'NaN') {
+            rawValue = (value / timeUnits[distribution.timeUnit].unit).toString()
+            distribution[rawKey] = rawValue;
+        }
+    } catch(e) {
+        // pass
     }
-    // Fix any old NaN value
     if (rawValue === 'NaN') {
-        rawValue = '';
-        distribution[rawKey] = rawValue;
+        rawValue = ''
     }
-    // use key as identifier of the widget
     return { [key]: rawValue };
 };
 
 const postprocessDistNumber = (distribution, values, rawKey, key) => {
     let rawValue = values[key]; // use key as identifier of the widget
+
     if (isValidNumber(rawValue)) {
       rawValue = normalizeNumber(rawValue); // clean up number
+      value = (rawValue * timeUnits[distribution.timeUnit].unit).toString();
+    } else {
+      value = rawValue
+    }
+    if (rawValue === 'NaN') {
+        rawValue = ''
+    }
+    if (value === 'NaN') {
+        value = ''
     }
     distribution[rawKey] = rawValue;
     return {
         [rawKey]: rawValue,
-        [key]: (rawValue / timeUnits[distribution.timeUnit].unit).toString()
+        [key]: value
     }
 };
 
@@ -37949,12 +37967,16 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
     },
 
     set: function(element, values, _node) {
-      return cmdHelper.updateBusinessObject(element, distribution, {
-        mean: (distribution.mean / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
-        arg1: (distribution.arg1 / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
-        arg2: (distribution.arg2 / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
-        timeUnit: values.timeUnit,
-      });
+      return cmdHelper.updateBusinessObject(
+        element,
+        distribution,
+        {
+          mean: (distribution.mean / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
+          arg1: (distribution.arg1 / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
+          arg2: (distribution.arg2 / timeUnits[distribution.timeUnit].unit * timeUnits[values.timeUnit].unit).toString(),
+          timeUnit: values.timeUnit,
+        }
+      );
     }
   }));
 
