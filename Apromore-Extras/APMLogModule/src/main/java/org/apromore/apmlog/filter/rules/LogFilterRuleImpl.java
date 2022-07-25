@@ -21,20 +21,27 @@
  */
 package org.apromore.apmlog.filter.rules;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+@Setter
+@Getter
 public class LogFilterRuleImpl implements LogFilterRule, Serializable {
 
     private final Choice choice;
-    private final Inclusion inclusion;
+    private Inclusion inclusion;
     private final Section section;
     private final FilterType filterType;
     private String key;
@@ -43,6 +50,9 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
     private final Set<String> primaryStringValues;
     private Set<String> secondaryStringValues;
     protected RuleLevel ruleLevel = RuleLevel.CONTENT;
+    protected String currency = "AUD";
+    protected String costPerspective;
+    protected Map<String, Double> costRates = new HashMap<>();
 
     public LogFilterRuleImpl(Choice choice, Inclusion inclusion, Section section, FilterType filterType,
                              String key,
@@ -67,6 +77,33 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
                 secondaryStringValues.add(ruleValue.getStringValue());
             }
         }
+    }
+
+    public static LogFilterRuleImpl init(FilterType filterType,
+                                         boolean retain,
+                                         Set<RuleValue> primaryValues) {
+        Choice choice = retain ? Choice.RETAIN : Choice.REMOVE;
+        Section section = FilterType.isCaseFilter(filterType) ? Section.CASE : Section.EVENT;
+        return new LogFilterRuleImpl(choice, Inclusion.ALL_VALUES, section, filterType,
+                "", primaryValues, null);
+    }
+
+    public LogFilterRuleImpl includeAll(boolean includeAll) {
+        this.inclusion = includeAll ? Inclusion.ALL_VALUES : Inclusion.ANY_VALUE;
+        return this;
+    }
+
+    public LogFilterRuleImpl withKey(String key) {
+        this.key = key;
+        return this;
+    }
+
+    public LogFilterRuleImpl withCostRates(String currency, String costPerspective, Map<String, Double> costRates) {
+        this.currency = currency;
+        this.costPerspective = costPerspective;
+        this.costRates.clear();
+        this.costRates.putAll(costRates);
+        return this;
     }
 
     public void setPrimaryValues(Set<RuleValue> primaryValues) {
@@ -129,6 +166,19 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         return ruleLevel;
     }
 
+    @Override
+    public Number getPrimaryNumericValueByOperationType(OperationType operationType) {
+        if (primaryValues == null) {
+            return 0;
+        }
+
+        return primaryValues.stream()
+                .filter(x -> x.getOperationType() == operationType)
+                .map(RuleValue::getDoubleValue)
+                .findFirst()
+                .orElse(0.0);
+    }
+
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
     // ====================================================================================
@@ -154,6 +204,9 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
         LogFilterRule lfr = new LogFilterRuleImpl(
                 choice, inclusion, section, filterType, key, priValCopy, secValCopy);
         lfr.setRuleLevel(ruleLevel);
+        lfr.setCurrency(currency);
+        lfr.setCostPerspective(costPerspective);
+        lfr.setCostRates(new HashMap<>(costRates));
         return lfr;
     }
 
