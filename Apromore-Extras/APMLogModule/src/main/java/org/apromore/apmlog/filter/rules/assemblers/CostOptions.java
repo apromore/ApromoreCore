@@ -8,24 +8,33 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
-package org.apromore.apmlog.util;
 
-public class AttributeCodes {
-    public static final String CONCEPT_NAME = "concept:name";
-    public static final String ORG_RESOURCE = "org:resource";
-    public static final String ORG_GROUP = "org:group";
-    public static final String ORG_ROLE = "org:role";
-    public static final String LIFECYCLE_TRANSITION = "lifecycle:transition";
-    public static final String TIMESTAMP = "time:timestamp";
+package org.apromore.apmlog.filter.rules.assemblers;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.util.Map;
+
+@Getter
+@AllArgsConstructor
+@ToString
+public class CostOptions {
+    private String currency;
+    private String costPerspective;
+    private Map<String, Double> costRates;
+    private double minCost;
+    private double maxCost;
 }

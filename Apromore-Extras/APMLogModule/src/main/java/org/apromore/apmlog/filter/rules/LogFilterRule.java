@@ -24,9 +24,11 @@ package org.apromore.apmlog.filter.rules;
 import org.apromore.apmlog.filter.types.Choice;
 import org.apromore.apmlog.filter.types.FilterType;
 import org.apromore.apmlog.filter.types.Inclusion;
+import org.apromore.apmlog.filter.types.OperationType;
 import org.apromore.apmlog.filter.types.RuleLevel;
 import org.apromore.apmlog.filter.types.Section;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface LogFilterRule {
@@ -38,12 +40,22 @@ public interface LogFilterRule {
     FilterType getFilterType();
     Set<RuleValue> getPrimaryValues();
     Set<RuleValue> getSecondaryValues();
+    Set<RuleValue> getThirdlyValues();
     Set<String> getPrimaryValuesInString();
     Set<String> getSecondaryValuesInString();
     LogFilterRule deepClone();
     void setRuleLevel(RuleLevel ruleLevel);
     RuleLevel getRuleLevel();
     void setKey(String key);
+
+    void setCostPerspective(String costPerspective);
+    String getCostPerspective();
+    void setCurrency(String currency);
+    String getCurrency();
+    void setCostRates(Map<String, Double> costRates);
+    Map<String, Double> getCostRates();
+
+    Number getPrimaryNumericValueByOperationType(OperationType operationType);
 
     // ====================================================================================
     // DO NOT USED!! TO BE REMOVED!!
@@ -52,6 +64,7 @@ public interface LogFilterRule {
 
     void setPrimaryValues(Set<RuleValue> primaryValues);
     void setSecondaryValues(Set<RuleValue> secondaryValues);
+    void setThirdlyValues(Set<RuleValue> thirdlyValues);
     String getFilterRuleDesc();
     String getFilterTypeDesc();
 }
