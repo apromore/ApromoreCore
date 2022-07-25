@@ -231,6 +231,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
 
       param.put("nativeType", process.getOriginalNativeType());
+      param.put("qbpProcessMaxLimit", mainC.getConfig().getMaxAllowedProcesses());
 
       this.setTitle(
           editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");

@@ -24,11 +24,10 @@
 
 package org.apromore.commons.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @NoArgsConstructor
@@ -49,6 +48,7 @@ public class ConfigBean {
     private Logs logs = new Logs();
     private Storage storage = new Storage();
     private Cache cache = new Cache();
+    private Qbp qbp = new Qbp();
 
     private Integer maxEventCount;
 
@@ -134,6 +134,12 @@ public class ConfigBean {
 
     }
 
+    @Data
+    public class Qbp {
+        private long maxAllowedProcesses;
+        private long maxSimulationCycleTimeInSeconds;
+    }
+
     public boolean isCommunity() {
 	return version.getEdition().toLowerCase().contains(COMMUNITY_TAG);
     }
@@ -157,5 +163,7 @@ public class ConfigBean {
     public String getStoragePath() {
 	return storage.getPath();
     }
+
+    public long getMaxAllowedProcesses(){ return qbp.getMaxAllowedProcesses();}
 
 }
