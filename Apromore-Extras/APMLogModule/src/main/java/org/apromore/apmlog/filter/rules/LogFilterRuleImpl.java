@@ -49,6 +49,7 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
     private Set<RuleValue> secondaryValues;
     private final Set<String> primaryStringValues;
     private Set<String> secondaryStringValues;
+    protected Set<RuleValue> thirdlyValues;
     protected RuleLevel ruleLevel = RuleLevel.CONTENT;
     protected String currency = "AUD";
     protected String costPerspective;
@@ -201,9 +202,18 @@ public class LogFilterRuleImpl implements LogFilterRule, Serializable {
             }
         }
 
+        Set<RuleValue> thiValCopy = null;
+        if (thirdlyValues != null) {
+            thiValCopy = new HashSet<>();
+            for (RuleValue ruleValue : thirdlyValues) {
+                thiValCopy.add(ruleValue.clone());
+            }
+        }
+
         LogFilterRule lfr = new LogFilterRuleImpl(
                 choice, inclusion, section, filterType, key, priValCopy, secValCopy);
         lfr.setRuleLevel(ruleLevel);
+        lfr.setThirdlyValues(thiValCopy);
         lfr.setCurrency(currency);
         lfr.setCostPerspective(costPerspective);
         lfr.setCostRates(new HashMap<>(costRates));

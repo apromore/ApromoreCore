@@ -40,6 +40,7 @@ public interface LogFilterRule {
     FilterType getFilterType();
     Set<RuleValue> getPrimaryValues();
     Set<RuleValue> getSecondaryValues();
+    Set<RuleValue> getThirdlyValues();
     Set<String> getPrimaryValuesInString();
     Set<String> getSecondaryValuesInString();
     LogFilterRule deepClone();
@@ -63,6 +64,7 @@ public interface LogFilterRule {
 
     void setPrimaryValues(Set<RuleValue> primaryValues);
     void setSecondaryValues(Set<RuleValue> secondaryValues);
+    void setThirdlyValues(Set<RuleValue> thirdlyValues);
     String getFilterRuleDesc();
     String getFilterTypeDesc();
 }
