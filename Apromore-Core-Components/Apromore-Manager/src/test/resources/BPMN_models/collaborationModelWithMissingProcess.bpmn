@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:ap="http://apromore.org"
+    xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+    <bpmn:collaboration id="Collaboration_1h6685t">
+        <bpmn:extensionElements>
+            <ap:img src="" />
+            <ap:icon elIconName="" />
+            <ap:icons />
+        </bpmn:extensionElements>
+        <bpmn:participant id="Participant_0ia0fdx" name="Level 1" processRef="Process_1">
+            <bpmn:extensionElements>
+                <ap:img src="" />
+                <ap:icon elIconName="" />
+                <ap:icons />
+            </bpmn:extensionElements>
+        </bpmn:participant>
+    </bpmn:collaboration>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1h6685t">
+            <bpmndi:BPMNShape id="Participant_0ia0fdx_di" bpmnElement="Participant_0ia0fdx" isHorizontal="true">
+                <dc:Bounds x="-280" y="-250" width="600" height="500" />
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
