@@ -247,7 +247,7 @@ describe('simulation-tab', function() {
 
         // then
         expect(domClasses(meanField).has('invalid')).to.be.true;
-        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).mean).to.equal('-60');
+        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).mean).to.equal('-1');
       }));
 
       it('should not set not numeric value', inject(function(bpmnFactory, elementRegistry) {
@@ -327,7 +327,7 @@ describe('simulation-tab', function() {
 
         // then
         expect(domClasses(arg1Field).has('invalid')).to.be.true;
-        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).arg1).to.equal('-60');
+        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).arg1).to.equal('-1');
       }));
 
       it('should not set not numeric value', inject(function(bpmnFactory, elementRegistry) {
@@ -406,7 +406,7 @@ describe('simulation-tab', function() {
 
         // then
         expect(domClasses(arg2Field).has('invalid')).to.be.true;
-        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).arg2).to.equal('-60');
+        expect(getInterArrivalTimeDistribution(bpmnFactory, elementRegistry).arg2).to.equal('-1');
       }));
 
       it('should not set not numeric value', inject(function(bpmnFactory, elementRegistry) {
@@ -815,7 +815,7 @@ describe('simulation-tab', function() {
 
     it('should have correct label', function() {
       // then
-      expect(timeTableLabel.textContent).to.equal('Timetables');
+      expect(timeTableLabel.textContent).to.equal('Arrival timetable');
     });
 
     it('should fetch the value',function() {
