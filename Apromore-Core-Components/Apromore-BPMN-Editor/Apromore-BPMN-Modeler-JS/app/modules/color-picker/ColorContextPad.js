@@ -16,19 +16,10 @@ const lighten = function (colorCode) {
 };
 
 let palette = [
-  '#000000',
-  '#84c7e3',
-  '#bb3a50',
-  '#34AD61',
-  '#E98C2D',
-  '#bf80ff',
-  '#6666ff',
-  '#ff80ff'
+    '#E7E7E7', '#E6F4F9', '#F2D7DB', '#D3F2DF', '#FBE8D5', '#F2E6FF', '#E0E0FF', '#FFE6FF',
+    '#888888', '#84c7e3', '#bb3a50', '#34AD61', '#E98C2D', '#bf80ff', '#6666ff', '#ff80ff',
+    '#000000', '#4AACD6', '#962E40', '#2A8A4E', '#C97015', '#9833FF', '#1F1FFF', '#FF33FF'
 ];
-
-palette = palette
-    .concat(palette.map(lighten))
-    .concat(palette.map(darken))
 
 const getCurrentColor = function (element){
   if (!element) {
@@ -45,7 +36,7 @@ const getCurrentColor = function (element){
     is(element, 'bpmn:DataOutputAssociation') ||
     is(element, 'bpmn:MessageFlow')
   ) {
-    return di.get('color:border-color') || di.get('bioc:stroke') ||  'black';
+    return di.get('color:border-color') || di.get('bioc:stroke');
   } else {
     return di.get('color:background-color') || di.get('bioc:fill');
   }
