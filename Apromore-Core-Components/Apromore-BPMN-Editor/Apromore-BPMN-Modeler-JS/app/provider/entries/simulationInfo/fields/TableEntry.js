@@ -3,12 +3,12 @@ var CategoryHelper = require('../../../../helper/CategoryHelper');
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 var validationHelper = require('../../../../helper/ValidationErrorHelper');
 var CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
+var isValidNumber = require('../../../../utils/Utils').isValidNumber;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   let getSelectedVariable = options.getSelectedVariable;
   let allCategories;
-  let currentSelectedCategory;
   var tableEntry = entryFactory.table(translate, {
     id: 'categoriesTable',
     labels: [translate('general.caseAttribute.category.name'), translate('general.caseAttribute.category.probality')],
@@ -19,7 +19,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     },
     show: function (element, entryNode, node, scopeNode) {
       var selectedVariable = getSelectedVariable(element, node);
-      return selectedVariable;
+      return selectedVariable && selectedVariable.type == 'ENUM';
     },
     canRemove: function () {
       return true;
@@ -34,19 +34,15 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         selectedCategory = {};
       }
       selectedCategory.name = value.name;
-      selectedCategory.assignmentProbability = value.assignmentProbability;
-      currentSelectedCategory = selectedCategory;
+
+      if (isValidNumber(value.assignmentProbability)) {
+        selectedCategory.assignmentProbability = '' + (value.assignmentProbability / 100);
+      } else {
+        selectedCategory.assignmentProbability = '0';
+      }
       return cmdHelper.updateBusinessObject(element, selectedCategory);
     },
-    get: function (element, node) {
-      var selectedVariable = getSelectedVariable(element, node);
-      if (!selectedVariable) {
-        return [];
-      }
 
-      var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
-      return categories;
-    },
     removeElement: function (element, node, idx) {
       let selectedCategory = getSelectedCategory(element, node, idx);
 
@@ -54,8 +50,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         return {};
       }
       var selectedVariable = getSelectedVariable(element, node);
-      currentSelectedCategory = undefined;
-
       return cmdHelper.removeElementsFromList(element, selectedVariable, 'values',
         null, [selectedCategory]);
     },
@@ -78,24 +72,18 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       }
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       allCategories = categories || [];
-      return allCategories;
+      let modifiedCategory = [];
+      allCategories.forEach(category => {
+        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100)+'' : '0' })
+      });
+      return modifiedCategory;
 
-    },
-
-    setControlValue: function (element, entryNode, input, prop, value, idx) {
-      if (input) {
-        input.value = value;
-      }
-      return true;
     }
   }
-
-
   );
 
   function doValidation(element, node) {
     let validationIdGroup = 'Case Attribute';
-    validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationIdGroup });
 
     var selectedVariable = getSelectedVariable(element, node);
     if (!selectedVariable) {
@@ -108,7 +96,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
     let validationId = 'Category';
     //reset first
-    validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+    validationHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationId, elementId: selectedVariable.name });
 
     let errorString = '';
     updatedCategories.forEach(category => {
@@ -118,22 +106,24 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         translate,
         Object.assign({
           id: validationId,
+          elementId: selectedVariable.name,
           resource: { name: category.name, assignmentProbability: category.assignmentProbability },
         })
       );
       if (errorReturn && errorReturn.message) {
-        errorString += errorReturn.message + ', ';
+        errorString = errorReturn.message;
       }
     });
 
     if (!errorString) {
-      validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationIdGroup });
+      validationHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationIdGroup, elementId: selectedVariable.name });
       let errorReturn = validationHelper.validateWithAllCategory(
         bpmnFactory,
         elementRegistry,
         translate,
         Object.assign({
           id: validationIdGroup,
+          elementId: selectedVariable.name,
           label: 'Case Attribute',
           allCategories: updatedCategories || []
         })

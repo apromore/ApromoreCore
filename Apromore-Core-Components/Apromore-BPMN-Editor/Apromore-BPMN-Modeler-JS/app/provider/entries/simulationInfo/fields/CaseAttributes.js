@@ -20,7 +20,11 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
     createExtensionElement: function (element, extensionElements, _value) {
       let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
       let variable = CaseAttributeHelper.createVariable(bpmnFactory, elementRegistry);
-      return cmdHelper.addElementsTolist(element, variables, 'values', [variable]);
+      var cmd = cmdHelper.addElementsTolist(element, variables, 'values', [variable]);
+      currentSelectedCaseAttribute = variable;
+      NumericalDistributionHelper.storeCurrentCaseAttribute(currentSelectedCaseAttribute);
+      doCaseValidation();
+      return cmd;
     },
 
     removeExtensionElement: function (element, _extensionElements, value, idx) {
@@ -85,6 +89,8 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
     let errorString = '';
     let validationId = 'Case Attributes';
     let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry).values || [];
+
+    validationHelper.suppressValidationErrorForNonExistentItem(bpmnFactory, elementRegistry, { variables: variables });
     validationHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
 
     let errorReturn = validationHelper.validateWithAllVariables(

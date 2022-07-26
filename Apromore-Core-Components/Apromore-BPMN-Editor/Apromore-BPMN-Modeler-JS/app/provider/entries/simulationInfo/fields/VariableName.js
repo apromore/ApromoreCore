@@ -51,16 +51,17 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     validate: function (element, values, node) {
       var selectedVariable = getSelectedVariable(element, node);
       if (selectedVariable) {
-        var validationId = 'Case attributes';
+        var validationId = 'Case Attribute';
         var error = validationErrorHelper.validateVariableName(bpmnFactory, elementRegistry, translate, {
           id: validationId,
           label: translate('general.categorical.case.attribute.entry'),
           name: values.name,
+          elementId: selectedVariable.name ,
           resource: selectedVariable,
         });
 
         if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+          validationErrorHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationId,elementId: selectedVariable.name });
         }
 
         return { name: error.message };

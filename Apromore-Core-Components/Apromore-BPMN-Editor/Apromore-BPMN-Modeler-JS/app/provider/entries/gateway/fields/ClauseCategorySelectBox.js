@@ -2,64 +2,63 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
   cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
 
-  module.exports = function (bpmnFactory, elementRegistry, translate, options) {
+module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedClause = options.getSelectedClause;
   var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
-  var isNumeric  = options.isNumeric;
+  var isNumeric = options.isNumeric;
 
   function getCategoryOptions() {
     var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
     let selectedCaseAttributeText = getSelectedCaseAttribute();
-    let selectedCaseAttribute =  variables && variables.values && variables.values.filter(function (variable) {
+    let selectedCaseAttribute = variables && variables.values && variables.values.filter(function (variable) {
       return variable.name === selectedCaseAttributeText;
     });
 
     let filteredCaseAttribute;
-    if(!selectedCaseAttributeText && (!selectedCaseAttribute || selectedCaseAttribute.length ==0) && variables && variables.values && variables.values.length > 0){
+    if (!selectedCaseAttributeText && (!selectedCaseAttribute || selectedCaseAttribute.length == 0) && variables && variables.values && variables.values.length > 0) {
       selectedCaseAttribute = variables.values[0];
     }
 
-    if(!selectedCaseAttribute)
-    {
+    if (!selectedCaseAttribute) {
       return [];
     }
-    
-    if( selectedCaseAttribute.length >0 ){
+
+    if (selectedCaseAttribute.length > 0) {
       filteredCaseAttribute = selectedCaseAttribute[0];
-    }else{
+    } else {
       filteredCaseAttribute = selectedCaseAttribute;
     }
 
-    if(filteredCaseAttribute && filteredCaseAttribute.values)
-    {
+    if (filteredCaseAttribute && filteredCaseAttribute.values) {
       let obj = [];
-      for(let index=0; index < filteredCaseAttribute.values.length;index++){
-        obj[index] =  { name: filteredCaseAttribute.values[index].name, value: filteredCaseAttribute.values[index].name };
+      for (let index = 0; index < filteredCaseAttribute.values.length; index++) {
+        obj[index] = { name: filteredCaseAttribute.values[index].name, value: filteredCaseAttribute.values[index].name };
       }
-  
       return obj;
-
     }
     else {
       return [];
     }
-
-   
   }
 
-
   let cluaseCategory = entryFactory.selectBox(translate, {
-    id: 'clause-category-'+options.outgoingElementId,
+    id: 'clause-category-' + options.outgoingElementId,
     label: translate('gateway.clause.category.label'),
     modelProperty: 'variableEnumValue',
     selectOptions: getCategoryOptions,
-    hidden: function(element, node){
+    hidden: function (element, node) {
       let numeric = isNumeric();
       return numeric || !getSelectedClause(element, node);
     },
     get: function (_element, _node) {
       let clause = getSelectedClause(_element, _node);
+      if (clause && !clause.variableEnumValue) {
+        let filteredCaseAttribute = getCategoryOptions();
+        if (filteredCaseAttribute && filteredCaseAttribute.length > 0) {
+          clause.variableEnumValue = filteredCaseAttribute[0].value;
+        }
+      }
       return { variableEnumValue: clause && clause.variableEnumValue };
     },
     set: function (element, values, _node) {
@@ -71,12 +70,12 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
     }
   });
 
-  function isNotExistCategory(){
+  function isNotExistCategory() {
     let filteredCaseAttribute = getCategoryOptions();
-    if( !filteredCaseAttribute || filteredCaseAttribute.length == 0){
+    if (!filteredCaseAttribute || filteredCaseAttribute.length == 0) {
       return translate('gateway.categories.notfound.message')
-    } 
-    
+    }
+
   }
 
   return {
