@@ -512,3 +512,7 @@
 .ap-editor-cpicker-wrapper .sp-palette-row {
     width: 180px;
 }
+
+.ap-editor-cpicker-wrapper .sp-palette .sp-thumb-inner {
+    border: 1px solid #d0d0d0;
+}

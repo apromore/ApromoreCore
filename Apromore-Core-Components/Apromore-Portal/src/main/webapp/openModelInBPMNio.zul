@@ -387,6 +387,10 @@
             Apromore.BPMNEditor.Plugins.FontChange.change = function() {
                zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onChangeFont'));
             };
+
+            Apromore.BPMNEditor.updateProcessName = function(processName) {
+              Apromore.BPMNEditor.app.processName = processName;
+            };
             // window.setTimeout(function() {
             //   console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
             //   console.log(editorWrapper.getCanvas()._editor.getDefinitions());
