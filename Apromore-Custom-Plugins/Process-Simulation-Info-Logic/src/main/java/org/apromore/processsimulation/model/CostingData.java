@@ -22,28 +22,37 @@
 
 package org.apromore.processsimulation.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
+@Jacksonized
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Resource {
-    @XmlAttribute
-    private String id;
-    @XmlAttribute
-    private String name;
-    @XmlAttribute
-    private String timetableId;
-    @XmlAttribute
-    private long totalAmount;
-    @XmlAttribute
-    private double costPerHour;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CostingData {
+    private static final Double DEFAULT_COST = 0.0D;
+
+    @Getter
+    private final String perspective;
+
+    @Getter
+    private final String currency;
+
+    @Getter(AccessLevel.NONE)
+    private final Map<String, Double> costRates;
+
+    public static final CostingData EMPTY = CostingData.builder().currency("AUD").costRates(new HashMap<>()).build();
+
+    public Double getCost(@NonNull String attributeId) {
+        return costRates.getOrDefault(attributeId, DEFAULT_COST);
+    }
+
+    public Map<String, Double> getCostRates() {
+        return costRates;
+    }
 }

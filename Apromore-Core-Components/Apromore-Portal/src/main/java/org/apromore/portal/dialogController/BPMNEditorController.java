@@ -231,6 +231,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       }
 
       param.put("nativeType", process.getOriginalNativeType());
+      param.put("qbpProcessMaxLimit", mainC.getConfig().getMaxAllowedProcesses());
 
       this.setTitle(
           editSession.getProcessName() + " (" + "v" + editSession.getCurrentVersionNumber() + ")");
@@ -690,6 +691,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("doAutoLayout", "false");
     param.put("username", currentUserType.getUsername());
     param.put("isNewProcess", false);
+    //View mode doesn't use the simulator so this is a dummy value
+    param.put("qbpProcessMaxLimit", 25000);
     Executions.getCurrent().pushArg(param);
   }
 

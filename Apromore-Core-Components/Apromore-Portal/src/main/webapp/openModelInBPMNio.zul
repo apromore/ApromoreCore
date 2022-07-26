@@ -405,6 +405,8 @@
             zk.Widget.$('$slider').setCurpos(newFontSize);
             Apromore.BPMNEditor.app.editor.changeFontSize(newFontSize);
           }
+
+          Apromore.BPMNEditor.qbpProcessMaxLimit = (${arg.qbpProcessMaxLimit})?${arg.qbpProcessMaxLimit}:25000;
         ]]>
       </n:script>
     </n:span>
