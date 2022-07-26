@@ -60,16 +60,18 @@ public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> 
     FolderType currentFolder = null;
     ProcessSummaryType processSummaryType;
 
-    public SubProcessTreeRenderer(FolderType currentFolder,ProcessSummaryType processSummaryType,List<Integer> processChainFolder) {
+    public SubProcessTreeRenderer(FolderType currentFolder, ProcessSummaryType processSummaryType,
+                                  List<Integer> processChainFolder) {
         searchResult = null;
         this.currentFolder = currentFolder;
-        this.processSummaryType=processSummaryType;
-        this.processChainFolder=processChainFolder;
+        this.processSummaryType = processSummaryType;
+        this.processChainFolder = processChainFolder;
         publishEvent(processSummaryType);
     }
 
     public SubProcessTreeRenderer(Map<FolderTreeNodeTypes, List<Integer>> searchResult) {
         this.searchResult = searchResult;
+        this.processChainFolder = List.of(0);
         publishEvent(null);
     }
 
@@ -122,7 +124,7 @@ public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> 
 
     private void renderProcess(Treeitem treeItem, FolderTreeNode ctn, Treerow dataRow, Hlayout hl) {
         SummaryType summaryType = (SummaryType) ctn.getData();
-        if(this.processSummaryType!=null && this.processSummaryType.getId().equals(summaryType.getId())){
+        if (this.processSummaryType != null && this.processSummaryType.getId().equals(summaryType.getId())) {
             treeItem.setSelected(true);
             treeItem.setFocus(true);
         }
@@ -142,7 +144,7 @@ public class SubProcessTreeRenderer implements TreeitemRenderer<FolderTreeNode> 
         FolderType folder = (FolderType) ctn.getData();
         hideOrShowTreeItem(treeItem, folder.getId(), FolderTreeNodeTypes.Folder);
 
-        if(this.processChainFolder!=null && this.processChainFolder.contains(folder.getId())){
+        if (this.processChainFolder != null && this.processChainFolder.contains(folder.getId())) {
             treeItem.setOpen(true);
         }
 
