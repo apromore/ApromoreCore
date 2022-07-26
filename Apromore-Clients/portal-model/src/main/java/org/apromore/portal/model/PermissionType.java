@@ -58,6 +58,8 @@ public enum PermissionType {
     SEARCH_MODELS("7c0f5dc2-7d39-456e-b1cb-139bb030ee98", "Search similar models"),
     PUBLISH_MODELS("607b5dfe-9508-11ec-b909-0242ac120002", "Publish models"),
     REST_APIS("0decac8d-b9a2-4424-8174-aace22ba4f39", "Access rest apis"),
+    PREDICTOR_MANAGE("be297f1e-f85d-4606-8a03-495eb6b4e431", "Manage predictions"),
+    PREDICTION_VIEW("1aaedd57-a620-4ea7-9d4a-27db502e9116", "View predictors"),
     UNREGISTERED("", "");
 
     protected String id;
