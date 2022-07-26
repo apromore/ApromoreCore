@@ -14,9 +14,13 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
       return variable.name;
     });
 
-    categoryList= variableWithNotEmptyName && variableWithNotEmptyName.length > 0 && variableWithNotEmptyName.map(function (variable) {
+    categoryList = variableWithNotEmptyName && variableWithNotEmptyName.length > 0 && variableWithNotEmptyName.map(function (variable) {
+      let type ='C - ';
+      if(variable.type && variable.type != 'ENUM'){
+        type ='N - ';
+      }
       return {
-        name: variable.name,
+        name: type + variable.name,
         value: variable.name
       };
     });
@@ -25,12 +29,12 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
 
   let selectedCaseAttribute;
   var entrySelectbox = entryFactory.selectBox(translate, {
-    id: 'clause-case-attribute-'+options.outgoingElementId,
+    id: 'clause-case-attribute-' + options.outgoingElementId,
     label: translate('gateway.clause.case.attribute.label'),
     modelProperty: 'variableName',
     selectOptions: createCaseAttributeOptions,
-    hidden: function(element, node){
-        return !getSelectedClause(element, node);
+    hidden: function (element, node) {
+      return !getSelectedClause(element, node);
     },
     get: function (_element, _node) {
       let clause = getSelectedClause(_element, _node);
@@ -51,16 +55,29 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
     return selectedCaseAttribute;
   }
 
-  function isNotExistCategories(){
-    if( !categoryList || categoryList.length == 0){
+  function isNumeric() {
+    var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
+    let selectedCaseAttributeText = getSelectedCaseAttribute();
+    let selectedCaseAttribute = variables && variables.values && variables.values.filter(function (variable) {
+      return variable.name === selectedCaseAttributeText;
+    });
+    if (selectedCaseAttribute && selectedCaseAttribute.length > 0) {
+      return selectedCaseAttribute[0].type && selectedCaseAttribute[0].type === 'NUMERIC';
+    }
+    return false;
+  }
+
+  function isNotExistCategories() {
+    if (!categoryList || categoryList.length == 0) {
       return translate('gateway.caseAttribute.notfound.message')
-    } 
-    
+    }
+
   }
   return {
     selectBox: entrySelectbox,
     getSelectedCaseAttribute: getSelectedCaseAttribute,
-    isNotExistCategories : isNotExistCategories
+    isNotExistCategories: isNotExistCategories,
+    isNumeric: isNumeric
   }
 
 };

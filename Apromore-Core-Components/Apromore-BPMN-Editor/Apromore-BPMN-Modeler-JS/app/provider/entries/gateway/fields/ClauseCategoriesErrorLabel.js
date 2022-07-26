@@ -3,6 +3,7 @@
 var label = function(options) {
     let isNotExistCategories = options.isNotExistCategories;
     let getSelectedClause = options.getSelectedClause;
+    let isNumeric = options.isNumeric;
     let error ;
   return {
     id: options.id,
@@ -23,6 +24,9 @@ var label = function(options) {
     showLabel: function(element, node) {
       if (typeof options.showLabel === 'function') {
         return options.showLabel(element, node);
+      }
+      if(isNumeric){
+        return false;
       }
       return !!error;
     }

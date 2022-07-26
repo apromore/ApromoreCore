@@ -302,6 +302,10 @@
           "name": "values",
           "type": "Enum",
           "isMany": true
+        },
+        {
+          "name": "numeric",
+          "type": "Numeric"        
         }
       ]
     },
@@ -336,6 +340,34 @@
         },
         {
           "name": "rawProbability",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },    
+    {
+      "name": "Numeric",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "type",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "mean",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg1",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "arg2",
           "type": "String",
           "isAttr": true
         }
@@ -470,6 +502,11 @@
        },
        { 
         "name": "variableEnumValue",
+        "type": "String",
+        "isAttr": true
+       },
+       { 
+        "name": "variableNumValue",
         "type": "String",
         "isAttr": true
        }
