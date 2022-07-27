@@ -104,14 +104,14 @@ ValidationErrorHelper.validateProcessInstances = function (bpmnFactory, elementR
     message = translate('invalid.notInteger {element}', { element: label });
   } else {
     try {
-        if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
-          let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
-          if (processInstances > qbpProcessMaxLimit) {
-            message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
-          }
+      if (Apromore && Apromore.BPMNEditor && Apromore.BPMNEditor.qbpProcessMaxLimit) {
+        let qbpProcessMaxLimit = Apromore.BPMNEditor.qbpProcessMaxLimit;
+        if (processInstances > qbpProcessMaxLimit) {
+          message = translate('invalid.totalcases {totalcase}', { totalcase: qbpProcessMaxLimit });
         }
-    } catch (e) {
-        // pass
+      }
+    } catch(e) {
+      // pass
     }
   }
 
@@ -474,6 +474,7 @@ ValidationErrorHelper.validateVariableName = function (bpmnFactory, elementRegis
   var id = options.id,
     name = options.name,
     label = options.label,
+    elementId = options.elementId,
     resource = options.resource,
     message;
 
@@ -482,9 +483,9 @@ ValidationErrorHelper.validateVariableName = function (bpmnFactory, elementRegis
   }
 
   if (resource && message) {
-    this.createValidationError(bpmnFactory, elementRegistry, {
+    this.createValidationErrorForCaseAttriute(bpmnFactory, elementRegistry, {
       id: id,
-      elementId: id,
+      elementId: elementId,
       message: message
     });
   }
@@ -492,30 +493,29 @@ ValidationErrorHelper.validateVariableName = function (bpmnFactory, elementRegis
   return { message: message };
 };
 
-
 ValidationErrorHelper.validateCategory = function (bpmnFactory, elementRegistry, translate, options) {
   let id = options.id,
     resource = options.resource,
     elementId = options.elementId,
     name = resource && resource.name,
-    probability = resource && resource.assignmentProbability,
+    probability = (resource && resource.assignmentProbability) ? resource.assignmentProbability.toString() : '0',
     errorMessage;
   let description = 'Probability';
 
   if (!name || name.trim() === '') {
     errorMessage = translate('invalid.empty.category');
   }
-  else if (!probability || probability.trim() === '') {
+  else if (probability.trim && probability.trim() === '') {
     errorMessage = translate('invalid.probability {element}', { element: description });
   } else if (!isValidNumber(probability)) {
     errorMessage = translate('invalid.notDigit {element}', { element: description });
   } else if (probability < 0) {
     errorMessage = translate('invalid.notInteger {element}', { element: description });
-  } else if (probability > 100) {
+  } else if (probability > 1) {
     errorMessage = translate('invalid.exceed100% {element}', { element: description });
   }
   if (resource && errorMessage) {
-    this.createValidationError(bpmnFactory, elementRegistry, {
+    this.createValidationErrorForCaseAttriute(bpmnFactory, elementRegistry, {
       id: id,
       elementId: elementId,
       message: errorMessage
@@ -551,12 +551,12 @@ ValidationErrorHelper.validateWithAllCategory = function (bpmnFactory, elementRe
       }
 
     });
-    if (sum != 100) {
+    if (sum != 1) {
       errorMessage = translate('general.category.sum.error');
     }
   }
   if (errorMessage) {
-    this.createValidationError(bpmnFactory, elementRegistry, {
+    this.createValidationErrorForCaseAttriute(bpmnFactory, elementRegistry, {
       id: id,
       elementId: elementId,
       message: errorMessage
@@ -571,6 +571,7 @@ ValidationErrorHelper.validateWithAllVariables = function (bpmnFactory, elementR
     variables = options.variables,
     errorMessage,
     returnMsg;
+
   if (!variables || !variables.length) {
     return;
   }
@@ -588,7 +589,7 @@ ValidationErrorHelper.validateWithAllVariables = function (bpmnFactory, elementR
 
 
   if (errorMessage) {
-    ValidationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+    ValidationErrorHelper.createValidationErrorForCaseAttriute(bpmnFactory, elementRegistry, {
       id: id,
       elementId: duplicateVariable,
       message: errorMessage
@@ -603,34 +604,12 @@ ValidationErrorHelper.validateWithAllVariables = function (bpmnFactory, elementR
         && !(selectedVariable.type && selectedVariable.type === 'ENUM' && selectedVariable.values && selectedVariable.values.length > 0)) {
         errorMessage = translate('general.cases.not.valid.record {name}', { name: selectedVariable.name });
         returnMsg = errorMessage;
-        ValidationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+        ValidationErrorHelper.createValidationErrorForCaseAttriute(bpmnFactory, elementRegistry, {
           id: id,
           elementId: selectedVariable.name,
           message: errorMessage
         });
-      } else if (selectedVariable.type && selectedVariable.type === 'ENUM' && selectedVariable.values && selectedVariable.values.length > 0) {
-        if (!returnMsg) {
-          var updatedCategories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
-          if (updatedCategories && !updatedCategories.length > 0) {
-            let errorReturn = ValidationErrorHelper.validateWithAllCategory(
-              bpmnFactory,
-              elementRegistry,
-              translate,
-              Object.assign({
-                id: 'Case Attributes',
-                label: 'Case Attribute',
-                elementId: selectedVariable.name,
-                allCategories: updatedCategories || []
-              })
-            );
-            if (errorReturn && errorReturn.message) {
-              returnMsg += errorReturn.message;
-            }
-          }
-        }
-
-      }
-
+      } 
     });
   }
   return { message: returnMsg }
@@ -684,4 +663,68 @@ ValidationErrorHelper.getValidationErrorDetails = function (bpmnFactory, element
     return errors[0].message;
   }
 };
+
+ValidationErrorHelper.createValidationErrorForCaseAttriute = function (bpmnFactory, elementRegistry, options) {
+  var id = options.id,
+    elementId = options.elementId,
+    elementName = options.elementName,
+    message = options.message;
+
+  var validationErrors = ValidationErrorHelper.getErrors(bpmnFactory, elementRegistry);
+
+  var errors = validationErrors.errors && validationErrors.errors.filter(function (error) {
+    return error.id == id && error.elementId == elementId;
+  });
+
+  if (!errors || errors.length == 0) {
+    var processInstancesError = elementHelper.createElement('qbp:Error', {
+      id: id,
+      elementId: elementId,
+      elementName: elementName,
+      message: message
+    }, validationErrors, bpmnFactory);
+
+    validationErrors.errors.push(processInstancesError);
+  } else {
+    errors.elementId = elementId;
+    errors.elementName = elementName;
+    errors.message = message;
+  }
+};
+
+ValidationErrorHelper.suppressValidationErrorForNonExistentItem = function (bpmnFactory, elementRegistry, options) {
+  var caseAttributesErrors = ['Case Attributes','Case attributes', 'Case Attribute', 'Category','Numerical-Attributes-mean','Numerical-Attributes-arg1','Numerical-Attributes-arg2'];
+  var variables = options.variables;
+  var variableWithNotEmptyName = variables && variables.map(function (variable) {
+    return variable.name;
+  });
+  if (!variableWithNotEmptyName) {
+    variableWithNotEmptyName = [];
+  }
+
+  var validationErrors = ValidationErrorHelper.getErrors(bpmnFactory, elementRegistry);
+  validationErrors.errors = (validationErrors.errors || []).filter(function (error) {
+    var isCaseAttribute = error.id && caseAttributesErrors.includes(error.id);
+    if (isCaseAttribute ) {
+      var exist = variableWithNotEmptyName.includes(error.elementId);
+      return exist;
+    }
+    return true;
+  });
+
+};
+
+ValidationErrorHelper.suppressValidationErrorForCaseAttribute = function (bpmnFactory, elementRegistry, options) {
+  var id = options.id,
+  elementId = options.elementId;
+  var validationErrors = ValidationErrorHelper.getErrors(bpmnFactory, elementRegistry);
+
+  validationErrors.errors = (validationErrors.errors || []).filter(function (error) {
+    var matchedId = error.id && id ? error.id == id : false;
+    var matchedElementId = error.elementId && elementId ? error.elementId == elementId : false;
+
+    return !(matchedId && matchedElementId);
+  });
+};
+
 module.exports = ValidationErrorHelper;

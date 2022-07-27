@@ -67,6 +67,7 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
     margin-top: 5px  !important;
     color: #ff3d3d !important;
     font-size:12px !important;
+    cursor: auto !important;
 }
 
 .bpp-hidden {

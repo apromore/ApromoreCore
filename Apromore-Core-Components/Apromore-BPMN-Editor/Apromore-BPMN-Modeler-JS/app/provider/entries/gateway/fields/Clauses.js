@@ -22,7 +22,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         SequenceFlowHelper.storeClauseCurrentSelection(outgoingElementId, clause);
       }
     },
-    
+
     createExtensionElement: function (element, extensionElements, _value) {
       let expression = getExpression();
       if (!expression) {
@@ -46,6 +46,12 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       }
       SequenceFlowHelper.removeClauseSelection(outgoingElementId);
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: this.id });
+      if (expression.values.length == 1) {
+        if (sequenceFlow && sequenceFlow.values) {
+          return cmdHelper.removeElementsFromList(element, sequenceFlow, 'values',
+            null, [expression]);
+        }
+      }
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },

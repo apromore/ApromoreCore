@@ -99,7 +99,13 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
       }
       ,
       validate: function (element, values, _node) {
+        let currentDistribution = getSelectedNumericDistribution(element, _node);
+        if (!currentDistribution) {
+          return { mean: undefined };
+        }
         var validationId = this.id;
+        var selectedVariable = getSelectedVariable(element, _node);
+        let selectedName = selectedVariable && selectedVariable.name ||'';
 
         var error = validationHelper.validateDistributionMean(
           bpmnFactory,
@@ -108,19 +114,13 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
           Object.assign({
             id: validationId,
             label: meanLabel,
-            elementId: elementId || label,
+            elementId: selectedName,
             distribution: distribution
           }, postprocessDistNumber(distribution, values, 'rawMean', 'mean'))
         );
-        if (error) {
-          let currentDistribution = getSelectedNumericDistribution(element, _node);
-          if (!currentDistribution) {
-            error.message = undefined;
-          }
-        }
-
+      
         if (!error.message) {
-          validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+          validationHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationId,elementId:selectedName });
         }
 
         return { mean: error.message };
@@ -157,7 +157,14 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
       ,
 
       validate: function (element, values, _node) {
+        let currentDistribution = getSelectedNumericDistribution(element, _node);
+        if (!currentDistribution) {
+          return { arg1: undefined };
+        }
         var validationId = this.id;
+        var selectedVariable = getSelectedVariable(element, _node);
+        let selectedName = selectedVariable && selectedVariable.name ||'';
+
         var error = validationHelper.validateDistributionArg1(
           bpmnFactory,
           elementRegistry,
@@ -165,19 +172,13 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
           Object.assign({
             id: validationId,
             label: arg1Label,
-            elementId: elementId || label,
+            elementId: selectedName,
             distribution: distribution
           }, postprocessDistNumber(distribution, values, 'rawArg1', 'arg1'))
         );
-        if (error) {
-          let currentDistribution = getSelectedNumericDistribution(element, _node);
-          if (!currentDistribution) {
-            error.message = undefined;
-          }
-        }
-
+       
         if (!error.message) {
-          validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+          validationHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationId,elementId:selectedName });
         }
 
         return { arg1: error.message };
@@ -213,7 +214,13 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
       }
       ,
       validate: function (element, values, _node) {
+        let currentDistribution = getSelectedNumericDistribution(element, _node);
+        if (!currentDistribution) {
+          return { arg2: undefined };
+        }
         var validationId = this.id;
+        var selectedVariable = getSelectedVariable(element, _node);
+        let selectedName = selectedVariable && selectedVariable.name ||'';
 
         var error = validationHelper.validateDistributionArg2(
           bpmnFactory,
@@ -222,7 +229,7 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
           Object.assign({
             id: validationId,
             label: arg2Label,
-            elementId: elementId || label,
+            elementId: selectedName,
             distribution: distribution
           }, postprocessDistNumber(distribution, values, 'rawArg2', 'arg2'))
         );
@@ -234,7 +241,7 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
         }
 
         if (!error.message) {
-          validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+          validationHelper.suppressValidationErrorForCaseAttribute(bpmnFactory, elementRegistry, { id: validationId,elementId:selectedName });
         }
 
         return { arg2: error.message };
@@ -250,7 +257,8 @@ module.exports = function (elementRoot, bpmnFactory, elementRegistry, translate,
   }
 
   var createDistributionFields = function () {
-    validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: elementId || label });
+   
+    // validationHelper.suppressValidationError(bpmnFactory, elementRegistry, { elementId: elementId || label });
     return {
       'fixed': function () {
         if (distribution) {

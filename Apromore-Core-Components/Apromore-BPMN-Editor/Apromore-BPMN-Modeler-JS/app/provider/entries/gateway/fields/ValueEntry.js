@@ -34,6 +34,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
     validate: function(element, values, node) {
       let clause = getSelectedClause(element, node);
+      let isToskip = !isNumeric() || !clause ;
+      if(isToskip){
+        validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+        return { variableNumValue: undefined };
+      }
 
       if (clause) {
         var validationId =  options.outgoingElementId;
@@ -46,7 +51,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
         });
 
         if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
+          validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
         }
 
         return { variableNumValue: error.message };
