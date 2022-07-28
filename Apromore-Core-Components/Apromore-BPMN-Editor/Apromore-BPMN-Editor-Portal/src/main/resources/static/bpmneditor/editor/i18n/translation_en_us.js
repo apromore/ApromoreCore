@@ -439,4 +439,8 @@ Apromore.I18N.Attachment.hideDesc = "Hide attachments";
 
 if(!Apromore.I18N.FontSize) Apromore.I18N.FontSize = {};
 Apromore.I18N.FontSize.fontSizeDesc= "Change font size";
-Apromore.I18N.FontSize.fontsize ="Change Font Size";
+Apromore.I18N.FontSize.fontsize ="Change font size";
+
+if(!Apromore.I18N.ShapeSize) Apromore.I18N.ShapeSize = {};
+Apromore.I18N.ShapeSize.shapeSizeDesc= "Resize";
+Apromore.I18N.ShapeSize.shapeSize ="Resize";

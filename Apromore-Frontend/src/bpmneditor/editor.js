@@ -21,6 +21,9 @@
  * DEALINGS IN THE SOFTWARE.
  **/
 
+import interact from 'interactjs';
+import { mean } from 'ramda';
+
 import Log from './logger';
 import Utils from './utils';
 // import { GLYPHS } from './assets';
@@ -34,6 +37,9 @@ import { SYMBOLS } from './assets';
  */
 export default class Editor {
     constructor(options) {
+        this.shapeResizerInitialized = false;
+        this.shapeResizerVisible = false;
+        this.shapeResizerBeingLaunched = false;
         this.dirty = false;
         this.actualEditor = undefined;
         // this.preventFitDelay = options.preventFitDelay;
@@ -608,4 +614,124 @@ export default class Editor {
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
+    initShapeSize() {
+        const me = this;
+        const modeler = this.actualEditor
+        if (!modeler) {
+            return;
+        }
+
+        if (this.shapeResizerVisible) {
+            $('#shape-resizer').hide();
+            this.shapeResizerVisible = false;
+            return;
+        }
+
+        this.shapeResizerBeingLaunched = true;
+
+        function updateResize(event) {
+          const pos = $('#shape-resizer').offset();
+          let width = Math.round(event.pageX - pos.left);
+          let height = Math.round(event.pageY - pos.top);
+
+          Object.assign(event.target.style, {
+            width: `${width}px`,
+            height: `${height}px`
+          })
+
+          return {
+            width, height
+          }
+        }
+
+        function reconcileSizes() {
+            const elements = modeler.get('selection').get() || [];
+            const widths = [];
+            const heights = [];
+
+            elements.forEach((element) => {
+                widths.push(element.width || 100);
+                heights.push(element.height || 50);
+            });
+            if (!elements.length) {
+                return {
+                    width: 100,
+                    height: 50
+                }
+            }
+            return {
+                width: mean(widths),
+                height: mean(heights)
+            }
+        }
+
+        if (!this.shapeResizerInitialized) {
+            const pos = $('#ap-id-editor-shapechange-btn').offset();
+            $('#shape-resizer').css({
+                left: pos.left + 'px',
+                top: (pos.top + 32) + 'px',
+            });
+            $(document).click(function(event) {
+              if(
+                event.target != document.getElementById('shape-resizer') &&
+                me.shapeResizerVisible &&
+                !me.shapeResizerBeingLaunched
+              ) {
+                $('#shape-resizer').hide();
+                me.shapeResizerVisible = false;
+              }
+
+              if (me.shapeResizerBeingLaunched) {
+                me.shapeResizerBeingLaunched = false;
+              }
+            });
+            interact('#shape-resizer')
+              .resizable({
+                margin: 4,
+                edges: { top: false, left: false, bottom: true, right: true },
+                listeners: {
+                  move: function (event) {
+                    updateResize(event)
+                  },
+                  end (event) {
+                    me.changeShapeSize(updateResize(event))
+                  }
+                }
+              });
+            this.shapeResizerInitialized = true;
+        }
+
+        // Set shown size based on the selected elements
+        const initialSize = reconcileSizes();
+        $('#shape-resizer').css({
+            width: initialSize.width + 'px',
+            height: initialSize.height + 'px',
+        });
+        $('#shape-resizer').show();
+        this.shapeResizerVisible = true;
+    }
+
+    changeShapeSize(size) {
+        const modeler = this.actualEditor
+        if (!modeler) {
+            return;
+        }
+        const modeling = modeler.get('modeling');
+
+        let eventBus = modeler.get('eventBus');
+        let elements = modeler.get('selection').get();
+        elements.forEach((element) => {
+            modeling.resizeShape(
+                element,
+                {
+                    x: element.x,
+                    y: element.y,
+                    width: size.width,
+                    height: size.height
+                }
+            );
+        });
+        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
 };
