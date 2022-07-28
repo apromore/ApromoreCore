@@ -124,4 +124,9 @@ module.exports = {
   'gateway.attribute.value.label':'Value',
   'general.cases.numrical.distribution.label': 'Distribution',
   'general.cases.not.valid.record {name}': 'No valid records are found for {name}',
+  'gateway.attribute.invalid.uppper.lower.value': 'Lower bound value should be less than upper bound value',
+  'gateway.attribute.invalid.bound.value': 'Invalid upper bound/lower bound value',
+  'general.attribute.used.in.gateway': 'Failed to delete. Case attribute is being used in gateway.',
+  'general.category.used.in.gateway': 'Failed to delete. Category is being used in gateway.',
+  'general.attribute.used.in.gateway.switch': 'Not permitted to switch. Case attribute is being used in gateway.',
 };

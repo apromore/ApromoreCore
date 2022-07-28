@@ -13956,8 +13956,8 @@ module.exports = EntryFactory;
 
 var elementHelper = __webpack_require__(8),
   ProcessSimulationHelper = __webpack_require__(13),
-  isDigit = __webpack_require__(12).isDigit,
-  isValidNumber = __webpack_require__(12).isValidNumber,
+  isDigit = __webpack_require__(11).isDigit,
+  isValidNumber = __webpack_require__(11).isValidNumber,
   CategoryHelper = __webpack_require__(115);
 
 var ValidationErrorHelper = {};
@@ -14698,7 +14698,7 @@ var domQuery = __webpack_require__(2).query,
     is = __webpack_require__(1).is,
     forEach = __webpack_require__(16),
     domify = __webpack_require__(2).domify,
-    Ids = __webpack_require__(29).default;
+    Ids = __webpack_require__(30).default;
 
 var SPACE_REGEX = /\s/;
 
@@ -25966,70 +25966,6 @@ module.exports = isArray;
 
 /***/ }),
 /* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
-/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
-
-
-
-const AUX_PROPS = {
-  LEFT: 'aux-left',
-  TOP: 'aux-top',
-  WIDTH: 'aux-width',
-  HEIGHT: 'aux-height',
-  LINK_URL: 'aux-link-url',
-  LINK_TEXT: 'aux-link-text',
-  IMG_SRC: 'aux-img-src',
-  IMG_URL: 'aux-img-url',
-  ICON_URL: 'aux-icon-url',
-  ICON_TEXT: 'aux-icon-text',
-  ICON_NAME: 'aux-icon-name',
-  ICON_SET: 'aux-icon-set'
-}
-
-function getExtensionElements(element, bpmnFactory) {
-  var extensionElements = element.extensionElements;
-
-  if (!extensionElements || !extensionElements.values) {
-    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
-      { values: [] }, element, bpmnFactory);
-    element.extensionElements = extensionElements;
-  }
-
-  return extensionElements;
-}
-
-function getAux(element, bpmnFactory, type, init) {
-  var extensionElements = getExtensionElements(element, bpmnFactory);
-  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
-    type) || [])[0];
-
-  if (!aux) {
-    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
-    extensionElements.values.push(aux);
-  }
-
-  return aux;
-}
-
-function refreshOverlay(bpmnjs, element) {
-  setTimeout(function () {
-    var auxModule = bpmnjs.get('aux');
-    auxModule.createAux(element);
-  }, 500);
-}
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is;
@@ -26097,13 +26033,77 @@ module.exports = {
 };
 
 /***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AUX_PROPS", function() { return AUX_PROPS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getExtensionElements", function() { return getExtensionElements; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAux", function() { return getAux; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "refreshOverlay", function() { return refreshOverlay; });
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22);
+/* harmony import */ var bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+const AUX_PROPS = {
+  LEFT: 'aux-left',
+  TOP: 'aux-top',
+  WIDTH: 'aux-width',
+  HEIGHT: 'aux-height',
+  LINK_URL: 'aux-link-url',
+  LINK_TEXT: 'aux-link-text',
+  IMG_SRC: 'aux-img-src',
+  IMG_URL: 'aux-img-url',
+  ICON_URL: 'aux-icon-url',
+  ICON_TEXT: 'aux-icon-text',
+  ICON_NAME: 'aux-icon-name',
+  ICON_SET: 'aux-icon-set'
+}
+
+function getExtensionElements(element, bpmnFactory) {
+  var extensionElements = element.extensionElements;
+
+  if (!extensionElements || !extensionElements.values) {
+    extensionElements = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bpmn:ExtensionElements',
+      { values: [] }, element, bpmnFactory);
+    element.extensionElements = extensionElements;
+  }
+
+  return extensionElements;
+}
+
+function getAux(element, bpmnFactory, type, init) {
+  var extensionElements = getExtensionElements(element, bpmnFactory);
+  var aux = (bpmn_js_properties_panel_lib_helper_ExtensionElementsHelper__WEBPACK_IMPORTED_MODULE_1___default.a.getExtensionElements(element,
+    type) || [])[0];
+
+  if (!aux) {
+    aux = bpmn_js_properties_panel_lib_helper_ElementHelper__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(type, init, element, bpmnFactory);
+    extensionElements.values.push(aux);
+  }
+
+  return aux;
+}
+
+function refreshOverlay(bpmnjs, element) {
+  setTimeout(function () {
+    var auxModule = bpmnjs.get('aux');
+    auxModule.createAux(element);
+  }, 500);
+}
+
+/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-    extensionElementsHelper = __webpack_require__(21),
-    createUUID = __webpack_require__(12).createUUID,
-    getRoot = __webpack_require__(12).getRoot;
+    extensionElementsHelper = __webpack_require__(22),
+    createUUID = __webpack_require__(11).createUUID,
+    getRoot = __webpack_require__(11).getRoot;
 
 var ProcessSimulationHelper = {
   prevRoot: undefined
@@ -26475,9 +26475,200 @@ function translate(template, replacements) {
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var elementHelper = __webpack_require__(8),
+  ProcessSimulationHelper = __webpack_require__(13),
+  createUUID = __webpack_require__(11).createUUID,
+  CaseAttributeHelper = __webpack_require__(29);
+
+var SequenceFlowHelper = {};
+var probalityConditionMap = {};
+var currentClauseSelection = {};
+
+SequenceFlowHelper.getSequenceFlows = function (bpmnFactory, elementRegistry) {
+  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
+
+  var sequenceFlows = processSimulationInfo.sequenceFlows;
+
+  if (!sequenceFlows) {
+    sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
+      { values: [] }, processSimulationInfo, bpmnFactory
+    );
+
+    processSimulationInfo.sequenceFlows = sequenceFlows;
+  }
+
+  return sequenceFlows;
+};
+
+SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
+  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+
+  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
+    return el.elementId === id;
+  }) || [])[0];
+
+  if (!sequenceFlow) {
+    if (!conditional) {
+      sequenceFlow = elementHelper.createElement(
+        'qbp:SequenceFlow',
+        {
+          elementId: id,
+          executionProbability: '',
+          rawExecutionProbability: '',
+          values: []
+        }, sequenceFlows, bpmnFactory
+      );
+    } else {
+      sequenceFlow = elementHelper.createElement(
+        'qbp:SequenceFlow',
+        {
+          elementId: id,
+          values: []
+        }, sequenceFlows, bpmnFactory
+      );
+
+    }
+
+    sequenceFlows.values.push(sequenceFlow);
+  }
+
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.getSequenceFlowByElementId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
+  let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+
+  let sequenceFlow = sequenceFlows && (sequenceFlows.get('values').filter(function (el) {
+    return el.elementId === outgoingElementId;
+  }) || [])[0];
+
+  return sequenceFlow;
+};
+
+
+SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
+  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
+
+  if (!sequenceFlow || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    expression = elementHelper.createElement(
+      'qbp:Expression',
+      {
+        operator: 'AND',
+        values: []
+      }, sequenceFlow, bpmnFactory
+    );
+    sequenceFlow.values = [expression];
+  }
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.createExpression = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
+  if (!sequenceFlow || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    expression = elementHelper.createElement(
+      'qbp:Expression',
+      {
+        operator: 'AND',
+        values: []
+      }, sequenceFlow, bpmnFactory
+    );
+    sequenceFlow.values = [expression];
+  }
+  return sequenceFlow;
+};
+
+SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
+
+  if (!sequenceFlow || !sequenceFlow.values || !conditional) {
+    return;
+  }
+
+  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
+  if (!expression) {
+    return;
+  }
+
+  let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
+  let defaultVariable = '';
+  if (variables && variables.length > 0) {
+    defaultVariable = variables[0].name;
+  }
+
+  let clause = elementHelper.createElement(
+    'qbp:Clause',
+    {
+      operator: 'EQ',
+      variableName: defaultVariable,
+      variableEnumValue: '',
+    }, expression, bpmnFactory
+  );
+
+  return clause;
+};
+
+SequenceFlowHelper.storeProbalityByGroup = function (groupId, isProbability) {
+  probalityConditionMap[groupId] = isProbability && isProbability;
+}
+
+SequenceFlowHelper.getProbalityByGroup = function (groupId) {
+  if (!probalityConditionMap || !probalityConditionMap[groupId]) {
+    return false;
+  }
+  else {
+    return probalityConditionMap[groupId];
+  }
+}
+
+SequenceFlowHelper.storeClauseCurrentSelection = function (elementId, clause) {
+  if (clause && elementId) {
+    currentClauseSelection[elementId] = clause;
+  }
+}
+SequenceFlowHelper.removeClauseSelection = function (elementId) {
+  if (elementId) {
+    currentClauseSelection[elementId] = undefined;
+  }
+}
+SequenceFlowHelper.getClauseCurrentSelection = function (elementId) {
+  if (!elementId || !currentClauseSelection[elementId]) {
+    return;
+  }
+  else {
+    return currentClauseSelection[elementId];
+  }
+}
+
+
+
+
+
+SequenceFlowHelper.getExistingSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
+  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
+    return el.elementId === id;
+  }) || [])[0];
+
+  return sequenceFlow;
+};
+
+module.exports = SequenceFlowHelper;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var arrayLikeKeys = __webpack_require__(157),
     baseKeys = __webpack_require__(90),
-    isArrayLike = __webpack_require__(20);
+    isArrayLike = __webpack_require__(21);
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -26515,7 +26706,7 @@ module.exports = keys;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(42),
@@ -26554,7 +26745,7 @@ module.exports = isArrayLike;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26615,7 +26806,7 @@ module.exports = ExtensionElementsHelper;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(384);
@@ -26623,7 +26814,7 @@ module.exports = __webpack_require__(384);
 module.exports.Collection = __webpack_require__(142);
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -43831,7 +44022,7 @@ module.exports.Collection = __webpack_require__(142);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(57), __webpack_require__(58)(module)))
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -46477,7 +46668,7 @@ if (true) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /**
@@ -46512,7 +46703,7 @@ module.exports = isObjectLike;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseMatches = __webpack_require__(170),
@@ -46549,7 +46740,7 @@ module.exports = baseIteratee;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsNative = __webpack_require__(182),
@@ -46572,12 +46763,12 @@ module.exports = getNative;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
   ProcessSimulationHelper = __webpack_require__(13),
-  createUUID = __webpack_require__(12).createUUID;
+  createUUID = __webpack_require__(11).createUUID;
 
 var CaseAttributeHelper = {};
 
@@ -46599,7 +46790,7 @@ CaseAttributeHelper.getVariables = function (bpmnFactory, elementRegistry) {
 CaseAttributeHelper.createVariable = function (bpmnFactory, elementRegistry) {
   let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
   let index = 1;
-  let prefix = 'Categorical case attribute ';
+  let prefix = 'Case attribute ';
   if (variables && variables.length) {
     let found;
     do {
@@ -46639,7 +46830,7 @@ CaseAttributeHelper.getAllVariables = function (bpmnFactory, elementRegistry) {
 module.exports = CaseAttributeHelper;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46810,197 +47001,6 @@ Ids.prototype.clear = function () {
 /* harmony default export */ __webpack_exports__["default"] = (Ids);
 //# sourceMappingURL=index.esm.js.map
 
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var elementHelper = __webpack_require__(8),
-  ProcessSimulationHelper = __webpack_require__(13),
-  createUUID = __webpack_require__(12).createUUID,
-  CaseAttributeHelper = __webpack_require__(28);
-
-var SequenceFlowHelper = {};
-var probalityConditionMap = {};
-var currentClauseSelection = {};
-
-SequenceFlowHelper.getSequenceFlows = function (bpmnFactory, elementRegistry) {
-  var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
-
-  var sequenceFlows = processSimulationInfo.sequenceFlows;
-
-  if (!sequenceFlows) {
-    sequenceFlows = elementHelper.createElement('qbp:SequenceFlows',
-      { values: [] }, processSimulationInfo, bpmnFactory
-    );
-
-    processSimulationInfo.sequenceFlows = sequenceFlows;
-  }
-
-  return sequenceFlows;
-};
-
-SequenceFlowHelper.getSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
-  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
-
-  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
-    return el.elementId === id;
-  }) || [])[0];
-
-  if (!sequenceFlow) {
-    if (!conditional) {
-      sequenceFlow = elementHelper.createElement(
-        'qbp:SequenceFlow',
-        {
-          elementId: id,
-          executionProbability: '',
-          rawExecutionProbability: '',
-          values: []
-        }, sequenceFlows, bpmnFactory
-      );
-    } else {
-      sequenceFlow = elementHelper.createElement(
-        'qbp:SequenceFlow',
-        {
-          elementId: id,
-          values: []
-        }, sequenceFlows, bpmnFactory
-      );
-
-    }
-
-    sequenceFlows.values.push(sequenceFlow);
-  }
-
-  return sequenceFlow;
-};
-
-SequenceFlowHelper.getSequenceFlowByElementId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
-  let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
-
-  let sequenceFlow = sequenceFlows && (sequenceFlows.get('values').filter(function (el) {
-    return el.elementId === outgoingElementId;
-  }) || [])[0];
-
-  return sequenceFlow;
-};
-
-
-SequenceFlowHelper.getExpressionBySequenceFlowId = function (bpmnFactory, elementRegistry, outgoingElementId, conditional) {
-  let sequenceFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outgoingElementId, conditional);
-
-  if (!sequenceFlow || !conditional) {
-    return;
-  }
-
-  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-  if (!expression) {
-    expression = elementHelper.createElement(
-      'qbp:Expression',
-      {
-        operator: 'AND',
-        values: []
-      }, sequenceFlow, bpmnFactory
-    );
-    sequenceFlow.values = [expression];
-  }
-  return sequenceFlow;
-};
-
-SequenceFlowHelper.createExpression = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
-  if (!sequenceFlow || !conditional) {
-    return;
-  }
-
-  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-  if (!expression) {
-    expression = elementHelper.createElement(
-      'qbp:Expression',
-      {
-        operator: 'AND',
-        values: []
-      }, sequenceFlow, bpmnFactory
-    );
-    sequenceFlow.values = [expression];
-  }
-  return sequenceFlow;
-};
-
-SequenceFlowHelper.createClause = function (bpmnFactory, elementRegistry, sequenceFlow, conditional) {
-
-  if (!sequenceFlow || !sequenceFlow.values || !conditional) {
-    return;
-  }
-
-  let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
-  if (!expression) {
-    return;
-  }
-
-  let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
-  let defaultVariable = '';
-  if (variables && variables.length > 0) {
-    defaultVariable = variables[0].name;
-  }
-
-  let clause = elementHelper.createElement(
-    'qbp:Clause',
-    {
-      operator: 'EQ',
-      variableName: defaultVariable,
-      variableEnumValue: '',
-    }, expression, bpmnFactory
-  );
-
-  return clause;
-};
-
-SequenceFlowHelper.storeProbalityByGroup = function (groupId, isProbability) {
-  probalityConditionMap[groupId] = isProbability && isProbability;
-}
-
-SequenceFlowHelper.getProbalityByGroup = function (groupId) {
-  if (!probalityConditionMap || !probalityConditionMap[groupId]) {
-    return false;
-  }
-  else {
-    return probalityConditionMap[groupId];
-  }
-}
-
-SequenceFlowHelper.storeClauseCurrentSelection = function (elementId, clause) {
-  if (clause && elementId) {
-    currentClauseSelection[elementId] = clause;
-  }
-}
-SequenceFlowHelper.removeClauseSelection = function (elementId) {
-  if (elementId) {
-    currentClauseSelection[elementId] = undefined;
-  }
-}
-SequenceFlowHelper.getClauseCurrentSelection = function (elementId) {
-  if (!elementId || !currentClauseSelection[elementId]) {
-    return;
-  }
-  else {
-    return currentClauseSelection[elementId];
-  }
-}
-
-
-
-
-
-SequenceFlowHelper.getExistingSequenceFlowById = function (bpmnFactory, elementRegistry, id, conditional) {
-  var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
-  var sequenceFlow = (sequenceFlows.get('values').filter(function (el) {
-    return el.elementId === id;
-  }) || [])[0];
-
-  return sequenceFlow;
-};
-
-module.exports = SequenceFlowHelper;
 
 /***/ }),
 /* 31 */
@@ -47507,7 +47507,7 @@ if (isWorkerEnv()) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsArguments = __webpack_require__(159),
-    isObjectLike = __webpack_require__(25);
+    isObjectLike = __webpack_require__(26);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -47844,7 +47844,7 @@ module.exports = eq;
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27);
+var getNative = __webpack_require__(28);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -47881,7 +47881,7 @@ module.exports = getMapData;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(32),
-    isObjectLike = __webpack_require__(25);
+    isObjectLike = __webpack_require__(26);
 
 /** `Object#toString` result references. */
 var symbolTag = '[object Symbol]';
@@ -49302,7 +49302,7 @@ module.exports = isPrototype;
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27),
+var getNative = __webpack_require__(28),
     root = __webpack_require__(14);
 
 /* Built-in method references that are verified to be native. */
@@ -49698,7 +49698,7 @@ module.exports = getHolder;
 var elementHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13),
     RuleHelper = __webpack_require__(133),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(11).createUUID;
 
 var TimetableHelper = {};
 
@@ -49769,8 +49769,8 @@ var entryFactory = __webpack_require__(5);
 var cmdHelper = __webpack_require__(4);
 
 var validationHelper = __webpack_require__(6);
-var normalizeNumber = __webpack_require__(12).normalizeNumber;
-var isValidNumber = __webpack_require__(12).isValidNumber;
+var normalizeNumber = __webpack_require__(11).normalizeNumber;
+var isValidNumber = __webpack_require__(11).isValidNumber;
 
 var createDistributionTypeOptions = function(translate) {
   return [{
@@ -50946,7 +50946,7 @@ module.exports = Color;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFor = __webpack_require__(155),
-    keys = __webpack_require__(19);
+    keys = __webpack_require__(20);
 
 /**
  * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -51121,7 +51121,7 @@ module.exports = toSource;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqualDeep = __webpack_require__(198),
-    isObjectLike = __webpack_require__(25);
+    isObjectLike = __webpack_require__(26);
 
 /**
  * The base implementation of `_.isEqual` which supports partial comparisons
@@ -51334,7 +51334,7 @@ module.exports = getTag;
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27),
+var getNative = __webpack_require__(28),
     root = __webpack_require__(14);
 
 /* Built-in method references that are verified to be native. */
@@ -51347,7 +51347,7 @@ module.exports = Set;
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27),
+var getNative = __webpack_require__(28),
     root = __webpack_require__(14);
 
 /* Built-in method references that are verified to be native. */
@@ -51505,7 +51505,7 @@ module.exports = castPath;
 
 var arrayFilter = __webpack_require__(67),
     baseFilter = __webpack_require__(231),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     isArray = __webpack_require__(10);
 
 /**
@@ -51581,7 +51581,7 @@ module.exports = setToString;
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27);
+var getNative = __webpack_require__(28);
 
 var defineProperty = (function() {
   try {
@@ -51995,7 +51995,7 @@ function splitStr(str, position) {
 
 var elementHelper = __webpack_require__(8),
   ProcessSimulationHelper = __webpack_require__(13),
-  createUUID = __webpack_require__(12).createUUID;
+  createUUID = __webpack_require__(11).createUUID;
 
 var CategoryHelper = {};
 
@@ -52299,9 +52299,9 @@ module.exports = selectbox;
 var assignValue = __webpack_require__(119),
     copyObject = __webpack_require__(268),
     createAssigner = __webpack_require__(269),
-    isArrayLike = __webpack_require__(20),
+    isArrayLike = __webpack_require__(21),
     isPrototype = __webpack_require__(61),
-    keys = __webpack_require__(19);
+    keys = __webpack_require__(20);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -52900,7 +52900,7 @@ module.exports = setWrapToString;
 /***/ (function(module, exports, __webpack_require__) {
 
 var elementHelper = __webpack_require__(8),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(11).createUUID;
 
 var RuleHelper = {};
 
@@ -52940,7 +52940,7 @@ module.exports = RuleHelper;
 
 var elementHelper = __webpack_require__(8),
     ProcessSimulationHelper = __webpack_require__(13),
-    createUUID = __webpack_require__(12).createUUID;
+    createUUID = __webpack_require__(11).createUUID;
 
 var ResourceHelper = {};
 
@@ -58802,7 +58802,7 @@ module.exports = baseTimes;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(32),
-    isObjectLike = __webpack_require__(25);
+    isObjectLike = __webpack_require__(26);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]';
@@ -58931,7 +58931,7 @@ module.exports = stubFalse;
 
 var baseGetTag = __webpack_require__(32),
     isLength = __webpack_require__(60),
-    isObjectLike = __webpack_require__(25);
+    isObjectLike = __webpack_require__(26);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -59044,7 +59044,7 @@ module.exports = nativeKeys;
 /* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(20);
+var isArrayLike = __webpack_require__(21);
 
 /**
  * Creates a `baseEach` or `baseEachRight` function.
@@ -59107,7 +59107,7 @@ module.exports = castFunction;
 
 var reduce = __webpack_require__(169),
     is = __webpack_require__(1).is,
-    keys = __webpack_require__(19),
+    keys = __webpack_require__(20),
     forEach = __webpack_require__(16);
 
 /**
@@ -59243,7 +59243,7 @@ UpdateBusinessObjectHandler.prototype.revert = function(context) {
 var arrayEach = __webpack_require__(59),
     baseCreate = __webpack_require__(43),
     baseForOwn = __webpack_require__(87),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     getPrototype = __webpack_require__(225),
     isArray = __webpack_require__(10),
     isBuffer = __webpack_require__(39),
@@ -60516,7 +60516,7 @@ module.exports = equalObjects;
 
 var baseGetAllKeys = __webpack_require__(207),
     getSymbols = __webpack_require__(208),
-    keys = __webpack_require__(19);
+    keys = __webpack_require__(20);
 
 /**
  * Creates an array of own enumerable property names and symbols of `object`.
@@ -60627,7 +60627,7 @@ module.exports = stubArray;
 /* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27),
+var getNative = __webpack_require__(28),
     root = __webpack_require__(14);
 
 /* Built-in method references that are verified to be native. */
@@ -60640,7 +60640,7 @@ module.exports = DataView;
 /* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(27),
+var getNative = __webpack_require__(28),
     root = __webpack_require__(14);
 
 /* Built-in method references that are verified to be native. */
@@ -60654,7 +60654,7 @@ module.exports = Promise;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isStrictComparable = __webpack_require__(100),
-    keys = __webpack_require__(19);
+    keys = __webpack_require__(20);
 
 /**
  * Gets the property names, values, and compare flags of `object`.
@@ -61549,7 +61549,7 @@ var domify = __webpack_require__(2).domify,
 var forEach = __webpack_require__(16),
     filter = __webpack_require__(105),
     get = __webpack_require__(102),
-    keys = __webpack_require__(19),
+    keys = __webpack_require__(20),
     isEmpty = __webpack_require__(232),
     isArray = __webpack_require__(10),
     isFunction = __webpack_require__(42),
@@ -62950,7 +62950,7 @@ var baseKeys = __webpack_require__(90),
     getTag = __webpack_require__(97),
     isArguments = __webpack_require__(38),
     isArray = __webpack_require__(10),
-    isArrayLike = __webpack_require__(20),
+    isArrayLike = __webpack_require__(21),
     isBuffer = __webpack_require__(39),
     isPrototype = __webpack_require__(61),
     isTypedArray = __webpack_require__(41);
@@ -63482,8 +63482,8 @@ module.exports = createSet;
 /* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(20),
-    isObjectLike = __webpack_require__(25);
+var isArrayLike = __webpack_require__(21),
+    isObjectLike = __webpack_require__(26);
 
 /**
  * This method is like `_.isArrayLike` except that it also checks if `value`
@@ -63872,7 +63872,7 @@ module.exports = keyBy;
 
 var arrayAggregator = __webpack_require__(253),
     baseAggregator = __webpack_require__(254),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     isArray = __webpack_require__(10);
 
 /**
@@ -63955,7 +63955,7 @@ module.exports = baseAggregator;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayMap = __webpack_require__(69),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     baseMap = __webpack_require__(256),
     isArray = __webpack_require__(10);
 
@@ -64014,7 +64014,7 @@ module.exports = map;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseEach = __webpack_require__(31),
-    isArrayLike = __webpack_require__(20);
+    isArrayLike = __webpack_require__(21);
 
 /**
  * The base implementation of `_.map` without support for iteratee shorthands.
@@ -64043,7 +64043,7 @@ module.exports = baseMap;
 
 var arrayReduce = __webpack_require__(258),
     baseEach = __webpack_require__(31),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     baseReduce = __webpack_require__(259),
     isArray = __webpack_require__(10);
 
@@ -64167,7 +64167,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
     is = __webpack_require__(1).is;
 
 var ElementHelper = __webpack_require__(51),
-    SequenceFlowHelper = __webpack_require__(30),
+    SequenceFlowHelper = __webpack_require__(19),
     suppressValidationError = __webpack_require__(6).suppressValidationError;
 
 var createSimulationParametersTab = __webpack_require__(262),
@@ -64823,7 +64823,7 @@ module.exports = createAssigner;
 /***/ (function(module, exports, __webpack_require__) {
 
 var eq = __webpack_require__(46),
-    isArrayLike = __webpack_require__(20),
+    isArrayLike = __webpack_require__(21),
     isIndex = __webpack_require__(40),
     isObject = __webpack_require__(17);
 
@@ -64858,9 +64858,9 @@ module.exports = isIterateeCall;
 /* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIteratee = __webpack_require__(26),
-    isArrayLike = __webpack_require__(20),
-    keys = __webpack_require__(19);
+var baseIteratee = __webpack_require__(27),
+    isArrayLike = __webpack_require__(21),
+    keys = __webpack_require__(20);
 
 /**
  * Creates a `_.find` or `_.findLast` function.
@@ -64890,7 +64890,7 @@ module.exports = createFind;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFindIndex = __webpack_require__(109),
-    baseIteratee = __webpack_require__(26),
+    baseIteratee = __webpack_require__(27),
     toInteger = __webpack_require__(121);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -65125,7 +65125,7 @@ var domQuery = __webpack_require__(2).query,
 
 var filter = __webpack_require__(105),
     forEach = __webpack_require__(16),
-    keys = __webpack_require__(19);
+    keys = __webpack_require__(20);
 
 var domify = __webpack_require__(2).domify;
 
@@ -65930,7 +65930,7 @@ var LazyWrapper = __webpack_require__(74),
     LodashWrapper = __webpack_require__(129),
     baseLodash = __webpack_require__(75),
     isArray = __webpack_require__(10),
-    isObjectLike = __webpack_require__(25),
+    isObjectLike = __webpack_require__(26),
     wrapperClone = __webpack_require__(287);
 
 /** Used for built-in method references. */
@@ -67347,11 +67347,13 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
 var cmdHelper = __webpack_require__(4),
   extensionElementsEntry = __webpack_require__(35),
-  CaseAttributeHelper = __webpack_require__(28),
+  CaseAttributeHelper = __webpack_require__(29),
   suppressValidationError = __webpack_require__(6).suppressValidationError,
   createValidationError = __webpack_require__(6).createValidationError;
 var validationHelper = __webpack_require__(6);
 var NumericalDistributionHelper = __webpack_require__(80);
+var SequenceFlowHelper = __webpack_require__(19);
+
 module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
@@ -67380,6 +67382,11 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
       if (!variables || !selectedVariable) {
         return {};
+      }
+
+      if(checkCaseAttributeNameAlreadyExist(selectedVariable)){
+        Ap.common.notify(translate('general.attribute.used.in.gateway'), 'error');
+        return cmdHelper.removeElementsFromList(element, variables, 'values', null, []);
       }
 
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedVariable.id });
@@ -67472,6 +67479,24 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
     return errorString;
   }
 
+  function checkCaseAttributeNameAlreadyExist(selectedVariable) {
+    let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+    let found = false;
+    !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+      if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+        let expression = sequenceFlow.values[0];
+        if (expression && expression.values) {
+          !found && expression.values.forEach(clause => {
+            if (clause && selectedVariable.name == clause.variableName) {
+              found =  true;
+            }
+          });
+        }
+      }
+    });
+    return found;
+  }
+
   entries.push(variableEntry);
 
   return {
@@ -67505,7 +67530,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
   validationErrorHelper = __webpack_require__(6),
-  CaseAttributeHelper = __webpack_require__(28);
+  CaseAttributeHelper = __webpack_require__(29);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -67582,8 +67607,9 @@ var entryFactory = __webpack_require__(5);
 var CategoryHelper = __webpack_require__(115);
 var cmdHelper = __webpack_require__(4);
 var validationHelper = __webpack_require__(6);
-var CaseAttributeHelper = __webpack_require__(28);
-var isValidNumber = __webpack_require__(12).isValidNumber;
+var CaseAttributeHelper = __webpack_require__(29);
+var SequenceFlowHelper = __webpack_require__(19);
+var isValidNumber = __webpack_require__(11).isValidNumber;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -67630,6 +67656,10 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         return {};
       }
       var selectedVariable = getSelectedVariable(element, node);
+      if (checkCategoryNameAlreadyExist(selectedVariable, selectedCategory)) {
+        Ap.common.notify(translate('general.category.used.in.gateway'), 'error');
+        return cmdHelper.removeElementsFromList(element, selectedVariable, 'values', null, []);
+      }
       return cmdHelper.removeElementsFromList(element, selectedVariable, 'values',
         null, [selectedCategory]);
     },
@@ -67654,7 +67684,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       allCategories = categories || [];
       let modifiedCategory = [];
       allCategories.forEach(category => {
-        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100)+'' : '0' })
+        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0' })
       });
       return modifiedCategory;
 
@@ -67724,6 +67754,26 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     }
     let categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
     return categories && categories.length > 0 && categories[idx];
+  }
+
+  function checkCategoryNameAlreadyExist(selectedVariable, selectedCategory) {
+    let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+    let found = false;
+    !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+      if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+        let expression = sequenceFlow.values[0];
+        if (expression && expression.values) {
+          !found && expression.values.forEach(clause => {
+            if (clause && selectedVariable.name == clause.variableName) {
+              if (clause.variableEnumValue && clause.variableEnumValue == selectedCategory.name) {
+                found = true;
+              }
+            }
+          });
+        }
+      }
+    });
+    return found;
   }
 
   return {
@@ -67799,6 +67849,7 @@ module.exports = label;
 var ToggleCustomFactory = __webpack_require__(312);
 var NumericalDistributionHelper = __webpack_require__(80);
 var cmdHelper = __webpack_require__(4);
+var SequenceFlowHelper = __webpack_require__(19);
 
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
@@ -67823,6 +67874,10 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         },
         set: function (element, values, node) {
             let selectedVariable = getSelectedVariable(element, node);
+            if(checkCaseAttributeNameAlreadyExist(selectedVariable)){
+                Ap.common.notify(translate('general.attribute.used.in.gateway.switch'), 'error');
+                return ;
+            }
             if (selectedVariable) {
                 if (selectedVariable.type && selectedVariable.type === 'NUMERIC' || selectedVariable.numeric) {
                     delete selectedVariable.numeric;
@@ -67838,8 +67893,27 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
             }
         }
-
+    
+    
     });
+
+    function checkCaseAttributeNameAlreadyExist(selectedVariable) {
+        let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+        let found = false;
+        !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+          if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+            let expression = sequenceFlow.values[0];
+            if (expression && expression.values) {
+              !found && expression.values.forEach(clause => {
+                if (clause && selectedVariable.name == clause.variableName) {
+                  found =  true;
+                }
+              });
+            }
+          }
+        });
+        return found;
+    }
     return {
         toggleSwitch: toggleSwitch
     }
@@ -68023,8 +68097,8 @@ module.exports = function(element,bpmnFactory, elementRegistry, translate,option
 var entryFactory = __webpack_require__(5);
 var cmdHelper = __webpack_require__(4);
 var validationHelper = __webpack_require__(6);
-var normalizeNumber = __webpack_require__(12).normalizeNumber;
-var isValidNumber = __webpack_require__(12).isValidNumber;
+var normalizeNumber = __webpack_require__(11).normalizeNumber;
+var isValidNumber = __webpack_require__(11).isValidNumber;
 var NumericalDistributionHelper = __webpack_require__(80);
 
 var createDistributionTypeOptions = function (translate) {
@@ -69676,10 +69750,10 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
   entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
-  SequenceFlowHelper = __webpack_require__(30);
+  SequenceFlowHelper = __webpack_require__(19);
 
 var validationErrorHelper = __webpack_require__(6);
-var fixNumber = __webpack_require__(12).fixNumber;
+var fixNumber = __webpack_require__(11).fixNumber;
 var ClauseWrapper = __webpack_require__(343);
 var ToggleSwitch = __webpack_require__(354);
 
@@ -69765,7 +69839,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     entryFactory = __webpack_require__(5);
-var SequenceFlowHelper = __webpack_require__(30);
+var SequenceFlowHelper = __webpack_require__(19);
 var ClauseLabelAttribute = __webpack_require__(344)
 var OperatorSelectBox = __webpack_require__(345);
 var LabelFactory = __webpack_require__(52);
@@ -69832,10 +69906,10 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
-  SequenceFlowHelper = __webpack_require__(30),
+  SequenceFlowHelper = __webpack_require__(19),
   cmdHelper = __webpack_require__(4);
 
-var createUUID = __webpack_require__(12).createUUID;
+var createUUID = __webpack_require__(11).createUUID;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
@@ -69884,7 +69958,7 @@ function createOperatorOptions() {
 var cmdHelper = __webpack_require__(4),
   extensionElementsEntry = __webpack_require__(35),
   suppressValidationError = __webpack_require__(6).suppressValidationError,
-  SequenceFlowHelper = __webpack_require__(30);
+  SequenceFlowHelper = __webpack_require__(19);
 
 module.exports = function (element, bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
@@ -69980,7 +70054,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
-  CaseAttributeHelper = __webpack_require__(28),
+  CaseAttributeHelper = __webpack_require__(29),
   cmdHelper = __webpack_require__(4);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
@@ -70069,7 +70143,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
 
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
-  CaseAttributeHelper = __webpack_require__(28);
+  CaseAttributeHelper = __webpack_require__(29);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -70159,7 +70233,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
-  CaseAttributeHelper = __webpack_require__(28);
+  CaseAttributeHelper = __webpack_require__(29);
 const { default: translate } = __webpack_require__(18);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
@@ -70318,7 +70392,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
     validate: function(element, values, node) {
       let clause = getSelectedClause(element, node);
-      let isToskip = !isNumeric() || !clause ;
+      let isToskip = !isNumeric() || !clause || clause.operator == 'BTW';
       if(isToskip){
         validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
         return { variableNumValue: undefined };
@@ -70351,8 +70425,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
   validationErrorHelper = __webpack_require__(6),
-  CustomCheckBox = __webpack_require__(353);
-
+  CustomCheckBox = __webpack_require__(353),
+  isValidNumber = __webpack_require__(11).isValidNumber;
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   var entries = [];
@@ -70360,10 +70434,11 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var getSelectedClause = options.getSelectedClause;
   var isNumeric = options.isNumeric;
   var labelLoweValue = translate('gateway.attribute.lower.bound');
+  var outgoingElementId = options.outgoingElementId;
 
   function getCurrentSelectedClause(element, node) {
-      let clause = getSelectedClause(element, node);
-      return clause;
+    let clause = getSelectedClause(element, node);
+    return clause;
   }
 
   function hide(element, node) {
@@ -70392,25 +70467,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       return cmdHelper.updateBusinessObject(element, clause, {
         variableNumValue: combinedValue || '0...0'
       });
-    },
-
-    validate: function (element, values, node) {
-      let clause = getCurrentSelectedClause(element, node);
-      if (clause) {
-        var validationId = this.id;
-        var error = validationErrorHelper.validateGatewayNumValue(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: labelLoweValue,
-          clause: clause,
-          variableNumValue: values.lowerVariableNumValue,
-        });
-
-        if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
-        }
-
-        return { variableNumValue: error.message };
-      }
     }
   });
 
@@ -70419,7 +70475,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var lowerBoundCheckbox = CustomCheckBox(translate, {
     id: 'gateway-attribute-lower-checkbox-' + options.outgoingElementId,
     label: translate('gateway.attribute.lower.bound.including'),
-    fieldLabel : labelLoweValue,
+    fieldLabel: labelLoweValue,
     modelProperty: 'isLowerBoundInclude',
     hidden: function (element, node) {
       return hide(element, node);
@@ -70463,34 +70519,15 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         variableNumValue: combinedValue || '0...0'
       });
 
-    },
-
-    validate: function (element, values, node) {
-      let clause = getCurrentSelectedClause(element, node);
-      if (clause) {
-        var validationId = this.id;
-        var error = validationErrorHelper.validateGatewayNumValue(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: labelUpperValue,
-          clause: clause,
-          variableNumValue: values.upperVariableNumValue,
-        });
-
-        if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
-        }
-
-        return { variableNumValue: error.message };
-      }
     }
   });
 
   upperValueTextField.cssClasses.push('apromore-between-container');
-  
+
   var upperBoundCheckbox = CustomCheckBox(translate, {
     id: 'gateway-attribute-upper-checkbox-' + options.outgoingElementId,
     label: translate('gateway.attribute.upper.bound.including'),
-    fieldLabel : labelUpperValue,
+    fieldLabel: labelUpperValue,
     modelProperty: 'isUpperBoundInclude',
     hidden: function (element, node) {
       return hide(element, node);
@@ -70509,9 +70546,58 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   });
 
   upperBoundCheckbox.cssClasses.push('apromore-bound-checkbox');
-  
+
   entries.push(upperBoundCheckbox);
   entries.push(upperValueTextField);
+
+
+  let LabelFactory = function () {
+    return {
+      id: 'gateway-attribute-error-' + outgoingElementId,
+      html: '<label data-value="label" ' +
+        'data-show="showLabel" ' +
+        'class="invalid-message' + (options.divider ? ' divider' : '') + '">' +
+        '</label>',
+      get: function (element, node) {
+        let elementId = 'Bound Value';
+        let clause = getCurrentSelectedClause(element, node);
+        let skipValue = !isNumeric() || !clause || clause.operator != 'BTW';
+        validationId = outgoingElementId;
+        if (skipValue) {
+          validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+          return { label: '' };
+        }
+        let lowerCurrentValue = getLowerValue(clause);
+        let upperCurrentValue = getUpperValue(clause);
+        let labelText = undefined;
+        if (isValidNumber(lowerCurrentValue) && isValidNumber(upperCurrentValue)) {
+          if (lowerCurrentValue >= upperCurrentValue) {
+            labelText = translate('gateway.attribute.invalid.uppper.lower.value');
+          }
+        } else {
+          labelText = translate('gateway.attribute.invalid.bound.value');
+        }
+        if (!labelText) {
+          validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+        } else {
+          validationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+            id: validationId,
+            elementId: elementId,
+            message: labelText
+          });
+        }
+        return { label: labelText };
+      },
+      showLabel: function (element, node) {
+        let numeric = isNumeric();
+        let clause = getCurrentSelectedClause(element, node);
+        return numeric && clause && clause.operator == 'BTW';
+      }
+    };
+
+  };
+
+  entries.push(LabelFactory());
 
   function getCombinedValue(clause, updateValue, position) {
     let value = '';
@@ -70758,7 +70844,7 @@ module.exports = checkbox;
 
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var SequenceFlowHelper = __webpack_require__(30);
+var SequenceFlowHelper = __webpack_require__(19);
 var entryFactory = __webpack_require__(5);
 var cmdHelper = __webpack_require__(4);
 var ToggleCustomFactory=__webpack_require__(355)
@@ -71074,7 +71160,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 var factory = __webpack_require__(5);
 
 var elementHelper = __webpack_require__(8),
-    extensionElementsHelper = __webpack_require__(21),
+    extensionElementsHelper = __webpack_require__(22),
     cmdHelper = __webpack_require__(4),
     utils = __webpack_require__(7);
 
@@ -71434,11 +71520,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 var entryFactory = __webpack_require__(5);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(8);
-var extensionElementsHelper = __webpack_require__(21);
+var extensionElementsHelper = __webpack_require__(22);
 var IconPickerField = __webpack_require__(365);
 var IconSetPickerField = __webpack_require__(366);
 var ImagePickerField = __webpack_require__(370);
-var { AUX_PROPS } = __webpack_require__(11);
+var { AUX_PROPS } = __webpack_require__(12);
 
 function getExtensionElements(element, bpmnFactory) {
   var extensionElements = element.extensionElements;
@@ -71736,7 +71822,7 @@ var domify = __webpack_require__(2).domify;
 var domEvent = __webpack_require__(2).event;
 var domQuery = __webpack_require__(2).query;
 var { ensureNotNull, setDefaultParameters } = __webpack_require__(82);
-var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(11);
+var { AUX_PROPS, getAux, refreshOverlay } = __webpack_require__(12);
 
 var ICONS = [
   [
@@ -73031,6 +73117,11 @@ module.exports = {
   'gateway.attribute.value.label':'Value',
   'general.cases.numrical.distribution.label': 'Distribution',
   'general.cases.not.valid.record {name}': 'No valid records are found for {name}',
+  'gateway.attribute.invalid.uppper.lower.value': 'Lower bound value should be less than upper bound value',
+  'gateway.attribute.invalid.bound.value': 'Invalid upper bound/lower bound value',
+  'general.attribute.used.in.gateway': 'Failed to delete. Case attribute is being used in gateway.',
+  'general.category.used.in.gateway': 'Failed to delete. Category is being used in gateway.',
+  'general.attribute.used.in.gateway.switch': 'Not permitted to switch. Case attribute is being used in gateway.',
 };
 
 /***/ }),
@@ -73855,10 +73946,10 @@ var inherits_browser = __webpack_require__(3);
 var inherits_browser_default = /*#__PURE__*/__webpack_require__.n(inherits_browser);
 
 // EXTERNAL MODULE: ./node_modules/lodash/lodash.js
-var lodash = __webpack_require__(23);
+var lodash = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./node_modules/ids/dist/index.esm.js
-var index_esm = __webpack_require__(29);
+var index_esm = __webpack_require__(30);
 
 // EXTERNAL MODULE: ./node_modules/min-dash/dist/index.esm.js
 var dist_index_esm = __webpack_require__(0);
@@ -77706,7 +77797,7 @@ ElementRegistry.prototype._validateId = function(id) {
 };
 
 // EXTERNAL MODULE: ./node_modules/object-refs/index.js
-var object_refs = __webpack_require__(22);
+var object_refs = __webpack_require__(23);
 var object_refs_default = /*#__PURE__*/__webpack_require__.n(object_refs);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/model/index.js
@@ -94606,7 +94697,7 @@ NavigatedViewer.prototype._modules = [].concat(
   NavigatedViewer.prototype._navigationModules
 );
 // EXTERNAL MODULE: ./node_modules/hammerjs/hammer.js
-var hammer = __webpack_require__(24);
+var hammer = __webpack_require__(25);
 var hammer_default = /*#__PURE__*/__webpack_require__.n(hammer);
 
 // CONCATENATED MODULE: ./node_modules/diagram-js/lib/features/touch/TouchInteractionEvents.js
@@ -128506,11 +128597,11 @@ var jquery_default = /*#__PURE__*/__webpack_require__.n(jquery);
 var CmdHelper = __webpack_require__(4);
 
 // EXTERNAL MODULE: ./node_modules/bpmn-js-properties-panel/lib/helper/ExtensionElementsHelper.js
-var ExtensionElementsHelper = __webpack_require__(21);
+var ExtensionElementsHelper = __webpack_require__(22);
 var ExtensionElementsHelper_default = /*#__PURE__*/__webpack_require__.n(ExtensionElementsHelper);
 
 // EXTERNAL MODULE: ./app/modules/attachment/common.js
-var common = __webpack_require__(11);
+var common = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./node_modules/interactjs/dist/interact.min.js
 var interact_min = __webpack_require__(150);

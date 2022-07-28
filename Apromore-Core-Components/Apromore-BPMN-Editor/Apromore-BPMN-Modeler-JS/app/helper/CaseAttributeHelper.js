@@ -22,7 +22,7 @@ CaseAttributeHelper.getVariables = function (bpmnFactory, elementRegistry) {
 CaseAttributeHelper.createVariable = function (bpmnFactory, elementRegistry) {
   let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
   let index = 1;
-  let prefix = 'Categorical case attribute ';
+  let prefix = 'Case attribute ';
   if (variables && variables.length) {
     let found;
     do {

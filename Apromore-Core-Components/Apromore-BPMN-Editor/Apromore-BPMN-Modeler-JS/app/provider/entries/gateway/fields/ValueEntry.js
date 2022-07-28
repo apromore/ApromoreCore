@@ -34,7 +34,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 
     validate: function(element, values, node) {
       let clause = getSelectedClause(element, node);
-      let isToskip = !isNumeric() || !clause ;
+      let isToskip = !isNumeric() || !clause || clause.operator == 'BTW';
       if(isToskip){
         validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
         return { variableNumValue: undefined };

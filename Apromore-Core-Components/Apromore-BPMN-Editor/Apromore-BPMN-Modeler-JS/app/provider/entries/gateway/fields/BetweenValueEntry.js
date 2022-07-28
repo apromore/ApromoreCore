@@ -1,8 +1,8 @@
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
   cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   validationErrorHelper = require('../../../../helper/ValidationErrorHelper'),
-  CustomCheckBox = require('./CustomCheckboxBound');
-
+  CustomCheckBox = require('./CustomCheckboxBound'),
+  isValidNumber = require('../../../../utils/Utils').isValidNumber;
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   var entries = [];
@@ -10,10 +10,11 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var getSelectedClause = options.getSelectedClause;
   var isNumeric = options.isNumeric;
   var labelLoweValue = translate('gateway.attribute.lower.bound');
+  var outgoingElementId = options.outgoingElementId;
 
   function getCurrentSelectedClause(element, node) {
-      let clause = getSelectedClause(element, node);
-      return clause;
+    let clause = getSelectedClause(element, node);
+    return clause;
   }
 
   function hide(element, node) {
@@ -42,25 +43,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       return cmdHelper.updateBusinessObject(element, clause, {
         variableNumValue: combinedValue || '0...0'
       });
-    },
-
-    validate: function (element, values, node) {
-      let clause = getCurrentSelectedClause(element, node);
-      if (clause) {
-        var validationId = this.id;
-        var error = validationErrorHelper.validateGatewayNumValue(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: labelLoweValue,
-          clause: clause,
-          variableNumValue: values.lowerVariableNumValue,
-        });
-
-        if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
-        }
-
-        return { variableNumValue: error.message };
-      }
     }
   });
 
@@ -69,7 +51,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var lowerBoundCheckbox = CustomCheckBox(translate, {
     id: 'gateway-attribute-lower-checkbox-' + options.outgoingElementId,
     label: translate('gateway.attribute.lower.bound.including'),
-    fieldLabel : labelLoweValue,
+    fieldLabel: labelLoweValue,
     modelProperty: 'isLowerBoundInclude',
     hidden: function (element, node) {
       return hide(element, node);
@@ -113,34 +95,15 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         variableNumValue: combinedValue || '0...0'
       });
 
-    },
-
-    validate: function (element, values, node) {
-      let clause = getCurrentSelectedClause(element, node);
-      if (clause) {
-        var validationId = this.id;
-        var error = validationErrorHelper.validateGatewayNumValue(bpmnFactory, elementRegistry, translate, {
-          id: validationId,
-          label: labelUpperValue,
-          clause: clause,
-          variableNumValue: values.upperVariableNumValue,
-        });
-
-        if (!error.message) {
-          validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: validationId });
-        }
-
-        return { variableNumValue: error.message };
-      }
     }
   });
 
   upperValueTextField.cssClasses.push('apromore-between-container');
-  
+
   var upperBoundCheckbox = CustomCheckBox(translate, {
     id: 'gateway-attribute-upper-checkbox-' + options.outgoingElementId,
     label: translate('gateway.attribute.upper.bound.including'),
-    fieldLabel : labelUpperValue,
+    fieldLabel: labelUpperValue,
     modelProperty: 'isUpperBoundInclude',
     hidden: function (element, node) {
       return hide(element, node);
@@ -159,9 +122,58 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   });
 
   upperBoundCheckbox.cssClasses.push('apromore-bound-checkbox');
-  
+
   entries.push(upperBoundCheckbox);
   entries.push(upperValueTextField);
+
+
+  let LabelFactory = function () {
+    return {
+      id: 'gateway-attribute-error-' + outgoingElementId,
+      html: '<label data-value="label" ' +
+        'data-show="showLabel" ' +
+        'class="invalid-message' + (options.divider ? ' divider' : '') + '">' +
+        '</label>',
+      get: function (element, node) {
+        let elementId = 'Bound Value';
+        let clause = getCurrentSelectedClause(element, node);
+        let skipValue = !isNumeric() || !clause || clause.operator != 'BTW';
+        validationId = outgoingElementId;
+        if (skipValue) {
+          validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+          return { label: '' };
+        }
+        let lowerCurrentValue = getLowerValue(clause);
+        let upperCurrentValue = getUpperValue(clause);
+        let labelText = undefined;
+        if (isValidNumber(lowerCurrentValue) && isValidNumber(upperCurrentValue)) {
+          if (lowerCurrentValue >= upperCurrentValue) {
+            labelText = translate('gateway.attribute.invalid.uppper.lower.value');
+          }
+        } else {
+          labelText = translate('gateway.attribute.invalid.bound.value');
+        }
+        if (!labelText) {
+          validationErrorHelper.suppressValidationErrorWithOnlyId(bpmnFactory, elementRegistry, { id: validationId });
+        } else {
+          validationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+            id: validationId,
+            elementId: elementId,
+            message: labelText
+          });
+        }
+        return { label: labelText };
+      },
+      showLabel: function (element, node) {
+        let numeric = isNumeric();
+        let clause = getCurrentSelectedClause(element, node);
+        return numeric && clause && clause.operator == 'BTW';
+      }
+    };
+
+  };
+
+  entries.push(LabelFactory());
 
   function getCombinedValue(clause, updateValue, position) {
     let value = '';

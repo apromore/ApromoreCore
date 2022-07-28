@@ -5,6 +5,8 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   createValidationError = require('../../../../helper/ValidationErrorHelper').createValidationError;
 var validationHelper = require('../../../../helper/ValidationErrorHelper');
 var NumericalDistributionHelper = require('../../../../helper/NumericalDistributionHelper');
+var SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper');
+
 module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
   var entries = [];
@@ -33,6 +35,11 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
       if (!variables || !selectedVariable) {
         return {};
+      }
+
+      if(checkCaseAttributeNameAlreadyExist(selectedVariable)){
+        Ap.common.notify(translate('general.attribute.used.in.gateway'), 'error');
+        return cmdHelper.removeElementsFromList(element, variables, 'values', null, []);
       }
 
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: selectedVariable.id });
@@ -123,6 +130,24 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
       })
     );
     return errorString;
+  }
+
+  function checkCaseAttributeNameAlreadyExist(selectedVariable) {
+    let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+    let found = false;
+    !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+      if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+        let expression = sequenceFlow.values[0];
+        if (expression && expression.values) {
+          !found && expression.values.forEach(clause => {
+            if (clause && selectedVariable.name == clause.variableName) {
+              found =  true;
+            }
+          });
+        }
+      }
+    });
+    return found;
   }
 
   entries.push(variableEntry);
