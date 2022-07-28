@@ -52,7 +52,7 @@ function PropertiesProvider(eventBus, canvas, bpmnFactory, elementRegistry, tran
 
   this.getTabs = function(element) {
 
-    var simulationParametersTab = createSimulationParametersTab(element, bpmnFactory, elementRegistry, translate);
+    var simulationParametersTab = createSimulationParametersTab(element, bpmnFactory, elementRegistry, translate, config);
     var taskTab = createTaskTab(element, bpmnFactory, elementRegistry, translate);
     var timetableTab = createTimetableTab(element, bpmnFactory, elementRegistry, translate);
     var resourcesTab = createResourceTab(element, bpmnFactory, elementRegistry, translate);

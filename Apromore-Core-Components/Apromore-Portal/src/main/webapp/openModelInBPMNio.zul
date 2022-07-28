@@ -229,11 +229,14 @@
               disabledButtons: disabledPlugins,
               username: '${arg.username}',
               processName: '${arg.processName}',
+              zoneId: '${arg.zoneId}'
             };
             editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
             Apromore.BPMNEditor.app = editorWrapper;
             return await editorWrapper.init(config);
           }
+
+          Apromore.zoneId = '${arg.zoneId}';
 
           Apromore.BPMNEditor.readXML = function(callback) {
             Apromore.BPMNEditor.app.getXML().then((xml) => {

@@ -7,7 +7,7 @@ var ProcessInstancesField = require('./fields/ProcessInstancesField'),
     DistributionFields = require('./fields/DistributionFields'),
     CurrencySelectBox = require('./fields/CurrencySelectBox');
 
-module.exports = function(bpmnFactory, elementRegistry, translate) {
+module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 
   var entries = [];
 
@@ -15,8 +15,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
 
   entries.push(
     ProcessInstancesField(bpmnFactory, elementRegistry, translate),
-    StartDateField(bpmnFactory, elementRegistry, translate),
-    StartTimeField(bpmnFactory, elementRegistry, translate),
+    StartDateField(bpmnFactory, elementRegistry, translate, config),
+    StartTimeField(bpmnFactory, elementRegistry, translate, config),
     TimeTableField(bpmnFactory, elementRegistry, translate),
     TrimStartField(bpmnFactory, elementRegistry, translate),
     TrimEndField(bpmnFactory, elementRegistry, translate),
