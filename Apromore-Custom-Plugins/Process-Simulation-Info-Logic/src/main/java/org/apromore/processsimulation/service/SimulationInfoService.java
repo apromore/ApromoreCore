@@ -259,22 +259,10 @@ public class SimulationInfoService {
         if (ObjectUtils.isEmpty(simulationData.getResourceCountsByRole())) {
             // No role to resource count mapping. Use the QBP_DEFAULT_RESOURCE tag and the total
             // resource count agains it.
-            String defaultResourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
-
-            builder.resources(List.of(
-                Resource.builder()
-                    .id(defaultResourceId)
-                    .name(config.getDefaultResourceName())
-                    .totalAmount(simulationData.getResourceCount())
-                    .timetableId(config.getCustomTimetableId())
-                    .build()
-            ));
-
-            resouceNameToId.put(config.getDefaultResourceName(), defaultResourceId);
-
+            builder.resources(List.of(createDefaultResource(simulationData, resouceNameToId)));
         } else {
 
-            builder.resources(simulationData.getResourceCountsByRole().entrySet().stream()
+            List<Resource> resourceList = simulationData.getResourceCountsByRole().entrySet().stream()
                 .map(roleToResourceCount -> {
                     String resourceId;
                     String resourceName;
@@ -302,11 +290,41 @@ public class SimulationInfoService {
                         .totalAmount(roleToResourceCount.getValue())
                         .timetableId(config.getCustomTimetableId())
                         .build();
-                }).collect(Collectors.toList()));
+                }).collect(Collectors.toList());
+
+            if (resouceNameToId.get(config.getDefaultResourceName()) == null
+                && !resouceNameToId.isEmpty()  // if no default exist
+                && isNodeRoleNotExistIntoResources(simulationData, resouceNameToId)) {
+                resourceList.add(createDefaultResource(simulationData, resouceNameToId));
+            }
+            builder.resources(resourceList);
+
         }
 
         return resouceNameToId;
     }
+
+    private Resource createDefaultResource(SimulationData simulationData,
+                                           Map<String, String> resourceNameToId) {
+
+        String defaultResourceId = config.getDefaultResourceIdPrefix() + config.getDefaultResourceId();
+        resourceNameToId.put(config.getDefaultResourceName(), defaultResourceId);
+        return Resource.builder()
+            .id(defaultResourceId)
+            .name(config.getDefaultResourceName())
+            .totalAmount(simulationData.getResourceCount())
+            .timetableId(config.getCustomTimetableId())
+            .build();
+    }
+
+    private boolean isNodeRoleNotExistIntoResources(final SimulationData simulationData,
+                                                    Map<String, String> resourceNameToId) {
+        return simulationData.getDiagramNodeIDs().stream().anyMatch(node -> {
+            String role = simulationData.getRoleNameByNodeId(node);
+            return resourceNameToId.get(role) == null;
+        });
+    }
+
 
     private void deriveGatewayProbabilities(
         final ProcessSimulationInfo.ProcessSimulationInfoBuilder builder,
