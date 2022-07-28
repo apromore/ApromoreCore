@@ -310,10 +310,9 @@ public class SimulationInfoService {
                 }).collect(Collectors.toList());
 
             if (resouceNameToId.get(config.getDefaultResourceName()) == null
-                && !resouceNameToId.isEmpty()) { // if no default exist
-                if (isNodeRoleNotExistIntoResources(simulationData, resouceNameToId)) {
-                    resourceList.add(createDefaultResource(simulationData, resouceNameToId));
-                }
+                && !resouceNameToId.isEmpty()  // if no default exist
+                && isNodeRoleNotExistIntoResources(simulationData, resouceNameToId)) {
+                resourceList.add(createDefaultResource(simulationData, resouceNameToId));
             }
             builder.resources(resourceList);
         }
