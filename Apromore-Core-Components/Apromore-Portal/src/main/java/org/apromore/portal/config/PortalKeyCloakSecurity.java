@@ -54,6 +54,9 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
   @Value("${portal.login-url:#{null}}")
   private String loginURL;
 
+  @Value("${assignViewerRole}")
+  boolean assignViewerRole;
+
   @Autowired
   private ManagerService manager;
 
@@ -65,7 +68,7 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
    */
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(new ApromoreKeycloakAuthenticationProvider(manager));
+    auth.authenticationProvider(new ApromoreKeycloakAuthenticationProvider(manager, assignViewerRole));
   }
 
   /**
