@@ -19,7 +19,6 @@
  * #L%
  */
 
-
 package org.apromore.processsimulation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,7 +27,6 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.extern.jackson.Jacksonized;
 
 @Jacksonized
@@ -47,10 +45,6 @@ public class CostingData {
     private final Map<String, Double> costRates;
 
     public static final CostingData EMPTY = CostingData.builder().currency("AUD").costRates(new HashMap<>()).build();
-
-    public Double getCost(@NonNull String attributeId) {
-        return costRates.getOrDefault(attributeId, DEFAULT_COST);
-    }
 
     public Map<String, Double> getCostRates() {
         return costRates;
