@@ -3,6 +3,7 @@ var CategoryHelper = require('../../../../helper/CategoryHelper');
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 var validationHelper = require('../../../../helper/ValidationErrorHelper');
 var CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
+var SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper');
 var isValidNumber = require('../../../../utils/Utils').isValidNumber;
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
@@ -50,6 +51,10 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         return {};
       }
       var selectedVariable = getSelectedVariable(element, node);
+      if (checkCategoryNameAlreadyExist(selectedVariable, selectedCategory)) {
+        Ap.common.notify(translate('general.category.used.in.gateway'), 'error');
+        return cmdHelper.removeElementsFromList(element, selectedVariable, 'values', null, []);
+      }
       return cmdHelper.removeElementsFromList(element, selectedVariable, 'values',
         null, [selectedCategory]);
     },
@@ -74,7 +79,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       allCategories = categories || [];
       let modifiedCategory = [];
       allCategories.forEach(category => {
-        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100)+'' : '0' })
+        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0' })
       });
       return modifiedCategory;
 
@@ -144,6 +149,26 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     }
     let categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
     return categories && categories.length > 0 && categories[idx];
+  }
+
+  function checkCategoryNameAlreadyExist(selectedVariable, selectedCategory) {
+    let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+    let found = false;
+    !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+      if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+        let expression = sequenceFlow.values[0];
+        if (expression && expression.values) {
+          !found && expression.values.forEach(clause => {
+            if (clause && selectedVariable.name == clause.variableName) {
+              if (clause.variableEnumValue && clause.variableEnumValue == selectedCategory.name) {
+                found = true;
+              }
+            }
+          });
+        }
+      }
+    });
+    return found;
   }
 
   return {

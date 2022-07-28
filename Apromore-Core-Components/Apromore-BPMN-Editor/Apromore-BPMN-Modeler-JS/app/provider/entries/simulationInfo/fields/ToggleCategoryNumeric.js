@@ -1,6 +1,7 @@
 var ToggleCustomFactory = require('./ToggleCustomFactory');
 var NumericalDistributionHelper = require('../../../../helper/NumericalDistributionHelper');
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
+var SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper');
 
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
@@ -25,6 +26,10 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         },
         set: function (element, values, node) {
             let selectedVariable = getSelectedVariable(element, node);
+            if(checkCaseAttributeNameAlreadyExist(selectedVariable)){
+                Ap.common.notify(translate('general.attribute.used.in.gateway.switch'), 'error');
+                return ;
+            }
             if (selectedVariable) {
                 if (selectedVariable.type && selectedVariable.type === 'NUMERIC' || selectedVariable.numeric) {
                     delete selectedVariable.numeric;
@@ -40,8 +45,27 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
             }
         }
-
+    
+    
     });
+
+    function checkCaseAttributeNameAlreadyExist(selectedVariable) {
+        let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+        let found = false;
+        !found && sequenceFlows && sequenceFlows.values && sequenceFlows.values.forEach(sequenceFlow => {
+          if (sequenceFlow && sequenceFlow.values && sequenceFlow.values[0]) {
+            let expression = sequenceFlow.values[0];
+            if (expression && expression.values) {
+              !found && expression.values.forEach(clause => {
+                if (clause && selectedVariable.name == clause.variableName) {
+                  found =  true;
+                }
+              });
+            }
+          }
+        });
+        return found;
+    }
     return {
         toggleSwitch: toggleSwitch
     }
