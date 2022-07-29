@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -209,18 +208,18 @@ public class LogImporterParquetImpl extends AbstractLogImporter implements Const
         }
     }
 
-    private void validateXLog(XLog xLog) {
-        if (!xLog.get(0).getAttributes().containsKey(CONCEPT_NAME)) {
+    private void validateXLog(XLog log) {
+        if (!log.get(0).getAttributes().containsKey(CONCEPT_NAME)) {
             return;
         }
 
-        for (XTrace xTrace : xLog) {
-            String name = xTrace.getAttributes().get(CONCEPT_NAME).toString().trim();
-            xTrace.getAttributes().put(CONCEPT_NAME,
+        for (XTrace trace : log) {
+            String name = trace.getAttributes().get(CONCEPT_NAME).toString().trim();
+            trace.getAttributes().put(CONCEPT_NAME,
                 new XAttributeLiteralImpl(CONCEPT_NAME, name));
         }
 
-        Map<String, List<XTrace>> caseIdMap = xLog.stream()
+        Map<String, List<XTrace>> caseIdMap = log.stream()
             .collect(Collectors.groupingBy(x -> x.getAttributes().get(CONCEPT_NAME).toString().trim()));
 
         for (Map.Entry<String, List<XTrace>> entry : caseIdMap.entrySet()) {
@@ -260,26 +259,26 @@ public class LogImporterParquetImpl extends AbstractLogImporter implements Const
                 trace0.clear();
                 trace0.addAll(events);
 
-                xLog.removeAll(others);
+                log.removeAll(others);
             }
         }
     }
 
-    private long getTimestamp(XEvent xEvent) {
+    private long getTimestamp(XEvent event) {
         try {
-            ZonedDateTime zdt = zonedDateTimeOf(xEvent);
+            ZonedDateTime zdt = zonedDateTimeOf(event);
             return epochMilliOf(zdt);
         } catch (Exception e) {
             return 0;
         }
     }
 
-    private long epochMilliOf(ZonedDateTime zonedDateTime){
+    private long epochMilliOf(ZonedDateTime zonedDateTime) {
         return zonedDateTime.toInstant().toEpochMilli();
     }
 
-    private ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
-        String timestamp = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+    private ZonedDateTime zonedDateTimeOf(XEvent event) {
+        String timestamp = event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
 
         timestamp = validateTimestamp(timestamp);
 
