@@ -214,7 +214,7 @@ div.ap-window-footer-actions {
 }
 
 .ap-folder-tree [class*="ap-ico-"] > div:first-child {
-    filter: opacity(70%) !important;
+    filter: none !important;
 }
 
 .ap-folder-tree .z-treerow-selected [class*="ap-ico-"] > div:first-child {
