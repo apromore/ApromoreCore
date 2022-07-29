@@ -101,8 +101,6 @@ public class PortalKeycloakRequestAuthenticator extends OAuthRequestAuthenticato
 
         String uiLocales = getQueryParamValue(OAuth2Constants.UI_LOCALES_PARAM);
         url = UriUtils.stripQueryParam(url, OAuth2Constants.UI_LOCALES_PARAM);
-        log.infof("stripped uri: %s", url);
-        log.infof("rewritten uri: %s", rewrittenRedirectUriCopy(url));
 
         KeycloakUriBuilder redirectUriBuilder = deployment.getAuthUrl().clone()
             .queryParam(OAuth2Constants.RESPONSE_TYPE, OAuth2Constants.CODE)
