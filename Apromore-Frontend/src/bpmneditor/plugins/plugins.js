@@ -9,6 +9,7 @@ import toolbarPlugin from './toolbar';
 import undoPlugin from './undo';
 import viewPlugin from './view';
 import fontChangePlugin from './fontChange';
+import shapeChangePlugin from './shapeChange';
 
 //Add plugins to list
 let Plugins = {
@@ -22,7 +23,8 @@ let Plugins = {
     Toolbar: toolbarPlugin,
     Undo: undoPlugin,
     View: viewPlugin,
-	FontChange:fontChangePlugin	
+	FontChange:fontChangePlugin,
+    ShapeChange:shapeChangePlugin
 };
 
 export default Plugins;

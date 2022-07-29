@@ -36,6 +36,7 @@
 		<plugin source="publishModel.js" name="PublishModel"/>
 		<plugin source="attachment.js" name="Attachment"/>
 		<plugin source="fontChange.js" name="FontChange"/>
+		<plugin source="shapeChange.js" name="ShapeChange"/>
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>
 	</plugins>

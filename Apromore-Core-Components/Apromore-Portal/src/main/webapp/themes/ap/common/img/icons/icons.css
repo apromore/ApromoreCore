@@ -692,6 +692,11 @@
     width: 27.2890625px !important;
 }
 
+.ap-icon-shape-resize {
+    background-image: url('shape-resize.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-share {
     background-image: url('share.svg') !important;
     width: 24.75px !important;

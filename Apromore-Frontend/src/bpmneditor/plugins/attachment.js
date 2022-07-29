@@ -43,7 +43,7 @@ export default class Attachment {
             'functionality': this.toggleAttachment.bind(this),
             'icon': this.getAttachmentIcon(),
             'description': this.getAttachmentDescription(),
-            'index': 2,
+            'index': 3,
             'groupOrder': 3
         });
 
@@ -53,7 +53,7 @@ export default class Attachment {
             'functionality': this.toggleComment.bind(this),
             'icon': this.getCommentIcon(),
             'description': this.getCommentDescription(),
-            'index': 3,
+            'index': 4,
             'groupOrder': 3
         });
 

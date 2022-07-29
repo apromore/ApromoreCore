@@ -33,6 +33,7 @@
     "dom-to-svg": "^0.12.2",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.9.0",
+    "interactjs": "^1.10.11",
     "jquery": "3.5.1",
     "jquery-ui-bundle": "^1.11.4",
     "jquery-ui-slider-pips-npm": "^1.11.4",

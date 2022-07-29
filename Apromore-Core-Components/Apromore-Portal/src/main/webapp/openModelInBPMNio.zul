@@ -391,6 +391,10 @@
             Apromore.BPMNEditor.updateProcessName = function(processName) {
               Apromore.BPMNEditor.app.processName = processName;
             };
+
+            Apromore.BPMNEditor.Plugins.ShapeChange.change = function() {
+              Apromore.BPMNEditor.app.editor.initShapeSize();
+            };
             // window.setTimeout(function() {
             //   console.log($$("div.Apromore_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
             //   console.log(editorWrapper.getCanvas()._editor.getDefinitions());
@@ -419,6 +423,7 @@
   <n:div id="editorcanvas"></n:div>
   <n:div id="js-properties-panel"></n:div>
   <n:canvas id="ap-editor-img-canvas" style="display:none;"></n:canvas>
+  <n:div id="shape-resizer"></n:div>
 
   <z:popup width="330px" id="popup">
     <z:hbox align="center" pack="center" hflex="1" spacing="5px">
