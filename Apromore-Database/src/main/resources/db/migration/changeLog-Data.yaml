@@ -2193,3 +2193,102 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "15"
+
+  - changeSet:
+      id: 20220726143800
+      author: janeh
+      comment: "add predictive monitoring permissions"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "27"
+              - column:
+                  name: row_guid
+                  value: "be297f1e-f85d-4606-8a03-495eb6b4e431"
+              - column:
+                  name: permission_name
+                  value: "Manage predictions"
+              - column:
+                  name: permission_description
+                  value: "Manage predictions"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "28"
+              - column:
+                  name: row_guid
+                  value: "1aaedd57-a620-4ea7-9d4a-27db502e9116"
+              - column:
+                  name: permission_name
+                  value: "View predictors"
+              - column:
+                  name: permission_description
+                  value: "View predictors"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "27"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "1"
+              - column:
+                  name: permissionid
+                  value: "28"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "27"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "4"
+              - column:
+                  name: permissionid
+                  value: "28"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "7"
+              - column:
+                  name: permissionid
+                  value: "27"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "7"
+              - column:
+                  name: permissionid
+                  value: "28"
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: roleid
+                  value: "8"
+              - column:
+                  name: permissionid
+                  value: "28"

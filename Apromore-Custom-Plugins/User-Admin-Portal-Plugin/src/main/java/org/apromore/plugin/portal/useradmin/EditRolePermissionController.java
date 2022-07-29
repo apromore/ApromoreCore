@@ -118,6 +118,10 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     private Checkbox rolePermissionManageAccessRights;
     @Wire
     private Checkbox rolePermissionManageUsers;
+    @Wire
+    private Checkbox rolePermissionMonitorModelTrain;
+    @Wire
+    private Checkbox rolePermissionMonitorDashView;
 
     private Role role;
     private String roleLabel;
@@ -339,6 +343,8 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         permissionToggles.put(PermissionType.USERS_EDIT, rolePermissionManageUsers);
         permissionToggles.put(PermissionType.GROUPS_EDIT, rolePermissionManageUsers);
         permissionToggles.put(PermissionType.ROLES_EDIT, rolePermissionManageUsers);
+        permissionToggles.put(PermissionType.PREDICTOR_MANAGE, rolePermissionMonitorModelTrain);
+        permissionToggles.put(PermissionType.PREDICTION_VIEW, rolePermissionMonitorDashView);
     }
 
     /**

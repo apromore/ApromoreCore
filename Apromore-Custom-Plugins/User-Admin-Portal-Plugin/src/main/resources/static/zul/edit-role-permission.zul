@@ -115,6 +115,19 @@
             </div>
         </div>
         <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_monitor_group_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionMonitorModelTrain"/>
+                    <label value="${$composer.labels.permission_monitor_model_train}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionMonitorDashView"/>
+                    <label value="${$composer.labels.permission_monitor_dash_view}"/>
+                </div>
+            </div>
+        </div>
+        <div>
             <label sclass="ap-permission-group-title" value="${$composer.labels.permission_etl_group_title}"/>
             <div sclass="ap-permission-group-box">
                 <div sclass="ap-permission-switch">
@@ -124,19 +137,6 @@
                 <div sclass="ap-permission-switch">
                     <checkbox mold="switch" id="rolePermissionEtlPipelineManage"/>
                     <label value="${$composer.labels.permission_etl_pipeline_manage}"/>
-                </div>
-            </div>
-        </div>
-        <div visible="false">
-            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_monitor_group_title}"/>
-            <div sclass="ap-permission-group-box">
-                <div sclass="ap-permission-switch">
-                    <checkbox mold="switch"/>
-                    <label value="${$composer.labels.permission_monitor_model_train}"/>
-                </div>
-                <div sclass="ap-permission-switch">
-                    <checkbox mold="switch"/>
-                    <label value="${$composer.labels.permission_monitor_dash_view}"/>
                 </div>
             </div>
         </div>
