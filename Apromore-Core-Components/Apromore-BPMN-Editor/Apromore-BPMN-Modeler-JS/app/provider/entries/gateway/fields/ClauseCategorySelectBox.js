@@ -1,6 +1,7 @@
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
   cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
-  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
+  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
+  ClauseCategoryCustomSelect = require('./ClauseCategoryCustomSelect');
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -42,7 +43,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     }
   }
 
-  let cluaseCategory = entryFactory.selectBox(translate, {
+  let cluaseCategory = ClauseCategoryCustomSelect(translate, {
     id: 'clause-category-' + options.outgoingElementId,
     label: translate('gateway.clause.category.label'),
     modelProperty: 'variableEnumValue',
@@ -53,12 +54,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     },
     get: function (_element, _node) {
       let clause = getSelectedClause(_element, _node);
-      if (clause && !clause.variableEnumValue) {
-        let filteredCaseAttribute = getCategoryOptions();
-        if (filteredCaseAttribute && filteredCaseAttribute.length > 0) {
-          clause.variableEnumValue = filteredCaseAttribute[0].value;
-        }
-      }
       return { variableEnumValue: clause && clause.variableEnumValue };
     },
     set: function (element, values, _node) {
