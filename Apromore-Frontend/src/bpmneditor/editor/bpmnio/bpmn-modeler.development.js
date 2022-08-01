@@ -55300,6 +55300,13 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
         type = 'N';
       }
       option.text = type + ' - ' + (selectedVariable && selectedVariable.name);
+      
+      let currentSelected = NumericalDistributionHelper.getCurrentCaseAttribute();
+      if(currentSelected && selectedVariable && currentSelected.name == selectedVariable.name){
+        option.selected = true;
+        option.focus = true;
+      }
+
     }
 
   });
