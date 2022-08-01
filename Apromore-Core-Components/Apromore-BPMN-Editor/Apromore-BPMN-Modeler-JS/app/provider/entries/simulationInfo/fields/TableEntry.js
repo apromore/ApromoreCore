@@ -10,6 +10,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   let getSelectedVariable = options.getSelectedVariable;
   let allCategories;
+  var lastDigitValue = [];
   var tableEntry = entryFactory.table(translate, {
     id: 'categoriesTable',
     labels: [translate('general.caseAttribute.category.name'), translate('general.caseAttribute.category.probality')],
@@ -35,9 +36,17 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         selectedCategory = {};
       }
       selectedCategory.name = value.name;
+      let newValue = value.assignmentProbability;
 
-      if (isValidNumber(value.assignmentProbability)) {
-        selectedCategory.assignmentProbability = '' + (value.assignmentProbability / 100);
+      if (newValue && newValue.charAt(newValue.length - 1) === '.') {
+        newValue = newValue + '0';
+        lastDigitValue[idx] = '.';
+      }
+
+      if (isValidNumber(newValue)) {
+        newValue = (newValue / 100);
+        newValue = +(Math.round(newValue + "e+4") + "e-4")
+        selectedCategory.assignmentProbability = newValue.toString();
       } else {
         selectedCategory.assignmentProbability = '0';
       }
@@ -78,9 +87,19 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       allCategories = categories || [];
       let modifiedCategory = [];
+      let index = 0;
       allCategories.forEach(category => {
-        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0' })
+        let probability = parseFloat(category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0');
+        probability = +(Math.round(probability + "e+4") + "e-4");
+        if (lastDigitValue[index] === '.') {
+          probability = probability + '.';
+        } else {
+          probability = probability.toString();
+        }
+        index++;
+        modifiedCategory.push({ name: category.name, assignmentProbability: probability })
       });
+      lastDigitValue = [];
       return modifiedCategory;
 
     }
