@@ -19,10 +19,16 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.portal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.model.PermissionType;
+import org.apromore.portal.model.RoleName;
 import org.apromore.portal.model.RoleType;
 import org.apromore.portal.model.UserType;
 import org.keycloak.KeycloakPrincipal;
@@ -37,11 +43,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
 /**
  * An adaptation of {@link KeycloakAuthenticationProvider} which maps
  * authorities based on a user's roles in Apromore.
@@ -52,10 +53,13 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
     private GrantedAuthoritiesMapper grantedAuthoritiesMapper;
 
     @Autowired
-    private ManagerService managerClient;
+    private final ManagerService managerClient;
 
-    public ApromoreKeycloakAuthenticationProvider(ManagerService manager) {
+    private boolean assignViewerRole;
+
+    public ApromoreKeycloakAuthenticationProvider(ManagerService manager, boolean assignViewerRole) {
         managerClient = manager;
+        this.assignViewerRole = assignViewerRole;
     }
 
     @Override
@@ -81,7 +85,8 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
             }
         }
 
-        return new KeycloakAuthenticationToken(token.getAccount(), token.isInteractive(), mapGrantedAuthorities(grantedAuthorities));
+        return new KeycloakAuthenticationToken(
+            token.getAccount(), token.isInteractive(), mapGrantedAuthorities(grantedAuthorities));
     }
 
     private Collection<? extends GrantedAuthority> mapGrantedAuthorities(
@@ -108,11 +113,12 @@ public class ApromoreKeycloakAuthenticationProvider extends KeycloakAuthenticati
     }
 
     private List<GrantedAuthority> getNewUserAuthorities() {
+        String defaultRole = (Boolean.TRUE.equals(assignViewerRole)) ? RoleName.ROLE_VIEWER : RoleName.ROLE_ANALYST;
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ANALYST"));
+        grantedAuthorities.add(new SimpleGrantedAuthority(defaultRole));
 
         if (managerClient != null) {
-            List<PermissionType> permissions = managerClient.getRolePermissions("ROLE_ANALYST");
+            List<PermissionType> permissions = managerClient.getRolePermissions(defaultRole);
             for (PermissionType permission : permissions) {
                 grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
             }
