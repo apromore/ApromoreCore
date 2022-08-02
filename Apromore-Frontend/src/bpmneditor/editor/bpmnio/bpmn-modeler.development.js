@@ -14691,7 +14691,7 @@ module.exports = ExtensionElementsHelper;
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(384);
+module.exports = __webpack_require__(385);
 
 module.exports.Collection = __webpack_require__(142);
 
@@ -35339,7 +35339,7 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
 var DEFAULT = __webpack_require__(136);
 var parser = __webpack_require__(139);
-var FilterXSS = __webpack_require__(369);
+var FilterXSS = __webpack_require__(370);
 
 /**
  * filter xss function
@@ -38260,7 +38260,7 @@ function setDefaultParameters(options) {
  */
 
 var DEFAULT = __webpack_require__(137);
-var FilterCSS = __webpack_require__(367);
+var FilterCSS = __webpack_require__(368);
 
 
 /**
@@ -38341,8 +38341,8 @@ module.exports = __webpack_require__(153);
 "use strict";
 
 
-var colorString = __webpack_require__(379);
-var convert = __webpack_require__(382);
+var colorString = __webpack_require__(380);
+var convert = __webpack_require__(383);
 
 var _slice = [].slice;
 
@@ -43398,8 +43398,8 @@ function toComment(sourceMap) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // var translations = require('./translations');
-var translationsEn = __webpack_require__(377);
-var translationsJa = __webpack_require__(378);
+var translationsEn = __webpack_require__(378);
+var translationsJa = __webpack_require__(379);
 var translationMap = {
   'en': translationsEn,
   'ja': translationsJa,
@@ -43588,7 +43588,7 @@ ColorContextPad.$inject = [
 /* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(385);
+module.exports = __webpack_require__(386);
 
 
 /***/ }),
@@ -49445,7 +49445,7 @@ var forEach = __webpack_require__(16),
 
 var updateSelection = __webpack_require__(114);
 
-var scrollTabs = __webpack_require__(386).default;
+var scrollTabs = __webpack_require__(387).default;
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 
@@ -52057,9 +52057,9 @@ var createSimulationParametersTab = __webpack_require__(262),
     createTimetableTab = __webpack_require__(320),
     createResourceTab = __webpack_require__(332),
     createGatewayTab = __webpack_require__(340),
-    createCustomTab = __webpack_require__(356),
-    createAuxTab = __webpack_require__(362),
-    createIntermediateAndBoundaryEventsTab = __webpack_require__(371);
+    createCustomTab = __webpack_require__(357),
+    createAuxTab = __webpack_require__(363),
+    createIntermediateAndBoundaryEventsTab = __webpack_require__(372);
 
 function removeTasks(element, bpmnFactory, elementRegistry) {
   var elements = ElementHelper.getElements(bpmnFactory, elementRegistry);
@@ -55300,6 +55300,13 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
         type = 'N';
       }
       option.text = type + ' - ' + (selectedVariable && selectedVariable.name);
+      
+      let currentSelected = NumericalDistributionHelper.getCurrentCaseAttribute();
+      if(currentSelected && selectedVariable && currentSelected.name == selectedVariable.name){
+        option.selected = true;
+        option.focus = true;
+      }
+
     }
 
   });
@@ -55497,6 +55504,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   let getSelectedVariable = options.getSelectedVariable;
   let allCategories;
+  var lastDigitValue = [];
   var tableEntry = entryFactory.table(translate, {
     id: 'categoriesTable',
     labels: [translate('general.caseAttribute.category.name'), translate('general.caseAttribute.category.probality')],
@@ -55522,9 +55530,17 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
         selectedCategory = {};
       }
       selectedCategory.name = value.name;
+      let newValue = value.assignmentProbability;
 
-      if (isValidNumber(value.assignmentProbability)) {
-        selectedCategory.assignmentProbability = '' + (value.assignmentProbability / 100);
+      if (newValue && newValue.charAt(newValue.length - 1) === '.') {
+        newValue = newValue + '0';
+        lastDigitValue[idx] = '.';
+      }
+
+      if (isValidNumber(newValue)) {
+        newValue = (newValue / 100);
+        newValue = +(Math.round(newValue + "e+4") + "e-4")
+        selectedCategory.assignmentProbability = newValue.toString();
       } else {
         selectedCategory.assignmentProbability = '0';
       }
@@ -55565,9 +55581,19 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
       var categories = CategoryHelper.getCategories(bpmnFactory, elementRegistry, { selectedVariable: selectedVariable });
       allCategories = categories || [];
       let modifiedCategory = [];
+      let index = 0;
       allCategories.forEach(category => {
-        modifiedCategory.push({ name: category.name, assignmentProbability: category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0' })
+        let probability = parseFloat(category.assignmentProbability ? (category.assignmentProbability * 100) + '' : '0');
+        probability = +(Math.round(probability + "e+4") + "e-4");
+        if (lastDigitValue[index] === '.') {
+          probability = probability + '.';
+        } else {
+          probability = probability.toString();
+        }
+        index++;
+        modifiedCategory.push({ name: category.name, assignmentProbability: probability })
       });
+      lastDigitValue = [];
       return modifiedCategory;
 
     }
@@ -57637,7 +57663,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject,
 var validationErrorHelper = __webpack_require__(6);
 var fixNumber = __webpack_require__(11).fixNumber;
 var ClauseWrapper = __webpack_require__(343);
-var ToggleSwitch = __webpack_require__(354);
+var ToggleSwitch = __webpack_require__(355);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options, element) {
   var sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
@@ -57729,10 +57755,10 @@ var LabelFactory = __webpack_require__(52);
 var Clauses = __webpack_require__(346);
 var ClauseCaseAttributeSelectBox = __webpack_require__(347);
 var ClauseCategorySelectBox = __webpack_require__(348);
-var ClauseOperatorSelectBox = __webpack_require__(349);
-var  ClauseCategoriesErrorLabel = __webpack_require__(350);
-var ValueEntry = __webpack_require__(351);
-var BetweenValueEntry = __webpack_require__(352);
+var ClauseOperatorSelectBox = __webpack_require__(350);
+var  ClauseCategoriesErrorLabel = __webpack_require__(351);
+var ValueEntry = __webpack_require__(352);
+var BetweenValueEntry = __webpack_require__(353);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options, element) {
     let entries = [];
@@ -58025,7 +58051,8 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
 
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
-  CaseAttributeHelper = __webpack_require__(29);
+  CaseAttributeHelper = __webpack_require__(29),
+  ClauseCategoryCustomSelect = __webpack_require__(349);
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -58067,7 +58094,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     }
   }
 
-  let cluaseCategory = entryFactory.selectBox(translate, {
+  let cluaseCategory = ClauseCategoryCustomSelect(translate, {
     id: 'clause-category-' + options.outgoingElementId,
     label: translate('gateway.clause.category.label'),
     modelProperty: 'variableEnumValue',
@@ -58078,12 +58105,6 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     },
     get: function (_element, _node) {
       let clause = getSelectedClause(_element, _node);
-      if (clause && !clause.variableEnumValue) {
-        let filteredCaseAttribute = getCategoryOptions();
-        if (filteredCaseAttribute && filteredCaseAttribute.length > 0) {
-          clause.variableEnumValue = filteredCaseAttribute[0].value;
-        }
-      }
       return { variableEnumValue: clause && clause.variableEnumValue };
     },
     set: function (element, values, _node) {
@@ -58111,6 +58132,214 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
 /***/ }),
 /* 349 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var escapeHTML = __webpack_require__(7).escapeHTML;
+
+var domify = __webpack_require__(2).domify,
+    domQuery = __webpack_require__(2).query;
+
+var forEach = __webpack_require__(16);
+
+var entryFieldDescription = __webpack_require__(15);
+
+var isList = function(list) {
+  return !(!list || Object.prototype.toString.call(list) !== '[object Array]');
+};
+
+var addEmptyParameter = function(list) {
+  return list.concat([ { name: '', value: '' } ]);
+};
+
+var createOption = function(option) {
+  return '<option value="' + option.value + '">' + option.name + '</option>';
+};
+
+var placeHolderOption = function(label) {
+  return '<option value="" disabled  class="ap-placeholder">'+ label +' </option>';
+};
+
+/**
+ * @param  {Object} options
+ * @param  {string} options.id
+ * @param  {string} [options.label]
+ * @param  {Array<Object>} options.selectOptions
+ * @param  {string} options.modelProperty
+ * @param  {boolean} options.emptyParameter
+ * @param  {function} options.disabled
+ * @param  {function} options.hidden
+ * @param  {Object} defaultParameters
+ *
+ * @return {Object}
+ */
+var selectbox = function(translate, options, defaultParameters) {
+      var resource= setDefaultParameters(options),
+      label = options.label || resource.id,
+      selectOptions = options.selectOptions || [ { name: '', value: '' } ],
+      modelProperty = options.modelProperty,
+      emptyParameter = options.emptyParameter,
+      canBeDisabled = !!options.disabled && typeof options.disabled === 'function',
+      canBeHidden = !!options.hidden && typeof options.hidden === 'function',
+      description = options.description;
+
+
+  if (emptyParameter) {
+    selectOptions = addEmptyParameter(selectOptions);
+  }
+
+
+  resource.html =
+    domify('<label for="camunda-' + escapeHTML(resource.id) + '"' +
+    (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
+    (canBeHidden ? 'data-show="isHidden" ' : '') +
+    '>' + escapeHTML(label) + '</label>' +
+    '<select id="camunda-' + escapeHTML(resource.id) + '-select" name="' +
+    escapeHTML(modelProperty) + '"' +
+    (canBeDisabled ? 'data-disable="isDisabled" ' : '') +
+    (canBeHidden ? 'data-show="isHidden" ' : '') +
+    ' data-value></select>');
+
+  var select = domQuery('select', resource.html);
+
+  
+
+  if (isList(selectOptions)) {
+    forEach(selectOptions, function(option) {
+      select.appendChild(
+        domify(
+          '<option value="' + escapeHTML(option.value) +
+          (option.title ? '" title="' + escapeHTML(option.title) : '') +
+          '">' +
+          (option.name ? escapeHTML(option.name) : '') +
+          '</option>'
+        )
+      );
+    });
+  }
+
+  // add description below select box entry field
+  if (description && typeof options.showCustomInput !== 'function') {
+    resource.html.appendChild(entryFieldDescription(translate, description, { show: canBeHidden && 'isHidden' }));
+  }
+
+  /**
+   * Fill the select box options dynamically.
+   *
+   * Calls the defined function #selectOptions in the entry to get the
+   * values for the options and set the value to the inputNode.
+   *
+   * @param {djs.model.Base} element
+   * @param {HTMLElement} entryNode
+   * @param {EntryDescriptor} inputNode
+   * @param {Object} inputName
+   * @param {Object} newValue
+   */
+  resource.setControlValue = function(element, entryNode, inputNode, inputName, newValue) {
+    if (typeof selectOptions === 'function') {
+
+      var options = selectOptions(element, inputNode);
+
+      if (options) {
+
+        // remove existing options
+        while (inputNode.firstChild) {
+          inputNode.removeChild(inputNode.firstChild);
+        }
+
+        var templatePlaceHolder = domify(placeHolderOption(translate('gateway.category.select.placeholder')));
+        inputNode.appendChild(templatePlaceHolder);
+        // add options
+        forEach(options, function(option) {
+          var template = domify(createOption(option));
+
+          inputNode.appendChild(template);
+        });
+
+
+      }
+    }
+
+    // set select value
+    if (newValue !== undefined) {
+      inputNode.value = newValue;
+    }
+
+  };
+
+  if (canBeDisabled) {
+    resource.isDisabled = function() {
+      return options.disabled.apply(resource, arguments);
+    };
+  }
+
+  if (canBeHidden) {
+    resource.isHidden = function() {
+      return !options.hidden.apply(resource, arguments);
+    };
+  }
+
+  resource.cssClasses = ['bpp-dropdown'];
+
+  return resource;
+};
+
+var setDefaultParameters = function(options) {
+
+    // default method to fetch the current value of the input field
+    var defaultGet = function(element) {
+      var bo = getBusinessObject(element),
+          res = {},
+          prop = ensureNotNull(options.modelProperty);
+      res[prop] = bo.get(prop);
+  
+      return res;
+    };
+  
+    // default method to set a new value to the input field
+    var defaultSet = function(element, values) {
+      var res = {},
+          prop = ensureNotNull(options.modelProperty);
+      if (values[prop] !== '') {
+        res[prop] = values[prop];
+      } else {
+        res[prop] = undefined;
+      }
+  
+      return cmdHelper.updateProperties(element, res);
+    };
+  
+    // default validation method
+    var defaultValidate = function() {
+      return {};
+    };
+  
+    return {
+      id : options.id,
+      description : (options.description || ''),
+      get : (options.get || defaultGet),
+      set : (options.set || defaultSet),
+      validate : (options.validate || defaultValidate),
+      html: ''
+    };
+  };
+
+  function ensureNotNull(prop) {
+    if (!prop) {
+      throw new Error(prop + ' must be set.');
+    }
+  
+    return prop;
+  }
+
+
+module.exports = selectbox;
+
+
+/***/ }),
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
@@ -58191,7 +58420,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 350 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58235,7 +58464,7 @@ module.exports = label;
 
 
 /***/ }),
-/* 351 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
@@ -58301,13 +58530,13 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 352 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var entryFactory = __webpack_require__(5),
   cmdHelper = __webpack_require__(4),
   validationErrorHelper = __webpack_require__(6),
-  CustomCheckBox = __webpack_require__(353),
+  CustomCheckBox = __webpack_require__(354),
   isValidNumber = __webpack_require__(11).isValidNumber;
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -58578,7 +58807,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 353 */
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58721,7 +58950,7 @@ module.exports = checkbox;
 
 
 /***/ }),
-/* 354 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58729,7 +58958,7 @@ var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var SequenceFlowHelper = __webpack_require__(19);
 var entryFactory = __webpack_require__(5);
 var cmdHelper = __webpack_require__(4);
-var ToggleCustomFactory=__webpack_require__(355)
+var ToggleCustomFactory=__webpack_require__(356)
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
@@ -58777,7 +59006,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 }
 
 /***/ }),
-/* 355 */
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58929,11 +59158,11 @@ module.exports = toggleSwitch;
 
 
 /***/ }),
-/* 356 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createCustomGroups = __webpack_require__(357);
+    createCustomGroups = __webpack_require__(358);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
 
@@ -58960,13 +59189,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 };
 
 /***/ }),
-/* 357 */
+/* 358 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is;
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var properties = __webpack_require__(358);
-var createCustomEntries = __webpack_require__(360);
+var properties = __webpack_require__(359);
+var createCustomEntries = __webpack_require__(361);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
   var bo = getBusinessObject(element),
@@ -58990,13 +59219,13 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
 };
 
 /***/ }),
-/* 358 */
+/* 359 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var properties = __webpack_require__(359),
+var properties = __webpack_require__(360),
     elementHelper = __webpack_require__(8),
     cmdHelper = __webpack_require__(4);
 
@@ -59030,7 +59259,7 @@ module.exports = function(group, element, bpmnFactory, translate) {
 
 
 /***/ }),
-/* 359 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59249,10 +59478,10 @@ module.exports = function(element, bpmnFactory, options, translate) {
 
 
 /***/ }),
-/* 360 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LinkedSubprocessField = __webpack_require__(361);
+var LinkedSubprocessField = __webpack_require__(362);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
@@ -59266,7 +59495,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 361 */
+/* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var domify = __webpack_require__(2).domify;
@@ -59348,11 +59577,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 
 
 /***/ }),
-/* 362 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    createAuxGroups = __webpack_require__(363);
+    createAuxGroups = __webpack_require__(364);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
 
@@ -59372,11 +59601,11 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 363 */
+/* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
-var createAuxEntries = __webpack_require__(364);
+var createAuxEntries = __webpack_require__(365);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmnjs, eventBus) {
   var bo = getBusinessObject(element),
@@ -59395,7 +59624,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 };
 
 /***/ }),
-/* 364 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var cmdHelper = __webpack_require__(4);
@@ -59403,9 +59632,9 @@ var entryFactory = __webpack_require__(5);
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
 var elementHelper = __webpack_require__(8);
 var extensionElementsHelper = __webpack_require__(22);
-var IconPickerField = __webpack_require__(365);
-var IconSetPickerField = __webpack_require__(366);
-var ImagePickerField = __webpack_require__(370);
+var IconPickerField = __webpack_require__(366);
+var IconSetPickerField = __webpack_require__(367);
+var ImagePickerField = __webpack_require__(371);
 var { AUX_PROPS } = __webpack_require__(12);
 
 function getExtensionElements(element, bpmnFactory) {
@@ -59590,7 +59819,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
-/* 365 */
+/* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject;
@@ -59692,7 +59921,7 @@ module.exports = function(options) {
 
 
 /***/ }),
-/* 366 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var xss = __webpack_require__(37);
@@ -59964,7 +60193,7 @@ module.exports = function(options) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
-/* 367 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -59974,7 +60203,7 @@ module.exports = function(options) {
  */
 
 var DEFAULT = __webpack_require__(137);
-var parseStyle = __webpack_require__(368);
+var parseStyle = __webpack_require__(369);
 var _ = __webpack_require__(138);
 
 
@@ -60080,7 +60309,7 @@ module.exports = FilterCSS;
 
 
 /***/ }),
-/* 368 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -60160,7 +60389,7 @@ module.exports = parseStyle;
 
 
 /***/ }),
-/* 369 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -60395,7 +60624,7 @@ module.exports = FilterXSS;
 
 
 /***/ }),
-/* 370 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var getBusinessObject = __webpack_require__(1).getBusinessObject;
@@ -60468,11 +60697,11 @@ module.exports = function(options) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
-/* 371 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var is = __webpack_require__(1).is,
-    intermediateAndBoundaryEventGroups = __webpack_require__(372);
+    intermediateAndBoundaryEventGroups = __webpack_require__(373);
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
@@ -60488,12 +60717,12 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 372 */
+/* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getBusinessObject = __webpack_require__(1).getBusinessObject,
     getFlowElementsByType = __webpack_require__(81),
-    intermediateAndBoundaryEventEntries = __webpack_require__(373);
+    intermediateAndBoundaryEventEntries = __webpack_require__(374);
 
 
 module.exports = function(element, bpmnFactory, elementRegistry, translate) {
@@ -60527,7 +60756,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
 };
 
 /***/ }),
-/* 373 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ElementHelper = __webpack_require__(51),
@@ -60554,11 +60783,11 @@ module.exports = function(bpmnFactory, elementRegistry, translate, options) {
 };
 
 /***/ }),
-/* 374 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(375);
-            var content = __webpack_require__(376);
+var api = __webpack_require__(376);
+            var content = __webpack_require__(377);
 
             content = content.__esModule ? content.default : content;
 
@@ -60578,7 +60807,7 @@ var update = api(content, options);
 module.exports = content.locals || {};
 
 /***/ }),
-/* 375 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60853,7 +61082,7 @@ module.exports = function (list, options) {
 };
 
 /***/ }),
-/* 376 */
+/* 377 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60870,7 +61099,7 @@ ___CSS_LOADER_EXPORT___.push([module.i, "#js-properties-panel {\n  position: abs
 
 
 /***/ }),
-/* 377 */
+/* 378 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -61004,10 +61233,11 @@ module.exports = {
   'general.attribute.used.in.gateway': 'Failed to delete. Case attribute is being used in gateway.',
   'general.category.used.in.gateway': 'Failed to delete. Category is being used in gateway.',
   'general.attribute.used.in.gateway.switch': 'Not permitted to switch. Case attribute is being used in gateway.',
+  'gateway.category.select.placeholder' : 'Select a category',
 };
 
 /***/ }),
-/* 378 */
+/* 379 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -61116,12 +61346,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 379 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
 var colorNames = __webpack_require__(140);
-var swizzle = __webpack_require__(380);
+var swizzle = __webpack_require__(381);
 var hasOwnProperty = Object.hasOwnProperty;
 
 var reverseNames = Object.create(null);
@@ -61364,13 +61594,13 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 380 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(381);
+var isArrayish = __webpack_require__(382);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -61400,7 +61630,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 381 */
+/* 382 */
 /***/ (function(module, exports) {
 
 module.exports = function isArrayish(obj) {
@@ -61415,11 +61645,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 382 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(141);
-var route = __webpack_require__(383);
+var route = __webpack_require__(384);
 
 var convert = {};
 
@@ -61499,7 +61729,7 @@ module.exports = convert;
 
 
 /***/ }),
-/* 383 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var conversions = __webpack_require__(141);
@@ -61602,7 +61832,7 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 384 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61810,7 +62040,7 @@ module.exports = Refs;
  */
 
 /***/ }),
-/* 385 */
+/* 386 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -116455,7 +116685,7 @@ var provider_default = /*#__PURE__*/__webpack_require__.n(app_provider);
 var ap = __webpack_require__(146);
 
 // EXTERNAL MODULE: ./styles/customModeler.less
-var customModeler = __webpack_require__(374);
+var customModeler = __webpack_require__(375);
 
 // EXTERNAL MODULE: ./app/translate/customTranslate.js
 var customTranslate = __webpack_require__(148);
@@ -119452,7 +119682,7 @@ CustomModeler.prototype._moddleExtensions = {
 };
 
 /***/ }),
-/* 386 */
+/* 387 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

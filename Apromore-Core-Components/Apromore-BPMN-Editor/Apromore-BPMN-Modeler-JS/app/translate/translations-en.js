@@ -129,4 +129,5 @@ module.exports = {
   'general.attribute.used.in.gateway': 'Failed to delete. Case attribute is being used in gateway.',
   'general.category.used.in.gateway': 'Failed to delete. Category is being used in gateway.',
   'general.attribute.used.in.gateway.switch': 'Not permitted to switch. Case attribute is being used in gateway.',
+  'gateway.category.select.placeholder' : 'Select a category',
 };
