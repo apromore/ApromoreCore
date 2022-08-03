@@ -281,8 +281,7 @@ public class BPMNExportController extends AbstractController {
         String footnoteMessage = null;
         if (simulationInfoService.isFeatureEnabled()) {
 
-            if (controller.getUserOptions().getMainAttributeKey().equals(Constants.ATT_KEY_RESOURCE)
-                || controller.getUserOptions().getMainAttributeKey().equals(Constants.ATT_KEY_ROLE)) {
+            if (!controller.getUserOptions().getMainAttributeKey().equals(Constants.ATT_KEY_CONCEPT_NAME)) {
 
                 footnoteMessage = parent.getLabel("warnSimParamInvalidPerspective_text");
                 log.debug("Cannot export simulation information for resource or role perspectives");
