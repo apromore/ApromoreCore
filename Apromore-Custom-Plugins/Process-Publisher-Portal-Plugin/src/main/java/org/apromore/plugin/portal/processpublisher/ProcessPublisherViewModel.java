@@ -101,13 +101,14 @@ public class ProcessPublisherViewModel implements LabelSupplier {
 
         try {
             if (publish && publishLinkedSubprocesses) {
-                updateLinkedSubprocessesPublishStatus(processId, List.of(processId));
-            } else if (!publish && hasLinkedSubprocesses && isLinkedProcessPublished(processId)) {
+                updateLinkedSubprocessesPublishStatus(processId, List.of(processId), true);
+            } else if (isLinkedProcessPublished(processId) && (!publish || !publishLinkedSubprocesses)) {
                 Messagebox.show(getLabel("unpublish_linked_subprocess_models_msg"),
-                    Labels.getLabel("plugin_process_unpublish_text"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+                    Labels.getLabel(publish ? "plugin_process_publish_text" : "plugin_process_unpublish_text"),
+                    Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                     event -> {
                         if (Messagebox.ON_YES.equals(event.getName())) {
-                            updateLinkedSubprocessesPublishStatus(processId, List.of(processId));
+                            updateLinkedSubprocessesPublishStatus(processId, List.of(processId), false);
                         }
                     });
             }
@@ -136,7 +137,7 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         return String.format(PUBLISH_LINK_FORMAT, scheme, serverName, publishId);
     }
 
-    private List<Integer> updateLinkedSubprocessesPublishStatus(int pId, List<Integer> publishedProcesses)
+    private List<Integer> updateLinkedSubprocessesPublishStatus(int pId, List<Integer> publishedProcesses, boolean publishStatus)
         throws UserNotFoundException {
         List<Integer> skipList = new ArrayList<>(publishedProcesses);
         UserType user = UserSessionManager.getCurrentUser();
@@ -154,13 +155,13 @@ public class ProcessPublisherViewModel implements LabelSupplier {
             }
 
             if (processPublishService.getPublishDetails(linkedProcessId) == null) {
-                processPublishService.savePublishDetails(linkedProcessId, UUID.randomUUID().toString(), publish);
+                processPublishService.savePublishDetails(linkedProcessId, UUID.randomUUID().toString(), publishStatus);
             } else {
-                processPublishService.updatePublishStatus(linkedProcessId, publish);
+                processPublishService.updatePublishStatus(linkedProcessId, publishStatus);
             }
 
             skipList.add(linkedProcessId);
-            skipList.addAll(updateLinkedSubprocessesPublishStatus(linkedProcessId, skipList));
+            skipList.addAll(updateLinkedSubprocessesPublishStatus(linkedProcessId, skipList, publishStatus));
         }
         return skipList;
     }
@@ -176,8 +177,8 @@ public class ProcessPublisherViewModel implements LabelSupplier {
             .getLinkedProcesses(processId, user.getUsername(), AccessType.OWNER)
             .values();
 
-        return CollectionUtils.isEmpty(linkedProcesses)
-            || linkedProcesses.stream().anyMatch(p -> processPublishService.isPublished(p));
+        return !CollectionUtils.isEmpty(linkedProcesses)
+            && linkedProcesses.stream().anyMatch(p -> processPublishService.isPublished(p));
 
     }
 }
