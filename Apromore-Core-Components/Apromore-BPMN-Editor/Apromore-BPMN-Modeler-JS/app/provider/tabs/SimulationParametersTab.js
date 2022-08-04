@@ -1,7 +1,7 @@
 var is = require('bpmn-js/lib/util/ModelUtil').is,
     scenarioSpecificationGroups = require('../groups/ScenarioSpecificationGroups');
 
-module.exports = function(element, bpmnFactory, elementRegistry, translate) {
+module.exports = function(element, bpmnFactory, elementRegistry, translate, config) {
 
   function shown(element) {
     return is(element, 'bpmn:Process') || is(element, 'bpmn:SubProcess') ||
@@ -11,7 +11,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
   return {
     id: 'simulationTab',
     label: translate('simulationTab.label'),
-    groups: scenarioSpecificationGroups(element, bpmnFactory, elementRegistry, translate, shown),
+    groups: scenarioSpecificationGroups(element, bpmnFactory, elementRegistry, translate, shown, config),
     enabled: function(element) {
       return shown(element);
     }
