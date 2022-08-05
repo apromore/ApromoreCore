@@ -19,10 +19,12 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.plugin.portal.processpublisher;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -37,7 +39,6 @@ import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
@@ -76,8 +77,8 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         ProcessPublish processPublishDetails = processPublishService.getPublishDetails(processId);
         newPublishRecord = processPublishDetails == null;
         publish = !newPublishRecord && processPublishDetails.isPublished();
-        publishId = newPublishRecord ?
-                UUID.randomUUID().toString() : processPublishDetails.getPublishId();
+        publishId = newPublishRecord
+            ? UUID.randomUUID().toString() : processPublishDetails.getPublishId();
 
         UserType user = UserSessionManager.getCurrentUser();
         try {
@@ -166,19 +167,31 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         return skipList;
     }
 
-    private boolean isLinkedProcessPublished(int processId)
+    private boolean isLinkedProcessPublished(int processId) throws UserNotFoundException {
+        return isLinkedProcessPublished(processId, Collections.emptyList());
+    }
+
+    private boolean isLinkedProcessPublished(int processId, List<Integer> skipProcesses)
         throws UserNotFoundException {
         UserType user = UserSessionManager.getCurrentUser();
         if (user == null) {
             throw new UserNotFoundException("Unable to get current user from the session");
         }
 
+        List<Integer> skipList = new ArrayList<>(skipProcesses);
+        skipList.add(processId);
+
         Collection<Integer> linkedProcesses = processService
             .getLinkedProcesses(processId, user.getUsername(), AccessType.OWNER)
             .values();
 
-        return !CollectionUtils.isEmpty(linkedProcesses)
-            && linkedProcesses.stream().anyMatch(p -> processPublishService.isPublished(p));
-
+        for (int linkedProcessId : linkedProcesses) {
+            if (!skipList.contains(linkedProcessId)
+                && (processPublishService.isPublished(linkedProcessId)
+                || isLinkedProcessPublished(linkedProcessId, skipList))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
