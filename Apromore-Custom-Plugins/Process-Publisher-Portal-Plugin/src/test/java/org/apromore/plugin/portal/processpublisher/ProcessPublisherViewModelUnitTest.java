@@ -104,10 +104,14 @@ class ProcessPublisherViewModelUnitTest {
         userSessionManagerMockedStatic.when(() -> UserSessionManager.getCurrentUser()).thenReturn(user);
         when(user.getUsername()).thenReturn("test");
         try {
+            //Processes linked 1 -> 2 -> 3 with process 3 published & process 2 unpublished
             when(processService.hasLinkedProcesses(processId, "test")).thenReturn(true);
             when(processService.getLinkedProcesses(processId, "test", AccessType.OWNER))
                 .thenReturn(Map.of("test2", 2));
-            when(processPublishService.isPublished(2)).thenReturn(true);
+            when(processPublishService.isPublished(2)).thenReturn(false);
+            when(processService.getLinkedProcesses(2, "test", AccessType.OWNER))
+                .thenReturn(Map.of("test3", 3));
+            when(processPublishService.isPublished(3)).thenReturn(true);
         } catch (UserNotFoundException e) {
             fail();
         }

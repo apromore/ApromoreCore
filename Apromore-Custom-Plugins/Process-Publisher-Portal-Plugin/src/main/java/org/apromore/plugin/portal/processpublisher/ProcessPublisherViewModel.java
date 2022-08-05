@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.processpublisher;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -166,19 +167,32 @@ public class ProcessPublisherViewModel implements LabelSupplier {
         return skipList;
     }
 
-    private boolean isLinkedProcessPublished(int processId)
+    private boolean isLinkedProcessPublished(int processId) throws UserNotFoundException {
+        return isLinkedProcessPublished(processId, Collections.emptyList());
+    }
+
+    private boolean isLinkedProcessPublished(int processId, List<Integer> skipProcesses)
         throws UserNotFoundException {
         UserType user = UserSessionManager.getCurrentUser();
         if (user == null) {
             throw new UserNotFoundException("Unable to get current user from the session");
         }
 
+        List<Integer> skipList = new ArrayList<>(skipProcesses);
+        skipList.add(processId);
+
         Collection<Integer> linkedProcesses = processService
             .getLinkedProcesses(processId, user.getUsername(), AccessType.OWNER)
             .values();
 
-        return !CollectionUtils.isEmpty(linkedProcesses)
-            && linkedProcesses.stream().anyMatch(p -> processPublishService.isPublished(p));
-
+        for (int linkedProcessId : linkedProcesses) {
+            if (skipList.contains(linkedProcessId)) {
+                continue;
+            } else if (processPublishService.isPublished(linkedProcessId)
+                || isLinkedProcessPublished(linkedProcessId, skipList)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
