@@ -445,5 +445,5 @@ Apromore.I18N.FontSize.fontSizeDesc= "Change font size";
 Apromore.I18N.FontSize.fontsize ="Change font size";
 
 if(!Apromore.I18N.ShapeSize) Apromore.I18N.ShapeSize = {};
-Apromore.I18N.ShapeSize.shapeSizeDesc= "Resize";
-Apromore.I18N.ShapeSize.shapeSize ="Resize";
+Apromore.I18N.ShapeSize.shapeSizeDesc= "Change task size";
+Apromore.I18N.ShapeSize.shapeSize ="Change task size";
