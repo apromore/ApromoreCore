@@ -252,6 +252,19 @@ public interface ProcessService {
                                     String nativeType, InputStream nativeStream, String userName) throws UpdateProcessException;
 
     /**
+     * Link a subprocess to a version of an existing process.
+     *
+     * @param subprocessParentId the id of the process which contains the subprocess
+     * @param subprocessId the element id of the subprocess
+     * @param processId the id of an existing process to link the subprocess to
+     * @param version the version of the existing process to link the subprocess to
+     * @param username the username of the user creating the subprocess link.
+     */
+    void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, Version version,
+                        String username)
+        throws CircularReferenceException, UserNotFoundException;
+
+    /**
      * Link a subprocess to an existing process.
      *
      * @param subprocessParentId the id of the process which contains the subprocess
@@ -289,6 +302,8 @@ public interface ProcessService {
      */
     ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId, String username)
         throws UserNotFoundException;
+
+    String getLinkedProcessVersion(int subprocessParentId, String subprocessId) throws UserNotFoundException;
 
     /**
      * Check if the process has linked processes for the given user.

@@ -755,8 +755,10 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       return;
     }
 
+    final String linkedProcessVersion = processService.getLinkedProcessVersion(process.getId(), elementId);
+    final String versionNumber = linkedProcessVersion == null ? linkedProcess.getLastVersion() : linkedProcessVersion;
     VersionSummaryType version = linkedProcess.getVersionSummaries().stream()
-        .filter(v -> v.getVersionNumber().equals(linkedProcess.getLastVersion()))
+        .filter(v -> v.getVersionNumber().equals(versionNumber))
         .findFirst().orElse(null);
     try {
       mainC.editProcess2(linkedProcess, version, linkedProcess.getOriginalNativeType(), new HashSet<>(), false);
@@ -789,7 +791,9 @@ public class BPMNEditorController extends BaseController implements Composer<Com
 
     for (String subProcessId : linkedProcesses.keySet()) {
       ProcessSummaryType linkedProcess = processService.getLinkedProcess(process.getId(), subProcessId);
-      String linkedProcessName = linkedProcess.getName() + " (v" + linkedProcess.getLastVersion() + ")";
+      String linkedProcessVersion = processService.getLinkedProcessVersion(process.getId(), subProcessId);
+      String versionNumber = linkedProcessVersion == null ? linkedProcess.getLastVersion() : linkedProcessVersion;
+      String linkedProcessName = linkedProcess.getName() + " (v" + versionNumber + ")";
 
       Clients.evalJavaScript("setLinkedSubProcess('" + subProcessId + "','" + linkedProcessName + "');");
     }

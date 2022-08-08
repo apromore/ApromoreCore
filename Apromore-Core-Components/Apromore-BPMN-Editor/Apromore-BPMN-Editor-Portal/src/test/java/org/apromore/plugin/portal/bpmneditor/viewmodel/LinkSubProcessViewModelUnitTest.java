@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apromore.dao.model.User;
@@ -44,6 +45,7 @@ import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
@@ -112,6 +114,7 @@ class LinkSubProcessViewModelUnitTest {
 
     @Test
     void testInitWithLinkedProcess() throws UserNotFoundException {
+        String versionNumber = "3.2";
         UserType userType = new UserType();
         userType.setId("userId");
         SummariesType summariesType = buildProcessSummaryList(1);
@@ -120,6 +123,7 @@ class LinkSubProcessViewModelUnitTest {
 
         userSessionManagerMockedStatic.when(UserSessionManager::getCurrentUser).thenReturn(userType);
         when(processService.getLinkedProcess(1, "test")).thenReturn(linkedProcess);
+        when(processService.getLinkedProcessVersion(1, "test")).thenReturn(versionNumber);
 
         when(mainController.getPortalSession()).thenReturn(portalSession);
         when(portalSession.getTree()).thenReturn(Collections.emptyList());
@@ -143,6 +147,7 @@ class LinkSubProcessViewModelUnitTest {
         assertThat(linkSubProcessViewModel.getLinkType()).isEqualTo("EXISTING");
         assertThat(linkSubProcessViewModel.getSelectedProcess()).isNotNull();
         assertTrue(linkSubProcessViewModel.isProcessListEnabled());
+        assertThat(linkSubProcessViewModel.getSelectedVersion()).isEqualTo(versionNumber);
     }
 
     @Test
@@ -190,6 +195,26 @@ class LinkSubProcessViewModelUnitTest {
         assertThat(linkSubProcessViewModel.getProcessList()).isEqualTo(processList);
     }
 
+    @Test
+    void testGetMainVersionNoSelectedProcess() {
+        linkSubProcessViewModel.setSelectedProcess(null);
+        assertThat(linkSubProcessViewModel.getMainVersionList()).isEmpty();
+    }
+
+    @Test
+    void testGetMainVersionWithSelectedProcess() {
+        ProcessSummaryType selectedProcess = new ProcessSummaryType();
+        selectedProcess.setId(1);
+        selectedProcess.getVersionSummaries().add(buildVersionSummaryType("MAIN", "1.0"));
+        selectedProcess.getVersionSummaries().add(buildVersionSummaryType("DRAFT", "1.0"));
+        selectedProcess.getVersionSummaries().add(buildVersionSummaryType("MAIN", "1.1"));
+        selectedProcess.getVersionSummaries().add(buildVersionSummaryType("DRAFT", "2.0"));
+
+        linkSubProcessViewModel.setSelectedProcess(selectedProcess);
+        //The list should have null (to represent the latest version) + all versions in main branch
+        assertThat(linkSubProcessViewModel.getMainVersionList()).isEqualTo(Arrays.asList(null, "1.0", "1.1"));
+    }
+
     private List<FolderType> buildFolderTree() {
         List<FolderType> folderTypeList = new ArrayList<>();
 
@@ -229,6 +254,15 @@ class LinkSubProcessViewModelUnitTest {
         }
 
         return summariesType;
+    }
+
+    private VersionSummaryType buildVersionSummaryType(String branch, String versionNumber) {
+        VersionSummaryType versionSummaryType = new VersionSummaryType();
+
+        versionSummaryType.setName(branch);
+        versionSummaryType.setVersionNumber(versionNumber);
+
+        return versionSummaryType;
     }
 
 }

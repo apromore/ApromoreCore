@@ -1558,3 +1558,59 @@ databaseChangeLog:
              - column:
                  name: feature_encoding_type
                  type: VARCHAR(25)
+
+ - changeSet:
+     id: 20220805131200
+     author: janeh
+     comment: "add process version to subprocess link table"
+     changes:
+       - addColumn:
+           tableName: subprocess_process
+           columns:
+             - column:
+                 name: linked_process_model_version_id
+                 type: INT
+                 constraints:
+                   nullable: true
+
+       - addForeignKeyConstraint:
+           baseColumnNames: linked_process_model_version_id
+           baseTableName: subprocess_process
+           constraintName: fk_linked_process_model_version_id
+           deferrable: false
+           initiallyDeferred: false
+           onDelete: CASCADE
+           referencedColumnNames: id
+           referencedTableName: process_model_version
+           validate: true
+
+ - changeSet:
+     id: 20220808160100
+     author: janeh
+     comment: "backport storage table fix to v8.4.1"
+     preConditions:
+       - onFail: MARK_RAN
+       - dbms:
+           type: 'h2'
+       - tableExists:
+           tableName: storage
+     changes:
+       - dropTable:
+           cascadeConstraints:  true
+           tableName: storage
+
+ - changeSet:
+     id: 20220808160101
+     author: janeh
+     comment: "backport storage table fix to v8.4.1"
+     preConditions:
+       - onFail: MARK_RAN
+       - not:
+           - tableExists:
+               tableName: storage
+     changes:
+       - sql:
+           dbms: 'h2'
+           splitStatements: true
+           sql: CREATE TABLE IF NOT EXISTS storage (id bigint NOT NULL AUTO_INCREMENT, storage_path varchar(200) NOT NULL, prefix varchar(100) NOT NULL, "key" varchar(200) DEFAULT NULL, created varchar(100) NOT NULL,updated varchar(100) NOT NULL,PRIMARY KEY (id));
+           stripComments: false
