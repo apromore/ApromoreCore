@@ -37,13 +37,7 @@ public class ModelValidityTest extends TestDataSetup {
             "invalid_diagram_no_diagram.bpmn",
             "invalid_diagram_no_elements.bpmn",
             "invalid_diagram_disconnected.bpmn",
-            "invalid_diagram_two_start_end_events.bpmn",
-            "invalid_diagram_start_event_multi_outgoing.bpmn",
-            "invalid_diagram_end_event_multi_incoming.bpmn",
-            "invalid_diagram_task_multi_outgoing.bpmn",
-            "invalid_diagram_task_multi_incoming.bpmn",
-            "invalid_diagram_one_pool_lanes.bpmn",
-            "invalid_diagram_two_lanes.bpmn"
+            "invalid_diagram_two_start_end_events.bpmn"
     })
     void test_InvalidModel(String modelFilename) throws Exception {
         XLog log = readXESFile("src/test/logs/ab.xes");

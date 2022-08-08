@@ -110,7 +110,7 @@ export default class LogAnimation {
         this.logEnabled = repeat(true, logNum);
 
         this.colorPalette = new PaletteProvider(null, logNum);
-        let {recordingFrameRate, logStartFrameIndexes, logEndFrameIndexes, elementIndexIDMap, caseCountsByFrames} = setupData;
+        let {recordingFrameRate, logStartFrameIndexes, logEndFrameIndexes, elementIndexIDMap, caseCountsByFrames, processID} = setupData;
         let startMs = new Date(setupData.timeline.startDateLabel).getTime(); // Start date in milliseconds
         let endMs = new Date(setupData.timeline.endDateLabel).getTime(); // End date in milliseconds
         let startLogTime = new Date(setupData.timeline.startLogDateLabel).getTime(); // Start log date in milliseconds
@@ -121,7 +121,7 @@ export default class LogAnimation {
 
         this.animationContext = new AnimationContext(this.pluginExecutionId, startMs, endMs, startLogTime, endLogTime,
                                         timelineSlots, totalEngineS, recordingFrameRate, timezone);
-        this.processMapController.initialize(elementIndexIDMap);
+        this.processMapController.initialize(elementIndexIDMap, processID);
         this.processMapController.registerListener(this);
 
         if (this.tokenAnimationContainerId) {

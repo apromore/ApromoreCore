@@ -59,7 +59,7 @@ export default class BPMNModelWrapper {
      * with element data and events handling.
      * @param {Object} elementIndexIDMap: map from element index to element id
      */
-    initialize(elementIndexIDMap) {
+    initialize(elementIndexIDMap, processID) {
         if (!this._editorApp) {
             console.error('Stop. The editor has not loaded data yet');
             return;
@@ -82,7 +82,7 @@ export default class BPMNModelWrapper {
                 {viewbox: modelBox, transformMatrix: modelMatrix}));
         });
 
-        this._createIndexToElementCache(elementIndexIDMap);
+        this._createIndexToElementCache(elementIndexIDMap, processID);
     }
 
     /**
@@ -92,7 +92,7 @@ export default class BPMNModelWrapper {
      * @return {Object} mapping from element index to SVG Path Element having the element id
      * @private
      */
-    _createIndexToElementCache(elementMapping) {
+    _createIndexToElementCache(elementMapping, processID) {
         this._indexToElement = {};
         let elementIndexIDMap = elementMapping[0];
         let skipElementIndexIDMap = elementMapping[1];
@@ -101,7 +101,7 @@ export default class BPMNModelWrapper {
             let elementId = elementIndexIDMap[elementIndex];
             let pathElement = $j('[data-element-id=' + elementId + ']').find('g').find('path').get(0);
             if (!pathElement) { // create cross and skip paths as they are not present
-                this._createNodePathElements(elementId);
+                this._createNodePathElements(elementId, processID);
                 pathElement = $j('[data-element-id=' + elementId + ']').find('g').find('path').get(0);
             }
             this._indexToElement[elementIndex] = pathElement;
@@ -167,9 +167,9 @@ export default class BPMNModelWrapper {
      * The paths are added as children to the node element
      * @param {String} nodeId
      */
-    _createNodePathElements (nodeId) {
+    _createNodePathElements (nodeId, processID) {
         let incomingEndPoint = $j(
-            '[data-element-id=' + this._editor.getIncomingFlowId(nodeId) +
+            '[data-element-id=' + this._editor.getIncomingFlowIdwithProcessID(nodeId, processID) +
             ']',
         )
         let incomingPathE = incomingEndPoint.find('g').find('path').get(0)
@@ -180,7 +180,7 @@ export default class BPMNModelWrapper {
         let arrayAbove, arrayBelow;
 
         let outgoingStartPoint = $j(
-            '[data-element-id=' + this._editor.getOutgoingFlowId(nodeId) +
+            '[data-element-id=' + this._editor.getOutgoingFlowIdwithProcessID(nodeId, processID) +
             ']',
         )
         let outgoingPathE = outgoingStartPoint.find('g').find('path').get(0)

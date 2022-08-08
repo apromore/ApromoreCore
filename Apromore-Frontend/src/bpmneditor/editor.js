@@ -92,6 +92,21 @@ export default class Editor {
         return foundId;
     }
 
+    getIncomingFlowIdwithProcessID(nodeId, processID) {
+                if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
+                if(processID == null) return this.getIncomingFlowId(nodeId);
+                var foundId;
+                var flowElements = this.actualEditor.getDefinitions().rootElements.find(process => {
+                            return process.id === processID
+                            }).flowElements
+                flowElements.forEach(function(element) {
+                    if (!foundId && element.$type == "bpmn:SequenceFlow" && element.targetRef.id == nodeId) {
+                        foundId = element.id;
+                    }
+                });
+                return foundId;
+            }
+
     getOutgoingFlowId(nodeId) {
         if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
         var foundId;
@@ -103,6 +118,19 @@ export default class Editor {
         });
         return foundId;
     }
+
+    getOutgoingFlowIdwithProcessID(nodeId, processID) {
+                if (!this.actualEditor || !this.actualEditor.getDefinitions()) return false;
+                if(processID == null) return this.getOutgoingFlowId(nodeId);
+                var foundId;
+                var elements = this.actualEditor.getDefinitions().rootElements.find(process =>{return process.id === processID}).flowElements;
+                elements.forEach(function(element) {
+                    if (!foundId && element.$type == "bpmn:SequenceFlow" && element.sourceRef.id == nodeId) {
+                        foundId = element.id;
+                    }
+                });
+                return foundId;
+            }
 
     toString() {
         return "EditorWrapper " + this.id;
