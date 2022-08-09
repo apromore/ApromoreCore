@@ -22,8 +22,9 @@
 
 <window id="winLinkSubprocess"
         viewModel="@id('vm_linkSubProcess') @init('org.apromore.plugin.portal.bpmneditor.viewmodel.LinkSubProcessViewModel')"
-        width="500px"
+        width="700px"
         position="center"
+        sclass="ap-link-subprocess"
         title="${labels.bpmnEditor_linkSubProcess_text}"
         mode="modal">
     <style src="~./bpmneditor/editor/css/link-subprocess.css"/>
@@ -36,39 +37,63 @@
             </vlayout>
         </radiogroup>
         <div style="padding:5px;" height="400px">
-            <tree id="tree" vflex="true" style="border-width: 0px;"
-                  sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-folder-tree ap-listbox-enabled' : 'ap-folder-tree ap-listbox-disabled')">
-                <treecols sizable="true">
-                    <treecol label="${labels.bpmnEditor_listExistingProcess_text}">
-                        <div sclass="ap-listheader ap-listheader-search">
-                            <checkbox width="20px"
-                                      sclass="ap-listbox-search-toggle"
-                                      iconSclass="z-icon-search"
-                                      style="padding:0px; border:0px; box-shadow:0px 0px black;"/>
-                        </div>
-                    </treecol>
-                </treecols>
-                <auxhead sclass="ap-auxhead" visible="false">
-                    <auxheader>
-                        <hlayout hflex="1" style="border:0px solid #F00;">
-                            <div width="20px" align="center">
-                                <span sclass="z-icon-filter"/>
-                            </div>
-                            <div hflex="1">
-                                <textbox hflex="1" sclass="ap-listbox-search-input"/>
-                                <button sclass="ap-listbox-search-clear"
-                                        iconSclass="z-icon-times-circle"
-                                        style="padding:0px; border:0px; box-shadow:0px 0px black; position:absolute; right:7px; top:0px; color:#AAA; background:transparent;"
-                                        width="20px"/>
-                            </div>
-                            <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
-                            <div width="70px" align="right" visible="false">
-                                <button sclass="ap-listbox-search-btn" label="${labels.common_search_text}"/>
-                            </div>
-                        </hlayout>
-                    </auxheader>
-                </auxhead>
-            </tree>
+            <vbox  spacing="0" vflex="1" hflex="1"  sclass="@load(vm_linkSubProcess.processListEnabled ? 'ap-folder-tree ap-listbox-enabled' : 'ap-folder-tree ap-listbox-disabled')">
+                <hbox spacing="0" vflex="true" hflex="1">
+                    <tree id="tree" vflex="true" hflex="1">
+                        <treecols>
+                            <treecol label="${labels.bpmnEditor_listExistingProcess_text}">
+                                <div sclass="ap-listheader ap-listheader-search">
+                                    <checkbox width="20px"
+                                              sclass="ap-listbox-search-toggle"
+                                              iconSclass="z-icon-search"
+                                              style="padding:0px; border:0px; box-shadow:0px 0px black;"/>
+                                </div>
+                            </treecol>
+                        </treecols>
+                        <auxhead sclass="ap-auxhead" visible="false">
+                            <auxheader>
+                                <hlayout hflex="1" style="border:0px solid #F00;">
+                                    <div width="20px" align="center">
+                                        <span sclass="z-icon-filter"/>
+                                    </div>
+                                    <div hflex="1">
+                                        <textbox hflex="1" sclass="ap-listbox-search-input"/>
+                                        <button sclass="ap-listbox-search-clear"
+                                                iconSclass="z-icon-times-circle"
+                                                style="padding:0px; border:0px; box-shadow:0px 0px black; position:absolute; right:7px; top:0px; color:#AAA; background:transparent;"
+                                                width="20px"/>
+                                    </div>
+                                    <label sclass="ap-listbox-search-count" width="200px" style="padding:0px 10px 0px 10px"/>
+                                    <div width="70px" align="right" visible="false">
+                                        <button sclass="ap-listbox-search-btn" label="${labels.common_search_text}"/>
+                                    </div>
+                                </hlayout>
+                            </auxheader>
+                        </auxhead>
+                    </tree>
+                    <div hflex="1" vflex="1"
+                         visible="@load(vm_linkSubProcess.processListEnabled and vm_linkSubProcess.selectedProcess ne null)">
+                        <listbox hflex="1" vflex="1" span="true" autopaging="false"
+                                 mold="default"
+                                 multiple="false" checkmark="false"
+                                 model="@load(vm_linkSubProcess.mainVersionList)"
+                                 selectedItem="@bind(vm_linkSubProcess.selectedVersion)"
+                                 sclass="ap-subprocess-listbox-version-list">
+                            <listhead hflex="1">
+                                <listheader label="${labels.portal_detailsVersion_text}"/>
+                            </listhead>
+                            <template name="model">
+                                <listitem selected="@load(each eq vm_linkSubProcess.selectedVersion)">
+                                    <listcell>
+                                        <label value="@load(each eq null ? labels.common_latest_version_text : each)"/>
+                                    </listcell>
+                                </listitem>
+                            </template>
+                        </listbox>
+                    </div>
+                </hbox>
+            </vbox>
+
         </div>
         <div sclass="ap-window-footer-actions" height="42px">
             <button label="Link" iconSclass="z-icon-check-circle"

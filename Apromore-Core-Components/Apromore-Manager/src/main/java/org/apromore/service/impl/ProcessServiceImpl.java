@@ -1048,7 +1048,8 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
-  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String username)
+  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, Version version,
+                             String username)
       throws CircularReferenceException, UserNotFoundException {
     if (isProcessLinked(processId, subprocessParentId, username)) {
       throw new CircularReferenceException("Linking these 2 models will create a circular reference.");
@@ -1059,10 +1060,20 @@ public class ProcessServiceImpl implements ProcessService {
     if (subprocessProcessLink == null) {
       subprocessProcessLink = new SubprocessProcess();
     }
+
+    ProcessModelVersion pmv = version == null ? null : getProcessModelVersion(processId, "MAIN", version.toString());
+
     subprocessProcessLink.setSubprocessParent(processRepo.getById(subprocessParentId));
     subprocessProcessLink.setSubprocessId(subprocessId);
     subprocessProcessLink.setLinkedProcess(processRepo.getById(processId));
+    subprocessProcessLink.setLinkedProcessModelVersion(pmv);
     subprocessProcessRepository.saveAndFlush(subprocessProcessLink);
+  }
+
+  @Override
+  public void linkSubprocess(Integer subprocessParentId, String subprocessId, Integer processId, String username)
+      throws CircularReferenceException, UserNotFoundException {
+    linkSubprocess(subprocessParentId, subprocessId, processId, null, username);
   }
 
   @Override
@@ -1097,6 +1108,13 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     return ui.buildProcessSummary(process);
+  }
+
+  @Override
+  public String getLinkedProcessVersion(int subprocessParentId, String subprocessId) {
+    ProcessModelVersion pmv = subprocessProcessRepository.getLinkedProcessModelVersion(subprocessParentId, subprocessId);
+
+    return pmv == null ? null : pmv.getVersionNumber();
   }
 
   @Override

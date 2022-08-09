@@ -34,6 +34,8 @@ import java.util.List;
 import org.apromore.builder.UserManagementBuilder;
 import org.apromore.dao.GroupProcessRepository;
 import org.apromore.dao.GroupRepository;
+import org.apromore.dao.ProcessBranchRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.UserRepository;
@@ -41,9 +43,12 @@ import org.apromore.dao.model.AccessRights;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
 import org.apromore.exception.CircularReferenceException;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.portal.helper.Version;
 import org.apromore.service.ProcessService;
 import org.apromore.util.AccessType;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +71,12 @@ class SubprocessLinkUnitTest extends BaseTest {
 
     @Autowired
     ProcessService processService;
+
+    @Autowired
+    ProcessModelVersionRepository processModelVersionRepository;
+
+    @Autowired
+    ProcessBranchRepository processBranchRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -101,13 +112,28 @@ class SubprocessLinkUnitTest extends BaseTest {
         process3.setUser(user);
         processRepository.saveAndFlush(process3);
 
+        ProcessBranch process3Branch = new ProcessBranch();
+        process3Branch.setProcess(process3);
+        process3Branch.setBranchName("MAIN");
+        processBranchRepository.saveAndFlush(process3Branch);
+
+        ProcessModelVersion process3ModelVersion = new ProcessModelVersion();
+        process3ModelVersion.setVersionNumber("1.1");
+        process3ModelVersion.setCreator(user);
+        process3ModelVersion.setProcessBranch(process3Branch);
+        process3Branch.setCurrentProcessModelVersion(process3ModelVersion);
+        process3Branch.getProcessModelVersions().add(process3ModelVersion);
+        processModelVersionRepository.saveAndFlush(process3ModelVersion);
+
         processService.linkSubprocess(process1.getId(), subprocessId, process2.getId(), username);
         assertEquals(process2.getId(),
             subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
+        assertNull(processService.getLinkedProcessVersion(process1.getId(), subprocessId));
 
-        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId(), username);
+        processService.linkSubprocess(process1.getId(), subprocessId, process3.getId(), new Version("1.1"), username);
         assertEquals(process3.getId(),
             subprocessProcessRepository.getLinkedProcess(process1.getId(), subprocessId).getId());
+        assertEquals("1.1", processService.getLinkedProcessVersion(process1.getId(), subprocessId));
     }
 
     @Test

@@ -19,11 +19,13 @@
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  * #L%
  */
+
 package org.apromore.dao;
 
 import java.util.List;
-import org.apromore.dao.model.SubprocessProcess;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.SubprocessProcess;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,6 +40,10 @@ public interface SubprocessProcessRepository extends JpaRepository<SubprocessPro
      */
     @Query("SELECT p.linkedProcess FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
     Process getLinkedProcess(int parentProcessId, String subprocessId);
+
+    @Query("SELECT p.linkedProcessModelVersion FROM SubprocessProcess p"
+        + " WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
+    ProcessModelVersion getLinkedProcessModelVersion(int parentProcessId, String subprocessId);
 
     @Query("SELECT p FROM SubprocessProcess p WHERE p.subprocessParent.id = ?1 AND p.subprocessId = ?2")
     SubprocessProcess getExistingLink(int parentProcessId, String subprocessId);

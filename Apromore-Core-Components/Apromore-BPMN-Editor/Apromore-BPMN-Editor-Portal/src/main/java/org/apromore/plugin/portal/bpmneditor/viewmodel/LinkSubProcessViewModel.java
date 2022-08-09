@@ -24,7 +24,9 @@ package org.apromore.plugin.portal.bpmneditor.viewmodel;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import org.apromore.dao.model.Folder;
@@ -35,11 +37,13 @@ import org.apromore.portal.common.FolderTreeModel;
 import org.apromore.portal.common.ItemHelpers;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.helper.Version;
 import org.apromore.portal.model.FolderType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummariesType;
 import org.apromore.portal.model.SummaryType;
 import org.apromore.portal.model.UserType;
+import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -51,6 +55,7 @@ import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
+import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.bind.annotation.SelectorParam;
@@ -93,6 +98,9 @@ public class LinkSubProcessViewModel {
     @Setter
     private ProcessSummaryType selectedProcess;
     @Getter
+    @Setter
+    private String selectedVersion;
+    @Getter
     private boolean processListEnabled;
     private List<SummaryType> processList;
 
@@ -105,7 +113,6 @@ public class LinkSubProcessViewModel {
         parentProcessId = parentId;
         currentUser = UserSessionManager.getCurrentUser();
 
-
         try {
             ProcessSummaryType linkedProcess = processService.getLinkedProcess(parentId, elId);
 
@@ -113,6 +120,7 @@ public class LinkSubProcessViewModel {
                 selectedProcess = (ProcessSummaryType) getProcessList().stream()
                     .filter(p -> p.getId().equals(linkedProcess.getId()))
                     .findFirst().orElse(null);
+                selectedVersion = processService.getLinkedProcessVersion(parentId, elId);
             }
 
             if (selectedProcess != null) {
@@ -128,13 +136,19 @@ public class LinkSubProcessViewModel {
     public void doAfterCompose(@SelectorParam("#tree") final Tree tree) {
         try {
             EventQueues.lookup("linkSubProcessControl", EventQueues.DESKTOP, true).subscribe(evt -> {
-                    selectedProcess = null;
-                    if ("onSelect".equals(evt.getName())) {
-                        Object selItem = evt.getData();
+                if ("onSelect".equals(evt.getName())) {
+                    Object selItem = evt.getData();
+                    if (selectedProcess != selItem) {
+
+                        //Only update if the selected process has changed
+                        selectedProcess = null;
+                        selectedVersion = null;
                         if (selItem instanceof ProcessSummaryType) {
                             selectedProcess = (ProcessSummaryType) selItem;
                         }
                     }
+                }
+                BindUtils.postGlobalCommand(null, null, "onSelectedProcessUpdated", null);
             });
 
             List<Integer> processFolderChain = getProcessFolderChain(
@@ -157,7 +171,8 @@ public class LinkSubProcessViewModel {
             switch (linkType) {
                 case LINK_TYPE_NEW:
                     ProcessSummaryType newProcess = mainController.openNewProcess();
-                    processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(), currentUser.getUsername());
+                    processService.linkSubprocess(parentProcessId, elementId, newProcess.getId(),
+                        currentUser.getUsername());
                     BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                     window.detach();
                     Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','Untitled (v1.0)');");
@@ -167,14 +182,19 @@ public class LinkSubProcessViewModel {
                         Notification.error(Labels.getLabel("bpmnEditor_linkSubProcessSelectModel_message",
                             "Please select an existing process model to link"));
                     } else {
-                        processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(), currentUser.getUsername());
-                        Notification.info(MessageFormat.format(Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
+                        Version version = selectedVersion == null ? null : new Version(selectedVersion);
+                        processService.linkSubprocess(parentProcessId, elementId, selectedProcess.getId(), version,
+                            currentUser.getUsername());
+                        Notification.info(MessageFormat.format(
+                            Labels.getLabel("bpmnEditor_linkSubProcessSuccess_message",
                             "Subprocess linked to {0}"), selectedProcess.getName()));
                         BindUtils.postGlobalCommand(null, null, "onLinkedProcessUpdated", null);
                         window.detach();
 
+                        String versionNumber = selectedVersion == null
+                            ? selectedProcess.getLastVersion() : selectedVersion;
                         String linkedProcessName =
-                            selectedProcess.getName() + " (v" + selectedProcess.getLastVersion() + ")";
+                            selectedProcess.getName() + " (v" + versionNumber + ")";
                         Clients.evalJavaScript("setLinkedSubProcess('" + elementId + "','" + linkedProcessName + "');");
                     }
                     break;
@@ -205,6 +225,24 @@ public class LinkSubProcessViewModel {
         return processList;
     }
 
+    public List<String> getMainVersionList() {
+        if (selectedProcess == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> mainVersionList = new ArrayList<>();
+
+        //Add null entry to represent latest version
+        mainVersionList.add(null);
+        //Add all versions in MAIN branch
+        mainVersionList.addAll(selectedProcess.getVersionSummaries().stream()
+            .filter(v -> "MAIN".equals(v.getName()))
+            .map(VersionSummaryType::getVersionNumber)
+            .collect(Collectors.toList()));
+
+        return mainVersionList;
+    }
+
     /**
      * Get all the processes in a folder and its subfolders.
      *
@@ -231,6 +269,13 @@ public class LinkSubProcessViewModel {
         processListEnabled = LINK_TYPE_EXISTING.equals(linkType);
     }
 
+    @GlobalCommand
+    @NotifyChange({"selectedProcess", "mainVersionList", "selectedVersion"})
+    public void onSelectedProcessUpdated() {
+        // =======================================================================
+        // forward triggering notification for updating the selected process
+        // =======================================================================
+    }
 
     private List<Integer> getProcessFolderChain(
         Integer parentFolder) {

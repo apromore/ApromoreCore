@@ -59,5 +59,8 @@ public class SubprocessProcess {
     @OneToOne
     @JoinColumn(name = "linked_process_id", nullable = false)
     private Process linkedProcess;
+    @OneToOne
+    @JoinColumn(name = "linked_process_model_version_id")
+    private ProcessModelVersion linkedProcessModelVersion;
 
 }

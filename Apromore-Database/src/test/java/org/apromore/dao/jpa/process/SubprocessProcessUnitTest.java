@@ -27,9 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apromore.config.BaseTestClass;
+import org.apromore.dao.ProcessBranchRepository;
+import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.SubprocessProcessRepository;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.SubprocessProcess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +51,12 @@ class SubprocessProcessUnitTest extends BaseTestClass {
 
     @Autowired
     ProcessRepository processRepository;
+
+    @Autowired
+    ProcessModelVersionRepository processModelVersionRepository;
+
+    @Autowired
+    ProcessBranchRepository processBranchRepository;
 
     @BeforeEach
     void setup() {
@@ -84,6 +94,35 @@ class SubprocessProcessUnitTest extends BaseTestClass {
     void testGetLinkedSubprocesses() {
         assertTrue(subprocessProcessRepository.getLinkedSubProcesses(process2.getId()).isEmpty());
         assertEquals(1, subprocessProcessRepository.getLinkedSubProcesses(process1.getId()).size());
+    }
+
+    @Test
+    void testGetLinkedSubprocessVersionNoVersionSpecified() {
+        assertNull(subprocessProcessRepository.getLinkedProcessModelVersion(process1.getId(), subprocessId));
+    }
+
+    @Test
+    void testGetLinkedSubprocessVersionWithVersion() {
+        ProcessBranch processBranch = new ProcessBranch();
+        processBranch.setProcess(process2);
+        processBranch.setBranchName("MAIN");
+        processBranchRepository.saveAndFlush(processBranch);
+
+        ProcessModelVersion pmv = new ProcessModelVersion();
+        pmv.setVersionNumber("1.1");
+        pmv.setProcessBranch(processBranch);
+        processBranch.setCurrentProcessModelVersion(pmv);
+        processBranch.getProcessModelVersions().add(pmv);
+        processModelVersionRepository.saveAndFlush(pmv);
+
+        SubprocessProcess subprocessProcess = new SubprocessProcess();
+        subprocessProcess.setSubprocessId(subprocessId);
+        subprocessProcess.setSubprocessParent(process1);
+        subprocessProcess.setLinkedProcess(process2);
+        subprocessProcess.setLinkedProcessModelVersion(pmv);
+        subprocessProcessRepository.saveAndFlush(subprocessProcess);
+
+        assertEquals(pmv, subprocessProcessRepository.getLinkedProcessModelVersion(process1.getId(), subprocessId));
     }
 
 }
