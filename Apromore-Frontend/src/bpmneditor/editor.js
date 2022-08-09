@@ -730,16 +730,22 @@ export default class Editor {
 
         let eventBus = modeler.get('eventBus');
         let elements = modeler.get('selection').get();
+        if (!elements || !elements.length) {
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
+        }
         elements.forEach((element) => {
-            modeling.resizeShape(
-                element,
-                {
-                    x: element.x,
-                    y: element.y,
-                    width: size.width,
-                    height: size.height
-                }
-            );
+            if (element.type && element.type === "bpmn:Task") {
+                modeling.resizeShape(
+                    element,
+                    {
+                        x: element.x,
+                        y: element.y,
+                        width: size.width,
+                        height: size.height
+                    }
+                );
+            }
         });
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
