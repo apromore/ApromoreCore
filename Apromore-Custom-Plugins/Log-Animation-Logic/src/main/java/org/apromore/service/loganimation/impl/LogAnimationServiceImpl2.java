@@ -55,10 +55,12 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
 
         /*
          * ------------------------------------------
-         * Check process model validity for animation
+         * 1. ProcessSelection: Select model pool, remove unsupported elements and make implicit elements explicit.
+         * 1. Check process model validity for animation
          * ------------------------------------------
          */
-        Definitions bpmnDefinition = BPMN2DiagramConverter.parseBPMN(bpmn, getClass().getClassLoader());
+        ProcessSelection processSelection = new ProcessSelection(bpmn);
+        Definitions bpmnDefinition = processSelection.getReducedBpmnDefinitions();
         BPMNDiagramHelper diagramHelper = new BPMNDiagramHelper();
         ModelCheckResult checkResult = diagramHelper.checkModel(bpmnDefinition);
         if (!checkResult.isValid()) {
@@ -124,6 +126,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         ArrayList<AnimationLog> replayedLogs = new ArrayList<>();
         for (Log log: logs) {
             AnimationLog animationLog = replayer.replay(log.xlog, log.color);
+            animationLog = processSelection.removeImplicitElementsFrom(animationLog);
             animationLog.setFileName(log.fileName);
 
             if (animationLog !=null && !animationLog.isEmpty()) {
@@ -131,6 +134,8 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
             }
         }
 
+        String processId = bpmnDefinition.getRootElement().get(0).getId();
+        bpmnDefinition = processSelection.getOriginalBpmnDefintions();
         for (AnimationLog animationLog : replayedLogs) {
             animationLog.setDiagram(bpmnDefinition);
         }
@@ -142,7 +147,7 @@ public class LogAnimationServiceImpl2 extends DefaultParameterAwarePlugin implem
         */
         if (replayedLogs.size() > 0) {
             AnimationJSONBuilder2 jsonBuilder = new AnimationJSONBuilder2(replayedLogs, bpmnDefinition, params);
-            JSONObject json = jsonBuilder.parseLogCollection();
+            JSONObject json = jsonBuilder.parseLogCollection(processId);
             json.put("success", true);  // Ext2JS's file upload requires this flag
             return new AnimationResult(replayedLogs, bpmnDefinition, json);
         }

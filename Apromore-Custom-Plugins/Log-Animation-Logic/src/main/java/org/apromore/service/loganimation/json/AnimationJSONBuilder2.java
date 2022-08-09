@@ -96,6 +96,22 @@ public class AnimationJSONBuilder2 {
         collectionObj.put("timeline", this.parseTimeline(animations));
         return collectionObj;
     }
+
+    public JSONObject parseLogCollection(String processId) {
+        JSONObject collectionObj = new JSONObject();
+
+        JSONArray logs = new JSONArray();
+        for(AnimationLog log : this.animations) {
+            logs.put(this.parseLog(log));
+        }
+
+        collectionObj.put("logs", logs);
+        JSONObject json = this.parseTimeline(animations);
+        json.put("processID", processId);
+        collectionObj.put("timeline", json);
+        collectionObj.put("processID", processId);
+        return collectionObj;
+    }
     
     public JSONObject parseLog(AnimationLog animationLog) throws JSONException {
         DecimalFormat df = new DecimalFormat("#.###");

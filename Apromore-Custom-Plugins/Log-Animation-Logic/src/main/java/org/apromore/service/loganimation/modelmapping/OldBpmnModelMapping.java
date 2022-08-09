@@ -67,6 +67,33 @@ public class OldBpmnModelMapping implements ModelMapping {
 	        }
 	    }
 	}
+
+	public OldBpmnModelMapping(Definitions diagram, String processID) {
+		int index=0;
+		Process process = getProcessWithId(diagram, processID);
+		for (FlowElement element : process.getFlowElement()) {
+			if (element instanceof Activity || element instanceof SequenceFlow) {
+				elementIdToIndexMap.put(element.getId(), index);
+				index++;
+				if (element instanceof Activity) {
+					elementIdToSkipIndexMap.put(element.getId(), index);
+					index++;
+				}
+			}
+		}
+	}
+
+	private Process getProcessWithId(Definitions diagram, String processID) {
+		for(BaseElement element : diagram.getRootElement()) {
+			if(element.getId().equals(processID)) {
+				return (Process) element;
+			}
+		}
+		if(diagram.getRootElement().size()>1) {
+			return (Process) diagram.getRootElement().get(1);
+		}
+		return (Process) diagram.getRootElement().get(0);
+	}
 	
 	@Override
     public int getIndex(String elementId) {
