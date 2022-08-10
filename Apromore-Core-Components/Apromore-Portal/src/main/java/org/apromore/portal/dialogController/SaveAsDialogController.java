@@ -96,6 +96,7 @@ public class SaveAsDialogController extends BaseController {
      */
     private final Boolean isSaveCurrent;
     private String modelData;
+    private ProcessSummaryType process;
 
     ProcessService processService;
     WorkspaceService workspaceService;
@@ -104,6 +105,7 @@ public class SaveAsDialogController extends BaseController {
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version,
                                   ApromoreSession session, @Nullable Boolean isUpdate, String data,
                                   MainController mainController) {
+        this.process = process;
         this.session = session;
         this.editSession = session.getEditSession();
         this.isSaveCurrent = isUpdate;
@@ -271,6 +273,7 @@ public class SaveAsDialogController extends BaseController {
                 mainController.getManagerService().editProcessData(processId, processName, "", userName, versionNumber,
                     versionNumber, null, false);
                 editSession.setProcessName(processName);
+                process.setName(processName);
                 qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
             }
 
@@ -309,6 +312,15 @@ public class SaveAsDialogController extends BaseController {
             nativeStream.reset();
             mainController.getManagerService().createDraft(processId, processName,
                 versionNumber, nativeType, nativeStream, userName);
+
+            // Update process name if it's a new process
+            if (UNTITLED_PROCESS_NAME.equals(this.editSession.getProcessName())) {
+                mainController.getManagerService().editProcessData(processId, processName, "", userName, versionNumber,
+                    versionNumber, null, false);
+                editSession.setProcessName(processName);
+                process.setName(processName);
+                qePortal.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
+            }
 
             // Update process data with the new process to keep a consistent state
             editSession.setOriginalVersionNumber(versionNumber);
