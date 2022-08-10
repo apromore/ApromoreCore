@@ -1,12 +1,16 @@
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   extensionElementsEntry = require('bpmn-js-properties-panel/lib/provider/camunda/parts/implementation/ExtensionElements'),
   suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError,
-  SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper');
+  SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper'),
+  validationErrorHelper = require('../../../../helper/ValidationErrorHelper'),
+  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
 
 module.exports = function (element, bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
   let clause;
   let outgoingElementId = options.outgoingElementId;
+  let gateway = options.gateway ;
+
   let variableEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'clauses-' + outgoingElementId,
     label: translate('gateway.expression.clauses.label'),
@@ -24,6 +28,16 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     },
 
     createExtensionElement: function (element, extensionElements, _value) {
+      if(!isCaseAttributeExist()){
+        Ap.common.notify(translate('gateway.caseAttribute.notfound.message'), 'error');
+        return cmdHelper.addElementsTolist(element, sequenceFlow, 'values', []);
+      }
+
+      if(isGatewayProbabilityExist()){
+        Ap.common.notify(translate('gateway.probability.to.condition.switch.constraint'), 'error');
+        return cmdHelper.addElementsTolist(element, sequenceFlow, 'values', []);
+      }
+
       let expression = getExpression();
       if (!expression) {
         sequenceFlow = SequenceFlowHelper.createExpression(bpmnFactory, elementRegistry, sequenceFlow, true);
@@ -35,6 +49,8 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         SequenceFlowHelper.storeClauseCurrentSelection(outgoingElementId, clause);
         cmd = cmdHelper.addElementsTolist(element, expression, 'values', [clause]);
       }
+      suppressProbabilityErrorIfAny();
+      createClauseCategoryError(outgoingElementId);
       return cmd;
     },
 
@@ -46,12 +62,14 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       }
       SequenceFlowHelper.removeClauseSelection(outgoingElementId);
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: this.id });
+      suppressValidationError(bpmnFactory, elementRegistry, { elementId:  'clause-category-'+outgoingElementId });
       if (expression.values.length == 1) {
         if (sequenceFlow && sequenceFlow.values) {
           return cmdHelper.removeElementsFromList(element, sequenceFlow, 'values',
             null, [expression]);
         }
       }
+      validateCurrentCondition();
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },
@@ -65,6 +83,70 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       option.text = 'Clause ' + (idx + 1);
     }
   });
+
+  function isCaseAttributeExist(){
+    let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
+    if (variables && variables.length > 0) {
+      return true;
+    }
+    return false;
+  }
+  function isGatewayProbabilityExist() {
+    let exist = undefined;
+    gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
+      let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
+      if (seqFlow && seqFlow.executionProbability) {
+        exist = true;
+      }
+    });
+    return exist;
+  }
+
+  function createClauseCategoryError(outgoingElementId){
+    validationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
+      id: 'clause-category-' + outgoingElementId,
+      elementId: 'clause-category-' + outgoingElementId,
+      message: translate('invalid.empty.category')
+    });
+  }
+
+  function isGatewayConditionExist() {
+    let exist = undefined;
+    gateway && gateway.outgoing &&  gateway.outgoing.forEach(function (outElement) {
+      let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
+      if (seqFlow && seqFlow.values && seqFlow.values.length > 0) {
+        exist = true;
+      }
+    });
+    return exist;
+  }
+
+  function suppressProbabilityErrorIfAny() {
+    gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
+      let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
+      if(seqFlow){
+        delete seqFlow.executionProbability;
+        delete seqFlow.rawExecutionProbability;
+      }
+      validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: 'probability-field-'+outElement.id });
+    });
+  }
+
+  function validateCurrentCondition(){
+    let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
+      if(!isGatewayConditionExist()){
+      gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
+      validationErrorHelper.validateGatewayProbabilities(bpmnFactory, elementRegistry, translate, {
+        probability: '',
+        sequenceFlowsElement: sequenceFlows,
+        outgoingElement: outElement,
+        gateway: gateway,
+        id: 'probability-field-' + outElement.id,
+        description: translate('gateway.probability')
+      });
+    });
+    }
+  }  
 
   function getExpression() {
     if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
