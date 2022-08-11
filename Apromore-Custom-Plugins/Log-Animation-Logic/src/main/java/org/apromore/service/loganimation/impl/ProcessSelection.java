@@ -102,18 +102,36 @@ public class ProcessSelection {
         for (Process process : processes) {
             boolean containsStartEvent = false;
             boolean containsEndEvent = false;
+            boolean isConnected = true;
             for (FlowElement flowElement : process.getFlowElement()) {
-                if (flowElement instanceof StartEvent) {
+                isConnected = isConnected && checkConnectedness(flowElement);
+                if(flowElement instanceof StartEvent)
                     containsStartEvent = true;
-                } else if (flowElement instanceof EndEvent) {
+                else if (flowElement instanceof EndEvent)
                     containsEndEvent = true;
-                }
             }
-            if (containsStartEvent && containsEndEvent) {
+            if (containsStartEvent && containsEndEvent && isConnected) {
                 firstProcess = process;
                 break;
             }
         }
+    }
+
+    private boolean checkConnectedness(FlowElement flowElement)
+    {
+        if (flowElement instanceof StartEvent) {
+            if(flowElement.getOutgoing().isEmpty()) {
+                return false;
+            }
+        } else if (flowElement instanceof EndEvent) {
+            if(flowElement.getIncoming().isEmpty()) {
+                return false;
+            }
+        } else if ((flowElement instanceof Activity || flowElement instanceof Event || flowElement instanceof Gateway) &&
+            (flowElement.getOutgoing().isEmpty() || flowElement.getIncoming().isEmpty())) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -272,32 +290,29 @@ public class ProcessSelection {
 
     private void removeImplicitElementsFrom(ReplayTrace replayTrace) {
         Set<TraceNode> toBeRemoved = new HashSet<>();
-        TraceNode traceNode = getNext(replayTrace.getStart());
-        while (traceNode != null) {
-            if (traceNode.getModelNode().getId().contains(DELETE)) {
-                SequenceFlow incoming = (SequenceFlow) traceNode.getIncoming().get(0);
-                TraceNode precedingNode = (TraceNode) incoming.getSourceRef();
-                TraceNode succeedingNode = getNext(traceNode);
+        for(TraceNode traceNode : replayTrace.getTimeOrderedReplayedNodes()) {
+            TraceNode succeedingNode = getNext(traceNode);
+            if (!traceNode.getModelNode().getId().contains(DELETE) || succeedingNode==null) {
+                continue;
+            }
+            toBeRemoved.add(traceNode);
+            SequenceFlow incoming = (SequenceFlow) traceNode.getIncoming().get(0);
+            TraceNode precedingNode = (TraceNode) incoming.getSourceRef();
+            if (traceNode.getModelNode() instanceof ExclusiveGateway) {
                 SequenceFlow outgoing = (SequenceFlow) traceNode.getOutgoing().get(0);
-                if (succeedingNode!=null && (traceNode.getModelNode() instanceof ExclusiveGateway)) {
-                    traceNode.getOutgoing().remove(outgoing);
-                    incoming.setTargetRef(succeedingNode);
-                    succeedingNode.getIncoming().add(incoming);
-                    succeedingNode.getIncoming().remove(outgoing);
-                    replayTrace.removeSequenceFlow(outgoing);
-                } else if (traceNode.getModelNode() instanceof ParallelGateway) {
-                    for (Edge out : traceNode.getOutgoing()) {
-                        outgoing = (SequenceFlow) out;
-                        precedingNode.getOutgoing().add(outgoing);
-                        outgoing.setSourceRef(precedingNode);
-                    }
-                    precedingNode.getOutgoing().remove(incoming);
-                    replayTrace.removeSequenceFlow(incoming);
+                traceNode.getOutgoing().remove(outgoing);
+                incoming.setTargetRef(succeedingNode);
+                succeedingNode.getIncoming().add(incoming);
+                succeedingNode.getIncoming().remove(outgoing);
+                replayTrace.removeSequenceFlow(outgoing);
+            } else if (traceNode.getModelNode() instanceof ParallelGateway) {
+                for (Edge out : traceNode.getOutgoing()) {
+                    SequenceFlow outgoing = (SequenceFlow) out;
+                    precedingNode.getOutgoing().add(outgoing);
+                    outgoing.setSourceRef(precedingNode);
                 }
-                toBeRemoved.add(traceNode);
-                traceNode = succeedingNode;
-            } else {
-                traceNode = getNext(traceNode);
+                precedingNode.getOutgoing().remove(incoming);
+                replayTrace.removeSequenceFlow(incoming);
             }
         }
         toBeRemoved.forEach(replayTrace::removeNode);
