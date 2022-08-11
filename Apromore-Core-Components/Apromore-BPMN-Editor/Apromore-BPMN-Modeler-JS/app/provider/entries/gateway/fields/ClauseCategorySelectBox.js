@@ -1,13 +1,16 @@
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
   cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
-  ClauseCategoryCustomSelect = require('./ClauseCategoryCustomSelect');
+  ClauseCategoryCustomSelect = require('./ClauseCategoryCustomSelect'),
+  suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError,
+  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
 
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
   var getSelectedClause = options.getSelectedClause;
   var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
   var isNumeric = options.isNumeric;
+  let outgoingElementId =  options.outgoingElementId;
 
   function getCategoryOptions() {
     var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
@@ -58,6 +61,9 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     },
     set: function (element, values, _node) {
       let clause = getSelectedClause(element, _node);
+      if(values.variableEnumValue){
+        suppressValidationError(bpmnFactory, elementRegistry, { elementId:  'clause-category-'+outgoingElementId });
+     }
       return cmdHelper.updateBusinessObject(element, clause, {
         variableEnumValue: values.variableEnumValue || undefined
       });

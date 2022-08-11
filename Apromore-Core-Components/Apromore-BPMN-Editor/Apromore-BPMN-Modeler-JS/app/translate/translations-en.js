@@ -130,4 +130,6 @@ module.exports = {
   'general.category.used.in.gateway': 'Failed to delete. Category is being used in gateway.',
   'general.attribute.used.in.gateway.switch': 'Not permitted to switch. Case attribute is being used in gateway.',
   'gateway.category.select.placeholder' : 'Select a category',
+  'gateway.probability.to.condition.switch.constraint' : 'Please remove details from the condition view before entering the probabilities for the gateway',
+  'gateway.condition.to.probability.switch.constraint' : 'Please remove details from the probability view before entering the conditions for the gateway',
 };
