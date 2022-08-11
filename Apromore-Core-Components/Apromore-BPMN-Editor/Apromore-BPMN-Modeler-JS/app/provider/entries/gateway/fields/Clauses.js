@@ -3,13 +3,15 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
   suppressValidationError = require('../../../../helper/ValidationErrorHelper').suppressValidationError,
   SequenceFlowHelper = require('../../../../helper/SequenceFlowHelper'),
   validationErrorHelper = require('../../../../helper/ValidationErrorHelper'),
-  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper');
+  CaseAttributeHelper = require('../../../../helper/CaseAttributeHelper'),
+  getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
 
 module.exports = function (element, bpmnFactory, elementRegistry, translate, options, sequenceFlow) {
 
   let clause;
   let outgoingElementId = options.outgoingElementId;
-  let gateway = options.gateway ;
+  let gateway = options.gateway;
+  let title = options.title;
 
   let variableEntry = extensionElementsEntry(element, bpmnFactory, {
     id: 'clauses-' + outgoingElementId,
@@ -28,12 +30,12 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     },
 
     createExtensionElement: function (element, extensionElements, _value) {
-      if(!isCaseAttributeExist()){
+      if (!isCaseAttributeExist()) {
         Ap.common.notify(translate('gateway.caseAttribute.notfound.message'), 'error');
         return cmdHelper.addElementsTolist(element, sequenceFlow, 'values', []);
       }
 
-      if(isGatewayProbabilityExist()){
+      if (isGatewayProbabilityExist()) {
         Ap.common.notify(translate('gateway.probability.to.condition.switch.constraint'), 'error');
         return cmdHelper.addElementsTolist(element, sequenceFlow, 'values', []);
       }
@@ -50,7 +52,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         cmd = cmdHelper.addElementsTolist(element, expression, 'values', [clause]);
       }
       suppressProbabilityErrorIfAny();
-      createClauseCategoryError(outgoingElementId);
+      createClauseCategoryError(outgoingElementId,title);
       return cmd;
     },
 
@@ -62,20 +64,20 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
       }
       SequenceFlowHelper.removeClauseSelection(outgoingElementId);
       suppressValidationError(bpmnFactory, elementRegistry, { elementId: this.id });
-      suppressValidationError(bpmnFactory, elementRegistry, { elementId:  'clause-category-'+outgoingElementId });
       if (expression.values.length == 1) {
         if (sequenceFlow && sequenceFlow.values) {
           return cmdHelper.removeElementsFromList(element, sequenceFlow, 'values',
             null, [expression]);
         }
       }
-      validateCurrentCondition();
+   
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },
 
     getExtensionElements: function (_element) {
       let expression = getExpression();
+      validateCurrentCondition();
       return expression && expression.values || [];
     },
 
@@ -84,7 +86,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     }
   });
 
-  function isCaseAttributeExist(){
+  function isCaseAttributeExist() {
     let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
     if (variables && variables.length > 0) {
       return true;
@@ -102,17 +104,17 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     return exist;
   }
 
-  function createClauseCategoryError(outgoingElementId){
+  function createClauseCategoryError(outgoingElementId,title) {
     validationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
       id: 'clause-category-' + outgoingElementId,
-      elementId: 'clause-category-' + outgoingElementId,
+      elementId: title,
       message: translate('invalid.empty.category')
     });
   }
 
   function isGatewayConditionExist() {
     let exist = undefined;
-    gateway && gateway.outgoing &&  gateway.outgoing.forEach(function (outElement) {
+    gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
       let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
       if (seqFlow && seqFlow.values && seqFlow.values.length > 0) {
         exist = true;
@@ -124,29 +126,72 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
   function suppressProbabilityErrorIfAny() {
     gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
       let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
-      if(seqFlow){
+      if (seqFlow) {
         delete seqFlow.executionProbability;
         delete seqFlow.rawExecutionProbability;
       }
-      validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: 'probability-field-'+outElement.id });
+      validationErrorHelper.suppressValidationError(bpmnFactory, elementRegistry, { id: 'probability-field-' + outElement.id });
     });
   }
 
-  function validateCurrentCondition(){
+  function validateCurrentCondition() {
     let sequenceFlows = SequenceFlowHelper.getSequenceFlows(bpmnFactory, elementRegistry);
-      if(!isGatewayConditionExist()){
+    if (!isGatewayConditionExist()) {
       gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
-      validationErrorHelper.validateGatewayProbabilities(bpmnFactory, elementRegistry, translate, {
-        probability: '',
-        sequenceFlowsElement: sequenceFlows,
-        outgoingElement: outElement,
-        gateway: gateway,
-        id: 'probability-field-' + outElement.id,
-        description: translate('gateway.probability')
+        let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
+        if (seqFlow && !seqFlow.hasOwnProperty('executionProbability')) {
+          seqFlow.executionProbability = '';
+          seqFlow.rawExecutionProbability = '';
+        }
+        validationErrorHelper.validateGatewayProbabilities(bpmnFactory, elementRegistry, translate, {
+          probability: '',
+          sequenceFlowsElement: sequenceFlows,
+          outgoingElement: outElement,
+          gateway: gateway,
+          id: 'probability-field-' + outElement.id,
+          description: translate('gateway.probability')
+        });
+
+        suppressValidationError(bpmnFactory, elementRegistry, { id: 'clause-category-' + outElement.id });
+
       });
-    });
+    }else{
+      gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
+        let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
+        let invalid = false;
+        if (seqFlow && seqFlow.values && seqFlow.values.length > 0){
+           let expression = seqFlow.values[0];
+           if(expression && expression.values && expression.values.length >0){
+              expression.values.forEach(function (clause) {
+                  if(clause && isENUM(clause)){
+                      if(clause.hasOwnProperty('variableEnumValue') && clause.variableEnumValue.trim() === ''){
+                        let label = outElement.targetRef.name ? outElement.targetRef.name :
+                          getBusinessObject(outElement).name ? getBusinessObject(outElement).name :
+                          outElement.targetRef.id;
+                          createClauseCategoryError(outElement.id, label);
+                          invalid = true ;
+                      }
+                  }
+              });
+           }
+        }
+        if(!invalid){
+         suppressValidationError(bpmnFactory, elementRegistry, { id: 'clause-category-' + outElement.id });
+        }
+      });
     }
-  }  
+  }
+
+  function isENUM(clause) {
+    var variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
+    let selectedCaseAttribute = variables && variables.values && variables.values.filter(function (variable) {
+      return variable.name === clause.variableName;
+    });
+    if (selectedCaseAttribute && selectedCaseAttribute.length > 0) {
+      return selectedCaseAttribute[0].type && selectedCaseAttribute[0].type === 'ENUM';
+    }
+    return false;
+  }
 
   function getExpression() {
     if (!sequenceFlow || !sequenceFlow.values || sequenceFlow.values.length == 0) {
