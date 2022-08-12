@@ -58,11 +58,12 @@ public class Replayer {
     private Map<String,Integer> eventNameKeyMap = new HashMap();
     private Map<XTrace,String> traceKeyMap = new HashMap();
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
+    private final ReplayResult EMPTY_RESULT = new ReplayResult(null, 0);
     
     class ReplayResult {
     	Node leafNode;
     	long runtime;
-    	
+
     	public ReplayResult(Node node, long runtime) {
     		this.leafNode = node;
     		this.runtime = runtime;
@@ -200,7 +201,7 @@ public class Replayer {
         }
 
         if (trace.isEmpty()) {
-            new ReplayResult(null, 0);
+            return EMPTY_RESULT;
         }
 
         //--------------------------------------------
