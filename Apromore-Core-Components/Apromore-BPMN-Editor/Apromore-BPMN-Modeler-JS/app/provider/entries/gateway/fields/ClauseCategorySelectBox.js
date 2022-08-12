@@ -62,7 +62,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     set: function (element, values, _node) {
       let clause = getSelectedClause(element, _node);
       if(values.variableEnumValue){
-        suppressValidationError(bpmnFactory, elementRegistry, { elementId:  'clause-category-'+outgoingElementId });
+        suppressValidationError(bpmnFactory, elementRegistry, { id:  'clause-category-'+outgoingElementId });
      }
       return cmdHelper.updateBusinessObject(element, clause, {
         variableEnumValue: values.variableEnumValue || undefined
