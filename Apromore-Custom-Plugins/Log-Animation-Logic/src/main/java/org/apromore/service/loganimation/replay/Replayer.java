@@ -77,6 +77,7 @@ public class Replayer {
     public Replayer(Definitions bpmnDefinition, ReplayParams params, BPMNDiagramHelper diagramHelper) {
         this.params = params;
         this.helper = diagramHelper;
+        ORJoinEnactmentManager.init(diagramHelper);
     }
     
     public ReplayParams getReplayParams() {
