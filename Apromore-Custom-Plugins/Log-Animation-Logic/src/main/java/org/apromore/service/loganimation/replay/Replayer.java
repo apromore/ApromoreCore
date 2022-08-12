@@ -29,6 +29,9 @@
  */
 package org.apromore.service.loganimation.replay;
 
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,19 +39,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
-
 import org.apromore.service.loganimation.backtracking2.Backtracking;
 import org.apromore.service.loganimation.backtracking2.Node;
 import org.apromore.service.loganimation.backtracking2.StateElementStatus;
-import org.apromore.service.loganimation.impl.AnimationException;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
-
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 /**
  *
  * @author Administrator
@@ -85,7 +82,7 @@ public class Replayer {
         return this.params;
     }
     
-    public AnimationLog replay(XLog log, String color) throws AnimationException {
+    public AnimationLog replay(XLog log, String color) {
         AnimationLog animationLog = new AnimationLog(log);
         animationLog.setColor(color /*this.getLogColor()*/);
         animationLog.setName(log.getAttributes().get("concept:name").toString());
@@ -185,7 +182,7 @@ public class Replayer {
     * The Start event will be assigned a timestamp 20 seconds before the first trace event
     * The End event will be assigned a timestamp 60 seconds after the last trace event
     */
-    public ReplayResult replayTrace(XTrace trace) throws AnimationException {
+    public ReplayResult replayTrace(XTrace trace) {
         Node leafNode; //contains the found backtracking leaf node
         long start = 0;
         long end = 0;
