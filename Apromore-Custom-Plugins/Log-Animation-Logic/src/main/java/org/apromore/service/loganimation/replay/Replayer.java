@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import org.apromore.service.loganimation.backtracking2.Backtracking;
 import org.apromore.service.loganimation.backtracking2.Node;
 import org.apromore.service.loganimation.backtracking2.StateElementStatus;
+import org.apromore.service.loganimation.impl.AnimationException;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -80,7 +81,7 @@ public class Replayer {
         return this.params;
     }
     
-    public AnimationLog replay(XLog log, String color) {
+    public AnimationLog replay(XLog log, String color) throws AnimationException {
         AnimationLog animationLog = new AnimationLog(log);
         animationLog.setColor(color /*this.getLogColor()*/);
         animationLog.setName(log.getAttributes().get("concept:name").toString());
@@ -175,7 +176,7 @@ public class Replayer {
     * The Start event will be assigned a timestamp 20 seconds before the first trace event
     * The End event will be assigned a timestamp 60 seconds after the last trace event
     */
-    public ReplayResult replayTrace(XTrace trace) {
+    public ReplayResult replayTrace(XTrace trace) throws AnimationException {
         Node leafNode; //contains the found backtracking leaf node
         long start = 0;
         long end = 0;
@@ -191,6 +192,9 @@ public class Replayer {
                 iterator.remove();
             }
         }
+        if(trace.isEmpty())
+            throw new AnimationException("Unable to animate as no alignment was found between the log and model.\n" +
+                    "Possible cause: the log and model are too different.");
 
         //--------------------------------------------
         // Replay trace with backtracking algorithm and measure time
