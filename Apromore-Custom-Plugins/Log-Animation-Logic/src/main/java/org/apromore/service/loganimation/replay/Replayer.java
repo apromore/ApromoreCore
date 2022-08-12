@@ -70,6 +70,10 @@ public class Replayer {
     		this.leafNode = node;
     		this.runtime = runtime;
     	}
+
+        public boolean isEmpty() {
+            return leafNode == null;
+        }
     }
     
     public Replayer(Definitions bpmnDefinition, ReplayParams params, BPMNDiagramHelper diagramHelper) {
@@ -127,18 +131,20 @@ public class Replayer {
 			}
 			else {
 				repResult = this.replayTrace(trace);
-				replayResultMap.put(traceKey, repResult);
 			}
-        	 
-			ReplayTrace replayTrace = this.createReplayTrace(trace, repResult);
-            if (!replayTrace.isEmpty()) {
+
+            if (!repResult.isEmpty()) {
+                replayResultMap.put(traceKey, repResult);
+                ReplayTrace replayTrace = this.createReplayTrace(trace, repResult);
+                if (!replayTrace.isEmpty()) {
 //                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
-                replayTrace.calcTiming();
-                animationLog.add(trace, replayTrace);
-            }
-            else {
-                animationLog.addUnreplayTrace(trace);
+                    replayTrace.calcTiming();
+                    animationLog.add(trace, replayTrace);
+                }
+                else {
+                    animationLog.addUnreplayTrace(trace);
 //                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
+                }
             }
         }
         long algoRuntime = animationLog.getAlgoRuntime();
@@ -192,9 +198,10 @@ public class Replayer {
                 iterator.remove();
             }
         }
-        if(trace.isEmpty())
-            throw new AnimationException("Unable to animate as no alignment was found between the log and model.\n" +
-                    "Possible cause: the log and model are too different.");
+
+        if (trace.isEmpty()) {
+            new ReplayResult(null, 0);
+        }
 
         //--------------------------------------------
         // Replay trace with backtracking algorithm and measure time
