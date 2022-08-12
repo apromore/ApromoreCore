@@ -29,6 +29,9 @@
  */
 package org.apromore.service.loganimation.replay;
 
+import de.hpi.bpmn2_0.model.Definitions;
+import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
-
 import org.apromore.service.loganimation.backtracking2.Backtracking;
 import org.apromore.service.loganimation.backtracking2.Node;
 import org.apromore.service.loganimation.backtracking2.StateElementStatus;
@@ -44,10 +46,6 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
-
-import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.model.FlowNode;
-import de.hpi.bpmn2_0.model.connector.SequenceFlow;
 /**
  *
  * @author Administrator
@@ -60,20 +58,26 @@ public class Replayer {
     private Map<String,Integer> eventNameKeyMap = new HashMap();
     private Map<XTrace,String> traceKeyMap = new HashMap();
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
+    private final ReplayResult EMPTY_RESULT = new ReplayResult(null, 0);
     
     class ReplayResult {
     	Node leafNode;
     	long runtime;
-    	
+
     	public ReplayResult(Node node, long runtime) {
     		this.leafNode = node;
     		this.runtime = runtime;
     	}
+
+        public boolean isEmpty() {
+            return leafNode == null;
+        }
     }
     
     public Replayer(Definitions bpmnDefinition, ReplayParams params, BPMNDiagramHelper diagramHelper) {
         this.params = params;
         this.helper = diagramHelper;
+        ORJoinEnactmentManager.init(diagramHelper);
     }
     
     public ReplayParams getReplayParams() {
@@ -126,18 +130,23 @@ public class Replayer {
 			}
 			else {
 				repResult = this.replayTrace(trace);
-				replayResultMap.put(traceKey, repResult);
 			}
-        	 
-			ReplayTrace replayTrace = this.createReplayTrace(trace, repResult);
-            if (!replayTrace.isEmpty()) {
+
+            if (!repResult.isEmpty()) {
+                replayResultMap.put(traceKey, repResult);
+                ReplayTrace replayTrace = this.createReplayTrace(trace, repResult);
+                if (!replayTrace.isEmpty()) {
 //                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
-                replayTrace.calcTiming();
-                animationLog.add(trace, replayTrace);
+                    replayTrace.calcTiming();
+                    animationLog.add(trace, replayTrace);
+                }
+                else {
+                    animationLog.addUnreplayTrace(trace);
+//                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
+                }
             }
             else {
                 animationLog.addUnreplayTrace(trace);
-//                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
             }
         }
         long algoRuntime = animationLog.getAlgoRuntime();
@@ -190,6 +199,10 @@ public class Replayer {
             if (!helper.getActivityNames().contains(LogUtility.getConceptName(event))) {
                 iterator.remove();
             }
+        }
+
+        if (trace.isEmpty()) {
+            return EMPTY_RESULT;
         }
 
         //--------------------------------------------
