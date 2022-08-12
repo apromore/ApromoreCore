@@ -146,6 +146,9 @@ public class Replayer {
 //                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
                 }
             }
+            else {
+                animationLog.addUnreplayTrace(trace);
+            }
         }
         long algoRuntime = animationLog.getAlgoRuntime();
                 
