@@ -22,9 +22,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
     let textFieldDefault = entryFactory.textField(translate, {
       id: 'probability-field-' + outgoingElement.id,
 
-      label: outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
-        getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
-          outgoingElement.targetRef.id,
+      label: getLabelFromOutElement(outgoingElement),
 
       description: translate('gateway.probability'),
       modelProperty: 'probability',
@@ -61,6 +59,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
           sequenceFlowsElement: sequenceFlows,
           outgoingElement: outgoingElement,
           gateway: options.gateway,
+          elementId : getLabelFromOutElement(outgoingElement),
           id: validationId,
           description: this.description
         });
@@ -83,13 +82,18 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
       entries.push(textFieldDefault);
     }
     else {
-      let title = outgoingElement.targetRef.name ? outgoingElement.targetRef.name :
-        getBusinessObject(outgoingElement).name ? getBusinessObject(outgoingElement).name :
-          outgoingElement.targetRef.id;
+      let title = getLabelFromOutElement(outgoingElement);
       entries = entries.concat(ClauseWrapper(bpmnFactory, elementRegistry, translate, { groupId: options.groupId, outgoingElementId: outgoingElement.id, title: title, getConditionChecked: toggle.getConditionChecked, gateway:options.gateway }, element));
     }
 
   });
+
+  function getLabelFromOutElement(outElement) {
+    return outElement.targetRef.name ? outElement.targetRef.name :
+      getBusinessObject(outElement).name ? getBusinessObject(outElement).name :
+        outElement.targetRef.id;
+
+  }
 
   function isGatewayConditionExist() {
     let exist = undefined;

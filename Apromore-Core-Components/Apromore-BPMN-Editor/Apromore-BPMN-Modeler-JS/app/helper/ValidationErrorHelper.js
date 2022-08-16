@@ -373,6 +373,7 @@ ValidationErrorHelper.validateGatewayProbabilities = function (bpmnFactory, elem
     gateway = options.gateway,
     description = options.description,
     id = options.id,
+    elementId = options.elementId,
     errorMessage;
 
   if (!probability || probability.trim() === '') {
@@ -413,7 +414,7 @@ ValidationErrorHelper.validateGatewayProbabilities = function (bpmnFactory, elem
   if (errorMessage) {
     this.createValidationError(bpmnFactory, elementRegistry, {
       id: id,
-      elementId: gateway.id,
+      elementId: elementId,
       message: errorMessage
     });
   }

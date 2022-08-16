@@ -52,7 +52,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         cmd = cmdHelper.addElementsTolist(element, expression, 'values', [clause]);
       }
       suppressProbabilityErrorIfAny();
-      createClauseCategoryError(outgoingElementId,title);
+      createClauseCategoryError(outgoingElementId, title);
       return cmd;
     },
 
@@ -70,7 +70,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
             null, [expression]);
         }
       }
-   
+
       return cmdHelper.removeElementsFromList(element, expression, 'values',
         null, [selectedClause]);
     },
@@ -104,7 +104,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     return exist;
   }
 
-  function createClauseCategoryError(outgoingElementId,title) {
+  function createClauseCategoryError(outgoingElementId, title) {
     validationErrorHelper.createValidationError(bpmnFactory, elementRegistry, {
       id: 'clause-category-' + outgoingElementId,
       elementId: title,
@@ -148,6 +148,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
           sequenceFlowsElement: sequenceFlows,
           outgoingElement: outElement,
           gateway: gateway,
+          elementId: getLabelFromOutElement(outElement),
           id: 'probability-field-' + outElement.id,
           description: translate('gateway.probability')
         });
@@ -155,31 +156,35 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
         suppressValidationError(bpmnFactory, elementRegistry, { id: 'clause-category-' + outElement.id });
 
       });
-    }else{
+    } else {
       gateway && gateway.outgoing && gateway.outgoing.forEach(function (outElement) {
         let seqFlow = SequenceFlowHelper.getSequenceFlowById(bpmnFactory, elementRegistry, outElement.id);
         let invalid = false;
-        if (seqFlow && seqFlow.values && seqFlow.values.length > 0){
-           let expression = seqFlow.values[0];
-           if(expression && expression.values && expression.values.length >0){
-              expression.values.forEach(function (clause) {
-                  if(clause && isENUM(clause)){
-                      if(clause.hasOwnProperty('variableEnumValue') && clause.variableEnumValue.trim() === ''){
-                        let label = outElement.targetRef.name ? outElement.targetRef.name :
-                          getBusinessObject(outElement).name ? getBusinessObject(outElement).name :
-                          outElement.targetRef.id;
-                          createClauseCategoryError(outElement.id, label);
-                          invalid = true ;
-                      }
-                  }
-              });
-           }
+        if (seqFlow && seqFlow.values && seqFlow.values.length > 0) {
+          let expression = seqFlow.values[0];
+          if (expression && expression.values && expression.values.length > 0) {
+            expression.values.forEach(function (clause) {
+              if (clause && isENUM(clause)) {
+                if (clause.hasOwnProperty('variableEnumValue') && clause.variableEnumValue.trim() === '') {
+                  createClauseCategoryError(outElement.id, getLabelFromOutElement(outElement));
+                  invalid = true;
+                }
+              }
+            });
+          }
         }
-        if(!invalid){
-         suppressValidationError(bpmnFactory, elementRegistry, { id: 'clause-category-' + outElement.id });
+        if (!invalid) {
+          suppressValidationError(bpmnFactory, elementRegistry, { id: 'clause-category-' + outElement.id });
         }
       });
     }
+  }
+
+  function getLabelFromOutElement(outElement) {
+    return outElement.targetRef.name ? outElement.targetRef.name :
+      getBusinessObject(outElement).name ? getBusinessObject(outElement).name :
+        outElement.targetRef.id;
+
   }
 
   function isENUM(clause) {
