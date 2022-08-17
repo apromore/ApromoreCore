@@ -49,7 +49,7 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
         editor = editorApp.getEditor();
 
         let plugin = editorApp.getActivatedPlugins()[4];
-        await plugin.exportPDF().catch(err => fail(err));
+        await plugin.exportSVG2PDF().catch(err => fail(err));
 
         request = jasmine.Ajax.requests.mostRecent();
 
@@ -83,7 +83,7 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
 
         // Check response behavior
         expect(link.target).toEqual('_blank');
-        expect(link.download).toEqual('diagram.pdf');
+        expect(link.download).toEqual('untitled.pdf');
         //expect(link.href).toEqual(window.URL.createObjectURL()); // this is not tested because of new URL id created every time
         expect(link.click).toHaveBeenCalledTimes(1);
 
