@@ -151,12 +151,19 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         switch (filterType) {
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
             case EVENT_ATTRIBUTE_DURATION:
+            case NODE_COST:
                 data = (String) param.get("data");
                 if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
                         !isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
                             parent.getLabel("failedFilterNodeDurationSingleValue_message"),
                             parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                    return null;
+                }
+                if (filterType == FilterType.NODE_COST && parent.getProcessAnalyst().getRoleValues().isEmpty()) {
+                    Messagebox.show(
+                        parent.getLabel("failedFilterNodeCostNoRole_message"),
+                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);

@@ -499,6 +499,10 @@ PDp.removeNode = function(evt) {
         graphEvent = 'onInvokeExt';
         if (isCtrlPressed) {
           payload = { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data };
+        } else if (Ap.pd.primaryOverlay === 'COST') {
+          //If cost overlay is used, open cost instead
+          console.log(Ap.pd.primaryOverlay);
+          payload = { type: 'NODE_COST', data };
         } else {
           payload = { type: 'EVENT_ATTRIBUTE_DURATION', data };
         }
