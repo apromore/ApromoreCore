@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
  * @author Bruce Nguyen
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient, LabelSupplier {
+    public static final String ERROR_TITLE_KEY = "common_error_text";
     private PDAnalyst analyst;
     private FilterAction compositeFilterAction;
 
@@ -157,13 +158,13 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                         !isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
                             parent.getLabel("failedFilterNodeDurationSingleValue_message"),
-                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                            parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 if (filterType == FilterType.NODE_COST && parent.getProcessAnalyst().getRoleValues().isEmpty()) {
                     Messagebox.show(
                         parent.getLabel("failedFilterNodeCostNoRole_message"),
-                        parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                        parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
@@ -175,7 +176,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 if (!isValidArcDurationPayload(mainAttribute, source, target)) {
                     Messagebox.show(
                             parent.getLabel("failedFilterArcDurationSingleValue_message"),
-                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                            parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
