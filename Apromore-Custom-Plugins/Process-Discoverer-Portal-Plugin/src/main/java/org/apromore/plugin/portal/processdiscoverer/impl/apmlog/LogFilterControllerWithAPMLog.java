@@ -165,7 +165,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                     Messagebox.show(
                         parent.getLabel("failedFilterNodeCostNoRole_message"),
                         parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
-                    return null;
+                    return Collections.EMPTY_MAP;
                 }
                 parameters.put("key", mainAttribute);
                 parameters.put("value", data);
