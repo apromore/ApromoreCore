@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,5 +56,9 @@ public class CostTable {
 
     public Map<String, Double> getCostRates() {
         return Collections.unmodifiableMap(costRates);
+    }
+
+    public boolean isDefault() {
+        return costRates.values().stream().allMatch(cost -> Objects.equals(cost, DEFAULT_COST));
     }
 }

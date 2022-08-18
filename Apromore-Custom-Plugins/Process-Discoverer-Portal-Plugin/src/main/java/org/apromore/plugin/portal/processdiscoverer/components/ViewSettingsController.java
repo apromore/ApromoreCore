@@ -45,6 +45,7 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -53,6 +54,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
 
 /**
@@ -144,6 +146,7 @@ public class ViewSettingsController extends VisualController {
     private static final String ON_FORCE_SELECT = "onForceSelect";
 
     private boolean disabled = false;
+    private boolean costDisabled = false;
     private MeasureType primaryMeasureType = FREQUENCY;
     private MeasureType secondaryMeasureType = DURATION;
     private boolean isSecondaryShown = false;
@@ -188,6 +191,18 @@ public class ViewSettingsController extends VisualController {
         frequencyAggSelector = (Combobox) compViewSettings.getFellow("frequencyAggSelector");
         durationAggSelector = (Combobox) compViewSettings.getFellow("durationAggSelector");
         costAggSelector = (Combobox) compViewSettings.getFellow("costAggSelector");
+
+        try {
+            ImmutableList<Object> roleValues = parent.getProcessAnalyst().getRoleValues();
+            if (roleValues.isEmpty()) {
+                costDisabled = true;
+            }
+        } catch (Exception e) {
+            costDisabled = true;
+        }
+
+        defaultCost.setClientDataAttribute("disabled", costDisabled ? "on" : "off");
+        costShow.setClientDataAttribute("disabled", costDisabled ? "on" : "off");
 
         showSecondaryMap = Map.of(
             FREQUENCY, freqShow,
@@ -248,10 +263,14 @@ public class ViewSettingsController extends VisualController {
         });
 
         defaultCost.addEventListener("onClick", event -> {
-                if (disabled) return;
-                String key = "mean";
-                selectComboboxByKey(costAggSelector, key);
-                selectCostViz();
+            if (disabled || costDisabled) return;
+            if (userOptions.getCostTable().isDefault()) {
+                showNoCostSetDialog();
+                return;
+            }
+            String key = "mean";
+            selectComboboxByKey(costAggSelector, key);
+            selectCostViz();
         });
 
         freqShow.addEventListener("onClick", event -> {
@@ -265,8 +284,12 @@ public class ViewSettingsController extends VisualController {
         });
 
         costShow.addEventListener("onClick", event -> {
-                if (disabled) return;
-                setSecondaryOverlay(COST);
+            if (disabled || costDisabled) return;
+            if (userOptions.getCostTable().isDefault()) {
+                showNoCostSetDialog();
+                return;
+            }
+            setSecondaryOverlay(COST);
         });
 
         EventListener<Event> frequencyAggSelectorListener = event -> selectFrequencyViz();
@@ -289,7 +312,7 @@ public class ViewSettingsController extends VisualController {
         perspectiveSelector.setDisabled(disabled);
         frequencyAggSelector.setDisabled(disabled);
         durationAggSelector.setDisabled(disabled);
-        costAggSelector.setDisabled(disabled);
+        costAggSelector.setDisabled(disabled || costDisabled);
         includeSecondary.setDisabled(disabled);
     }
 
@@ -415,7 +438,7 @@ public class ViewSettingsController extends VisualController {
 
     private void toggleDefaultAgg() {
         defaultAggMap.forEach((key, div) -> toggleComponentClass(div, key.equals(primaryMeasureType)));
-    }    
+    }
 
     private void setPrimaryOverlay(MeasureType measureType) {
 
@@ -455,6 +478,10 @@ public class ViewSettingsController extends VisualController {
     }
 
     private void selectCostViz() {
+        if (!disabled && !costDisabled && userOptions.getCostTable().isDefault()) {
+            showNoCostSetDialog();
+            return;
+        }
         setPrimaryOverlay(COST);
     }
 
@@ -509,4 +536,14 @@ public class ViewSettingsController extends VisualController {
         return name;
     }
 
+    private void showNoCostSetDialog() {
+        Messagebox.show(
+            parent.getLabel("failedSwitchCostOverlayNoSetCost_message"),
+            parent.getLabel("failedSwitchCostOverlayNoSetCost_title"),
+            Messagebox.OK, Messagebox.EXCLAMATION, e -> {
+                if (Messagebox.OK == (Integer) e.getData()) {
+                    parent.openCost();
+                }
+            });
+    }
 }

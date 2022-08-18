@@ -29,6 +29,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.service.AuthorizationService;
 import org.apromore.util.AccessType;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -114,6 +115,8 @@ public class ToolbarController extends AbstractController {
         searchNode = (Div) toolbar.getFellow("searchNode");
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
         rightToolbar = (Div) toolbar.getFellow("rightToolbar");
+
+        setDisabledCost(false);
     }
 
     public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
@@ -191,6 +194,20 @@ public class ToolbarController extends AbstractController {
 
     public void setDisabledAnimation(boolean disabled) {
         animate.setDisabled(disabled || !userOptions.getMainAttributeKey().equals(parent.getConfigData().getDefaultAttribute()));
+    }
+
+    public void setDisabledCost(boolean disabled) {
+        boolean hasNoRoles = false;
+        try {
+            ImmutableList<Object> roleValues = parent.getProcessAnalyst().getRoleValues();
+            if (roleValues.isEmpty()) {
+                hasNoRoles = true;
+            }
+        } catch (Exception e) {
+            hasNoRoles = true;
+        }
+
+        cost.setDisabled(disabled || hasNoRoles);
     }
 
     public void toogleAnimateBtn(boolean state) {
