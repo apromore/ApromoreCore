@@ -178,11 +178,11 @@ public class GraphVisController extends VisualController {
      *
      */
     public void displayDiagram(String visualizedText) {
-        //int retainZoomPan = parent.getUserOptions().getRetainZoomPan() ? 1 : 0;
-        String javascript = "Ap.pd.loadLog('" +
-                            visualizedText + "'," +
-                            parent.getUserOptions().getSelectedLayout() + "," +
-                            parent.getUserOptions().getRetainZoomPan() + ");";
+        String javascript = "Ap.pd.loadLog('"
+            + visualizedText.replaceAll("'", "\\\\'")
+            + "',"
+            + parent.getUserOptions().getSelectedLayout() + ","
+            + parent.getUserOptions().getRetainZoomPan() + ");";
         Clients.evalJavaScript(javascript);
         parent.getUserOptions().setRetainZoomPan(false);
     }
