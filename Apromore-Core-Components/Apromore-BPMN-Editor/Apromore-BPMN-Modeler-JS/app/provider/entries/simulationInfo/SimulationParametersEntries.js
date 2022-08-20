@@ -23,7 +23,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, conf
     TimeTableField(bpmnFactory, elementRegistry, translate),
     TrimStartField(bpmnFactory, elementRegistry, translate),
     TrimEndField(bpmnFactory, elementRegistry, translate),
-    CurrencySelectBox(bpmnFactory, elementRegistry, translate),
+    CurrencySelectBox(bpmnFactory, elementRegistry, translate, config),
    
   );
 

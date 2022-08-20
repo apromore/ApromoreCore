@@ -248,6 +248,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("username", currentUserType.getUsername());
       param.put("processName", editSession.getProcessName());
       param.put("zoneId", ZoneId.systemDefault().toString());
+      param.put("defaultCurrency", Labels.getLabel("bpmnEditor_defaultCurrency"));
+      param.put("currencyList", Labels.getLabel("bpmnEditor_currencyList"));
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {

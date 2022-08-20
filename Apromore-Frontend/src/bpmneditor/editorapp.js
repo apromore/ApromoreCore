@@ -600,6 +600,8 @@ export default class EditorApp {
           username: '',
           processName: '',
           zoneId: '',
+          defaultCurrency: '',
+          currencyList: '',
 		  textRenderer: {
 		    defaultStyle: {
 		      fontSize: 16
@@ -616,6 +618,8 @@ export default class EditorApp {
         options.username = config.username || '';
         options.processName = config.processName || 'untitled';
         options.zoneId = config.zoneId || 'UTC';
+        options.defaultCurrency = config.defaultCurrency || 'AUD';
+        options.currencyList = config.currencyList || 'AUD,EUR,GBP,JPY,USD';
         await me.editor.attachEditor(new BpmnJS(options));
 
         if (config && config.xml) {

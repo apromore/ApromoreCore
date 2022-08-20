@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.portal.util.CostTable;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -46,6 +48,7 @@ import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -54,6 +57,8 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class CostTableController extends DataListController {
+    private static final String SEPARATOR = "----------";
+
     private Window costTableWindow;
     private Combobox currencyCombobox;
     private boolean disabled;
@@ -92,7 +97,29 @@ public class CostTableController extends DataListController {
             AttributeCost ac = listItem.getValue();
             ac.setCostValue(costValue);
         });
+    }
+
+    private void initializeCurrency() {
+        String currencyLabels = Labels.getLabel("bpmnEditor_currencyList", "AUD,EUR,GBP,JPY,USD");
+        List<String> labels = Arrays.asList(currencyLabels.split(","));
+
+        currencyCombobox.getItems().clear();
+        for (String label: labels) {
+            if ("|".equals(label)) {
+                label = SEPARATOR;
+            }
+            Comboitem item = currencyCombobox.appendItem(label);
+            item.setValue(label);
+        }
         currencyCombobox.setValue(userOptions.getCostTable().getCurrency());
+    }
+
+    private String getSelectedCurrency() {
+        String currency = currencyCombobox.getValue();
+        if (SEPARATOR.equals(currency)) {
+            currency = Labels.getLabel("bpmnEditor_defaultCurrency", "AUD");
+        }
+        return currency;
     }
 
     @Override
@@ -101,7 +128,7 @@ public class CostTableController extends DataListController {
     }
 
     private void persistCostTable() throws JsonProcessingException, UserNotFoundException {
-        String currency = currencyCombobox.getValue();
+        String currency = getSelectedCurrency();
         //TODO: Get perspective value from user input
         String perspective = "role";
         CostTable costTable = CostTable.builder()
@@ -143,14 +170,14 @@ public class CostTableController extends DataListController {
 
             costTableWindow.addEventListener("onChangeCurrency", e -> {
                 userOptions.setCostTable(CostTable.builder()
-                    .currency(currencyCombobox.getValue())
+                    .currency(getSelectedCurrency())
                     .costRates(this.getCostMapper()).build());
                 persistCostTable();
             });
 
             costTableWindow.addEventListener("onApplyCost", e -> {
                 userOptions.setCostTable(CostTable.builder()
-                    .currency(currencyCombobox.getValue())
+                    .currency(getSelectedCurrency())
                     .costRates(this.getCostMapper()).build());
                 persistCostTable();
                 costTableWindow.detach();
@@ -169,6 +196,7 @@ public class CostTableController extends DataListController {
             currencyCombobox = (Combobox) costTableWindow.getFellow("costTableCurrency");
             Listbox listbox = (Listbox) costTableWindow.getFellow("costTableListbox");
             initializeData(listbox);
+            initializeCurrency();
 
             try {
                 // @todo Incorrect coordinate returned by ZK 9
