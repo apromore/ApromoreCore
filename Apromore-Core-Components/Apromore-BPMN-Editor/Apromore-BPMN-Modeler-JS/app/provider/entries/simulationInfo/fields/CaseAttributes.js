@@ -66,9 +66,9 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
       let selectedVariable = variables.values[idx];
       let type = '';
       if (selectedVariable && selectedVariable.type == 'ENUM') {
-        type = 'C';
+        type = '📊'; // Categorical, C
       } else if (selectedVariable && selectedVariable.type == 'NUMERIC') {
-        type = 'N';
+        type = '📈'; // Numerical, N
       }
       option.text = type + ' - ' + (selectedVariable && selectedVariable.name);
       

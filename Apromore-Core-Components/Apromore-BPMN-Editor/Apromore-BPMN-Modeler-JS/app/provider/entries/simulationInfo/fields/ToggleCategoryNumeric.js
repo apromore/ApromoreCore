@@ -10,7 +10,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
 
     let toggleSwitch = ToggleCustomFactory(translate, {
         id: 'toggle_category_numeric',
-        label: 'Category/Numeric',
+        label: 'Switch to enter categorical or numerical attribute details',
         modelProperty: 'isNumeric',
         labelText: labelText,
         isOn: function () {
