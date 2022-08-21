@@ -123,7 +123,7 @@ module.exports = {
   'gateway.attribute.upper.bound.including': 'Including',
   'gateway.attribute.value.label':'Value',
   'general.cases.numrical.distribution.label': 'Distribution',
-  'general.cases.not.valid.record {name}': 'No valid records are found for {name}',
+  'general.cases.not.valid.record {name}': 'Category details for {name} must not be empty. Click on + to create categories',
   'gateway.attribute.invalid.uppper.lower.value': 'Lower bound value should be less than upper bound value',
   'gateway.attribute.invalid.bound.value': 'Invalid upper bound/lower bound value',
   'general.attribute.used.in.gateway': 'Failed to delete. Case attribute is being used in gateway.',
