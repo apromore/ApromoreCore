@@ -363,6 +363,12 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     this.addEventListener("onSimulateModel", new EventListener<Event>() {
       @Override
       public void onEvent(final Event event) throws InterruptedException {
+        for (Page page : Executions.getCurrent().getDesktop().getPages()) {
+          if (page.getFellowIfAny("bimpWindow") != null || page.getFellowIfAny("errorWindow") != null) {
+            // DO Nothing
+            return;
+          }
+        }
         PortalContext portalContext = mainC.getPortalContext();
         Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
         PortalPlugin simulateModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_SIMULATE_MODEL);
