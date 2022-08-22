@@ -229,7 +229,9 @@
               disabledButtons: disabledPlugins,
               username: '${arg.username}',
               processName: '${arg.processName}',
-              zoneId: '${arg.zoneId}'
+              zoneId: '${arg.zoneId}',
+              defaultCurrency: '${arg.defaultCurrency}',
+              currencyList: '${arg.currencyList}'
             };
             editorWrapper = new Apromore.BPMNEditor.EditorApp (config);
             Apromore.BPMNEditor.app = editorWrapper;

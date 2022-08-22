@@ -2,7 +2,7 @@ var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
     cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper'),
     ProcessSimulationHelper = require('../../../../helper/ProcessSimulationHelper');
 
-module.exports = function(bpmnFactory, elementRegistry, translate) {
+module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 
   var processSimulationInfo = ProcessSimulationHelper.getProcessSimulationInfo(bpmnFactory, elementRegistry);
 
@@ -10,7 +10,7 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
     id: 'currency',
     label: translate('scenarioGroup.currency.label'),
     modelProperty: 'currency',
-    selectOptions: createCurrencyOptions(),
+    selectOptions: createCurrencyOptions(config),
 
     get: function(_element, _node) {
       return { currency: processSimulationInfo.currency };
@@ -24,27 +24,14 @@ module.exports = function(bpmnFactory, elementRegistry, translate) {
   });
 };
 
-function createCurrencyOptions() {
-  return [
-    {
-      name: 'EUR',
-      value: 'EUR'
-    },
-    {
-      name: 'USD',
-      value: 'USD'
-    },
-    {
-      name: 'AUD',
-      value: 'AUD'
-    },
-    {
-      name: 'GBP',
-      value: 'GBP'
-    },
-    {
-      name: 'JPY',
-      value: 'JPY'
+function createCurrencyOptions(config) {
+  return config.currencyList.split(',').map((label) => {
+    if (label === '|') {
+        label = '---------';
     }
-  ];
+    return {
+        name: label,
+        value: label
+    }
+  });
 }
