@@ -45,7 +45,6 @@ import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.processdiscoverer.PDAnalyst;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -146,7 +145,7 @@ public class ViewSettingsController extends VisualController {
     private static final String ON_FORCE_SELECT = "onForceSelect";
 
     private boolean disabled = false;
-    private boolean costDisabled = false;
+    private boolean isCostCentreAvailable = false;
     private MeasureType primaryMeasureType = FREQUENCY;
     private MeasureType secondaryMeasureType = DURATION;
     private boolean isSecondaryShown = false;
@@ -192,17 +191,9 @@ public class ViewSettingsController extends VisualController {
         durationAggSelector = (Combobox) compViewSettings.getFellow("durationAggSelector");
         costAggSelector = (Combobox) compViewSettings.getFellow("costAggSelector");
 
-        try {
-            ImmutableList<Object> roleValues = parent.getProcessAnalyst().getRoleValues();
-            if (roleValues.isEmpty()) {
-                costDisabled = true;
-            }
-        } catch (Exception e) {
-            costDisabled = true;
-        }
-
-        defaultCost.setClientDataAttribute("disabled", costDisabled ? "on" : "off");
-        costShow.setClientDataAttribute("disabled", costDisabled ? "on" : "off");
+        isCostCentreAvailable = !parent.getProcessAnalyst().getRoleValues().isEmpty();
+        defaultCost.setClientDataAttribute("disabled", isCostCentreAvailable ? "off" : "on");
+        costShow.setClientDataAttribute("disabled", isCostCentreAvailable ? "off" : "on");
 
         showSecondaryMap = Map.of(
             FREQUENCY, freqShow,
@@ -263,8 +254,8 @@ public class ViewSettingsController extends VisualController {
         });
 
         defaultCost.addEventListener("onClick", event -> {
-            if (disabled || costDisabled) return;
-            if (userOptions.getCostTable().isDefault()) {
+            if (disabled || !isCostCentreAvailable) return;
+            if (userOptions.getCostTable().isZero()) {
                 showNoCostSetDialog();
                 return;
             }
@@ -284,8 +275,8 @@ public class ViewSettingsController extends VisualController {
         });
 
         costShow.addEventListener("onClick", event -> {
-            if (disabled || costDisabled) return;
-            if (userOptions.getCostTable().isDefault()) {
+            if (disabled || !isCostCentreAvailable) return;
+            if (userOptions.getCostTable().isZero()) {
                 showNoCostSetDialog();
                 return;
             }
@@ -312,7 +303,7 @@ public class ViewSettingsController extends VisualController {
         perspectiveSelector.setDisabled(disabled);
         frequencyAggSelector.setDisabled(disabled);
         durationAggSelector.setDisabled(disabled);
-        costAggSelector.setDisabled(disabled || costDisabled);
+        costAggSelector.setDisabled(disabled || !isCostCentreAvailable);
         includeSecondary.setDisabled(disabled);
     }
 
@@ -478,7 +469,7 @@ public class ViewSettingsController extends VisualController {
     }
 
     private void selectCostViz() {
-        if (!disabled && !costDisabled && userOptions.getCostTable().isDefault()) {
+        if (!disabled && isCostCentreAvailable && userOptions.getCostTable().isZero()) {
             showNoCostSetDialog();
             return;
         }

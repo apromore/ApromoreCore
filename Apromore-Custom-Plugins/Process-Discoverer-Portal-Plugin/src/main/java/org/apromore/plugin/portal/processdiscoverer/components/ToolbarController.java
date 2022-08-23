@@ -197,16 +197,7 @@ public class ToolbarController extends AbstractController {
     }
 
     public void setDisabledCost(boolean disabled) {
-        boolean hasNoRoles = false;
-        try {
-            ImmutableList<Object> roleValues = parent.getProcessAnalyst().getRoleValues();
-            if (roleValues.isEmpty()) {
-                hasNoRoles = true;
-            }
-        } catch (Exception e) {
-            hasNoRoles = true;
-        }
-
+        boolean hasNoRoles = parent.getProcessAnalyst().getRoleValues().isEmpty();
         cost.setDisabled(disabled || hasNoRoles);
     }
 

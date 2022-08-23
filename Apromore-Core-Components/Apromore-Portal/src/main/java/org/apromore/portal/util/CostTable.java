@@ -37,7 +37,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CostTable {
-    private final Double DEFAULT_COST = 0.0D;
+    private static final Double DEFAULT_COST = 0.0D;
 
     @Getter
     private final String perspective;
@@ -58,7 +58,7 @@ public class CostTable {
         return Collections.unmodifiableMap(costRates);
     }
 
-    public boolean isDefault() {
-        return costRates.values().stream().allMatch(cost -> Objects.equals(cost, DEFAULT_COST));
+    public boolean isZero() {
+        return costRates.values().stream().allMatch(cost -> Objects.equals(cost, 0D));
     }
 }
