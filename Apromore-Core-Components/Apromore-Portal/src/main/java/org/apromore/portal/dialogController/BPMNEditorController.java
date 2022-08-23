@@ -248,6 +248,8 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("username", currentUserType.getUsername());
       param.put("processName", editSession.getProcessName());
       param.put("zoneId", ZoneId.systemDefault().toString());
+      param.put("defaultCurrency", Labels.getLabel("bpmnEditor_defaultCurrency"));
+      param.put("currencyList", Labels.getLabel("bpmnEditor_currencyList"));
       if (USE_BPMNIO_MODELER) {
         param.put("bpmnioLib", BPMNIO_MODELER_JS);
       } else {
@@ -361,6 +363,12 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     this.addEventListener("onSimulateModel", new EventListener<Event>() {
       @Override
       public void onEvent(final Event event) throws InterruptedException {
+        for (Page page : Executions.getCurrent().getDesktop().getPages()) {
+          if (page.getFellowIfAny("bimpWindow") != null || page.getFellowIfAny("errorWindow") != null) {
+            // DO Nothing
+            return;
+          }
+        }
         PortalContext portalContext = mainC.getPortalContext();
         Map<String, PortalPlugin> portalPluginMap = portalContext.getPortalPluginMap();
         PortalPlugin simulateModelPlugin = portalPluginMap.get(PluginCatalog.PLUGIN_SIMULATE_MODEL);

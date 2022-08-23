@@ -70,7 +70,7 @@ public class ProcessJSONVisualizer implements ProcessVisualizer {
         timer1 = System.currentTimeMillis();
         JSONArray json = generateJSON(abs, visContext, visSettings);
         LOGGER.debug("Generate JSON data from BPMNDiagram: {} ms.", System.currentTimeMillis() - timer1);
-        return json.toString().replaceAll("'", "\\\\\'");
+        return json.toString();
     }
     
 	private JSONArray generateJSON(Abstraction abs, VisualContext visContext,

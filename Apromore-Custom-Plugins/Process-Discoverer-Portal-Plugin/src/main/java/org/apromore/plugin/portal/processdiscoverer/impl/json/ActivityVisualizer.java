@@ -49,7 +49,7 @@ public class ActivityVisualizer extends AbstractNodeVisualizer {
 			throw new UnsupportedElementException("Unsupported element while expecting a BPMN Activity object.");
 		}
 
-		String node_oriname = node.getLabel();
+		String node_oriname = node.getLabel().replaceAll("\"", "\\\\\"");
     	// This is only for trace abstraction as the values are stored in the node label
     	if (node_oriname.contains("\\n")) {
     		node_oriname =  node_oriname.substring(0, node_oriname.indexOf("\\n"));

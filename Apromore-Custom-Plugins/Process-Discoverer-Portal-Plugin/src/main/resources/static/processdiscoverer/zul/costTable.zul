@@ -64,14 +64,15 @@
       </label>
       <combobox
           disabled="${arg.viewOnly}"
-          readonly="true"
+          readonly="false"
+          autocomplete="true"
           id="costTableCurrency"
           forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
         <comboitem label="AUD" value="AUD" />
-        <comboitem label="USD" value="USD" />
         <comboitem label="EUR" value="EUR" />
         <comboitem label="GBP" value="GBP" />
         <comboitem label="JPY" value="JPY" />
+        <comboitem label="USD" value="USD" />
       </combobox>
       <label style="vertical-align: middle;margin-left: 4px; color: var(--ap-c-text-heading) !important;">
         ${arg.pdLabels.currency_hint}

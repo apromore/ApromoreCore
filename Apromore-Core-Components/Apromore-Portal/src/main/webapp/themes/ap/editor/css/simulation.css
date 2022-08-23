@@ -35,8 +35,11 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
 .x-layout-collapsed.x-layout-collapsed-east svg {
     overflow: visible;
 }
-.bpp-table-add-row .action-button {
-    left: 300px !important;
+
+.bpp-table-add-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .apromore-toggle-switch  .description__text,
@@ -45,22 +48,12 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
     display :none  !important;
 }
 
-.apromore-toggle-switch  {
-       position: absolute !important;
-       top: 8px !important;
-       right: 20px !important;
-       padding-bottom: 10px !important;
-}
 .apromore-toggle-switch > label {
   display: none !important;
 }
 
 .apromore-toggle-switch .bpp-field-wrapper > .bpp-toggle-switch__label  , .apromore-toggle-switch  .bpp-field-description{
   display :none  !important;
-}
-.apromore-toggle-switch .bpp-toggle-switch__switcher
-{
-    left: 30px !important;
 }
 
 .invalid-message {
@@ -85,6 +78,14 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
     width: 350px;
     font-size: 16px;
 }
+
+.bpp-toggle-switch .bpp-field-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .bpp-properties-panel input[type='checkbox']:checked {
     background-color : #fff !important;
     -webkit-appearance: auto !important;
@@ -100,4 +101,79 @@ ul.bpp-properties-tabs-links > li.bpp-active a {
 
 .scroll-tabs-overflow .scroll-tabs-right , .scroll-tabs-overflow .scroll-tabs-left {
 	display :none !important;
+}
+
+
+div[data-entry='categoriesTable'],
+div[data-entry='variable-name'],
+div[data-entry='Numerical-Attributes-type'],
+div[data-entry='Numerical-Attributes-mean'],
+div[data-entry='Numerical-Attributes-arg1'],
+div[data-entry='Numerical-Attributes-arg1'],
+div[data-entry='category-error-message'],
+div[data-entry='variable-error-message'],
+div[data-entry='Numerical-Attributes-arg2'] {
+    padding: 0 10px 0 10px !important;
+    margin: 0 15px 0 15px !important;
+    background-color: white;
+}
+
+div[data-entry='categoriesTable'] > label,
+div[data-entry='variable-name'] > label,
+div[data-entry='Numerical-Attributes-type'] > label,
+div[data-entry='Numerical-Attributes-mean'] > label,
+div[data-entry='Numerical-Attributes-arg1'] > label,
+div[data-entry='Numerical-Attributes-arg1'] > label,
+div[data-entry='category-error-message'] > label,
+div[data-entry='variable-error-message'] > label,
+div[data-entry='Numerical-Attributes-arg2'] > label {
+    padding-bottom: 7px !important;
+}
+
+div[data-entry='categoriesTable'] > div:last-child,
+div[data-entry='variable-name'] > div:last-child,
+div[data-entry='Numerical-Attributes-type'] > div:last-child,
+div[data-entry='Numerical-Attributes-mean'] > div:last-child,
+div[data-entry='Numerical-Attributes-arg1'] > div:last-child,
+div[data-entry='Numerical-Attributes-arg1'] > div:last-child,
+div[data-entry='category-error-message'] > div:last-child,
+div[data-entry='variable-error-message'] > div:last-child,
+div[data-entry='Numerical-Attributes-arg2'] > div:last-child {
+    padding-bottom: 10px !important;
+}
+
+div[data-entry='categoriesTable'] > select:last-child,
+div[data-entry='variable-name'] > select:last-child,
+div[data-entry='Numerical-Attributes-type'] > select:last-child,
+div[data-entry='Numerical-Attributes-mean'] > select:last-child,
+div[data-entry='Numerical-Attributes-arg1'] > select:last-child,
+div[data-entry='Numerical-Attributes-arg1'] > select:last-child,
+div[data-entry='category-error-message'] > select:last-child,
+div[data-entry='variable-error-message'] > select:last-child,
+div[data-entry='Numerical-Attributes-arg2'] > select:last-child {
+     margin-bottom: 10px !important;
+}
+
+div[data-entry='variable-error-message'] {
+    margin-bottom: 10px !important;
+}
+
+label[for='camunda-startDate'] {
+    margin-top: 10px !important;
+}
+
+label[for='camunda-variable-name'],
+label[for='camunda-startDate'] {
+    padding-top: 10px !important;
+}
+
+.bpp-table-add-row button {
+    margin-bottom: 10px !important;
+}
+
+.apromore-toggle-switch  {
+   position: absolute !important;
+   top: 8px !important;
+   right: 0px !important;
+   padding-bottom: 10px !important;
 }
