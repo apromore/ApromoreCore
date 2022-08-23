@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +37,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CostTable {
-    private final Double DEFAULT_COST = 0.0D;
+    private static final Double DEFAULT_COST = 0.0D;
 
     @Getter
     private final String perspective;
@@ -55,5 +56,9 @@ public class CostTable {
 
     public Map<String, Double> getCostRates() {
         return Collections.unmodifiableMap(costRates);
+    }
+
+    public boolean isZero() {
+        return costRates.values().stream().allMatch(cost -> Objects.equals(cost, 0D));
     }
 }

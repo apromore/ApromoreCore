@@ -95,6 +95,7 @@ import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.ListIterable;
 import org.slf4j.Logger;
@@ -588,7 +589,8 @@ public class PDAnalyst {
     }
 
     public ImmutableList<Object> getRoleValues() {
-        return this.getAttributeLog().getFullLog().getAttributeStore().getStandardEventRole().getValues();
+        IndexableAttribute role = this.getAttributeLog().getFullLog().getAttributeStore().getStandardEventRole();
+        return role == null ? Lists.immutable.empty() : role.getValues();
     }
 
     public String getFilteredStartTime() {

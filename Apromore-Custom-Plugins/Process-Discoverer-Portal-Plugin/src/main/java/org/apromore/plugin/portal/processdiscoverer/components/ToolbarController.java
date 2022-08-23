@@ -114,6 +114,8 @@ public class ToolbarController extends AbstractController {
         searchNode = (Div) toolbar.getFellow("searchNode");
         shortcutButton = (Button) toolbar.getFellow("shortcutButton");
         rightToolbar = (Div) toolbar.getFellow("rightToolbar");
+
+        setDisabledCost(false);
     }
 
     public void updateUndoRedoButtons(boolean undoState, boolean redoState) {
@@ -191,6 +193,11 @@ public class ToolbarController extends AbstractController {
 
     public void setDisabledAnimation(boolean disabled) {
         animate.setDisabled(disabled || !userOptions.getMainAttributeKey().equals(parent.getConfigData().getDefaultAttribute()));
+    }
+
+    public void setDisabledCost(boolean disabled) {
+        boolean hasNoRoles = parent.getProcessAnalyst().getRoleValues().isEmpty();
+        cost.setDisabled(disabled || hasNoRoles);
     }
 
     public void toogleAnimateBtn(boolean state) {
