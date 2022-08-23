@@ -25,7 +25,8 @@ module.exports = function(bpmnFactory, elementRegistry, translate, config) {
 };
 
 function createCurrencyOptions(config) {
-  return config.currencyList.split(',').map((label) => {
+  let currencyList = config.currencyList || 'AUD,EUR,GBP,JPY,USD';
+  return currencyList.split(',').map((label) => {
     if (label === '|') {
         label = '---------';
     }

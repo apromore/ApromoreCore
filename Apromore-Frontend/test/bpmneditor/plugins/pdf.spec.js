@@ -49,11 +49,11 @@ describe('After the EditorApp has been initialized with a BPMN model with PDF pl
         editor = editorApp.getEditor();
 
         let plugin = editorApp.getActivatedPlugins()[4];
-        await plugin.exportSVG2PDF().catch(err => fail(err));
-
+        await plugin.exportPDF().catch(err => fail(err));
+        await (async (ms) => new Promise(resolve => setTimeout(resolve, ms)))(2000)
         request = jasmine.Ajax.requests.mostRecent();
 
-        expect(request.url).toBe(CONFIG.PDF_EXPORT_URL);
+        expect(request.url).toBe(CONFIG.IMG2PDF_EXPORT_URL);
         expect(request.method).toBe('POST');
         expect(request.responseType).toBe('blob');
     }
