@@ -29,7 +29,6 @@ import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.service.AuthorizationService;
 import org.apromore.util.AccessType;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
