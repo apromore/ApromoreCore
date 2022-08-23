@@ -151,24 +151,29 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         Map<String, Object> parameters = new UnifiedMap<>();
         switch (filterType) {
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                parameters.put("key", mainAttribute);
+                parameters.put("value", param.get("data"));
+                break;
             case EVENT_ATTRIBUTE_DURATION:
-            case NODE_COST:
                 data = (String) param.get("data");
-                if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
-                        !isValidAttributeDurationPayload(mainAttribute, data)) {
+                if (!isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
-                            parent.getLabel("failedFilterNodeDurationSingleValue_message"),
-                            parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
+                        parent.getLabel("failedFilterNodeDurationSingleValue_message"),
+                        parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
-                if (filterType == FilterType.NODE_COST && parent.getProcessAnalyst().getRoleValues().isEmpty()) {
+                parameters.put("key", mainAttribute);
+                parameters.put("value", data);
+                break;
+            case NODE_COST:
+                if (parent.getProcessAnalyst().getRoleValues().isEmpty()) {
                     Messagebox.show(
                         parent.getLabel("failedFilterNodeCostNoRole_message"),
                         parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return Collections.emptyMap();
                 }
                 parameters.put("key", mainAttribute);
-                parameters.put("value", data);
+                parameters.put("value", param.get("data"));
                 break;
             case ATTRIBUTE_ARC_DURATION:
                 source = (String) param.get("source");

@@ -499,7 +499,7 @@ PDp.removeNode = function(evt) {
         graphEvent = 'onInvokeExt';
         if (isCtrlPressed) {
           payload = { type: 'CASE_SECTION_ATTRIBUTE_COMBINATION', data };
-        } else if (Ap.pd.primaryOverlay === 'COST') {
+        } else if (this._private.primaryOverlay === 'COST') {
           //If cost overlay is used, open cost instead
           payload = { type: 'NODE_COST', data };
         } else {
@@ -693,6 +693,10 @@ PDp.switchToInteractiveView = function() {
     pd._private.logAnimation = null;
     pd._private.logAnimationMapController = null;
     pd.setupSearch(sourceJSON, true);
+}
+
+PDp.setPrimaryOverlay = function(measureType) {
+    this._private.primaryOverlay = measureType;
 }
 
 export default PDp;

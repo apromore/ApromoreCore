@@ -132,12 +132,8 @@
                         'ap-pd-la-clock',
                         'ap-pd-la-buttons',
                         'ap-mc-icon-play',
-                        'ap-mc-icon-pause');
-
-    Ap.pd.primaryOverlay = 'FREQUENCY';
-    Ap.pd.setPrimaryOverlay = function(measureType) {
-      Ap.pd.primaryOverlay = measureType;
-    }
+                        'ap-mc-icon-pause',
+                        'FREQUENCY');
 
     zk.afterMount(function () {
         zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
