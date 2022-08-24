@@ -54,6 +54,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Span;
 
 /**
@@ -145,6 +146,7 @@ public class ViewSettingsController extends VisualController {
     private static final String ON_FORCE_SELECT = "onForceSelect";
 
     private boolean disabled = false;
+    private boolean isCostCentreAvailable = false;
     private MeasureType primaryMeasureType = FREQUENCY;
     private MeasureType secondaryMeasureType = DURATION;
     private boolean isSecondaryShown = false;
@@ -189,6 +191,10 @@ public class ViewSettingsController extends VisualController {
         frequencyAggSelector = (Combobox) compViewSettings.getFellow("frequencyAggSelector");
         durationAggSelector = (Combobox) compViewSettings.getFellow("durationAggSelector");
         costAggSelector = (Combobox) compViewSettings.getFellow("costAggSelector");
+
+        isCostCentreAvailable = !parent.getProcessAnalyst().getRoleValues().isEmpty();
+        defaultCost.setClientDataAttribute("disabled", isCostCentreAvailable ? "off" : "on");
+        costShow.setClientDataAttribute("disabled", isCostCentreAvailable ? "off" : "on");
 
         showSecondaryMap = Map.of(
             FREQUENCY, freqShow,
@@ -249,10 +255,14 @@ public class ViewSettingsController extends VisualController {
         });
 
         defaultCost.addEventListener("onClick", event -> {
-                if (disabled) return;
-                String key = "mean";
-                selectComboboxByKey(costAggSelector, key);
-                selectCostViz();
+            if (disabled || !isCostCentreAvailable) return;
+            if (userOptions.getCostTable().isZero()) {
+                showNoCostSetDialog();
+                return;
+            }
+            String key = "mean";
+            selectComboboxByKey(costAggSelector, key);
+            selectCostViz();
         });
 
         freqShow.addEventListener("onClick", event -> {
@@ -266,8 +276,12 @@ public class ViewSettingsController extends VisualController {
         });
 
         costShow.addEventListener("onClick", event -> {
-                if (disabled) return;
-                setSecondaryOverlay(COST);
+            if (disabled || !isCostCentreAvailable) return;
+            if (userOptions.getCostTable().isZero()) {
+                showNoCostSetDialog();
+                return;
+            }
+            setSecondaryOverlay(COST);
         });
 
         EventListener<Event> frequencyAggSelectorListener = event -> selectFrequencyViz();
@@ -290,7 +304,7 @@ public class ViewSettingsController extends VisualController {
         perspectiveSelector.setDisabled(disabled);
         frequencyAggSelector.setDisabled(disabled);
         durationAggSelector.setDisabled(disabled);
-        costAggSelector.setDisabled(disabled);
+        costAggSelector.setDisabled(disabled || !isCostCentreAvailable);
         includeSecondary.setDisabled(disabled);
     }
 
@@ -416,7 +430,7 @@ public class ViewSettingsController extends VisualController {
 
     private void toggleDefaultAgg() {
         defaultAggMap.forEach((key, div) -> toggleComponentClass(div, key.equals(primaryMeasureType)));
-    }    
+    }
 
     private void setPrimaryOverlay(MeasureType measureType) {
 
@@ -458,6 +472,10 @@ public class ViewSettingsController extends VisualController {
     }
 
     private void selectCostViz() {
+        if (!disabled && isCostCentreAvailable && userOptions.getCostTable().isZero()) {
+            showNoCostSetDialog();
+            return;
+        }
         setPrimaryOverlay(COST);
     }
 
@@ -512,4 +530,14 @@ public class ViewSettingsController extends VisualController {
         return name;
     }
 
+    private void showNoCostSetDialog() {
+        Messagebox.show(
+            parent.getLabel("failedSwitchCostOverlayNoSetCost_message"),
+            parent.getLabel("failedSwitchCostOverlayNoSetCost_title"),
+            Messagebox.OK, Messagebox.EXCLAMATION, e -> {
+                if (Messagebox.OK == (Integer) e.getData()) {
+                    parent.openCost();
+                }
+            });
+    }
 }

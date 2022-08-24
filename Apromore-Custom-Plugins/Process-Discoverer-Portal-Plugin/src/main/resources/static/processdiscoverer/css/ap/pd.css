@@ -1342,3 +1342,13 @@ table.ap-pd-case-activity-attrs td:nth-child(2) {
 .ap-cost-table .z-listitem:hover > .z-listcell {
     background-color: transparent !important;
 }
+
+.ap-pd-view-settings .sublabel[data-disabled='on'],
+.ap-pd-view-option.ap-state-off .ap-icon-eye-close[data-disabled='on'] {
+    cursor: default;
+    pointer-events: none;
+}
+
+.z-combobox-disabled {
+    pointer-events: none;
+}
