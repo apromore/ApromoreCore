@@ -29,6 +29,8 @@ import Utils from './utils';
 // import { GLYPHS } from './assets';
 import { SYMBOLS } from './assets';
 
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+
 /**
  * Editor is actually a wrapper around the true editor (e.g. BPMN.io)
  * It provides BPMN editing features while hiding the actual editor implementation provider.
@@ -763,7 +765,9 @@ export default class Editor {
             elements = elementRegistry.getAll();
         }
         elements.forEach((element) => {
-            if (element.type && element.type === "bpmn:Task") {
+            if (is(element, 'bpmn:Task') ||
+                is(element, 'bpmn:SubProcess')
+            ) {
                 modeling.resizeShape(
                     element,
                     {
