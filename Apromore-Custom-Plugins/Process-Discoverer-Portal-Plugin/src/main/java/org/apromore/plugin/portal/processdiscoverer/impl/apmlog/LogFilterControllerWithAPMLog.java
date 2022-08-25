@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
  * @author Bruce Nguyen
  */
 public class LogFilterControllerWithAPMLog extends LogFilterController implements LogFilterClient, LabelSupplier {
+    public static final String ERROR_TITLE_KEY = "common_error_text";
     private PDAnalyst analyst;
     private FilterAction compositeFilterAction;
 
@@ -150,17 +151,29 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
         Map<String, Object> parameters = new UnifiedMap<>();
         switch (filterType) {
             case CASE_SECTION_ATTRIBUTE_COMBINATION:
+                parameters.put("key", mainAttribute);
+                parameters.put("value", param.get("data"));
+                break;
             case EVENT_ATTRIBUTE_DURATION:
                 data = (String) param.get("data");
-                if (filterType == FilterType.EVENT_ATTRIBUTE_DURATION &&
-                        !isValidAttributeDurationPayload(mainAttribute, data)) {
+                if (!isValidAttributeDurationPayload(mainAttribute, data)) {
                     Messagebox.show(
-                            parent.getLabel("failedFilterNodeDurationSingleValue_message"),
-                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                        parent.getLabel("failedFilterNodeDurationSingleValue_message"),
+                        parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);
                 parameters.put("value", data);
+                break;
+            case NODE_COST:
+                if (parent.getProcessAnalyst().getRoleValues().isEmpty()) {
+                    Messagebox.show(
+                        parent.getLabel("failedFilterNodeCostNoRole_message"),
+                        parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
+                    return Collections.emptyMap();
+                }
+                parameters.put("key", mainAttribute);
+                parameters.put("value", param.get("data"));
                 break;
             case ATTRIBUTE_ARC_DURATION:
                 source = (String) param.get("source");
@@ -168,7 +181,7 @@ public class LogFilterControllerWithAPMLog extends LogFilterController implement
                 if (!isValidArcDurationPayload(mainAttribute, source, target)) {
                     Messagebox.show(
                             parent.getLabel("failedFilterArcDurationSingleValue_message"),
-                            parent.getLabel("common_error_text"), Messagebox.OK, Messagebox.ERROR);
+                            parent.getLabel(ERROR_TITLE_KEY), Messagebox.OK, Messagebox.ERROR);
                     return null;
                 }
                 parameters.put("key", mainAttribute);

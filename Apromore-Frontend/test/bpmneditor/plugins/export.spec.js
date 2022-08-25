@@ -28,7 +28,7 @@ describe('After the EditorApp has been initialized with a BPMN model with Export
         await pluginExport.exportBPMN();
 
         expect(link.target).toEqual('_blank');
-        expect(link.download).toEqual('diagram.bpmn');
+        expect(link.download).toEqual('untitled.bpmn');
         expect(link.href).toEqual('data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(exportXML));
         expect(link.click).toHaveBeenCalledTimes(1);
     });
@@ -47,7 +47,7 @@ describe('After the EditorApp has been initialized with a BPMN model with Export
         await pluginExport.exportSVG();
 
         expect(link.target).toEqual('_blank');
-        expect(link.download).toEqual('diagram.svg');
+        expect(link.download).toEqual('untitled.svg');
         expect(link.href).toEqual('data:application/bpmn20-xml;charset=UTF-8,' + encodeURIComponent(exportSVG));
         expect(link.click).toHaveBeenCalledTimes(1);
     });

@@ -12,7 +12,8 @@ let PD = function(pluginExecutionId,
                   clockContainerId,
                   buttonsContainerId,
                   playClassName,
-                  pauseClassName) {
+                  pauseClassName,
+                  primaryOverlay) {
     this._private = {
         'cy': undefined,
         'pluginExecutionId': pluginExecutionId,
@@ -27,7 +28,8 @@ let PD = function(pluginExecutionId,
         'playClassName': playClassName,
         'pauseClassName': pauseClassName,
         'logAnimation': undefined,
-        'logAnimationMapController': undefined
+        'logAnimationMapController': undefined,
+        'primaryOverlay': primaryOverlay
     }
 }
 

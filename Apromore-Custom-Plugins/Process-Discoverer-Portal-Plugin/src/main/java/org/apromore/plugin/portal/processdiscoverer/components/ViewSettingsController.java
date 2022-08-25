@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -458,6 +459,8 @@ public class ViewSettingsController extends VisualController {
                 measureRelationMap.get(secondaryAgg),
                 primaryAgg
         );
+
+        Clients.evalJavaScript("Ap.pd.setPrimaryOverlay('" + measureType + "')");
     }
 
     private void selectFrequencyViz() {
