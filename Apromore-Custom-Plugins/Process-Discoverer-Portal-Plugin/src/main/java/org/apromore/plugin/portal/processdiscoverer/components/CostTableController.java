@@ -57,7 +57,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class CostTableController extends DataListController {
-    private static final String SEPARATOR = "----------";
+    private static final String SEPARATOR = "-";
 
     private Window costTableWindow;
     private Combobox currencyCombobox;
@@ -109,6 +109,10 @@ public class CostTableController extends DataListController {
                 label = SEPARATOR;
             }
             Comboitem item = currencyCombobox.appendItem(label);
+            if (SEPARATOR.equals(label)) {
+                item.setDisabled(true);
+                item.setSclass("ap-combobox-separator");
+            }
             item.setValue(label);
         }
         currencyCombobox.setValue(userOptions.getCostTable().getCurrency());
