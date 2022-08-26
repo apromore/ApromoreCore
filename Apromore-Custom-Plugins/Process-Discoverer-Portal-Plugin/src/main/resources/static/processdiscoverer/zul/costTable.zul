@@ -65,14 +65,16 @@
       <combobox
           disabled="${arg.viewOnly}"
           readonly="false"
-          autocomplete="true"
+          autocomplete="false"
           id="costTableCurrency"
           forward="onChanging=costTableWindow.onChangeCurrency, onChange=costTableWindow.onChangeCurrency">
-        <comboitem label="AUD" value="AUD" />
-        <comboitem label="EUR" value="EUR" />
-        <comboitem label="GBP" value="GBP" />
-        <comboitem label="JPY" value="JPY" />
-        <comboitem label="USD" value="USD" />
+          <template name="model">
+              <comboitem
+                  label="${each.code}"
+                  disabled="${each.code eq '-' ? true : false}"
+                  sclass="${each.code eq '-' ? 'ap-combobox-separator' : ''}"
+              />
+          </template>
       </combobox>
       <label style="vertical-align: middle;margin-left: 4px; color: var(--ap-c-text-heading) !important;">
         ${arg.pdLabels.currency_hint}
