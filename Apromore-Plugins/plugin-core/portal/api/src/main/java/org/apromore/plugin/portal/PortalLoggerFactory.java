@@ -25,19 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a drop-in replacement for {@link LoggerFactory} for use in the ZK framework
+ * This was a drop-in replacement for {@link LoggerFactory} for use in the ZK framework
  * based Apromore presentation layer.
  *
  * The {@link Logger} instances produced by this factory will make sure that the
  * ZK session attributes (particularly the authenticated user) are made available
  * to the logging system's MDC.
+ * Its function has been replaced by ZkExecutionListener, so it's pending removal.
  */
 public abstract class PortalLoggerFactory {
-
-    /**
-     * This MDC key will hold the username of the authenticated user of the ZK session.
-     */
-    public static final String MDC_APROMORE_USER_KEY = "apromore.user";
 
     /**
      * This method is a drop-in replacement for {@link org.slf4j.LoggerFactory#getLogger(Class)}.
@@ -46,7 +42,7 @@ public abstract class PortalLoggerFactory {
      * @return a logger which maintains the MDC according to the ZK session
      */
     public static Logger getLogger(Class klass) {
-        return new PortalLogger(LoggerFactory.getLogger(klass), klass.getCanonicalName());
+        return LoggerFactory.getLogger(klass);
     }
 
     /**
@@ -56,6 +52,6 @@ public abstract class PortalLoggerFactory {
      * @return a logger which maintains the MDC according to the ZK session
      */
     public static Logger getLogger(String name) {
-        return new PortalLogger(LoggerFactory.getLogger(name), name);
+        return LoggerFactory.getLogger(name);
     }
 }
