@@ -21,42 +21,42 @@
  */
 package org.apromore.portal;
 
-/*-
- * #%L
- * This file is part of "Apromore Core".
- * %%
- * Copyright (C) 2018 - 2022 Apromore Pty Ltd.
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-3.0.html>.
- * #L%
- */
-
-import org.apromore.plugin.portal.PortalLoggerFactory;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.UserType;
-import org.slf4j.Logger;
 import org.slf4j.MDC;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.util.ExecutionCleanup;
+import org.zkoss.zk.ui.util.ExecutionInit;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.util.SessionCleanup;
 
 /**
  * Log ZK lifecycle events.
  */
-public class LoggingZKListener implements SessionCleanup {
+@Slf4j
+public class LoggingZKListener implements ExecutionCleanup, ExecutionInit, SessionCleanup {
 
-    private static final Logger LOGGER = PortalLoggerFactory.getLogger(LoggingZKListener.class);
+    /**
+     * This MDC key will be set with the username of the current user.
+     */
+    public static final String MDC_APROMORE_USER_KEY = "apromore.user";
+
+    // Execution listener
+
+    @Override
+    public void init(final Execution execution, final Execution parent) {
+        UserType user = UserSessionManager.getCurrentUser();
+        MDC.put(MDC_APROMORE_USER_KEY, user == null ? "ZK" : user.getUsername());
+    }
+
+    @Override
+    public void cleanup(final Execution execution, final Execution parent, List<Throwable> errs) {
+        MDC.remove(MDC_APROMORE_USER_KEY);
+    }
+
+    // Session listener
 
     /**
      * {@inheritDoc}
@@ -67,13 +67,13 @@ public class LoggingZKListener implements SessionCleanup {
     public void cleanup(final Session session) {
         UserType user = (UserType) session.getAttribute(UserSessionManager.USER);
         if (user == null) {
-            LOGGER.debug("Unauthenticated user session expired");
+            log.debug("Unauthenticated user session expired");
 
-        } else if (MDC.get(PortalLoggerFactory.MDC_APROMORE_USER_KEY) != null) {
-            LOGGER.info("User \"{}\" logout", user.getUsername());
+        } else if (MDC.get(MDC_APROMORE_USER_KEY) != null) {
+            log.info("User \"{}\" logout", user.getUsername());
 
         } else {
-            LOGGER.debug("User \"{}\" session expired", user.getUsername());
+            log.debug("User \"{}\" session expired", user.getUsername());
         }
     }
 }
