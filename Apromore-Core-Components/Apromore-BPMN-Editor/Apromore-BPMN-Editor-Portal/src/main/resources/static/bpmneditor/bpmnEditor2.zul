@@ -1,0 +1,156 @@
+<!--
+  #%L
+  This file is part of "Apromore Core".
+  %%
+  Copyright (C) 2018 - 2022 Apromore Pty Ltd.
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Lesser Public License for more details.
+  
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  #L%
+  -->
+<?link rel="shortcut icon" href="~./themes/${labels.theme}/common/img/brand/favicon.ico" ?>
+<window id="winx"
+        xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        sclass="ap-bpmneditor"
+        use="org.apromore.plugin.portal.bpmneditor.BpmnEditorController">
+    <z:style>
+        .x-panel-editor-north .x-toolbar {
+        background-image: none !important;
+        }
+        .x-panel-editor-north .x-btn {
+        opacity: 0 !important;
+        }
+
+        .x-layout-collapsed-east {
+        top: 66px !important;
+        overflow: visible;
+        }
+
+        .x-layout-collapsed-east .x-tool {
+        overflow: visible;
+        }
+
+        /* A fix for simulation panel title */
+        .x-layout-collapsed-east:after {
+        content: "Properties";
+        letter-spacing: 1px;
+        color: black;
+        font-weight: 700;
+        transform: rotate(90deg) translate(192px, 196px);
+        display: block;
+        overflow: visible;
+        width: 400px;
+        height: 30px;
+        color: #333;
+        }
+
+        .sub-process-marker-overlay {
+        cursor: pointer;
+        }
+    </z:style>
+    <!-- STYLESHEET FOR THE WRAPPER EDITOR -->
+    <n:style media="screen" type="text/css">
+        @import url("libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("libs/ext-2.0.2/resources/css/xtheme-gray.css");
+    </n:style>
+
+    <n:link rel="stylesheet" media="screen" href="editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="stylesheet" media="screen" href="editor/css/theme_ext.css" type="text/css"/>
+    <n:link rel="stylesheet" media="screen" href="editor/css/color-picker.css" type="text/css"/>
+    <n:link rel="stylesheet" media="screen" href="../libs/spectrum/2.0.5/spectrum.css" type="text/css"/>
+    <n:script src="../libs/jquery/3.5.1/jquery-3.5.1.min.js" type="text/javascript"/>
+
+    <!-- This will prevent the session to time out when this ZUL page is opened in the browser and user is
+    interacting with BPMN Editor. The session still timeouts when the user has navigated the browser away or stay
+    idle for over 30 min. The delay (30 minutes) shall be as long as possible but smaller than http session timeout. -->
+
+<!--    <div id="divKeepAlive"-->
+<!--         sclass="ap-bpmneditor-top-notice"-->
+<!--         visible="false"-->
+<!--         style="position:absolute; display:none; top:41px; right: 10px; z-index:1050; text-align: right"-->
+<!--         width="150px" height="30px"-->
+<!--    >-->
+<!--        Saving draft...-->
+<!--    </div>-->
+    <!-- STYLESHEET FOR BPMN.IO -->
+    <n:link rel="stylesheet" href="editor/bpmnio/bpmn.css" type="text/css"/>
+    <n:link rel="stylesheet" href="editor/bpmnio/diagram-js.css" type="text/css"/>
+    <!--<n:script src="editor/bpmnio/${arg.bpmnioLib}" type="text/javascript"/>-->
+
+    <custom-attributes theme="${labels.theme}"/>
+    <!--<custom-attributes theme="ap"/>-->
+
+    <n:link rel="stylesheet" type="text/css" href="../themes/${theme}/common/css/index.css"/>
+    <n:link rel="stylesheet" type="text/css" href="../themes/ap/editor/css/index.css"/>
+    <n:link rel="stylesheet" type="text/css" href="../themes/ap/editor/css/simulation.css"/>
+
+    <n:div class="ap-header">
+        <n:a href="/">
+            <n:div class="ap-header-logo"></n:div>
+        </n:a>
+        <n:div class="ap-header-title">${labels.bpmnEditor_title_text}</n:div>
+
+        <n:div class="ap-header-actions">
+            <n:a href="${labels.help_bpmnEditor}" target="_blank">
+                <n:button class="ap-icon ap-icon-help"/>
+            </n:a>
+        </n:div>
+    </n:div>
+
+    <!-- User menu -->
+    <n:link rel="stylesheet" href="../themes/${theme}/portal/css/portal.css" type="text/css"/>
+<!--    <z:menubar sclass="ap-user-menu" id="userMenu" style="position: absolute;"-->
+<!--               apply="org.apromore.portal.dialogController.UserMenuController"/>-->
+
+    <n:div id="editorwrapper" style="display: none">
+        <!--<n:script src="libs/jquery/3.5.1/jquery-3.5.1.min.js" type="text/javascript"/>-->
+        <n:script src="libs/prototype-1.7.3.js" type="text/javascript"/>
+        <!-- <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/> -->
+        <n:script src="libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <n:script src="libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <n:script src="libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <n:script src="libs/iscroll.js" type="text/javascript"/>
+        <n:script src="libs/autolayout.js" type="text/javascript"/>
+
+        <n:script src="editor/i18n/translation_${arg.langTag}.js" type="text/javascript"/>
+        <n:script src="editor/bpmneditor.js" type="text/javascript"/>
+        <!--<n:script defer="true" src="libs/spectrum/2.0.5/spectrum.js" type="text/javascript" />-->
+
+<!--        <z:zk forEach="${arg.plugins}">-->
+<!--          <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>-->
+<!--        </z:zk>-->
+        <n:script src="../themes/ap/common/js/index.js" type="text/javascript"/>
+        <n:span id="Apromorestartupcode">
+        </n:span>
+    </n:div>
+
+    <n:div id="editorcanvas"></n:div>
+    <n:div id="js-properties-panel"></n:div>
+    <n:canvas id="ap-editor-img-canvas" style="display:none;"></n:canvas>
+    <n:div id="shape-resizer"></n:div>
+
+    <z:popup width="330px" id="popup">
+<!--        <z:hbox align="center" pack="center" hflex="1" spacing="5px">-->
+<!--            <z:label>8px</z:label>-->
+<!--            <z:slider id="slider" slidingtext="{0}px" pageIncrement="0" curpos="16" mode="integer"-->
+<!--                      width="250px" mold="scale" step="1" minpos="8" maxpos="72"-->
+<!--                      w:onScroll="changeFontSize(this.$f('slider').getCurpos())"/>-->
+<!--            <z:label>72px</z:label>-->
+<!--        </z:hbox>-->
+    </z:popup>
+</window>
+

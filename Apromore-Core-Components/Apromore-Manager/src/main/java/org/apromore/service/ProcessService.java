@@ -284,6 +284,15 @@ public interface ProcessService {
     void unlinkSubprocess(Integer subprocessParentId, String subprocessId);
 
     /**
+     * Get the process summary type
+     *
+     * @param processId the id of the process
+     * @return
+     */
+    ProcessSummaryType getProcessSummaryTypeById(Integer processId) throws RepositoryException;
+
+
+    /**
      * Get the process linked to a subprocess.
      *
      * @param subprocessParentId the id of the process which contains the subprocess

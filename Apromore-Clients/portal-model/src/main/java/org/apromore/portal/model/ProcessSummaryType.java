@@ -31,6 +31,7 @@ package org.apromore.portal.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apromore.portal.helper.Version;
 
 public class ProcessSummaryType extends SummaryType {
     protected List<VersionSummaryType> versionSummaries;
@@ -112,6 +113,19 @@ public class ProcessSummaryType extends SummaryType {
      */
     public void setLastVersion(String value) {
         this.lastVersion = value;
+    }
+
+    /* From a list of version summary types find the max version number. */
+    public String getMaxVersion() {
+        Version versionNum;
+        Version max = new Version(0, 0);
+        for (VersionSummaryType version : versionSummaries) {
+            versionNum = new Version(version.getVersionNumber());
+            if (versionNum.compareTo(max) > 0) {
+                max = versionNum;
+            }
+        }
+        return max.toString();
     }
 
 }

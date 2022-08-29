@@ -1087,6 +1087,17 @@ public class ProcessServiceImpl implements ProcessService {
   }
 
   @Override
+  public ProcessSummaryType getProcessSummaryTypeById(Integer processId) throws RepositoryException {
+    Process process = getProcessById(processId);
+
+    if (process == null) {
+      return null;
+    }
+
+    return ui.buildProcessSummary(process);
+  }
+
+  @Override
   public ProcessSummaryType getLinkedProcess(int subprocessParentId, String subprocessId) {
     Process process = subprocessProcessRepository.getLinkedProcess(subprocessParentId, subprocessId);
 

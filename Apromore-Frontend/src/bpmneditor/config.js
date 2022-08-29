@@ -35,7 +35,7 @@ CONFIG.EDITOR_PATH = "/editor";
 CONFIG.ROOT_PATH =              (CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/editor/" : "../editor/"; //TODO: Remove last slash!!
 CONFIG.EXPLORER_PATH =          (CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/explorer/" : "../explorer";
 CONFIG.LIBS_PATH =              (CONFIG.SERVER_HANDLER_ROOT_PREFIX) ? CONFIG.SERVER_HANDLER_ROOT_PREFIX + "/libs/" : "../libs";
-CONFIG.PATH =                   "." + CONFIG.ROOT_PATH;
+CONFIG.PATH =                   "/zkau/web" + CONFIG.ROOT_PATH;
 
 /**
  * Regular Config

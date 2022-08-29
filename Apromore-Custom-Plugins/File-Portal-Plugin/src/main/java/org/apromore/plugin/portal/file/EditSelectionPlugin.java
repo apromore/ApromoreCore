@@ -32,6 +32,7 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.zk.label.LabelSupplier;
 import org.apromore.zk.notification.Notification;
@@ -55,8 +56,11 @@ public class EditSelectionPlugin extends DefaultPortalPlugin implements LabelSup
 
   @Override
   public String getLabel(Locale locale) {
-    String labelKey = UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_EDIT)
-        ? "plugin_discover_editModel_text" : "plugin_discover_viewModel_text";
+    UserType userType = UserSessionManager.getCurrentUser();
+    String labelKey = "plugin_discover_viewModel_text";
+    if (userType != null && userType.hasAnyPermission(PermissionType.MODEL_EDIT)) {
+      labelKey = "plugin_discover_editModel_text";
+    }
     return Labels.getLabel(labelKey, label);
   }
 
