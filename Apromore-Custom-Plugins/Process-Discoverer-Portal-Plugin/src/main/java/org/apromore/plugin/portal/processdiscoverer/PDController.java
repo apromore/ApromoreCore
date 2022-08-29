@@ -763,6 +763,10 @@ public class PDController extends BaseController implements Composer<Component>,
         return this.contextData;
     }
 
+    public PortalContext getPortalContext() {
+        return this.portalContext;
+    }
+
     public PDAnalyst getProcessAnalyst() {
         return this.processAnalyst;
     }

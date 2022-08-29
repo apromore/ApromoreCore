@@ -55,6 +55,14 @@ public class FolderServiceImpl implements FolderService {
 
     @Override
     public List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId) {
+        Map<Integer, FolderTreeNode> map = new HashMap<>();
+        return getFolderTreeByUser(map, parentFolderId, userId);
+    }
+
+    @Override
+    public List<FolderTreeNode> getFolderTreeByUser(
+        Map<Integer, FolderTreeNode> map, int parentFolderId, String userId
+    ) {
         List<GroupFolder> folders;
         if(userId!=null) {
             folders = groupFolderRepository.findByParentFolderAndUser(parentFolderId, userId);
@@ -64,7 +72,6 @@ public class FolderServiceImpl implements FolderService {
         if(folders==null){
             return new ArrayList<>();
         }
-        Map<Integer, FolderTreeNode> map = new HashMap<>();
 
         List<FolderTreeNode> treeNodes = new ArrayList<>();
         for (GroupFolder folder : folders) {
@@ -85,10 +92,10 @@ public class FolderServiceImpl implements FolderService {
                 treeNode.setHasRead(folder.isHasRead());
                 treeNode.setHasWrite(folder.isHasWrite());
                 treeNode.setHasOwnership(folder.isHasOwnership());
-                treeNode.setSubFolders(this.getFolderTreeByUser(folder.getFolder().getId(), userId));
+                treeNode.setSubFolders(this.getFolderTreeByUser(map, folder.getFolder().getId(), userId));
 
-                for (FolderTreeNode subFolders : treeNode.getSubFolders()) {
-                    subFolders.setParent(treeNode);
+                for (FolderTreeNode subFolder : treeNode.getSubFolders()) {
+                    subFolder.setParent(treeNode);
                 }
 
                 treeNodes.add(treeNode);

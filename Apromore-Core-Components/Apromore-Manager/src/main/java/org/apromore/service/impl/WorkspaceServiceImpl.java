@@ -363,6 +363,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   }
 
   @Override
+  public List<FolderTreeNode> getWorkspaceFolderTree(Map<Integer, FolderTreeNode> map, String userId) {
+    return folderService.getFolderTreeByUser(map, 0, userId);
+  }
+
+  @Override
   public List<Folder> getBreadcrumbs(Integer folderId) {
     List<Folder> folders = new ArrayList<>();
 
