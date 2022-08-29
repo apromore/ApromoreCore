@@ -435,7 +435,9 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                 }
             })
         ) {
-            Messagebox.show("One or more selected models are linked to another process. Include linked subprocesses?", "Download BPMN Models",
+            Messagebox.show(
+                getLabel("includeLinkedSubProcess_title"),
+                getLabel("includeLinkedSubProcess_message"),
                 Messagebox.YES | Messagebox.NO,
                 Messagebox.QUESTION,
                 (Event e) -> {
