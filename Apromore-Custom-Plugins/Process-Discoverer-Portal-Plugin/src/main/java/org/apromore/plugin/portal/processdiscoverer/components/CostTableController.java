@@ -24,24 +24,33 @@ package org.apromore.plugin.portal.processdiscoverer.components;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
+import org.apromore.commons.currency.Currency;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.plugin.portal.processdiscoverer.PDController;
 import org.apromore.plugin.portal.processdiscoverer.data.AttributeCost;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
 import org.apromore.portal.util.CostTable;
+import org.apromore.zk.notification.Notification;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.event.InputEvent;
@@ -49,14 +58,19 @@ import org.zkoss.zk.ui.metainfo.PageDefinition;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListModels;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+@Slf4j
 public class CostTableController extends DataListController {
+    private static final Boolean USE_STRICT_CONSTRAINT = false;
     private static final String SEPARATOR = "-";
 
     private Window costTableWindow;
@@ -65,8 +79,52 @@ public class CostTableController extends DataListController {
     private UserOptionsData userOptions;
     private Boolean viewOnly;
 
+    private Set<String> currencySet;
+    private String errorMessage;
+
+    private final Comparator currencyComparator = (Object currency1, Object currency2) -> {
+        String input = (String) currency1;
+        if (input.isEmpty()) {
+            return 0;
+        }
+        Currency currency = (Currency) currency2;
+        return currency.getCode().toLowerCase().contains(input.toLowerCase()) ? 0 : 1;
+    };
+
+    // This is for reference to avoid ZK constraint trap in the future.
+    static class CurrencyConstraint implements Constraint {
+        Set<String> validSet;
+        String errMessage;
+
+        public CurrencyConstraint(Set<String> validSet, String errMessage) {
+            this.validSet = validSet;
+            this.errMessage = errMessage;
+        }
+
+        public void validate(Component comp, Object value) throws WrongValueException {
+            String currency = (String) value;
+            try {
+                Combobox combobox = (Combobox) comp;
+                combobox.clearErrorMessage(false);
+            } catch(Exception e) {
+                // pass
+            }
+            if (Strings.isNullOrEmpty(currency)) {
+                return;
+            }
+            // Note that constraint may work counter-productively with listSubModel
+            // since it would stop refresh the list if it traps in 1 or 2 character input
+            if (currency.length() == 3 && !validSet.contains(currency)) {
+                throw new WrongValueException(comp, errMessage);
+            }
+
+        }
+    }
+
     public CostTableController(PDController controller) {
         super(controller);
+        this.errorMessage = parent.getLabel(
+            "currencyInvalid_message", "Only currency in the list is allowed.");
         this.userOptions = controller.getUserOptions();
     }
 
@@ -101,19 +159,28 @@ public class CostTableController extends DataListController {
 
     private void initializeCurrency() {
         String currencyLabels = Labels.getLabel("bpmnEditor_currencyList", "AUD,EUR,GBP,JPY,USD");
+        ListModelList<Currency> currencyListModelList = new ListModelList<>();
         List<String> labels = Arrays.asList(currencyLabels.split(","));
 
-        currencyCombobox.getItems().clear();
+        currencyListModelList.setMultiple(false);
+        currencySet = new HashSet<>();
         for (String label: labels) {
             if ("|".equals(label)) {
                 label = SEPARATOR;
             }
-            Comboitem item = currencyCombobox.appendItem(label);
-            if (SEPARATOR.equals(label)) {
-                item.setDisabled(true);
-                item.setSclass("ap-combobox-separator");
-            }
-            item.setValue(label);
+            currencyListModelList.add(new Currency(label, label));
+            currencySet.add(label);
+        }
+        ListModel<Currency> listSubModel = ListModels.toListSubModel(
+            currencyListModelList,
+            currencyComparator,
+            currencyListModelList.size()
+        );
+        CurrencyConstraint constraint = new CurrencyConstraint(currencySet, errorMessage);
+        currencyCombobox.getItems().clear();
+        currencyCombobox.setModel(listSubModel);
+        if (Boolean.TRUE.equals(USE_STRICT_CONSTRAINT)) {
+            currencyCombobox.setConstraint(constraint);
         }
         currencyCombobox.setValue(userOptions.getCostTable().getCurrency());
     }
@@ -124,6 +191,11 @@ public class CostTableController extends DataListController {
             currency = Labels.getLabel("bpmnEditor_defaultCurrency", "AUD");
         }
         return currency;
+    }
+
+    private Boolean hasValidFields() {
+        String currency = currencyCombobox.getValue();
+        return (Strings.isNullOrEmpty(currency) || currencySet.contains(currency));
     }
 
     @Override
@@ -180,6 +252,10 @@ public class CostTableController extends DataListController {
             });
 
             costTableWindow.addEventListener("onApplyCost", e -> {
+                if (Boolean.FALSE.equals(hasValidFields())) {
+                    Notification.error(errorMessage);
+                    return;
+                }
                 userOptions.setCostTable(CostTable.builder()
                     .currency(getSelectedCurrency())
                     .costRates(this.getCostMapper()).build());
