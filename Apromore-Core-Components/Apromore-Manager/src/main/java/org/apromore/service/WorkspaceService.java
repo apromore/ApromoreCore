@@ -24,6 +24,7 @@
 
 package org.apromore.service;
 
+import java.util.Map;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.*;
 import org.apromore.exception.NotAuthorizedException;
@@ -76,6 +77,8 @@ public interface WorkspaceService {
     void deleteFolder(Integer folderId, User user) throws Exception;
 
     List<FolderTreeNode> getWorkspaceFolderTree(String userId);
+
+    List<FolderTreeNode> getWorkspaceFolderTree(Map<Integer, FolderTreeNode> map, String userId);
 
     List<Folder> getBreadcrumbs(Integer folderId);
 

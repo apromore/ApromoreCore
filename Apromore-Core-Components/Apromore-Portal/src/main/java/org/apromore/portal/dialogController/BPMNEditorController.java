@@ -280,11 +280,17 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
           return;
         }
-        if (isNewProcess) {
-          new SaveAsDialogController(process, vst, session, null, eventToString(event), mainC);
-        } else {
-          new SaveAsDialogController(process, vst, session, true, eventToString(event), mainC);
-        }
+        launchProcessSaveWindow(
+            mainC,
+            session,
+            editSession.getUsername(),
+            process,
+            editSession.getProcessName(),
+            editSession.getCurrentVersionNumber(),
+            editSession.getFolderId(),
+            (Boolean.TRUE.equals(isNewProcess)) ? null : true,
+            eventToString(event)
+        );
       }
     });
 
@@ -295,7 +301,17 @@ public class BPMNEditorController extends BaseController implements Composer<Com
           Notification.error(Labels.getLabel("portal_noPrivilegeSaveEdit_message"));
           return;
         }
-        new SaveAsDialogController(process, vst, session, false, eventToString(event), mainC);
+        launchProcessSaveWindow(
+            mainC,
+            session,
+            editSession.getUsername(),
+            process,
+            editSession.getProcessName(),
+            "1.0",
+            editSession.getFolderId(),
+            false,
+            eventToString(event)
+        );
       }
     });
 
@@ -526,6 +542,32 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       popup.open(event.getTarget(),"at_pointer");
     });
 
+  }
+
+  private void launchProcessSaveWindow(
+      MainController mainController,
+      ApromoreSession session,
+      String userName,
+      ProcessSummaryType process,
+      String processName,
+      String versionNumber,
+      Integer targetFolderId,
+      Boolean isSaveCurrent,
+      String modelData
+  ) {
+    Map<String, Object> args = new HashMap<>();
+    args.put("mainController", mainController);
+    args.put("session", session);
+    args.put("userName", userName);
+    args.put("process", process);
+    args.put("processName", processName);
+    args.put("versionNumber", versionNumber);
+    args.put("targetFolderId", targetFolderId);
+    args.put("isSaveCurrent", isSaveCurrent);
+    args.put("modelData", modelData);
+    Window processSaveAsWindow =
+        (Window) Executions.createComponents("~./macros/process/processSaveWindow.zul", null, args);
+    processSaveAsWindow.doModal();
   }
 
   private String getProcessName() {

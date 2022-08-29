@@ -304,6 +304,34 @@ public class BPMNExportController extends AbstractController {
 
     private void showSaveDialog(
         final String defaultProcessName,
+        final String extensionLabel,
+        final String footnoteLabel) {
+
+        SimulationData simulationData =
+            controller.getProcessAnalyst().getSimulationData(
+                bpmnAbstraction, controller.getUserOptions());
+
+        // Enrich the exported bpmn with process simulation info
+        String modelExtendedData = simulationInfoService.enrichWithSimulationInfo(minedModel, simulationData);
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("mainController", controller.getPortalContext().getMainController());
+        args.put("userName", controller.getContextData().getUsername());
+        args.put("processName", defaultProcessName);
+        args.put("versionNumber", "1.0");
+        args.put("targetFolderId", controller.getContextData().getFolderId());
+        args.put("isSaveCurrent", false);
+        args.put("modelData", minedModel);
+        args.put("modelExtendedData", modelExtendedData);
+        args.put("extensionLabel", extensionLabel);
+        args.put("footnoteLabel", footnoteLabel);
+        Window processSaveAsWindow =
+            (Window) Executions.createComponents("~./macros/process/processSaveWindow.zul", null, args);
+        processSaveAsWindow.doModal();
+    }
+
+    private void showSaveDialogDeprecated(
+        final String defaultProcessName,
         final String conditionText,
         final String footnoteMessage) throws IOException {
 

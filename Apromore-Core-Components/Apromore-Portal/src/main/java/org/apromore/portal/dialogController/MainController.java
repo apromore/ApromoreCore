@@ -40,6 +40,7 @@ import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.FolderItem;
 import org.apromore.portal.common.PortalSession;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.common.i18n.I18nConfig;
@@ -73,6 +74,7 @@ import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.portal.util.CostTable;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.service.model.FolderTreeNode;
 import org.apromore.zk.ApromoreDesktopCleanup;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
@@ -98,6 +100,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
@@ -122,7 +125,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -1140,6 +1142,48 @@ public class MainController extends BaseController implements MainControllerInte
             }
         });
 
+    }
+
+    public List<FolderItem> getFolderItems(Map<Integer, FolderItem> folderItemMap) {
+        String userId = UserSessionManager.getCurrentUser().getId();
+        Map<Integer, FolderTreeNode> folderTreeNodeMap = new HashMap<>();
+        getWorkspaceService().getWorkspaceFolderTree(folderTreeNodeMap, userId);
+        List<FolderItem> folderItems = new ArrayList<>();
+        for (FolderTreeNode folderTreeNode : folderTreeNodeMap.values()) {
+            Integer folderId = folderTreeNode.getId();
+            String folderName = folderTreeNode.getName();
+            List<FolderType> folderPath = this.getManagerService().getBreadcrumbs(userId, folderTreeNode.getId());
+            Collections.reverse(folderPath);
+            FolderItem folderItem = new FolderItem(folderId, folderName, folderPath);
+            folderItems.add(folderItem);
+            folderItemMap.put(folderId, folderItem);
+        }
+        return folderItems;
+    }
+
+    public ListModelList<FolderItem> getFolderItemListbox(Integer selectedId) {
+        Map<Integer, FolderItem> folderItemMap = new HashMap<>();
+        List<FolderItem> folderItems = getFolderItems(folderItemMap);
+        Collections.sort(folderItems, FolderItem.folderItemComparator);
+        folderItems.add(0, new FolderItem(0, "Home",null));
+        ListModelList<FolderItem> lml = new ListModelList<>(folderItems, false);
+        if (selectedId != null) {
+            FolderItem selectedItem = folderItemMap.get(selectedId);
+            lml.addToSelection(selectedItem);
+        }
+        return lml;
+    }
+
+    public FolderItem getFolderPath(int folderId) {
+        List<FolderType> folderPath = this.getManagerService()
+            .getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), folderId);
+        int size = folderPath.size();
+        if (size == 0) {
+            return new FolderItem(folderId, "Home", null);
+        }
+        String name = folderPath.get(0).getFolderName();
+        Collections.reverse(folderPath);
+        return new FolderItem(folderId, name, folderPath);
     }
 
     public void setBreadcrumbs(int selectedFolderId) {
