@@ -1,0 +1,60 @@
+<!--
+* #%L
+* This file is part of "Apromore Enterprise Edition".
+* %%
+* Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
+* %%
+* NOTICE:  All information contained herein is, and remains the
+* property of Apromore Pty Ltd and its suppliers, if any.
+* The intellectual and technical concepts contained herein are
+* proprietary to Apromore Pty Ltd and its suppliers and may
+* be covered by U.S. and Foreign Patents, patents in process,
+* and are protected by trade secret or copyright law.
+* Dissemination of this information or reproduction of this
+* material is strictly forbidden unless prior written permission
+* is obtained from Apromore Pty Ltd.
+* #L%
+-->
+<window
+    id="folderTreeWindow"
+    width="500px"
+    height="80vh"
+    closable="false"
+    position="center"
+    mode="modal"
+    title="Select a folder"
+    viewModel="@id('vm_folderTreeWindow') @init('org.apromore.portal.controller.folder.FolderTreeViewModel')">
+    <style src="~./macros/folder/styles.css"/>
+    <div sclass="ap-nav-header" style="display: flex">
+        <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1"
+               value="${labels.portal_workspace_text}"/>
+        <toolbarbutton sclass="ap-icon ap-icon-folder-expand-solid"
+                       id="expand" tooltiptext="${labels.portal_folderExpand}"
+                       onClick="@command('doCollapseExpandAll', component=folderTree, open=true)"
+        />
+        <toolbarbutton sclass="ap-icon ap-icon-folder-collapse-solid" id="contract"
+                       tooltiptext="${labels.portal_folderCollapse}"
+                       onClick="@command('doCollapseExpandAll', component=folderTree, open=false)"
+
+        />
+    </div>
+    <vlayout style="overflow: auto" height="calc(100% - 36px)">
+        <div vflex="1" style="overflow: auto;">
+            <tree id="folderTree" sclass="ap-folder-tree"
+                  onSelect="@global-command('onFolderSelect', selectedItem=vm_folderTreeWindow.selectedItem)"
+                  selectedItem="@bind(vm_folderTreeWindow.selectedItem)">
+                <treecols>
+                    <treecol label=""/>
+                </treecols>
+            </tree>
+        </div>
+        <div vflex="min" align="center" sclass="ap-window-footer-actions">
+            <button id="btnOk" label="${labels.common_ok_text}" iconSclass="z-icon-check-circle"
+                    onClick="@command('okCmd')">
+            </button>
+            <button id="btnCancel" label="${labels.common_cancel_text}" iconSclass="z-icon-times-circle"
+                    onClick="@command('cancelCmd')">
+            </button>
+        </div>
+    </vlayout>
+</window>

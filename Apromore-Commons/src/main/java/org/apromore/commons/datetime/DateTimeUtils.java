@@ -21,7 +21,9 @@
  */
 package org.apromore.commons.datetime;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -30,8 +32,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,9 +55,10 @@ import org.apromore.commons.datetime.Constants;
 public final class DateTimeUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class.getName());
+    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-            .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
+            .appendOptional(DateTimeFormatter.ofPattern(DATE_FORMAT))
             .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"))
             .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"))
             .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
@@ -140,5 +147,18 @@ public final class DateTimeUtils {
 
     public static String humanize(OffsetDateTime offsetDateTime) {
         return offsetDateTime.format(Constants.DATE_TIME_FORMATTER_HUMANIZED);
+    }
+
+    public static String now() {
+        return nowSimple();
+    }
+
+    public static String nowSimple() {
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        return dateFormat.format(new Date());
+    }
+
+    public static String nowGregorian() throws DatatypeConfigurationException {
+        return  DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
     }
 }

@@ -22,16 +22,19 @@
 package org.apromore.service;
 
 import groovy.util.ResourceException;
+import java.util.Map;
+import java.util.List;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.service.model.FolderTreeNode;
 
-import java.util.List;
 
 public interface FolderService {
 
     List<FolderTreeNode> getFolderTreeByUser(int parentFolderId, String userId);
+
+    List<FolderTreeNode> getFolderTreeByUser(Map<Integer, FolderTreeNode> map, int parentFolderId, String userId);
 
     List<ProcessModelVersion> getProcessModelVersionByFolderUserRecursive(
             Integer parentFolderId, String userId);
