@@ -447,6 +447,11 @@
           "isAttr": true
         },
         {
+          "name": "rawExecutionProbability",
+          "type": "String",
+          "isAttr": true
+        },
+        {
           "name": "values",
           "type": "Expression",
           "isMany": true

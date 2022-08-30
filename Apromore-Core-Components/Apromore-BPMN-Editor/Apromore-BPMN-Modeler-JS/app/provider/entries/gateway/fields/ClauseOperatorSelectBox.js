@@ -6,6 +6,7 @@ const { default: translate } = require('diagram-js/lib/i18n/translate');
 module.exports = function (bpmnFactory, elementRegistry, translate, options) {
   var getSelectedClause = options.getSelectedClause;
   var getSelectedCaseAttribute = options.getSelectedCaseAttribute;
+  var getClauseCount = options.getClauseCount;
   var isNumeric = options.isNumeric;
 
   var clauseOperatorSelectBox = entryFactory.selectBox(translate, {

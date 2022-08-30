@@ -218,8 +218,14 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
 
   }
 
+  function getClauseCount(element, node) {
+    let expression = getExpression();
+    return expression && expression.values && expression.values.length || 0;
+  }
+
   return {
     entries: variableEntry,
+    getClauseCount: getClauseCount,
     getSelectedClause: getSelectedClause
   };
 };

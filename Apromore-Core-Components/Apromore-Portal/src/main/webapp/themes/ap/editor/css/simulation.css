@@ -173,7 +173,80 @@ label[for='camunda-startDate'] {
 
 .apromore-toggle-switch  {
    position: absolute !important;
-   top: 8px !important;
-   right: 0px !important;
+   top: 40px !important;
+   width: 100% !important;
    padding-bottom: 10px !important;
+   padding-right: 10px !important;
+   box-sizing: border-box;
+}
+
+div[data-group^='gateway'] .group-header {
+    margin-bottom: 40px;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher > * {
+    vertical-align: middle !important;
+    font-weight: normal !important;
+}
+
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher > input,
+div[data-group^='gateway'] .bpp-toggle-switch__switcher > input {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
+
+#toggle_category_numeric {
+    margin: 0 !important;
+}
+
+div[data-entry='toggle_category_numeric'] .bpp-field-wrapper {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+}
+
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher {
+    margin: 5px 0;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher > span:first-child,
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher > span:first-child {
+    margin-right: 5px;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher > span:last-child,
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher > span:last-child {
+    margin-left: 5px;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher,
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher {
+    position: relative;
+    width: 100% !important;
+    height: auto !important;
+    text-align: center;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher .bpp-toggle-switch__slider,
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher .bpp-toggle-switch__slider {
+    position: relative;
+    width: 48px;
+    height: 20px;
+    display: inline-block;
+}
+
+div[data-group^='gateway'] .bpp-toggle-switch__switcher .bpp-toggle-switch__slider:before,
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher .bpp-toggle-switch__slider:before {
+    position: absolute;
+    display: inline-block;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 1px;
+    top: 1px;
+}
+
+div[data-entry='toggle_category_numeric'] .bpp-toggle-switch__switcher > * {
+    vertical-align: middle !important;
+    font-weight: normal !important;
 }

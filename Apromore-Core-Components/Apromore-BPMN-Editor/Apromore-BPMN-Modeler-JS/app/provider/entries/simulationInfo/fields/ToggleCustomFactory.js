@@ -26,14 +26,16 @@ var toggleSwitch = function(translate, options, defaultParameters) {
   resource.html.appendChild(domify('<div class="bpp-field-wrapper"' +
     (canBeHidden ? 'data-show="shouldShow"' : '') +
     '>' +
-    '<label class="ap-sub-title-label">' + escapeHTML(labelText) +'</label>' +
+      '<label class="ap-sub-title-label">' + escapeHTML(labelText) +'</label>' +
       '<label class="bpp-toggle-switch__switcher">' +
+        '<span>Categorical</span>' +
         '<input id="' + escapeHTML(id) + '" ' +
             'type="checkbox" ' +
             'name="' + escapeHTML(options.modelProperty) + '"  title = "' + escapeHTML(label) + '" />' +
         '<span title = "' + escapeHTML(label) + '" class="bpp-toggle-switch__slider"></span>' +
+        '<span>Numerical</span>' +
       '</label>' +
-      '</div>'));
+    '</div>'));
 
   if (descriptionOn) {
     resource.html.appendChild(entryFieldDescription(translate, descriptionOn, { show: 'isOn' }));

@@ -29,7 +29,17 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, ele
     entries.push(clauseCaseAttribute.selectBox);
     entries.push(ClauseCategoriesErrorLabel({id:'clause-categories-error-message-'+ options.outgoingElementId, getSelectedClause: clauses.getSelectedClause, isNotExistCategories:clauseCaseAttribute.isNotExistCategories}));
 
-    let clauseOperator = ClauseOperatorSelectBox(bpmnFactory, elementRegistry, translate, { getSelectedClause: clauses.getSelectedClause, getSelectedCaseAttribute: clauseCaseAttribute.getSelectedCaseAttribute,outgoingElementId: options.outgoingElementId, isNumeric : clauseCaseAttribute.isNumeric }, sequenceFlow);
+    let clauseOperator = ClauseOperatorSelectBox(
+        bpmnFactory, elementRegistry, translate,
+        {
+            getSelectedClause: clauses.getSelectedClause,
+            getClauseCount: clauses.getClauseCount,
+            getSelectedCaseAttribute: clauseCaseAttribute.getSelectedCaseAttribute,
+            outgoingElementId: options.outgoingElementId,
+            isNumeric : clauseCaseAttribute.isNumeric
+        },
+        sequenceFlow
+    );
     entries.push(clauseOperator.clauseOperatorSelectBox);
     let ClauseCategory = ClauseCategorySelectBox(bpmnFactory, elementRegistry, translate, { getSelectedClause: clauses.getSelectedClause, getSelectedCaseAttribute: clauseCaseAttribute.getSelectedCaseAttribute, outgoingElementId: options.outgoingElementId , isNumeric : clauseCaseAttribute.isNumeric}, sequenceFlow);
     entries.push(ClauseCategory.cluaseCategory);
