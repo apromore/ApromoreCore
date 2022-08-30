@@ -1,16 +1,21 @@
 /*-
- * #%L This file is part of "Apromore Core". %% Copyright (C) 2018 - 2022 Apromore Pty Ltd. %% This
- * program is free software: you can redistribute it and/or modify it under the terms of the GNU
- * Lesser General Public License as published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public License along with this program.
- * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>. #L%
+ * #%L
+ * This file is part of "Apromore Enterprise Edition".
+ * %%
+ * Copyright (C) 2019 - 2022 Apromore Pty Ltd. All Rights Reserved.
+ * %%
+ * NOTICE:  All information contained herein is, and remains the
+ * property of Apromore Pty Ltd and its suppliers, if any.
+ * The intellectual and technical concepts contained herein are
+ * proprietary to Apromore Pty Ltd and its suppliers and may
+ * be covered by U.S. and Foreign Patents, patents in process,
+ * and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this
+ * material is strictly forbidden unless prior written permission
+ * is obtained from Apromore Pty Ltd.
+ * #L%
  */
+
 package org.apromore.portal.config;
 
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
+import org.apromore.portal.MDCHandlerInterceptor;
 import org.apromore.portal.servlet.DataChannelServlet;
 import org.apromore.portal.servlet.PortalPluginResourceServlet;
 import org.apromore.portal.util.ExplicitComparator;
@@ -31,14 +37,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @PropertySource(value = {"classpath:git.properties"})
 @PropertySource(value = "classpath:i18n.properties", encoding = "UTF-8")
-@EnableWebMvc
 @ComponentScan(basePackages = "org.apromore.portal")
-public class PortalWebConfig {
+public class PortalWebConfig implements WebMvcConfigurer {
 
   @Autowired
   List<PortalPlugin> portalPlugins;
@@ -93,7 +99,7 @@ public class PortalWebConfig {
   public ServletRegistrationBean<PortalPluginResourceServlet> exampleServletBean() {
     ServletRegistrationBean<PortalPluginResourceServlet> bean =
         new ServletRegistrationBean<PortalPluginResourceServlet>(new PortalPluginResourceServlet(),
-            "/portalPluginResource/*");
+            "/portalPluginResource/*", "/favicon.ico");
     bean.setLoadOnStartup(1);
     return bean;
   }
@@ -115,4 +121,10 @@ public class PortalWebConfig {
     return firewall;
   }
 
+  // WebMvcConfigurer
+
+  @Override
+  public void addInterceptors(final InterceptorRegistry registry) {
+    registry.addInterceptor(new MDCHandlerInterceptor());
+  }
 }
