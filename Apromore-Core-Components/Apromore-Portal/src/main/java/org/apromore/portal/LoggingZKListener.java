@@ -22,7 +22,9 @@
 package org.apromore.portal;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.apromore.commons.logging.MDCKey;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.model.UserType;
 import org.slf4j.MDC;
@@ -38,22 +40,25 @@ import org.zkoss.zk.ui.util.SessionCleanup;
 @Slf4j
 public class LoggingZKListener implements ExecutionCleanup, ExecutionInit, SessionCleanup {
 
-    /**
-     * This MDC key will be set with the username of the current user.
-     */
-    public static final String MDC_APROMORE_USER_KEY = "apromore.user";
-
     // Execution listener
 
     @Override
     public void init(final Execution execution, final Execution parent) {
         UserType user = UserSessionManager.getCurrentUser();
-        MDC.put(MDC_APROMORE_USER_KEY, user == null ? "ZK" : user.getUsername());
+        MDC.put(MDCKey.USER, user == null ? "ZK" : user.getUsername());
+        MDC.put(MDCKey.REQUEST, UUID.randomUUID().toString());
+        if (!execution.isAsyncUpdate(null)) {
+            log.debug("ZK HTTP request start: {}", MDC.get(MDCKey.REQUEST));
+        }
     }
 
     @Override
     public void cleanup(final Execution execution, final Execution parent, List<Throwable> errs) {
-        MDC.remove(MDC_APROMORE_USER_KEY);
+        if (!execution.isAsyncUpdate(null)) {
+            log.debug("ZK HTTP request end: {}", MDC.get(MDCKey.REQUEST));
+        }
+        MDC.remove(MDCKey.REQUEST);
+        MDC.remove(MDCKey.USER);
     }
 
     // Session listener
@@ -69,7 +74,7 @@ public class LoggingZKListener implements ExecutionCleanup, ExecutionInit, Sessi
         if (user == null) {
             log.debug("Unauthenticated user session expired");
 
-        } else if (MDC.get(MDC_APROMORE_USER_KEY) != null) {
+        } else if (MDC.get(MDCKey.USER) != null) {
             log.info("User \"{}\" logout", user.getUsername());
 
         } else {
