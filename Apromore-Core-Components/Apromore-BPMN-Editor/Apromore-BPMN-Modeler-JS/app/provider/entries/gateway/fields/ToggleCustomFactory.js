@@ -26,10 +26,12 @@ var toggleSwitch = function(translate, options, defaultParameters) {
     (canBeHidden ? 'data-show="shouldShow"' : '') +
     '>' +
       '<label class="bpp-toggle-switch__switcher">' +
+        '<span>Probability</span>' +
         '<input id="' + escapeHTML(id) + '" ' +
             'type="checkbox" ' +
             'name="' + escapeHTML(options.modelProperty) + '"  title = "' + escapeHTML(label) + '" />' +
         '<span title = "' + escapeHTML(label) + '" class="bpp-toggle-switch__slider"></span>' +
+        '<span>Condition</span>' +
       '</label>' +
       '</div>'));
 

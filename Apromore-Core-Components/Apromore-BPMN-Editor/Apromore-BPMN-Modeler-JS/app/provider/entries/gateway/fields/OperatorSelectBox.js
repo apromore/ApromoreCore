@@ -11,6 +11,13 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options, seq
     label: translate('gateway.expression.operator.label'),
     modelProperty: 'operator',
     selectOptions: createOperatorOptions(),
+    disabled: function (element, node) {
+      if (!sequenceFlow || !sequenceFlow.values || !sequenceFlow.values[0] || !sequenceFlow.values[0].values) {
+        return true
+      }
+      var clauseCount = sequenceFlow.values[0].values.length;
+      return clauseCount <= 1;
+    },
     get: function (_element, _node) {
       let expression = sequenceFlow && sequenceFlow.values && sequenceFlow.values[0];
       return { operator: expression && expression.operator || 'AND' };
