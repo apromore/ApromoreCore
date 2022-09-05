@@ -94,6 +94,15 @@
     color: black;
 }
 
+.djs-palette.two-column.open {
+  width: 100px !important;
+}
+
+.djs-palette-entries {
+  width: 94px !important;
+  margin: auto !important;
+}
+
 .djs-context-pad .entry {
     color: #101010;
     vertical-align: bottom;
