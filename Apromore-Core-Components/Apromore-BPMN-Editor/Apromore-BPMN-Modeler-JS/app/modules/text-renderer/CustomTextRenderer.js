@@ -39,8 +39,8 @@ export default function CustomTextRenderer(config) {
 
     var layoutedDimensions = textUtil.getDimensions(text, {
       box: {
-        width: 90,
-        height: 30,
+        width: bounds.width,
+        height: bounds.height,
         x: bounds.width / 2 + bounds.x,
         y: bounds.height / 2 + bounds.y
       },

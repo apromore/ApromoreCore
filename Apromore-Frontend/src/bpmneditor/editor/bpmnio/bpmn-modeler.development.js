@@ -121985,6 +121985,7 @@ class ResizeTasks_ResizeTasks extends RuleProvider {
         Object(ModelUtil["is"])(shape, 'bpmn:SubProcess') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Gateway') ||
         Object(ModelUtil["is"])(shape, 'bpmn:Event') ||
+        Object(ModelUtil["is"])(shape, 'bpmn:SequenceFlow') ||
         Object(ModelUtil["is"])(shape, 'bpmn:DataObject') ||
         Object(ModelUtil["is"])(shape, 'bpmn:DataObjectReference') ||
         Object(ModelUtil["is"])(shape, 'bpmn:DataStoreReference') ||
@@ -122560,8 +122561,8 @@ function CustomBpmnRenderer(
   function renderExternalLabel(parentGfx, element) {
 
     var box = {
-      width: 90,
-      height: 30,
+      width: element.width,
+      height: element.height,
       x: element.width / 2 + element.x,
       y: element.height / 2 + element.y
     };
@@ -122570,7 +122571,7 @@ function CustomBpmnRenderer(
 
     return renderLabel(parentGfx, getLabel(element), {
       box: box,
-      fitBox: true,
+      fitBox: false,
       style: Object(dist_index_esm["assign"])(
         {},
         textRenderer.getExternalStyle(),
@@ -124046,8 +124047,8 @@ function CustomTextRenderer(config) {
 
     var layoutedDimensions = textUtil.getDimensions(text, {
       box: {
-        width: 90,
-        height: 30,
+        width: bounds.width,
+        height: bounds.height,
         x: bounds.width / 2 + bounds.x,
         y: bounds.height / 2 + bounds.y
       },
@@ -124136,7 +124137,650 @@ CustomTextRenderer.$inject = [
   textRenderer: [ 'type', CustomTextRenderer ],
   pathMap: [ 'type', PathMap ]
 });
+// CONCATENATED MODULE: ./app/modules/label-editing/LabelUtil.js
+
+
+function LabelUtil_getLabelAttr(semantic) {
+  if (
+    Object(ModelUtil["is"])(semantic, 'bpmn:FlowElement') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:Participant') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:Lane') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:SequenceFlow') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:MessageFlow') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:DataInput') ||
+    Object(ModelUtil["is"])(semantic, 'bpmn:DataOutput')
+  ) {
+    return 'name';
+  }
+
+  if (Object(ModelUtil["is"])(semantic, 'bpmn:TextAnnotation')) {
+    return 'text';
+  }
+
+  if (Object(ModelUtil["is"])(semantic, 'bpmn:Group')) {
+    return 'categoryValueRef';
+  }
+}
+
+function LabelUtil_getCategoryValue(semantic) {
+  var categoryValueRef = semantic['categoryValueRef'];
+
+  if (!categoryValueRef) {
+    return '';
+  }
+
+
+  return categoryValueRef.value || '';
+}
+
+function LabelUtil_getLabel(element) {
+  var semantic = element.businessObject,
+      attr = LabelUtil_getLabelAttr(semantic);
+
+  if (attr) {
+
+    if (attr === 'categoryValueRef') {
+
+      return LabelUtil_getCategoryValue(semantic);
+    }
+
+    return semantic[attr] || '';
+  }
+}
+
+
+function LabelUtil_setLabel(element, text, isExternal) {
+  var semantic = element.businessObject,
+      attr = LabelUtil_getLabelAttr(semantic);
+
+  if (attr) {
+
+    if (attr === 'categoryValueRef') {
+      semantic['categoryValueRef'].value = text;
+    } else {
+      semantic[attr] = text;
+    }
+
+  }
+
+  return element;
+}
+// CONCATENATED MODULE: ./app/modules/label-editing/LabelEditingProvider.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function LabelEditingProvider_LabelEditingProvider(
+    eventBus, bpmnFactory, canvas, directEditing,
+    modeling, resizeHandles, textRenderer) {
+
+  this._bpmnFactory = bpmnFactory;
+  this._canvas = canvas;
+  this._modeling = modeling;
+  this._textRenderer = textRenderer;
+
+  directEditing.registerProvider(this);
+
+  // listen to dblclick on non-root elements
+  eventBus.on('element.dblclick', function(event) {
+    activateDirectEdit(event.element, true);
+  });
+
+  // complete on followup canvas operation
+  eventBus.on([
+    'autoPlace.start',
+    'canvas.viewbox.changing',
+    'drag.init',
+    'element.mousedown',
+    'popupMenu.open'
+  ], function(event) {
+
+    if (directEditing.isActive()) {
+      directEditing.complete();
+    }
+  });
+
+  // cancel on command stack changes
+  eventBus.on([ 'commandStack.changed' ], function(e) {
+    if (directEditing.isActive()) {
+      directEditing.cancel();
+    }
+  });
+
+
+  eventBus.on('directEditing.activate', function(event) {
+    resizeHandles.removeResizers();
+  });
+
+  eventBus.on('create.end', 500, function(event) {
+
+    var context = event.context,
+        element = context.shape,
+        canExecute = event.context.canExecute,
+        isTouch = event.isTouch;
+
+    // TODO(nikku): we need to find a way to support the
+    // direct editing on mobile devices; right now this will
+    // break for desworkflowediting on mobile devices
+    // as it breaks the user interaction workflow
+
+    // TODO(nre): we should temporarily focus the edited element
+    // here and release the focused viewport after the direct edit
+    // operation is finished
+    if (isTouch) {
+      return;
+    }
+
+    if (!canExecute) {
+      return;
+    }
+
+    if (context.hints && context.hints.createElementsBehavior === false) {
+      return;
+    }
+
+    activateDirectEdit(element);
+  });
+
+  eventBus.on('autoPlace.end', 500, function(event) {
+    activateDirectEdit(event.shape);
+  });
+
+
+  function activateDirectEdit(element, force) {
+    if (force ||
+        Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:TextAnnotation' ]) ||
+        LabelEditingProvider_isCollapsedSubProcess(element)) {
+
+      directEditing.activate(element);
+    }
+  }
+
+}
+
+LabelEditingProvider_LabelEditingProvider.$inject = [
+  'eventBus',
+  'bpmnFactory',
+  'canvas',
+  'directEditing',
+  'modeling',
+  'resizeHandles',
+  'textRenderer'
+];
+
+
+/**
+ * Activate direct editing for activities and text annotations.
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {Object} an object with properties bounds (position and size), text and options
+ */
+LabelEditingProvider_LabelEditingProvider.prototype.activate = function(element) {
+
+  // text
+  var text = LabelUtil_getLabel(element);
+
+  if (text === undefined) {
+    return;
+  }
+
+  var context = {
+    text: text
+  };
+
+  // bounds
+  var bounds = this.getEditingBBox(element);
+
+  Object(dist_index_esm["assign"])(context, bounds);
+
+  var options = {};
+
+  // tasks
+  if (
+    Object(ModelUtil["isAny"])(element, [
+      'bpmn:Task',
+      'bpmn:Participant',
+      'bpmn:Lane',
+      'bpmn:CallActivity'
+    ]) ||
+    LabelEditingProvider_isCollapsedSubProcess(element)
+  ) {
+    Object(dist_index_esm["assign"])(options, {
+      centerVertically: true
+    });
+  }
+
+  // external labels
+  if (isLabelExternal(element)) {
+    Object(dist_index_esm["assign"])(options, {
+      resizable: true,
+      autoResize: true,
+    });
+  }
+
+  // text annotations
+  if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
+    Object(dist_index_esm["assign"])(options, {
+      resizable: true,
+      autoResize: true
+    });
+  }
+
+  Object(dist_index_esm["assign"])(context, {
+    options: options
+  });
+
+  return context;
+};
+
+
+/**
+ * Get the editing bounding box based on the element's size and position
+ *
+ * @param  {djs.model.Base} element
+ *
+ * @return {Object} an object containing information about position
+ *                  and size (fixed or minimum and/or maximum)
+ */
+LabelEditingProvider_LabelEditingProvider.prototype.getEditingBBox = function(element) {
+  var canvas = this._canvas;
+
+  var target = element.label || element;
+
+  var bbox = canvas.getAbsoluteBBox(target);
+
+  var mid = {
+    x: bbox.x + bbox.width / 2,
+    y: bbox.y + bbox.height / 2
+  };
+
+  // default position
+  var bounds = { x: bbox.x, y: bbox.y };
+
+  var zoom = canvas.zoom();
+
+  var defaultStyle = this._textRenderer.getDefaultStyle(),
+      externalStyle = this._textRenderer.getExternalStyle();
+
+  // take zoom into account
+  var externalFontSize = externalStyle.fontSize * zoom,
+      externalLineHeight = externalStyle.lineHeight,
+      defaultFontSize = defaultStyle.fontSize * zoom,
+      defaultLineHeight = defaultStyle.lineHeight;
+
+  var style = {
+    fontFamily: this._textRenderer.getDefaultStyle().fontFamily,
+    fontWeight: this._textRenderer.getDefaultStyle().fontWeight
+  };
+
+  // adjust for expanded pools AND lanes
+  if (Object(ModelUtil["is"])(element, 'bpmn:Lane') || LabelEditingProvider_isExpandedPool(element)) {
+
+    Object(dist_index_esm["assign"])(bounds, {
+      width: bbox.height,
+      height: 30 * zoom,
+      x: bbox.x - bbox.height / 2 + (15 * zoom),
+      y: mid.y - (30 * zoom) / 2
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      fontSize: defaultFontSize + 'px',
+      lineHeight: defaultLineHeight,
+      paddingTop: (7 * zoom) + 'px',
+      paddingBottom: (7 * zoom) + 'px',
+      paddingLeft: (5 * zoom) + 'px',
+      paddingRight: (5 * zoom) + 'px',
+      transform: 'rotate(-90deg)'
+    });
+  }
+
+
+  // internal labels for tasks and collapsed call activities,
+  // sub processes and participants
+  if (Object(ModelUtil["isAny"])(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+      LabelEditingProvider_isCollapsedPool(element) ||
+      LabelEditingProvider_isCollapsedSubProcess(element)) {
+
+    Object(dist_index_esm["assign"])(bounds, {
+      width: bbox.width,
+      height: bbox.height
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      fontSize: defaultFontSize + 'px',
+      lineHeight: defaultLineHeight,
+      paddingTop: (7 * zoom) + 'px',
+      paddingBottom: (7 * zoom) + 'px',
+      paddingLeft: (5 * zoom) + 'px',
+      paddingRight: (5 * zoom) + 'px'
+    });
+  }
+
+
+  // internal labels for expanded sub processes
+  if (LabelEditingProvider_isExpandedSubProcess(element)) {
+    Object(dist_index_esm["assign"])(bounds, {
+      width: bbox.width,
+      x: bbox.x
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      fontSize: defaultFontSize + 'px',
+      lineHeight: defaultLineHeight,
+      paddingTop: (7 * zoom) + 'px',
+      paddingBottom: (7 * zoom) + 'px',
+      paddingLeft: (5 * zoom) + 'px',
+      paddingRight: (5 * zoom) + 'px'
+    });
+  }
+
+  var width = Math.max(90 * zoom, bbox.width),
+      paddingTop = 7 * zoom,
+      paddingBottom = 4 * zoom;
+
+  // external labels for events, data elements, gateways, groups and connections
+  if (target.labelTarget) {
+    Object(dist_index_esm["assign"])(bounds, {
+      width: width,
+      height: bbox.height + paddingTop + paddingBottom,
+      x: mid.x - width / 2,
+      y: bbox.y - paddingTop
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      fontSize: externalFontSize + 'px',
+      lineHeight: externalLineHeight,
+      paddingTop: paddingTop + 'px',
+      paddingBottom: paddingBottom + 'px'
+    });
+  }
+
+  // external label not yet created
+  if (isLabelExternal(target)
+      && !hasExternalLabel(target)
+      && !isLabel(target)) {
+
+    var externalLabelMid = getExternalLabelMid(element);
+
+    var absoluteBBox = canvas.getAbsoluteBBox({
+      x: externalLabelMid.x,
+      y: externalLabelMid.y,
+      width: 0,
+      height: 0
+    });
+
+    var height = externalFontSize + paddingTop + paddingBottom;
+
+    Object(dist_index_esm["assign"])(bounds, {
+      width: width,
+      height: height,
+      x: absoluteBBox.x - width / 2,
+      y: absoluteBBox.y - height / 2
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      fontSize: externalFontSize + 'px',
+      lineHeight: externalLineHeight,
+      paddingTop: paddingTop + 'px',
+      paddingBottom: paddingBottom + 'px'
+    });
+  }
+
+  // text annotations
+  if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
+    Object(dist_index_esm["assign"])(bounds, {
+      width: bbox.width,
+      height: bbox.height,
+      minWidth: 30 * zoom,
+      minHeight: 10 * zoom
+    });
+
+    Object(dist_index_esm["assign"])(style, {
+      textAlign: 'left',
+      paddingTop: (5 * zoom) + 'px',
+      paddingBottom: (7 * zoom) + 'px',
+      paddingLeft: (7 * zoom) + 'px',
+      paddingRight: (5 * zoom) + 'px',
+      fontSize: defaultFontSize + 'px',
+      lineHeight: defaultLineHeight
+    });
+  }
+
+  return { bounds: bounds, style: style };
+};
+
+
+LabelEditingProvider_LabelEditingProvider.prototype.update = function(
+    element, newLabel,
+    activeContextText, bounds) {
+
+  var newBounds,
+      bbox;
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
+
+    bbox = this._canvas.getAbsoluteBBox(element);
+
+    newBounds = {
+      x: element.x,
+      y: element.y,
+      width: element.width / bbox.width * bounds.width,
+      height: element.height / bbox.height * bounds.height
+    };
+  }
+
+  if (Object(ModelUtil["is"])(element, 'bpmn:Group')) {
+
+    var businessObject = Object(ModelUtil["getBusinessObject"])(element);
+
+    // initialize categoryValue if not existing
+    if (!businessObject.categoryValueRef) {
+
+      var rootElement = this._canvas.getRootElement(),
+          definitions = Object(ModelUtil["getBusinessObject"])(rootElement).$parent;
+
+      var categoryValue = createCategoryValue(definitions, this._bpmnFactory);
+
+      Object(ModelUtil["getBusinessObject"])(element).categoryValueRef = categoryValue;
+    }
+
+  }
+
+  if (LabelEditingProvider_isEmptyText(newLabel)) {
+    newLabel = null;
+  }
+
+  this._modeling.updateLabel(element, newLabel, newBounds);
+};
+
+
+
+// helpers //////////////////////
+
+function LabelEditingProvider_isCollapsedSubProcess(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && !isExpanded(element);
+}
+
+function LabelEditingProvider_isExpandedSubProcess(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:SubProcess') && isExpanded(element);
+}
+
+function LabelEditingProvider_isCollapsedPool(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:Participant') && !isExpanded(element);
+}
+
+function LabelEditingProvider_isExpandedPool(element) {
+  return Object(ModelUtil["is"])(element, 'bpmn:Participant') && isExpanded(element);
+}
+
+function LabelEditingProvider_isEmptyText(label) {
+  return !label || !label.trim();
+}
+// CONCATENATED MODULE: ./app/modules/label-editing/LabelEditingPreview.js
+
+
+
+
+
+
+var LabelEditingPreview_MARKER_HIDDEN = 'djs-element-hidden',
+    LabelEditingPreview_MARKER_LABEL_HIDDEN = 'djs-label-hidden';
+
+
+function LabelEditingPreview_LabelEditingPreview(
+    eventBus, canvas, elementRegistry,
+    pathMap) {
+
+  var self = this;
+
+  var defaultLayer = canvas.getDefaultLayer();
+
+  var element, absoluteElementBBox, gfx;
+
+  eventBus.on('directEditing.activate', function(context) {
+    var activeProvider = context.active;
+
+    element = activeProvider.element.label || activeProvider.element;
+
+    // text annotation
+    if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
+      absoluteElementBBox = canvas.getAbsoluteBBox(element);
+
+      gfx = index_esm_create('g');
+
+      var textPathData = pathMap.getScaledPath('TEXT_ANNOTATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: element.height,
+        position: {
+          mx: 0.0,
+          my: 0.0
+        }
+      });
+
+      var path = self.path = index_esm_create('path');
+
+      index_esm_attr(path, {
+        d: textPathData,
+        strokeWidth: 2,
+        stroke: label_editing_LabelEditingPreview_getStrokeColor(element)
+      });
+
+      index_esm_append(gfx, path);
+
+      index_esm_append(defaultLayer, gfx);
+
+      SvgTransformUtil_translate(gfx, element.x, element.y);
+    }
+
+    if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation') ||
+        element.labelTarget) {
+      canvas.addMarker(element, LabelEditingPreview_MARKER_HIDDEN);
+    } else if (Object(ModelUtil["is"])(element, 'bpmn:Task') ||
+               Object(ModelUtil["is"])(element, 'bpmn:CallActivity') ||
+               Object(ModelUtil["is"])(element, 'bpmn:SubProcess') ||
+               Object(ModelUtil["is"])(element, 'bpmn:Participant')) {
+      canvas.addMarker(element, LabelEditingPreview_MARKER_LABEL_HIDDEN);
+    }
+  });
+
+  eventBus.on('directEditing.resize', function(context) {
+
+    // text annotation
+    if (Object(ModelUtil["is"])(element, 'bpmn:TextAnnotation')) {
+      var height = context.height,
+          dy = context.dy;
+
+      var newElementHeight = Math.max(element.height / absoluteElementBBox.height * (height + dy), 0);
+
+      var textPathData = pathMap.getScaledPath('TEXT_ANNOTATION', {
+        xScaleFactor: 1,
+        yScaleFactor: 1,
+        containerWidth: element.width,
+        containerHeight: newElementHeight,
+        position: {
+          mx: 0.0,
+          my: 0.0
+        }
+      });
+
+      index_esm_attr(self.path, {
+        d: textPathData
+      });
+    }
+  });
+
+  eventBus.on([ 'directEditing.complete', 'directEditing.cancel' ], function(context) {
+    var activeProvider = context.active;
+
+    if (activeProvider) {
+      canvas.removeMarker(activeProvider.element.label || activeProvider.element, LabelEditingPreview_MARKER_HIDDEN);
+      canvas.removeMarker(element, LabelEditingPreview_MARKER_LABEL_HIDDEN);
+    }
+
+    element = undefined;
+    absoluteElementBBox = undefined;
+
+    if (gfx) {
+      index_esm_remove(gfx);
+
+      gfx = undefined;
+    }
+  });
+}
+
+LabelEditingPreview_LabelEditingPreview.$inject = [
+  'eventBus',
+  'canvas',
+  'elementRegistry',
+  'pathMap'
+];
+
+
+// helpers ///////////////////
+
+function label_editing_LabelEditingPreview_getStrokeColor(element, defaultColor) {
+  var bo = Object(ModelUtil["getBusinessObject"])(element);
+
+  return bo.di.get('stroke') || defaultColor || 'black';
+}
+// CONCATENATED MODULE: ./app/modules/label-editing/index.js
+
+
+
+
+
+
+
+
+/* harmony default export */ var modules_label_editing = ({
+  __depends__: [
+    change_support,
+    features_resize,
+    diagram_js_direct_editing
+  ],
+  __init__: [
+    'labelEditingProvider',
+    'labelEditingPreview'
+  ],
+  labelEditingProvider: [ 'type', LabelEditingProvider_LabelEditingProvider ],
+  labelEditingPreview: [ 'type', LabelEditingPreview_LabelEditingPreview ]
+});
+
 // CONCATENATED MODULE: ./app/CustomModeler.js
+
 
 
 
@@ -124238,6 +124882,7 @@ function CustomModeler(options) {
   options.additionalModules.push(modules_comments);
   options.additionalModules.push(resize_tasks);
   options.additionalModules.push(link_subprocess);
+  options.additionalModules.push(modules_label_editing);
   options.additionalModules.push(bpmn_renderer);
   Modeler.call(this, options);
 }
@@ -124259,6 +124904,174 @@ CustomModeler.prototype._moddleExtensions = {
   camunda: camunda,
   ap: ap
 };
+
+//LabelEditingProvider.prototype.getEditingBBox = function(element) {
+//  var canvas = this._canvas;
+//
+//  var target = element.label || element;
+//
+//  var bbox = canvas.getAbsoluteBBox(target);
+//
+//  var mid = {
+//    x: bbox.x + bbox.width / 2,
+//    y: bbox.y + bbox.height / 2
+//  };
+//
+//  // default position
+//  var bounds = { x: bbox.x, y: bbox.y };
+//
+//  var zoom = canvas.zoom();
+//
+//  var defaultStyle = this._textRenderer.getDefaultStyle(),
+//      externalStyle = this._textRenderer.getExternalStyle();
+//
+//  // take zoom into account
+//  var externalFontSize = externalStyle.fontSize * zoom,
+//      externalLineHeight = externalStyle.lineHeight,
+//      defaultFontSize = defaultStyle.fontSize * zoom,
+//      defaultLineHeight = defaultStyle.lineHeight;
+//
+//  var style = {
+//    fontFamily: this._textRenderer.getDefaultStyle().fontFamily,
+//    fontWeight: this._textRenderer.getDefaultStyle().fontWeight
+//  };
+//
+//  // adjust for expanded pools AND lanes
+//  if (is(element, 'bpmn:Lane') || isExpandedPool(element)) {
+//
+//    assign(bounds, {
+//      width: bbox.height,
+//      height: 30 * zoom,
+//      x: bbox.x - bbox.height / 2 + (15 * zoom),
+//      y: mid.y - (30 * zoom) / 2
+//    });
+//
+//    assign(style, {
+//      fontSize: defaultFontSize + 'px',
+//      lineHeight: defaultLineHeight,
+//      paddingTop: (7 * zoom) + 'px',
+//      paddingBottom: (7 * zoom) + 'px',
+//      paddingLeft: (5 * zoom) + 'px',
+//      paddingRight: (5 * zoom) + 'px',
+//      transform: 'rotate(-90deg)'
+//    });
+//  }
+//
+//
+//  // internal labels for tasks and collapsed call activities,
+//  // sub processes and participants
+//  if (isAny(element, [ 'bpmn:Task', 'bpmn:CallActivity']) ||
+//      isCollapsedPool(element) ||
+//      isCollapsedSubProcess(element)) {
+//
+//    assign(bounds, {
+//      width: bbox.width,
+//      height: bbox.height
+//    });
+//
+//    assign(style, {
+//      fontSize: defaultFontSize + 'px',
+//      lineHeight: defaultLineHeight,
+//      paddingTop: (7 * zoom) + 'px',
+//      paddingBottom: (7 * zoom) + 'px',
+//      paddingLeft: (5 * zoom) + 'px',
+//      paddingRight: (5 * zoom) + 'px'
+//    });
+//  }
+//
+//
+//  // internal labels for expanded sub processes
+//  if (isExpandedSubProcess(element)) {
+//    assign(bounds, {
+//      width: bbox.width,
+//      x: bbox.x
+//    });
+//
+//    assign(style, {
+//      fontSize: defaultFontSize + 'px',
+//      lineHeight: defaultLineHeight,
+//      paddingTop: (7 * zoom) + 'px',
+//      paddingBottom: (7 * zoom) + 'px',
+//      paddingLeft: (5 * zoom) + 'px',
+//      paddingRight: (5 * zoom) + 'px'
+//    });
+//  }
+//
+//  var width = 90 * zoom,
+//      paddingTop = 7 * zoom,
+//      paddingBottom = 4 * zoom;
+//
+//  // external labels for events, data elements, gateways, groups and connections
+//  if (target.labelTarget) {
+//    assign(bounds, {
+//      width: width,
+//      height: bbox.height + paddingTop + paddingBottom,
+//      x: mid.x - width / 2,
+//      y: bbox.y - paddingTop
+//    });
+//
+//    assign(style, {
+//      fontSize: externalFontSize + 'px',
+//      lineHeight: externalLineHeight,
+//      paddingTop: paddingTop + 'px',
+//      paddingBottom: paddingBottom + 'px'
+//    });
+//  }
+//
+//  // external label not yet created
+//  if (isLabelExternal(target)
+//      && !hasExternalLabel(target)
+//      && !isLabel(target)) {
+//
+//    var externalLabelMid = getExternalLabelMid(element);
+//
+//    var absoluteBBox = canvas.getAbsoluteBBox({
+//      x: externalLabelMid.x,
+//      y: externalLabelMid.y,
+//      width: 0,
+//      height: 0
+//    });
+//
+//    var height = externalFontSize + paddingTop + paddingBottom;
+//
+//    assign(bounds, {
+//      width: width,
+//      height: height,
+//      x: absoluteBBox.x - width / 2,
+//      y: absoluteBBox.y - height / 2
+//    });
+//
+//    assign(style, {
+//      fontSize: externalFontSize + 'px',
+//      lineHeight: externalLineHeight,
+//      paddingTop: paddingTop + 'px',
+//      paddingBottom: paddingBottom + 'px'
+//    });
+//  }
+//
+//  // text annotations
+//  if (is(element, 'bpmn:TextAnnotation')) {
+//    assign(bounds, {
+//      width: bbox.width,
+//      height: bbox.height,
+//      minWidth: 30 * zoom,
+//      minHeight: 10 * zoom
+//    });
+//
+//    assign(style, {
+//      textAlign: 'left',
+//      paddingTop: (5 * zoom) + 'px',
+//      paddingBottom: (7 * zoom) + 'px',
+//      paddingLeft: (7 * zoom) + 'px',
+//      paddingRight: (5 * zoom) + 'px',
+//      fontSize: defaultFontSize + 'px',
+//      lineHeight: defaultLineHeight
+//    });
+//  }
+//
+//  return { bounds: bounds, style: style };
+//};
+
 
 /***/ }),
 /* 425 */

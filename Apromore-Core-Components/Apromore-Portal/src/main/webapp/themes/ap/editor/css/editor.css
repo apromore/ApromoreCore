@@ -92,6 +92,10 @@
 .djs-popup, .djs-palette,
 .djs-direct-editing-content {
     color: black;
+    font-family: var(--ap-font-base) !important;
+    padding: 5px 0 !important;
+    margin-left: -5px !important;
+    margin-right: -5px !important;
 }
 
 .djs-context-pad .entry {
