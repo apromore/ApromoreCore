@@ -29,6 +29,7 @@
       color: #AAAAAA !important;
       background: #F0F0F0 !important;
       cursor: default !important;
+      pointer-events: none !important;
     }
   </style>
   <vbox hflex="1" vflex="1" spacing="0">
