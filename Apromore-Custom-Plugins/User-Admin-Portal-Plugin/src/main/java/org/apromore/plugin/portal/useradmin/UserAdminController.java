@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Group;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
@@ -198,6 +199,8 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
         (SecurityService) Executions.getCurrent().getArg().get("securityService");
     private WorkspaceService workspaceService =
         (WorkspaceService) Executions.getCurrent().getArg().get("workspaceService");
+    private ConfigBean configBean =
+        (ConfigBean) Executions.getCurrent().getArg().get("configBean");
 
     @Wire("#tabbox")
     Tabbox tabbox;
@@ -1691,6 +1694,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Map<String, Object> arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
+            arg.put("configBean", configBean);
             arg.put("mode", "CREATE");
             Window window = (Window) Executions.getCurrent()
                 .createComponents(getPageDefinition(ROLE_PERMISSION_WINDOW), getSelf(), arg);
@@ -1724,6 +1728,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Map<String, Object> arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
+            arg.put("configBean", configBean);
             arg.put("mode", "EDIT");
             arg.put("role", selectedRole);
             Window window = (Window) Executions.getCurrent()
@@ -1747,6 +1752,7 @@ public class UserAdminController extends SelectorComposer<Window> implements Lab
             Map<String, Object> arg = new HashMap<>();
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
+            arg.put("configBean", configBean);
             arg.put("mode", "VIEW");
             arg.put("role", selectedRole);
             arg.put("roleLabel", getDisplayRoleName(selectedRole.getName()));
