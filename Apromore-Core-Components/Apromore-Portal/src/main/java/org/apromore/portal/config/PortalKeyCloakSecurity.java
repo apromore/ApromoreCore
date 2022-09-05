@@ -14,7 +14,6 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.ApromoreKeycloakAuthenticationProvider;
 import org.apromore.portal.ApromoreKeycloakAuthenticationSuccessHandler;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
@@ -34,7 +33,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
@@ -115,8 +113,12 @@ public class PortalKeyCloakSecurity extends KeycloakWebSecurityConfigurerAdapter
     http.headers()
         .contentSecurityPolicy(contentSecurityPolicy).and()
         .frameOptions().sameOrigin()
-        .referrerPolicy(ReferrerPolicy.NO_REFERRER);
-    http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
+        .referrerPolicy(ReferrerPolicy.NO_REFERRER).and()
+        .httpStrictTransportSecurity()
+          .includeSubDomains(true)
+          .maxAgeInSeconds(31536000)
+          .preload(true);
+
     http.csrf().ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/bpmneditor/editor/*")
             .ignoringAntMatchers(Constants.API_WHITELIST)
             .and()
