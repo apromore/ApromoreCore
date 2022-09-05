@@ -15,7 +15,6 @@ package org.apromore.portal.config;
 
 import org.apromore.portal.AuthenticationHandler;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.servlet.filter.SameSiteFilter;
 import org.apromore.security.impl.UsernamePasswordAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @Configuration
@@ -47,11 +45,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-
     auth.authenticationProvider(usernamePasswordAuthenticationProvider);
-
   }
-
 
   @Override
   public void configure(WebSecurity web) throws Exception {
@@ -61,16 +56,18 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/**/js/*").antMatchers("/robots.txt");
   }
 
-
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
 
-
-    http.addFilterAfter(new SameSiteFilter(), BasicAuthenticationFilter.class);
     http.headers()
+        .httpStrictTransportSecurity()
+          .includeSubDomains(true)
+          .maxAgeInSeconds(31536000)
+          .preload(true).and()
         .contentSecurityPolicy(contentSecurityPolicy).and()
-        .frameOptions().sameOrigin()
-        .referrerPolicy(ReferrerPolicy.NO_REFERRER);
+        .frameOptions()
+          .sameOrigin()
+          .referrerPolicy(ReferrerPolicy.NO_REFERRER);
 
     http.csrf()
             .ignoringAntMatchers("/zkau", "/rest", "/rest/*", "/rest/**/*", "/zkau/*", "/login", "/bpmneditor/editor/*")
