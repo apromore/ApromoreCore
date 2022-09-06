@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javax.inject.Inject;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
@@ -56,6 +57,8 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
     private SecurityService securityService;
     @Inject
     private WorkspaceService workspaceService;
+    @Inject
+    private ConfigBean configBean;
 
     public ResourceBundle getLabels() {
         Locale locale = (Locale) Sessions.getCurrent().getAttribute(Attributes.PREFERRED_LOCALE);
@@ -87,6 +90,7 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             arg.put("portalContext", portalContext);
             arg.put("securityService", securityService);
             arg.put("workspaceService", workspaceService);
+            arg.put("configBean", configBean);
             Window window = (Window) Executions.getCurrent()
                 .createComponents(getPageDefination("static/zul/index.zul"), null, arg);
             window.doModal();

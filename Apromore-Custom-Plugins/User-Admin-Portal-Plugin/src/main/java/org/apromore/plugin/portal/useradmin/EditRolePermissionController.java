@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apromore.commons.config.ConfigBean;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.plugin.portal.PortalContext;
@@ -48,6 +49,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -66,6 +68,8 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         (PortalContext) Executions.getCurrent().getArg().get("portalContext");
     private final SecurityService securityService =
         (SecurityService) Executions.getCurrent().getArg().get("securityService");
+    private final ConfigBean configBean =
+        (ConfigBean) Executions.getCurrent().getArg().get("configBean");
     private final String mode = (String) Executions.getCurrent().getArg().get("mode");
 
     private final EnumMap<PermissionType, Checkbox> permissionToggles = new EnumMap<>(PermissionType.class);
@@ -143,6 +147,12 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         updatePermissionToggleMap();
         populateFormWithRoleData();
         displayFormInMode(win);
+
+        Div monitorSection = (Div) win.getFellow("rolePermissionMonitorSection");
+        monitorSection.setVisible(configBean.isEnablePpm());
+
+        Div etlSection = (Div) win.getFellow("rolePermissionEtlSection");
+        etlSection.setVisible(configBean.isEnableEtl());
 
         permissionToggles.values().stream().distinct()
             .forEach(c -> c.addEventListener(Events.ON_CHECK, e -> updateButtons()));
