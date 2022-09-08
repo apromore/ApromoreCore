@@ -495,8 +495,8 @@ export default function CustomBpmnRenderer(
   function renderExternalLabel(parentGfx, element) {
 
     var box = {
-      width: 90,
-      height: 30,
+      width: element.width,
+      height: element.height,
       x: element.width / 2 + element.x,
       y: element.height / 2 + element.y
     };
@@ -505,7 +505,7 @@ export default function CustomBpmnRenderer(
 
     return renderLabel(parentGfx, getLabel(element), {
       box: box,
-      fitBox: true,
+      fitBox: false,
       style: assign(
         {},
         textRenderer.getExternalStyle(),

@@ -16,6 +16,7 @@ export default class ResizeTasks extends RuleProvider {
         is(shape, 'bpmn:SubProcess') ||
         is(shape, 'bpmn:Gateway') ||
         is(shape, 'bpmn:Event') ||
+        is(shape, 'bpmn:SequenceFlow') ||
         is(shape, 'bpmn:DataObject') ||
         is(shape, 'bpmn:DataObjectReference') ||
         is(shape, 'bpmn:DataStoreReference') ||
