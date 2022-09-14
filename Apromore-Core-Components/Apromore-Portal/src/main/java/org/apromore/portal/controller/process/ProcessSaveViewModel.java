@@ -71,6 +71,7 @@ import org.zkoss.zul.Window;
 @Setter
 public class ProcessSaveViewModel {
 
+    public static final String EVENT_COMPLETED = "EVENT_COMPLETED";
     private static final String UNTITLED_PROCESS_NAME = "Untitled";
     private static final int MAX_NAME_LENGTH = 100;
     private static final String NEW_NAME_SUFFIX = "_new";
@@ -80,6 +81,8 @@ public class ProcessSaveViewModel {
         EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
     private EventQueue<Event> qeBPMNEditor =
         EventQueues.lookup(Constants.EVENT_QUEUE_BPMN_EDITOR, EventQueues.DESKTOP, true);
+    private EventQueue<Event> qeProcessSaver =
+        EventQueues.lookup(Constants.EVENT_QUEUE_PROCESS_SAVER, EventQueues.DESKTOP, true);
 
     MainController mainController;
 
@@ -239,6 +242,7 @@ public class ProcessSaveViewModel {
     @Command
     public void cancelCmd() {
         window.detach();
+        completed();
     }
 
     @Command
@@ -248,6 +252,12 @@ public class ProcessSaveViewModel {
         } else {
             export();
         }
+        window.detach();
+        completed();
+    }
+
+    private void completed() {
+        qeProcessSaver.publish(new Event(ProcessSaveViewModel.EVENT_COMPLETED, null));
     }
 
     private Boolean validateFields() {
@@ -354,8 +364,10 @@ public class ProcessSaveViewModel {
 
         // Update process data with the new process to keep a consistent state
         updateSessionInfo(versionNumber, versionNumber, newVersion.getLastUpdateDate());
-        session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
-        session.getVersion().setVersionNumber(versionNumber);
+        if (session != null) {
+            session.getVersion().setLastUpdate(newVersion.getLastUpdateDate());
+            session.getVersion().setVersionNumber(versionNumber);
+        }
         epilog();
     }
 
@@ -393,8 +405,10 @@ public class ProcessSaveViewModel {
             editSession.setProcessId(processId);
             editSession.setProcessName(processName);
             updateSessionInfo(versionNumber, versionNumber, versionSummaryType.getLastUpdate());
-            session.setProcess(processSummaryType);
-            session.setVersion(versionSummaryType);
+            if (session != null) {
+                session.setProcess(processSummaryType);
+                session.setVersion(versionSummaryType);
+            }
             epilog();
         } catch (Exception e) {
             Messagebox.show(Labels.getLabel(UNABLE_TO_SAVE_MESSAGE), null, Messagebox.OK,
