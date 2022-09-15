@@ -22,7 +22,7 @@
         mode="modal"
         viewModel="@id('vm_processSaveWindow') @init('org.apromore.portal.controller.process.ProcessSaveViewModel')"
         title="@bind(vm_processSaveWindow.windowTitle)"
-        onOK="@command('save')"
+        onOK="@command('saveCmd')"
 >
     <style src="~./macros/process/styles.css"/>
     <vbox vflex="1">

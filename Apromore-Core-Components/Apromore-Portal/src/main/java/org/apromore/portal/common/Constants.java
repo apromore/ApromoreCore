@@ -34,6 +34,7 @@ public abstract class Constants {
     public static final String EVENT_QUEUE_SESSION_ATTRIBUTES = "SESSION_ATTRIBUTES";
     public static final String EVENT_MESSAGE_SAVE = "SaveEvent";
     public static final String EVENT_QUEUE_BPMN_EDITOR = "BPMN EDITOR";
+    public static final String EVENT_QUEUE_PROCESS_SAVER = "EVENT_QUEUE_PROCESS_SAVER";
 
     // colors and style used in the table view
     // #E5E5E5 light gray
