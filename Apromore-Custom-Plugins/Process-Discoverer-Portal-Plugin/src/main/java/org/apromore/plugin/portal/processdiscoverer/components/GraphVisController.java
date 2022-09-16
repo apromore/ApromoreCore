@@ -286,7 +286,9 @@ public class GraphVisController extends VisualController {
      * @param visualizedText
      */
     public void displayTraceDiagram(String visualizedText) {
-        String javascript = "Ap.pd.loadTrace('" + visualizedText + "');";
+        String javascript = "Ap.pd.loadTrace('"
+            + visualizedText.replaceAll("'", "\\\\'")
+            + "');";
         Clients.evalJavaScript(javascript);
     }
     
