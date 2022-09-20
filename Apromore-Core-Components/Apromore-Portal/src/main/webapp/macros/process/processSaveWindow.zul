@@ -36,7 +36,7 @@
                     <label value="${labels.common_modelName_text}"/>
                     <textbox id="processName" width="100%"
                              constraint="${labels.common_nameConstraint_text}"
-                             value="@bind(vm_processSaveWindow.processName)"
+                             value="@bind(vm_processSaveWindow.processName) @save(vm_processSaveWindow.processName, before='saveCmd')"
                              submitByEnter="true"/>
                 </row>
                 <row>
