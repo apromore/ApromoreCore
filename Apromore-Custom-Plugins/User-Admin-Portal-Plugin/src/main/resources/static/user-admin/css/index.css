@@ -126,7 +126,6 @@
 .ap-permission-switch {
     display: inline-flex;
     padding: 5px 15px;
-    flex-direction: row-reverse;
 }
 
 .ap-permission-switch .z-label {
@@ -138,6 +137,7 @@
 
 .ap-permission-switch .z-checkbox-switch {
     height: 20px;
+    margin-right: 4px;
 }
 
 .z-button[disabled] {

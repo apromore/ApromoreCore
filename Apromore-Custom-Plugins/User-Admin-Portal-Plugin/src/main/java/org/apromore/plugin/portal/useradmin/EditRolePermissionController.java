@@ -99,6 +99,8 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     @Wire
     private Checkbox rolePermissionCalendar;
     @Wire
+    private Checkbox rolePermissionSaveFilteredLog;
+    @Wire
     private Checkbox rolePermissionLogAnim;
     @Wire
     private Checkbox rolePermissionDashView;
@@ -118,6 +120,14 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
     private Checkbox rolePermissionEtlPipelineCreate;
     @Wire
     private Checkbox rolePermissionEtlPipelineManage;
+    @Wire
+    private Checkbox rolePermissionDownloadLogs;
+    @Wire
+    private Checkbox rolePermissionUploadLogs;
+    @Wire
+    private Checkbox rolePermissionDownloadModels;
+    @Wire
+    private Checkbox rolePermissionUploadModels;
     @Wire
     private Checkbox rolePermissionManageAccessRights;
     @Wire
@@ -338,6 +348,7 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         permissionToggles.put(PermissionType.FILTER_VIEW, rolePermissionFilterView);
         permissionToggles.put(PermissionType.FILTER_EDIT, rolePermissionFilterFull);
         permissionToggles.put(PermissionType.CALENDAR, rolePermissionCalendar);
+        permissionToggles.put(PermissionType.LOG_FILTERED_SAVE, rolePermissionSaveFilteredLog);
         permissionToggles.put(PermissionType.ANIMATE, rolePermissionLogAnim);
         permissionToggles.put(PermissionType.DASH_VIEW, rolePermissionDashView);
         permissionToggles.put(PermissionType.DASH_EDIT, rolePermissionDashFull);
@@ -348,6 +359,10 @@ public class EditRolePermissionController extends SelectorComposer<Window> imple
         permissionToggles.put(PermissionType.SEARCH_MODELS, rolePermissionModelSimSearch);
         permissionToggles.put(PermissionType.PIPELINE_CREATE, rolePermissionEtlPipelineCreate);
         permissionToggles.put(PermissionType.PIPELINE_MANAGE, rolePermissionEtlPipelineManage);
+        permissionToggles.put(PermissionType.LOG_DOWNLOAD, rolePermissionDownloadLogs);
+        permissionToggles.put(PermissionType.LOG_UPLOAD, rolePermissionUploadLogs);
+        permissionToggles.put(PermissionType.MODEL_DOWNLOAD, rolePermissionDownloadModels);
+        permissionToggles.put(PermissionType.MODEL_UPLOAD, rolePermissionUploadModels);
         permissionToggles.put(PermissionType.ACCESS_RIGHTS_MANAGE, rolePermissionManageAccessRights);
         permissionToggles.put(PermissionType.USERS_VIEW, rolePermissionManageUsers);
         permissionToggles.put(PermissionType.USERS_EDIT, rolePermissionManageUsers);

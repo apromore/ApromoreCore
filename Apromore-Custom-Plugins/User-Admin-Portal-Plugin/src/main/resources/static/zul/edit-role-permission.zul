@@ -70,6 +70,10 @@
                     <checkbox mold="switch" id="rolePermissionCalendar"/>
                     <label value="${$composer.labels.permission_discover_calendars}"/>
                 </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionSaveFilteredLog"/>
+                    <label value="${$composer.labels.permission_discover_save_filtered_logs}"/>
+                </div>
             </div>
         </div>
         <div>
@@ -137,6 +141,27 @@
                 <div sclass="ap-permission-switch">
                     <checkbox mold="switch" id="rolePermissionEtlPipelineManage"/>
                     <label value="${$composer.labels.permission_etl_pipeline_manage}"/>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label sclass="ap-permission-group-title" value="${$composer.labels.permission_data_access_title}"/>
+            <div sclass="ap-permission-group-box">
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionDownloadLogs"/>
+                    <label value="${$composer.labels.permission_data_download_logs}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionUploadLogs"/>
+                    <label value="${$composer.labels.permission_data_upload_logs}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionDownloadModels"/>
+                    <label value="${$composer.labels.permission_data_download_models}"/>
+                </div>
+                <div sclass="ap-permission-switch">
+                    <checkbox mold="switch" id="rolePermissionUploadModels"/>
+                    <label value="${$composer.labels.permission_data_upload_models}"/>
                 </div>
             </div>
         </div>
