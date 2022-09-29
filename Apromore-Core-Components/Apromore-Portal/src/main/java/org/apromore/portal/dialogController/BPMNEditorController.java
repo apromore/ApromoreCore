@@ -263,6 +263,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
       param.put("availablePublishModelPlugin", processPublishPlugin != null
           && processPublishPlugin.getAvailability() == PortalPlugin.Availability.AVAILABLE);
       param.put("isPublished", isProcessPublished());
+      param.put("enableModelDownload", currentUserType.hasAnyPermission(PermissionType.MODEL_DOWNLOAD));
       Executions.getCurrent().pushArg(param);
 
       populateLinkedProcessesList();
@@ -745,6 +746,7 @@ public class BPMNEditorController extends BaseController implements Composer<Com
     param.put("isNewProcess", false);
     //View mode doesn't use the simulator so this is a dummy value
     param.put("qbpProcessMaxLimit", 25000);
+    param.put("enableModelDownload", false);
     Executions.getCurrent().pushArg(param);
   }
 

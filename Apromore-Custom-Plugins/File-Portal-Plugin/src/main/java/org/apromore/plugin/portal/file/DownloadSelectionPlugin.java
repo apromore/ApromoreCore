@@ -61,8 +61,10 @@ import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.ExportFormatResultType;
 import org.apromore.portal.model.ExportLogResultType;
 import org.apromore.portal.model.LogSummaryType;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.model.ProcessSummaryType;
 import org.apromore.portal.model.SummaryType;
+import org.apromore.portal.model.UserType;
 import org.apromore.portal.model.VersionSummaryType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -133,13 +135,41 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
     return "download.svg";
   }
 
+    @Override
+    public Availability getAvailability() {
+        return UserSessionManager.getCurrentUser()
+            .hasAnyPermission(PermissionType.LOG_DOWNLOAD, PermissionType.MODEL_DOWNLOAD)
+            ? Availability.AVAILABLE : Availability.UNAVAILABLE;
+    }
+
   @Override
   public void execute(PortalContext portalContext) {
       try {
           MainController mainController = (MainController) portalContext.getMainController();
+          UserType currentUser = portalContext.getCurrentUser();
+          boolean logDownloadPermission = currentUser.hasAnyPermission(PermissionType.LOG_DOWNLOAD);
+          boolean processDownloadPermission = currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD);
+          boolean logsSelected = mainController.getSelectedElements().stream()
+              .anyMatch(LogSummaryType.class::isInstance);
+          boolean processesSelected = mainController.getSelectedElements().stream()
+              .anyMatch(ProcessSummaryType.class::isInstance);
+
           if (mainController.getSelectedElements().size() == 0) {
               Notification.info(getLabel("selectMinimumOneFile"));
-          } else if (mainController.getSelectedElements().size() == 1) {
+              return;
+          } else if (logsSelected && !processesSelected && !logDownloadPermission) {
+              Notification.error(getLabel("unableDownloadMissingLogPermission"));
+              return;
+          } else if (!logsSelected && processesSelected && !processDownloadPermission) {
+              Notification.error(getLabel("unableDownloadMissingModelPermission"));
+              return;
+          } else if (logsSelected && processesSelected && !logDownloadPermission) {
+              Notification.info(getLabel("partialDownloadMissingLogPermission"));
+          } else if (logsSelected && processesSelected && !processDownloadPermission) {
+              Notification.info(getLabel("partialDownloadMissingModelPermission"));
+          }
+
+          if (mainController.getSelectedElements().size() == 1) {
               SummaryType summaryType = mainController.getSelectedElements().iterator().next();
               if (summaryType instanceof LogSummaryType) {
                   exportLog(mainController, portalContext, (LogSummaryType) summaryType);
@@ -147,8 +177,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                   exportProcessModel(mainController, portalContext);
               }
           } else {
-              if (mainController.getSelectedElements().stream()
-                      .anyMatch(summaryType -> summaryType instanceof LogSummaryType)) {
+              if (logsSelected && logDownloadPermission) {
                   exportSelectedLogsAndProcessModel(mainController, portalContext);
               } else {
                   exportFiles(mainController,"","");
@@ -433,7 +462,7 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                 } catch (UserNotFoundException e) {
                     return false;
                 }
-            })
+            }) && UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DOWNLOAD)
         ) {
             Messagebox.show(
                 getLabel("includeLinkedSubProcess_title"),
@@ -455,12 +484,13 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
     //Exports files to zip
     private void exportFiles(MainController mainController, String format, String encoding, boolean includeLinkedSubprocesses) {
         Map<String, String> filesToBeDownloaded = new HashMap<>();
+        UserType currentUser = UserSessionManager.getCurrentUser();
 
         mainController.getSelectedElements().stream().forEach(item -> {
             try {
                 Path path = null;
                 String currentFileName = "";
-                if (item instanceof LogSummaryType) {
+                if (item instanceof LogSummaryType && currentUser.hasAnyPermission(PermissionType.LOG_DOWNLOAD)) {
                     LogSummaryType logSummaryType = (LogSummaryType) item;
                     if ("CSV".equals(format)) {
                         path = getCSVFile(logSummaryType);
@@ -471,7 +501,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                     }
                     currentFileName = logSummaryType.getName();
 
-                } else if (item instanceof ProcessSummaryType) {
+                } else if (item instanceof ProcessSummaryType
+                    && currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD)) {
                     ProcessSummaryType model = (ProcessSummaryType) item;
                     VersionSummaryType version = null;
                     for (VersionSummaryType summaryType : model.getVersionSummaries()) {
@@ -486,6 +517,11 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
                         version.getName(), version.getVersionNumber());
                     currentFileName = model.getName();
                 }
+
+                if (path == null) {
+                    return;
+                }
+
                 if (filesToBeDownloaded.get(currentFileName) == null) {
                     filesToBeDownloaded.put(currentFileName, path.toFile().getAbsolutePath());
                 } else {

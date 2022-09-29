@@ -195,6 +195,10 @@
           if (!${arg.availablePublishModelPlugin}) {
             disabledPlugins.push(Apromore.I18N.Share.publish);
           }
+          if (!${arg.enableModelDownload}) {
+            disabledPlugins.push(Apromore.I18N.File.bpmn);
+            disabledPlugins.push(Apromore.I18N.File.svg);
+          }
           var isEditorSaving = false;
 
           var linkedSubProcesses = {};
