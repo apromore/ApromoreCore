@@ -55,6 +55,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.portal.util.StringUtil;
 import org.apromore.zk.dialog.InputDialog;
 import org.apromore.zk.notification.Notification;
@@ -362,10 +363,18 @@ public class ImportController extends BaseController {
       importZip(importedMedia);
     } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith(XES_GZ)
         || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith(MXML_GZ)) {
+      if (!UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.LOG_UPLOAD)) {
+        Notification.error(Labels.getLabel("portal_noUploadMissingLogPermission_message"));
+        return;
+      }
       importLog(importedMedia);
     } else if (extension.toLowerCase().equals("gz")) {
       importGzip(importedMedia);
     } else if (extension.toLowerCase().equals("bpmn")) {
+      if (!UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_UPLOAD)) {
+        Notification.error(Labels.getLabel("portal_noUploadMissingModelPermission_message"));
+        return;
+      }
       importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], name);
     } else {
       // ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;

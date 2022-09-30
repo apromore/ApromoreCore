@@ -2292,3 +2292,120 @@ databaseChangeLog:
               - column:
                   name: permissionid
                   value: "28"
+
+  - changeSet:
+      id: 20220926142500
+      author: janeh
+      comment: "add upload/download permissions"
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "29"
+              - column:
+                  name: row_guid
+                  value: "a8e8cf46-3d4f-11ed-b878-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Upload logs"
+              - column:
+                  name: permission_description
+                  value: "Upload logs"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "30"
+              - column:
+                  name: row_guid
+                  value: "cfa79112-3d4f-11ed-b878-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Download logs"
+              - column:
+                  name: permission_description
+                  value: "Download logs"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "31"
+              - column:
+                  name: row_guid
+                  value: "1cd81f56-3d50-11ed-b878-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Upload models"
+              - column:
+                  name: permission_description
+                  value: "Upload models"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "32"
+              - column:
+                  name: row_guid
+                  value: "4403602c-3d50-11ed-b878-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Download models"
+              - column:
+                  name: permission_description
+                  value: "Download models"
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  value: "33"
+              - column:
+                  name: row_guid
+                  value: "5e05d2c0-3d50-11ed-b878-0242ac120002"
+              - column:
+                  name: permission_name
+                  value: "Save filtered logs"
+              - column:
+                  name: permission_description
+                  value: "Save filtered logs from pd"
+
+  - changeSet:
+      id: 20220926150000
+      author: janeh
+      comment: "add new permissions to roles"
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO role_permission
+              SELECT id AS roleid,
+              29 AS permissionid
+              FROM `role` WHERE id NOT IN (5, 6, 9, 10);
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO role_permission
+              SELECT id AS roleid,
+              30 AS permissionid
+              FROM `role` WHERE id NOT IN (5, 6, 9, 10);
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO role_permission
+              SELECT id AS roleid,
+              31 AS permissionid
+              FROM `role` WHERE id NOT IN (5, 9, 10);
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO role_permission
+              SELECT id AS roleid,
+              32 AS permissionid
+              FROM `role` WHERE id NOT IN (5, 9, 10);
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO role_permission
+              SELECT id AS roleid,
+              33 AS permissionid
+              FROM `role` WHERE id != 9;

@@ -35,12 +35,15 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalContexts;
 import org.apromore.plugin.portal.PortalLoggerFactory;
 import org.apromore.plugin.portal.logimporter.listener.LogImportListener;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.service.UserMetadataService;
 import org.apromore.service.logimporter.exception.EmptyHeaderException;
 import org.apromore.service.logimporter.exception.UnsupportedSeparatorException;
 import org.apromore.service.logimporter.services.ParquetFactoryProvider;
 import org.apromore.service.logimporter.services.legacy.LogImporterProvider;
 import org.apromore.util.UserMetadataTypeEnum;
+import org.apromore.zk.notification.Notification;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JSONValue;
 import org.zkoss.util.media.Media;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
@@ -112,6 +116,11 @@ public class LogImporterFileImporterPlugin implements FileImporterPlugin {
   @Override
   @Transactional(rollbackFor = Exception.class)
   public void importFile(Media media, boolean isLogPublic) {
+
+    if (!UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.LOG_UPLOAD)) {
+      Notification.error(Labels.getLabel("portal_noUploadMissingLogPermission_message"));
+      return;
+    }
 
     // Configure the arguments to pass to the CSV importer view
     Map arg = new HashMap<>();

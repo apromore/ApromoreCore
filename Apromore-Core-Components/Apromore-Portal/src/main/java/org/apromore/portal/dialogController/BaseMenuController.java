@@ -202,7 +202,7 @@ public class BaseMenuController extends SelectorComposer<Menubar> {
         } else if (PluginCatalog.PLUGIN_PASTE.equals(itemId)) {
             addPasteMenuItem(popup);
         } else if (PluginCatalog.ITEM_SEPARATOR.equals(itemId)) {
-            if (!(popup.getLastChild() instanceof Menuseparator)) {
+            if (popup.getFirstChild() != null && !(popup.getLastChild() instanceof Menuseparator)) {
                 Menuseparator separator = new Menuseparator();
                 popup.appendChild(separator);
             }

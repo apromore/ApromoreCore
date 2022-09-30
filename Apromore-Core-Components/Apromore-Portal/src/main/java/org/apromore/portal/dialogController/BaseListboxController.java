@@ -99,6 +99,7 @@ public abstract class BaseListboxController extends BaseController {
   private final Button refreshB;
   private final Button btnUpload;
   private final Button btnDownload;
+  private final Span btnUploadDownloadSep;
   private final Button btnCreateDataPipeline;
   private final Button btnManageDataPipelines;
   private final Span btnEtlSep;
@@ -141,6 +142,7 @@ public abstract class BaseListboxController extends BaseController {
     refreshB = (Button) mainController.getFellow("refreshB");
     btnUpload = (Button) mainController.getFellow("btnUpload");
     btnDownload = (Button) mainController.getFellow("btnDownload");
+    btnUploadDownloadSep = (Span) mainController.getFellow("btnUploadDownloadSep");
     btnCreateDataPipeline = (Button) mainController.getFellow("btnCreateDataPipeline");
     btnManageDataPipelines = (Button) mainController.getFellow("btnManageDataPipelines");
     btnEtlSep = (Span) mainController.getFellow("btnEtlSep");
@@ -255,7 +257,17 @@ public abstract class BaseListboxController extends BaseController {
 
     this.refreshB.addEventListener(ON_CLICK, (Event event) -> refreshContent());
     this.btnUpload.addEventListener(ON_CLICK, (Event event) -> importFile());
+    this.btnUpload.setVisible(portalContext.getCurrentUser()
+        .hasAnyPermission(PermissionType.LOG_UPLOAD, PermissionType.MODEL_UPLOAD));
     this.btnDownload.addEventListener(ON_CLICK, (Event event) -> exportFile());
+    this.btnDownload.setVisible(portalContext.getCurrentUser()
+        .hasAnyPermission(PermissionType.LOG_DOWNLOAD, PermissionType.MODEL_DOWNLOAD));
+    this.btnUploadDownloadSep.setVisible(portalContext.getCurrentUser()
+        .hasAnyPermission(
+            PermissionType.LOG_UPLOAD,
+            PermissionType.LOG_DOWNLOAD,
+            PermissionType.MODEL_UPLOAD,
+            PermissionType.MODEL_DOWNLOAD));
 
     if (portalPluginMap.containsKey(PluginCatalog.PLUGIN_ETL)) {
       boolean createPipelinePermission = portalContext.getCurrentUser()

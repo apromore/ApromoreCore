@@ -81,6 +81,7 @@ import com.google.common.base.Strings;
 public class PopupMenuController extends SelectorComposer<Menupopup> {
     private static final Logger LOGGER = PortalLoggerFactory.getLogger(BaseMenuController.class);
 
+    public static final String MISSING_MENU_ITEM_OR_PLUGIN_MESSAGE = "Missing menu item or plugin ";
     protected transient MenuConfigLoader menuConfigLoader;
     protected transient Map<String, PortalPlugin> portalPluginMap;
     private static final String GROUP = "group";
@@ -258,36 +259,53 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             }
         }
         List<MenuItem> menuItems = new ArrayList<>();
+        UserType currentUser = UserSessionManager.getCurrentUser();
         if (countProcess == 2 && countLog == 0) {
             //When two models are selected, and the user right-clicks on one of them, show a menu with:
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_COMPARE_MODELS));
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_MERGE_MODELS));
-            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
-            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            if (currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD)) {
+                menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+                menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            }
         } else if (countProcess == 1 && countLog == 1) {
             //when a model and a log are selected, and the user right-clicks on one of them, show a menu with:
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));// Will be Singular
 
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_CHECK_CONFORMANCE));
-            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
-            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            if (currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD, PermissionType.LOG_DOWNLOAD)) {
+                menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+                menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            }
         } else if (countProcess == 0 && (countLog >= 2 && countLog <= 5)) {
             // when two or more logs are selected (up to 5), and the user right-clicks on one of them, show a menu with:
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DASHBOARD)); //Need to modify it
-            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
-            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            if (currentUser.hasAnyPermission(PermissionType.LOG_DOWNLOAD)) {
+                menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+                menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            }
         } else if (countProcess == 1 && (countLog >= 1 && countLog <= 5)) {
             // when a model and up to 5 logs are selected, and the user right-clicks on one of them, show a menu with
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_ANIMATE_LOG));
-            menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
-            menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
-        }else{
+            if (currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD, PermissionType.LOG_DOWNLOAD)) {
+                menuItems.add(new MenuItem(PluginCatalog.ITEM_SEPARATOR));
+                menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
+            }
+        } else if (countProcess > 0 && currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD)
+            || countLog > 0 && currentUser.hasAnyPermission(PermissionType.LOG_DOWNLOAD)) {
             menuItems.add(new MenuItem(PluginCatalog.PLUGIN_DOWNLOAD));
         }
+
         for (MenuItem menuItem : menuItems) {
             addMenuitem(menuPopup, menuItem);
         }
-        return !menuItems.isEmpty();
+
+        //Check if last menu item is a separator and remove it if so
+        if ((menuPopup.getLastChild() instanceof Menuseparator)) {
+            menuPopup.getLastChild().detach();
+        }
+
+        return !menuPopup.getChildren().isEmpty();
     }
 
     private void addViewLogFilterMenuItem(Menupopup popup) {
@@ -481,7 +499,8 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
                     }
                     return;
                 case PluginCatalog.PLUGIN_FILTER_SUB_MENU:
-                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)) {
+                    if (pluginAvailable(PluginCatalog.PLUGIN_FILTER_LOG)
+                        || pluginHidden(PluginCatalog.PLUGIN_FILTER_LOG)) {
                         new FilterPopupLogSubMenuController(this, mainController, popup,
                             (LogSummaryType) selections.iterator().next());
                     }
@@ -520,7 +539,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
         String itemId = menuItem.getId();
         PortalPlugin plugin = portalPluginMap.get(itemId);
         if (plugin == null) {
-            LOGGER.warn("Missing menu item or plugin " + itemId);
+            LOGGER.warn(MISSING_MENU_ITEM_OR_PLUGIN_MESSAGE + itemId);
             return;
         }
         PortalPlugin.Availability availability = plugin.getAvailability();
@@ -671,7 +690,19 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
             }
 
             for (MenuItem menuItem : menuitems) {
-                addMenuitem(menupop, menuItem);
+                UserType currentUser = UserSessionManager.getCurrentUser();
+                if (!PluginCatalog.PLUGIN_DOWNLOAD.equals(menuItem.getId())
+                    || POPUP_MENU_PROCESS.equals(popupType)
+                    && currentUser.hasAnyPermission(PermissionType.MODEL_DOWNLOAD)
+                    || POPUP_MENU_LOG.equals(popupType)
+                    && currentUser.hasAnyPermission(PermissionType.LOG_DOWNLOAD)) {
+                    addMenuitem(menupop, menuItem);
+                }
+            }
+
+            //Check if last menu item is a separator and remove it if so
+            if ((menupop.getLastChild() instanceof Menuseparator)) {
+                menupop.getLastChild().detach();
             }
 
         } catch (JsonParseException | JsonMappingException e) {
@@ -707,11 +738,21 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
     private boolean pluginAvailable(String pluginId) {
         PortalPlugin plugin = portalPluginMap.get(pluginId);
         if (plugin == null) {
-            LOGGER.warn("Missing menu item or plugin ");
+            LOGGER.warn(MISSING_MENU_ITEM_OR_PLUGIN_MESSAGE);
             return false;
         }
         PortalPlugin.Availability availability = plugin.getAvailability();
         return !(availability == PortalPlugin.Availability.UNAVAILABLE || availability == PortalPlugin.Availability.HIDDEN);
+    }
+
+    private boolean pluginHidden(String pluginId) {
+        PortalPlugin plugin = portalPluginMap.get(pluginId);
+        if (plugin == null) {
+            LOGGER.warn(MISSING_MENU_ITEM_OR_PLUGIN_MESSAGE);
+            return false;
+        }
+        PortalPlugin.Availability availability = plugin.getAvailability();
+        return availability == PortalPlugin.Availability.HIDDEN;
     }
 
     private BaseListboxController getBaseListboxController() {

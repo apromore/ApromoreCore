@@ -27,6 +27,8 @@ import org.apromore.plugin.portal.processdiscoverer.actions.FilterAction;
 import org.apromore.plugin.portal.processdiscoverer.actions.FilterActionOnClearFilter;
 import org.apromore.plugin.portal.processdiscoverer.data.ContextData;
 import org.apromore.plugin.portal.processdiscoverer.data.UserOptionsData;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.model.PermissionType;
 import org.apromore.service.AuthorizationService;
 import org.apromore.util.AccessType;
 import org.zkoss.zk.ui.Component;
@@ -97,11 +99,13 @@ public class ToolbarController extends AbstractController {
         calendar.setVisible(parent.getContextData().isCalendarEnabled());
 
         exportFilteredLog = (Button) toolbar.getFellow("exportUnfitted");
-        exportFilteredLog.setVisible(!isReadOnly);
+        exportFilteredLog.setVisible(!isReadOnly
+            && UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.LOG_FILTERED_SAVE));
 
         downloadPDF = (Button) toolbar.getFellow("downloadPDF");
         downloadPNG = (Button) toolbar.getFellow("downloadPNG");
         downloadJSON = (Button) toolbar.getFellow("downloadJSON");
+        downloadJSON.setVisible(UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DOWNLOAD));
 
         exportBPMN = (Button) toolbar.getFellow("exportBPMN");
         exportBPMN.setVisible(!isReadOnly);
@@ -144,7 +148,11 @@ public class ToolbarController extends AbstractController {
         filterRedo.addEventListener(Events.ON_CLICK, e -> parent.getActionManager().redoAction());
         
         animate.addEventListener(Events.ON_CLICK, e -> parent.openAnimation(e));
-        exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
+
+        if (UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.LOG_FILTERED_SAVE)) {
+            exportFilteredLog.addEventListener("onExport", e -> parent.openLogExport(e));
+        }
+
         exportBPMN.addEventListener(Events.ON_CLICK, e -> parent.openBPMNExport(e));
         calendar.addEventListener(Events.ON_CLICK, e -> parent.openCalendar());
         cost.addEventListener(Events.ON_CLICK, e -> parent.openCost());
@@ -162,13 +170,15 @@ public class ToolbarController extends AbstractController {
                 parent.exportPNG();
             }
         });
-        
-        downloadJSON.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                parent.exportJSON();
-            }
-        });
+
+        if (UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DOWNLOAD)) {
+            downloadJSON.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    parent.exportJSON();
+                }
+            });
+        }
 
         share.addEventListener(Events.ON_CLICK, event -> {
             parent.openSharingWindow();

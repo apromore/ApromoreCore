@@ -25,9 +25,11 @@ import java.util.Locale;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalLoggerFactory;
+import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.ImportController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.model.PermissionType;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.resource.Labels;
@@ -50,6 +52,13 @@ public class UploadFilePlugin extends DefaultPortalPlugin {
   @Override
   public String getIconPath() {
     return "upload.svg";
+  }
+
+  @Override
+  public Availability getAvailability() {
+    return UserSessionManager.getCurrentUser()
+        .hasAnyPermission(PermissionType.LOG_UPLOAD, PermissionType.MODEL_UPLOAD)
+        ? Availability.AVAILABLE : Availability.UNAVAILABLE;
   }
 
   @Override

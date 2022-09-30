@@ -60,6 +60,11 @@ public enum PermissionType {
     REST_APIS("0decac8d-b9a2-4424-8174-aace22ba4f39", "Access rest apis"),
     PREDICTOR_MANAGE("be297f1e-f85d-4606-8a03-495eb6b4e431", "Manage predictions"),
     PREDICTION_VIEW("1aaedd57-a620-4ea7-9d4a-27db502e9116", "View predictors"),
+    LOG_UPLOAD("a8e8cf46-3d4f-11ed-b878-0242ac120002", "Upload logs"),
+    LOG_DOWNLOAD("cfa79112-3d4f-11ed-b878-0242ac120002", "Download logs"),
+    MODEL_UPLOAD("1cd81f56-3d50-11ed-b878-0242ac120002", "Upload models"),
+    MODEL_DOWNLOAD("4403602c-3d50-11ed-b878-0242ac120002", "Download models"),
+    LOG_FILTERED_SAVE("5e05d2c0-3d50-11ed-b878-0242ac120002", "Save filtered logs"),
     UNREGISTERED("", "");
 
     protected String id;
