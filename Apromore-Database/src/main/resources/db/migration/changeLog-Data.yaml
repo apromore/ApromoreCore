@@ -2409,3 +2409,15 @@ databaseChangeLog:
               SELECT id AS roleid,
               33 AS permissionid
               FROM `role` WHERE id != 9;
+
+  - changeSet:
+      id: 20221003094800
+      author: janeh
+      comment: "remove permissions from roles"
+      changes:
+        - delete:
+            tableName: role_permission
+            where: permissionid = 15 AND roleid = 7
+              OR permissionid = 29 AND roleid IN (3, 7, 8, 11)
+              OR permissionid IN (30, 31, 32) AND roleid IN (3, 7, 8, 11, 12)
+              OR permissionid = 33 AND roleid IN (3, 5, 6, 8, 10, 11, 12)
