@@ -22,7 +22,7 @@
     closable="false"
     position="center"
     mode="modal"
-    title="Select a folder"
+    title="${labels.portal_selectFolder_text}"
     viewModel="@id('vm_folderTreeWindow') @init('org.apromore.portal.controller.folder.FolderTreeViewModel')">
     <style src="~./macros/folder/styles.css"/>
     <div sclass="ap-nav-header" style="display: flex">
