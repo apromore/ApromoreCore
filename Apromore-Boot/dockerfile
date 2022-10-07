@@ -5,6 +5,9 @@ COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM adoptopenjdk:11-jre-hotspot
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y language-pack-ja
+RUN apt-get install fonts-noto-cjk
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
