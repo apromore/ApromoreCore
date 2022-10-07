@@ -465,8 +465,8 @@ public class DownloadSelectionPlugin extends DefaultPortalPlugin implements Labe
             }) && UserSessionManager.getCurrentUser().hasAnyPermission(PermissionType.MODEL_DOWNLOAD)
         ) {
             Messagebox.show(
-                getLabel("includeLinkedSubProcess_title"),
                 getLabel("includeLinkedSubProcess_message"),
+                getLabel("includeLinkedSubProcess_title"),
                 Messagebox.YES | Messagebox.NO,
                 Messagebox.QUESTION,
                 (Event e) -> {
