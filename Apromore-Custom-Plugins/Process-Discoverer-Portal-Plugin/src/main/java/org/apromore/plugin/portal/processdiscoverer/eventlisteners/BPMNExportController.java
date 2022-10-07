@@ -51,6 +51,7 @@ import org.apromore.processsimulation.dto.SimulationData;
 import org.apromore.processsimulation.service.SimulationInfoService;
 import org.apromore.zk.notification.Notification;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.EventQueue;
@@ -325,6 +326,12 @@ public class BPMNExportController extends AbstractController {
         args.put("modelExtendedData", modelExtendedData);
         args.put("extensionLabel", extensionLabel);
         args.put("footnoteLabel", footnoteLabel);
+        for (Page page : Executions.getCurrent().getDesktop().getPages()) {
+            if (page.getFellowIfAny("processSaveWindow") != null) {
+                // DO Nothing
+                return;
+            }
+        }
         Window processSaveAsWindow =
             (Window) Executions.createComponents("~./macros/process/processSaveWindow.zul", null, args);
         processSaveAsWindow.doModal();
