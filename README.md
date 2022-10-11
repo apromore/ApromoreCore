@@ -2,15 +2,34 @@
 
 # Apromore Core
 
-This repository contains source code of the [Apromore](https://apromore.org) Core process analytics web application server.  It can be built and run on its own, or used as a submodule containing components common to the two other Apromore editions:
+This repository contains source code of [Apromore](https://apromore.com) Core: the open-source edition of the popular [Apromore](https://apromore.com) toolset for process mining and predictive process analytics. Apromore Core provides the core functionality of [Apromore Enterprise Edition](https://apromore.com/editions-and-pricing/):
 
-* [Apromore Community Edition](https://github.com/apromore/ApromoreCE), which is open source.
-* [Apromore Enterprise Edition](https://github.com/apromore/ApromoreEE), which is proprietary.
+* The Apromore importer: for importing event logs and BPMN process models
+* The Apromore Portal: for storing and sharing models and logs, including user and group management
+* The Process Discoverer: for discovery of process maps and BPMN process models
+* The Business Calendar Manager: for specifying business calendars to computing durations
+* The Model Editor: for creating and editing process models
+
+If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.com/). [Apromore Enterprise Edition](https://apromore.com/editions-and-pricing/) contains all the functionality of Apromore Core plus:
+* Event log filters
+* Performance dashboards and reports
+* Conformance checking
+* Process model comparison
+* Log animation
+* Business process simulation
+* Discovery of business process simulation models
+* Predictive process monitoring
+* Extract-Transform-Load (ETL) pipelines
+* Connectors
+* Single Sign-On (SSO)
+* Big Data support
+
+---
 
 The instructions below are for the installation of Apromore Core from the source code. For convenience, we also make available a containerized image in [Docker](https://github.com/apromore/ApromoreDocker).
-If you are looking for the commercial edition (Apromore Enterprise Edition), check the [Apromore web site](https://apromore.org/)
 
 ## System requirements
+
 * Linux Ubuntu 20.04 (We do not support newer versions as it may lead to dependency issues), Windows 10/WS2016/WS2019, Mac OSX 10.8 or newer.
 * Java SE 11 ["Server JRE"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) or
   ["JDK 11"](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) . For Ubuntu, it can be installed as `sudo apt install openjdk-11-jdk`
