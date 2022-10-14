@@ -29,11 +29,11 @@ public final class LabelUtils {
 
     private LabelUtils() {}
 
-    public static final void reloadLabels() {
+    public static final void reloadLabels(String helpLinkPropFile) {
         Labels.reset();
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "zk-label"));
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "brand"));
-        Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "help"));
+        Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), helpLinkPropFile));
         Labels.register(new LabelLocatorService(WebApps.getCurrent().getServletContext(), "ui"));
     }
 }
