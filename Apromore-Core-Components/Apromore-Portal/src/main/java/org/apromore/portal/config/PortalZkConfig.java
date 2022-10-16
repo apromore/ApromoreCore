@@ -12,6 +12,7 @@ package org.apromore.portal.config;
 import javax.annotation.PostConstruct;
 import org.apromore.portal.LoggingZKListener;
 import org.apromore.zk.ApromoreDesktopInit;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.zkoss.lang.Library;
 import org.zkoss.zk.ui.WebApps;
@@ -21,6 +22,9 @@ import org.apromore.portal.common.i18n.LabelUtils;
 
 @Configuration
 public class PortalZkConfig {
+
+  @Value("${helplinkpropfile:help}")
+  private String helpLinkPropFile = "help";
 
   @PostConstruct
   public void initZk() {
@@ -35,7 +39,7 @@ public class PortalZkConfig {
     Library.setProperty("org.zkoss.web.classWebResource.cache", "false");
     Library.setProperty("org.zkoss.zul.progressbox.position", "center");
     Library.setProperty("org.zkoss.util.label.web.charset", "UTF-8");
-    LabelUtils.reloadLabels();
+    LabelUtils.reloadLabels(helpLinkPropFile);
 
     WebApps.getCurrent().getConfiguration().setTimeoutURI("ajax", "/", URIInfo.SEND_REDIRECT);
     try {
