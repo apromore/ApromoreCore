@@ -158,6 +158,8 @@ export default class Editor {
         var elementRegistry = editor.get('elementRegistry');
         var me = this;
 
+        me.registerCommandFontSize();
+        me.registerCommandShapeSize();
         eventBus.on('elements.changed', function () {
             me.setDirty(true);
         });
@@ -583,6 +585,7 @@ export default class Editor {
         eventBus.fire('elements.changed', { elements });
     }
 
+    // deprecated
     async changeGlobalFontSize(size) {
         const modeler = this.actualEditor
         const config = modeler.get('config');
@@ -606,6 +609,7 @@ export default class Editor {
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
     }
 
+    // sync the slider
     updateFontSize(selection) {
       const DEFAULT_SIZE = 16;
       let selectedFontSize = -1;
@@ -635,9 +639,54 @@ export default class Editor {
       Apromore.BPMNEditor.updateFontSize(selectedFontSize);
     }
 
+    registerCommandFontSize () {
+        const me = this
+        const modeler = this.actualEditor
+        if (!modeler) { return; }
+
+        const commandStack = modeler.get('commandStack');
+        if (!commandStack) { return; }
+        const eventBus = modeler.get('eventBus');
+        const changeFontSizeAction = {
+            do: function changeFontSizeAction_do(param) {
+              const { elements, size } = param
+              elements.forEach((element) => {
+                  const bo = element.businessObject;
+                  bo["aux-font-size"] = size+"px";
+              });
+              eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+              eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+              return true;
+            },
+            undo: function changeFontSizeAction_undo(param) {
+              const { elements, oldSizes } = param
+              elements.forEach((element) => {
+                  const bo = element.businessObject;
+                  let size = '16px';
+                  if (element.id in oldSizes) {
+                    size = oldSizes[element.id]
+                  }
+                  bo["aux-font-size"] = size;
+              });
+              eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+              eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+              return true;
+            },
+            canDo: function changeFontSizeAction_canDo(param) {
+              return true;
+            }
+        };
+        changeFontSizeAction.execute = changeFontSizeAction.do;
+        changeFontSizeAction.revert = changeFontSizeAction.undo;
+        changeFontSizeAction.canExecute = changeFontSizeAction.canDo;
+        commandStack.register('changeFontSize', changeFontSizeAction);
+    }
+
     async changeFontSize(size) {
         const modeler = this.actualEditor
         if (!modeler) return;
+        const commandStack = modeler.get('commandStack');
+        if (!commandStack) { return; }
 
         let eventBus = modeler.get('eventBus');
         let elements = modeler.get('selection').get();
@@ -646,12 +695,20 @@ export default class Editor {
             let elementRegistry = modeler.get('elementRegistry');
             elements = elementRegistry.getAll();
         }
+        const oldSizes = {}
         elements.forEach((element) => {
             const bo = element.businessObject;
-            bo["aux-font-size"] = size+"px";
+            if (bo["aux-font-size"]) {
+              oldSizes[element.id] = bo["aux-font-size"]
+            }
+            // bo["aux-font-size"] = size+"px";
         });
-        eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
-        eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+        const param = {
+          elements,
+          size,
+          oldSizes
+        }
+        commandStack.execute('changeFontSize', param);
     }
 
     initShapeSize() {
@@ -751,6 +808,70 @@ export default class Editor {
         this.shapeResizerVisible = true;
     }
 
+    registerCommandShapeSize () {
+        const me = this
+        const prevSizes = {}
+
+        const modeler = this.actualEditor
+        if (!modeler) { return; }
+        const commandStack = modeler.get('commandStack');
+        if (!commandStack) { return; }
+        const eventBus = modeler.get('eventBus');
+        const modeling = modeler.get('modeling');
+        const changeShapeSizeAction = {
+            do: function changeShapeSizeAction_do(param) {
+                const { elements, size } = param
+                elements.forEach((element) => {
+                    if (is(element, 'bpmn:Task') ||
+                        is(element, 'bpmn:SubProcess')
+                    ) {
+                        prevSizes[element.id] = {
+                          width: element.width,
+                          height: element.height
+                        }
+                        Object.assign(element, {
+                           x: element.x,
+                           y: element.y,
+                           width: size.width,
+                           height: size.height
+                        });
+                    }
+                });
+                eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+                eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+                return true;
+            },
+            undo: function changeShapeSizeAction_undo(param) {
+                const { elements } = param
+                elements.forEach((element) => {
+                    if (element.id in prevSizes) {
+                        let size = prevSizes[element.id]
+                        prevSizes[element.id] = {
+                          width: element.width,
+                          height: element.height
+                        }
+                        Object.assign(element, {
+                           x: element.x,
+                           y: element.y,
+                           width: size.width,
+                           height: size.height
+                        });
+                    }
+                });
+                eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
+                eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+                return true;
+            },
+            canDo: function changeShapeSizeAction_canDo(param) {
+              return true;
+            }
+        };
+        changeShapeSizeAction.execute = changeShapeSizeAction.do;
+        changeShapeSizeAction.revert = changeShapeSizeAction.undo;
+        changeShapeSizeAction.canExecute = changeShapeSizeAction.canDo;
+        commandStack.register('changShapeSize', changeShapeSizeAction);
+    }
+
     changeShapeSize(size) {
         const modeler = this.actualEditor
         if (!modeler) {
@@ -781,5 +902,24 @@ export default class Editor {
         });
         eventBus.fire('commandStack.changed', { elements, type: 'commandStack.changed'});
         eventBus.fire('elements.changed', { elements, type: 'elements.changed' });
+    }
+
+
+    // This doesn't properly rearrange dependent elements
+    changeShapeSizeAllElements(size) {
+        const modeler = this.actualEditor
+        if (!modeler) { return; }
+        const commandStack = modeler.get('commandStack');
+        if (!commandStack) { return; }
+        let elements = modeler.get('selection').get();
+        if (!elements || !elements.length) {
+            let elementRegistry = modeler.get('elementRegistry');
+            elements = elementRegistry.getAll();
+        }
+        const param = {
+          elements,
+          size
+        }
+        commandStack.execute('changShapeSize', param);
     }
 };
