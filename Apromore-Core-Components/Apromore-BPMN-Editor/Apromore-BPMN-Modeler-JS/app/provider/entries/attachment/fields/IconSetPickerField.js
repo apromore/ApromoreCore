@@ -133,7 +133,7 @@ let currentIndex = -1;
 function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus) {
   let item;
   let setContainer = $('#ap-bpmn-icon-set');
-  let addButton = $('<div class="add">Add new</div>');
+  let addButton = $('<div class="add">' + translate('attachments.icon.list.add.label') + '</div>');
 
   addButton.on('click', () => {
     let newIndex = $('#ap-bpmn-icon-set .icon-item').length;
@@ -162,7 +162,8 @@ function renderIconSet(element, icons, bpmnFactory, bpmnjs, translate, eventBus)
     let urlEl = $(`<input class="icon-url" placeholder="URL" data-icon-index="${index}" value="${url}" />`);
     let textEl = $(`<input class="icon-text" placeholder="Text" data-icon-index="${index}" value="${text}" />`);
     let iconEl = $(`<div class="icon-name" title="Click to select icon" data-icon-index="${index}" data-icon-name="${name}"><span class="${name}" /></div>`);
-    let eraseEl = $(`<div class="remove" data-icon-index="${index}">Remove</div>`);
+    let eraseEl = $(`<div class="remove" data-icon-index="${index}">`
+            + translate('attachments.icon.list.remove.label') + `</div>`);
     urlEl.on('change', () => {
       updateObjects(element, icons, bpmnFactory, bpmnjs, eventBus);
     });

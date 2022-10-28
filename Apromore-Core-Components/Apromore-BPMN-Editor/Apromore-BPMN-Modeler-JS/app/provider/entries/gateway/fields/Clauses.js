@@ -82,7 +82,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate, opt
     },
 
     setOptionLabelValue: function (element, _node, option, _property, _value, idx) {
-      option.text = 'Clause ' + (idx + 1);
+      option.text = translate('gateway.expression.clause.prefix') + (idx + 1);
     }
   });
 

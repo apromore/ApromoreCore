@@ -21,7 +21,7 @@ module.exports = function (element, bpmnFactory, elementRegistry, translate) {
 
     createExtensionElement: function (element, extensionElements, _value) {
       let variables = CaseAttributeHelper.getVariables(bpmnFactory, elementRegistry);
-      let variable = CaseAttributeHelper.createVariable(bpmnFactory, elementRegistry);
+      let variable = CaseAttributeHelper.createVariable(bpmnFactory, elementRegistry, translate);
       var cmd = cmdHelper.addElementsTolist(element, variables, 'values', [variable]);
       currentSelectedCaseAttribute = variable;
       NumericalDistributionHelper.storeCurrentCaseAttribute(currentSelectedCaseAttribute);

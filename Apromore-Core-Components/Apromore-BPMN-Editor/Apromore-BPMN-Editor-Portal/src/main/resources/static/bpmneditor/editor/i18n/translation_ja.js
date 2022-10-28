@@ -225,6 +225,15 @@ Apromore.I18N.SimulationPanel.simulateModelDesc = "モデルのシミュレー�
 
 Apromore.I18N.PropertyWindow.title = "プロパティ";
 
+if(!Apromore.I18N.MetadataTab) Apromore.I18N.MetadataTab = {};
+Apromore.I18N.MetadataTab.title = "メタデータ";
+
+if(!Apromore.I18N.AttachmentsTab) Apromore.I18N.AttachmentsTab = {};
+Apromore.I18N.AttachmentsTab.title = "添付資料";
+
+if(!Apromore.I18N.SimulationTab) Apromore.I18N.SimulationTab = {};
+Apromore.I18N.SimulationTab.title = "シミュレーション";
+
 if(!Apromore.I18N.ShapeRepository) Apromore.I18N.ShapeRepository = {};
 Apromore.I18N.ShapeRepository.title = "図形リポジトリ";
 
@@ -436,11 +445,11 @@ if(!Apromore.I18N.Attachment) Apromore.I18N.Attachment = {};
 Apromore.I18N.Attachment.attachment = "アタッチメント";
 Apromore.I18N.Attachment.showDesc = "アタッチメントの表示";
 Apromore.I18N.Attachment.hideDesc = "アタッチメントの非表示";
-Apromore.I18N.Attachment.comment = "Comments";
-Apromore.I18N.Attachment.showComments = "Show comments";
-Apromore.I18N.Attachment.hideComments = "Hide comments";
+Apromore.I18N.Attachment.comment = "コメント";
+Apromore.I18N.Attachment.showComments = "コメントを表示";
+Apromore.I18N.Attachment.hideComments = "コメントを非表示";
 
 
 if(!Apromore.I18N.FontSize) Apromore.I18N.FontSize = {};
-Apromore.I18N.FontSize.fontSizeDesc= "Change font size";
-Apromore.I18N.FontSize.fontsize ="Change Font Size";
+Apromore.I18N.FontSize.fontSizeDesc= "フォントサイズを変更";
+Apromore.I18N.FontSize.fontsize ="フォントサイズを変更";

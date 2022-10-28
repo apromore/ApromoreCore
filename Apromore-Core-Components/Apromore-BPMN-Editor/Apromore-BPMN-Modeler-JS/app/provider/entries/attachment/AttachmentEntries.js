@@ -98,7 +98,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
   return [
     entryFactory.textField(translate, {
       id: AUX_PROPS.IMG_SRC,
-      label: "Image source URL",
+      label: translate('attachments.image.src'),
       modelProperty : AUX_PROPS.IMG_SRC,
       get: function(_element, _node) {
         return { [AUX_PROPS.IMG_SRC]: img[AUX_PROPS.IMG_SRC] };
@@ -111,9 +111,9 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
         });
       }
     }),
-    ImagePickerField({
+    ImagePickerField(translate, {
       id: AUX_PROPS.IMG_URL,
-      label: "Image upload",
+      label: translate('attachments.image.upload'),
       modelProperty : AUX_PROPS.IMG_URL,
       get: function(_element, _node) {
         showImgPreview(img[AUX_PROPS.IMG_URL]);
@@ -128,7 +128,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
     }),
     entryFactory.textField(translate, {
       id : AUX_PROPS.LINK_URL,
-      label : 'Link for image',
+      label : translate('attachments.image.link'),
       modelProperty : AUX_PROPS.LINK_URL,
       get: function(_element, _node) {
         return { [AUX_PROPS.LINK_URL]: bo[AUX_PROPS.LINK_URL] };
@@ -143,7 +143,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
     }),
     entryFactory.textField(translate, {
       id : AUX_PROPS.LINK_TEXT,
-      label : 'Text for image',
+      label : translate('attachments.image.text'),
       modelProperty : AUX_PROPS.LINK_TEXT,
       get: function(_element, _node) {
         return { [AUX_PROPS.LINK_TEXT]: bo[AUX_PROPS.LINK_TEXT] };
@@ -175,7 +175,7 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate, bpmn
     ),*/
     IconSetPickerField({
       id: AUX_PROPS.ICON_SET,
-      label: "Icon List",
+      label: translate('attachments.icon.list'),
       modelProperty: AUX_PROPS.ICON_SET,
       element,
       bpmnFactory,

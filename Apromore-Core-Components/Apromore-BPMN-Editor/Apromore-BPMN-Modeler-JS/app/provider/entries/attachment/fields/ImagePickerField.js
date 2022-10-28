@@ -29,13 +29,14 @@ function previewFile(callback) {
   }
 }
 
-module.exports = function(options) {
+module.exports = function(translate, options) {
   var resource = setDefaultParameters(options),
       label = options.label || resource.id;
 
   var pickerEl = domify('<div id="ap-bpmn-img-picker"></div>');
   var inputEl = domify('<input id="aux-img-picker-control" type="file">');
-  var removeEl = domify('<input id="aux-img-picker-remove" value="Remove" type="button">');
+  var removeEl = domify('<input id="aux-img-picker-remove" value="'
+    + translate('attachments.image.remove') + '" type="button">');
   pickerEl.appendChild(inputEl);
   pickerEl.appendChild(removeEl);
   domEvent.bind(inputEl, 'change', function () {
