@@ -44,7 +44,7 @@
 
     /* A fix for simulation panel title */
     .x-layout-collapsed-east:after {
-      content: "Properties";
+      content: "${labels.bpmnEditor_properties_text}";
       letter-spacing: 1px;
       color: black;
       font-weight: 700;

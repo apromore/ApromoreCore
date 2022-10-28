@@ -19,10 +19,10 @@ CaseAttributeHelper.getVariables = function (bpmnFactory, elementRegistry) {
   return variables;
 };
 
-CaseAttributeHelper.createVariable = function (bpmnFactory, elementRegistry) {
+CaseAttributeHelper.createVariable = function (bpmnFactory, elementRegistry, translate) {
   let variables = CaseAttributeHelper.getAllVariables(bpmnFactory, elementRegistry);
   let index = 1;
-  let prefix = 'Case attribute ';
+  let prefix = translate('general.categorical.case.attribute.prefix');
   if (variables && variables.length) {
     let found;
     do {

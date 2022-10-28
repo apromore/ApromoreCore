@@ -202,14 +202,20 @@ export default class EditorApp {
                 collapsible: true,
                 width: this.useSimulationPanel ? 450 : 0,
                 split: false,
-                title: "Properties",
+                title: window.Apromore.I18N.PropertyWindow.title,
                 id: 'ap-editor-props-container',
                 items: [
                     {   html: '<div id="ap-editor-props-bar">' +
-                          '<div id="ap-editor-props-extension">Metadata</div>' +
-                          '<div id="ap-editor-props-attachment">Attachments</div>' +
-                          '<div id="ap-editor-props-simulation">Simulation</div>' +
-                          '</div>',
+                                '<div id="ap-editor-props-extension">' +
+                                  window.Apromore.I18N.MetadataTab.title +
+                                '</div>' +
+                                '<div id="ap-editor-props-attachment">' +
+                                  window.Apromore.I18N.AttachmentsTab.title +
+                                '</div>' +
+                                '<div id="ap-editor-props-simulation">' +
+                                  window.Apromore.I18N.SimulationTab.title +
+                                '</div>' +
+                              '</div>',
                         region:'north',
                         border: false,
                         style: "z-index: 300",

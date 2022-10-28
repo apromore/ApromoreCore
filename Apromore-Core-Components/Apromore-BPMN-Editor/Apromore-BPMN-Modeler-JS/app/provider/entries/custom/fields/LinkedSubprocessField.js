@@ -16,10 +16,14 @@ module.exports = function(element, bpmnFactory, elementRegistry, translate) {
             isLinked = typeof linkedSubProcesses[element.id] === 'string';
         }
 
-        let linkedProcessLabel = domify(`<label id="link-subprocess-label">Linked subprocess:</label>`);
+        let linkedProcessLabel = domify('<label id="link-subprocess-label">' + translate('subprocess.link.label')
+            + '</label>');
         let linkedProcessLink = domify(`<span id="link-subprocess-view">${linkedProcessName}</span>`);
-        let editBtn = domify(`<input id="link-subprocess-edit" value="Edit" type="button">`);
-        let unlinkBtn = domify(`<input id="link-subprocess-remove" value="Unlink" type="button">`);
+        let editBtn = domify('<input id="link-subprocess-edit" value="'
+            + translate('subprocess.link.edit.label') + '" type="button">');
+        let unlinkBtn = domify('<input id="link-subprocess-remove" value="'
+            + translate('subprocess.link.unlink.label') + '" type="button">');
+
 
         if (isLinked) {
             linkedProcessLink.classList.add('link-subprocess-view-link');

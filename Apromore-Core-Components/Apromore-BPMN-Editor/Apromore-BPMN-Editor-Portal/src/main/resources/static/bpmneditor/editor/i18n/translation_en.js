@@ -225,6 +225,15 @@ Apromore.I18N.SimulationPanel.simulateModelDesc = "Simulate model";
 
 Apromore.I18N.PropertyWindow.title = "Properties";
 
+if(!Apromore.I18N.MetadataTab) Apromore.I18N.MetadataTab = {};
+Apromore.I18N.MetadataTab.title = "Metadata";
+
+if(!Apromore.I18N.AttachmentsTab) Apromore.I18N.AttachmentsTab = {};
+Apromore.I18N.AttachmentsTab.title = "Attachments";
+
+if(!Apromore.I18N.SimulationTab) Apromore.I18N.SimulationTab = {};
+Apromore.I18N.SimulationTab.title = "Simulation";
+
 if(!Apromore.I18N.ShapeRepository) Apromore.I18N.ShapeRepository = {};
 Apromore.I18N.ShapeRepository.title = "Shape Repository";
 

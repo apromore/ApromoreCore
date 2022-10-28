@@ -13,7 +13,7 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     id: 'clause-operator-' + options.outgoingElementId,
     label: translate('gateway.clause.operator.label'),
     modelProperty: 'operator',
-    selectOptions: getOperatorOptions,
+    selectOptions: getOperatorOptions(translate),
     hidden: function (element, node) {
       return !getSelectedClause(element, node);
     },
@@ -31,43 +31,43 @@ module.exports = function (bpmnFactory, elementRegistry, translate, options) {
     }
   });
 
-  function getOperatorOptions() {
-    let opetator = [
+  function getOperatorOptions(translate) {
+    let operator = [
       {
-        name: 'Equal to (=)',
+        name: translate('gateway.expression.operator.equal.label'),
         value: 'EQ'
       },
       {
-        name: 'Not equal to (≠)',
+        name: translate('gateway.expression.operator.notEqual.label'),
         value: 'NEQ'
       }];
 
     if (isNumeric()) {
-      let opetatorNumeric = [
+      let operatorNumeric = [
         {
-          name: 'Greater than or equal to (≥)',
+          name: translate('gateway.expression.operator.greaterThanEqual.label'),
           value: 'GTE'
         },
         {
-          name: 'Greater than (>)',
+          name: translate('gateway.expression.operator.greaterThan.label'),
           value: 'GT'
         },
         {
-          name: 'Less than or equal to (≤)',
+          name: translate('gateway.expression.operator.lessThanEqual.label'),
           value: 'LTE'
         },
         {
-          name: 'Less than (<)',
+          name: translate('gateway.expression.operator.lessThan.label'),
           value: 'LT'
         },
         {
-          name: 'Between (|…|)',
+          name: translate('gateway.expression.operator.between.label'),
           value: 'BTW'
         }
       ];
-      opetator = opetator.concat(opetatorNumeric);
+      operator = operator.concat(operatorNumeric);
     }
-    return opetator;
+    return operator;
   }
 
   return { 
