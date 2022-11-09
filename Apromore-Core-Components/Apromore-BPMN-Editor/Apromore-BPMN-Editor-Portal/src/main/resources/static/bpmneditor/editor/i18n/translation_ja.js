@@ -453,3 +453,7 @@ Apromore.I18N.Attachment.hideComments = "コメントを非表示";
 if(!Apromore.I18N.FontSize) Apromore.I18N.FontSize = {};
 Apromore.I18N.FontSize.fontSizeDesc= "フォントサイズを変更";
 Apromore.I18N.FontSize.fontsize ="フォントサイズを変更";
+
+if(!Apromore.I18N.ShapeSize) Apromore.I18N.ShapeSize = {};
+Apromore.I18N.ShapeSize.shapeSizeDesc= "Change task size";
+Apromore.I18N.ShapeSize.shapeSize ="Change task size";
