@@ -38,6 +38,7 @@ import org.apromore.portal.dialogController.PopupMenuController;
 import org.apromore.portal.menu.MenuItem;
 import org.apromore.portal.menu.PluginCatalog;
 import org.apromore.portal.model.LogSummaryType;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
@@ -57,7 +58,7 @@ public class PredictorTrainerSubMenuController extends PopupLogSubMenuController
     private void constructMenu() {
         String subMenuImage = "~./icons/predictor-manage.svg";
         Menu subMenu = new Menu();
-        subMenu.setLabel("Manage predictor");
+        subMenu.setLabel(Labels.getLabel("plugin_monitor_managePredictor_text", "Manage predictor"));
         subMenu.setImage(subMenuImage);
         Menupopup menuPopup = new Menupopup();
         popupMenuController.addMenuitem(menuPopup, new MenuItem(PluginCatalog.PLUGIN_PREDICTOR_TRAINER));

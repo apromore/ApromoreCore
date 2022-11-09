@@ -213,7 +213,7 @@ public class PopupMenuController extends SelectorComposer<Menupopup> {
 
     private void addNewPredictorMenuItem(Menupopup popup) {
         Menuitem item = new Menuitem();
-        item.setLabel("Create new predictor");
+        item.setLabel(Labels.getLabel("plugin_monitor_createPredictor_text", "Create new predictor"));
         item.setImage("~./icons/predictor-add-top.svg");
         item.addEventListener(ON_CLICK, event -> createNewPredictorTrainer());
         popup.appendChild(item);
