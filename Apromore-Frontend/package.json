@@ -40,7 +40,7 @@
     "konva": "^7.0.3",
     "minisearch": "^2.4.0",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.35",
     "popper.js": "^1.14.3",
     "ramda": "^0.27.1",
     "sortablejs": "^1.13.0",
