@@ -1021,9 +1021,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
   @Transactional
   public void deleteOwnerlessArtifact(User user) {
 
+    /**
+     * This is a temporary workaround to address following circular dependency issue.
+     * Circular dependency between the following tasks:
+     * :Process-Log-Data-Logic:compileJava
+     * +--- :Process-Log-Definition-Logic:compileJava
+     * |    \--- :Apromore-Core-Components:Apromore-Manager:compileJava
+     * |         \--- :Process-Log-Data-Logic:compileJava ()
+     * \--- :Apromore-Core-Components:Apromore-Manager:compileJava ()
+     *
+     * So PortalDataService's deleteLog method need be called directly in order to delete ownerless logs,
+     * which leaves the whole purgeOwnerlessArtifact task not guaranteed to finish in one transaction.
+     *
+     * Here is the future task to solve this Circular dependency issue properly
+     * https://apromore.atlassian.net/browse/AP-9452
+     */
     folderRepo.deleteAll(getSingleOwnerFolderByUser(user));
-    logRepo.deleteAll(getSingleOwnerLogByUser(user));
-    processRepo.deleteAll(getSingleOwnerProcessByUser(user));
 
   }
 

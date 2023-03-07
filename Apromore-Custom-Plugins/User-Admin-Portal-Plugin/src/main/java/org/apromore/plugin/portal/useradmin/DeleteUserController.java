@@ -26,6 +26,7 @@ package org.apromore.plugin.portal.useradmin;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,8 @@ import org.apromore.portal.model.LogSummaryType;
 import org.apromore.portal.types.EventQueueEvents;
 import org.apromore.portal.types.EventQueueTypes;
 import org.apromore.service.AuthorizationService;
+import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.SecurityService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
@@ -97,6 +100,12 @@ public class DeleteUserController extends SelectorComposer<Window> {
 
     @WireVariable("userService")
     private UserService userService;
+
+    @WireVariable("processService")
+    private ProcessService processService;
+
+    @WireVariable("eventLogService")
+    private EventLogService eventLogService;
 
     private Map<String, Object> argMap = (Map<String, Object>) Executions.getCurrent().getArg();
     private User selectedUser = (User) argMap.get("selectedUser");
@@ -342,7 +351,30 @@ public class DeleteUserController extends SelectorComposer<Window> {
 
     private void purgeOwnedAssets() {
         try {
+            /**
+             * This is a temporary workaround to address following circular dependency issue.
+             * Circular dependency between the following tasks:
+             * :Process-Log-Data-Logic:compileJava
+             * +--- :Process-Log-Definition-Logic:compileJava
+             * |    \--- :Apromore-Core-Components:Apromore-Manager:compileJava
+             * |         \--- :Process-Log-Data-Logic:compileJava ()
+             * \--- :Apromore-Core-Components:Apromore-Manager:compileJava ()
+             *
+             * So in here PortalDataService's deleteLog method is called directly, which leaves the whole
+             * purgeOwnerlessArtifact task not guaranteed to finish in one transaction.
+             *
+             * Here is the future task to solve this Circular dependency issue properly
+             * https://apromore.atlassian.net/browse/AP-9452
+             */
+            List<Log> logList = workspaceService.getSingleOwnerLogByUser(selectedUser);
+            for (Log log : logList) {
+                eventLogService.deleteLogs(Collections.singletonList(log), selectedUser);
+            }
 
+            List<Process> processes = workspaceService.getSingleOwnerProcessByUser(selectedUser);
+            for (Process process : processes) {
+                processService.deleteProcessModel(process, selectedUser);
+            }
 
             workspaceService.deleteOwnerlessArtifact(selectedUser);
             Notification.info(getLabel("successDeleteAll_message"));
