@@ -138,8 +138,10 @@ public interface ProcessService {
     ProcessModelVersion updateProcessModelVersion(final Integer processId, final String branchName, final Version version, 
             final User user, final String lockStatus,
             final NativeType nativeType, final InputStream nativeStream) throws ImportException, UpdateProcessException;
-    
-     /**
+
+    void deleteProcessModel(Process process, User user) throws UpdateProcessException;
+
+    /**
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.
      * @param user with write permission

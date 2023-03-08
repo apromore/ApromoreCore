@@ -644,7 +644,18 @@ public class ProcessServiceImpl implements ProcessService {
     return publicGroupProcesses;
   }
 
+  @Override
+  public void deleteProcessModel(final Process process, final User user) throws UpdateProcessException {
+    List<ProcessModelVersion> processModelVersionList =
+        processModelVersionRepo.getAllProcessModelVersions(process.getId(), TRUNK_NAME);
 
+    List<ProcessData> processDatas = new ArrayList<>();
+    for (ProcessModelVersion processModelVersion : processModelVersionList) {
+      processDatas.add(new ProcessData(processModelVersion.getProcessBranch().getProcess().getId(),
+          new Version(processModelVersion.getVersionNumber())));
+    }
+    deleteProcessModel(processDatas, user);
+  }
 
   /**
    * @see ProcessService#deleteProcessModel(List, User) {@inheritDoc}
