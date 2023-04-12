@@ -3,7 +3,7 @@ version = '1.1'
 description = 'Apromore Zk'	
 
 ext {
-	zkVersion ='9.6.0'
+	zkVersion ='9.6.0.2'
 }
 
 dependencies {
