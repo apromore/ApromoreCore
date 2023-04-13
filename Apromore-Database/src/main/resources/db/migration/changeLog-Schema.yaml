@@ -811,7 +811,7 @@ databaseChangeLog:
            replaceIfExists: true
            context: MYSQL,H2
            selectQuery: |2-
-               select cast(process.id as char(10))
+               select convert(cast(process.id as char(10)) using utf8)
                as value, 'process' as type, process.id as processid, null as logid, null as folderid
                from process union
              select process.name
@@ -832,7 +832,7 @@ databaseChangeLog:
              select process_branch.branch_name
                as value, 'process' as type, process_branch.processid as processid, null as logid, null as folderid
                from process_branch union
-             select cast(`log`.id as char(10))
+             select convert(cast(`log`.id as char(10)) using utf8)
                as value, 'log' as type, null as processid, `log`.id as logid, null as folderid
                from `log` union
              select `log`.name
