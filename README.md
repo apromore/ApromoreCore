@@ -1,4 +1,8 @@
-![apromore](https://apromore.org/wp-content/uploads/2021/08/Apromore-banner_red.png "apromore")
+**Warning:** The source code available in this repository is now deprecated.
+
+This repository contains the source code of Apromore Core. Apromore Core is subset of the former Apromore Community Edition. It contains the core functionality of Apromore Community Edition, including the Portal, the editor, and the Process Discovery plugin.
+
+If you are looking for the commercial edition of Apromore (Apromore Enterprise Edition), check the Apromore web site
 
 # Apromore Core
 
@@ -18,11 +22,14 @@ If you are looking for the commercial edition (Apromore Enterprise Edition), che
 * Log animation
 * Business process simulation
 * Discovery of business process simulation models
-* Predictive process monitoring
+* KPI and metrics
+* Root-cause analysis
 * Extract-Transform-Load (ETL) pipelines
 * Connectors
+* Compliance Center
+* Predictive process monitoring
+* Generative AI Copilot
 * Single Sign-On (SSO)
-* Big Data support
 
 ---
 
